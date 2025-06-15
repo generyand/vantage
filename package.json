@@ -1,0 +1,23 @@
+{
+  "name": "vantage",
+  "version": "1.0.0",
+  "description": "Vantage monorepo with NextJS frontend and FastAPI backend",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "dev:web": "turbo dev --filter=web",
+    "dev:api": "turbo dev --filter=api", 
+    "lint": "turbo lint",
+    "type-check": "turbo type-check",
+    "test": "turbo test",
+    "clean": "turbo clean"
+  },
+  "keywords": ["monorepo", "nextjs", "fastapi", "turborepo"],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "turbo": "^2.5.4"
+  }
+}
