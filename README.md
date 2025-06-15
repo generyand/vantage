@@ -119,6 +119,52 @@ The FastAPI backend runs on `http://localhost:8000` and provides:
 - ✅ **CORS configured** for local development
 - ✅ **Simple architecture** following best practices
 
+## 🔧 Git Workflow
+
+This monorepo uses a **single Git repository** at the root level for all packages.
+
+### Initial Setup (Already Done)
+```bash
+git init
+git add .
+git commit -m "Initial commit: Setup Vantage monorepo"
+```
+
+### Daily Workflow
+```bash
+# Check status across all packages
+git status
+
+# Add changes across all packages
+git add .
+
+# Commit with descriptive message
+git commit -m "feat: add new API endpoint and update frontend"
+
+# Example of committing changes to specific apps
+git add apps/web/
+git commit -m "feat(web): add user dashboard component"
+
+git add apps/api/
+git commit -m "fix(api): handle user authentication edge case"
+```
+
+### Branch Strategy
+```bash
+# Create feature branch
+git checkout -b feature/user-auth
+
+# Work on changes across multiple packages
+# ... make changes ...
+
+# Commit changes
+git add .
+git commit -m "feat: implement user authentication system"
+
+# Push and create PR
+git push origin feature/user-auth
+```
+
 ## 📚 Learn More
 
 - [Turborepo Documentation](https://turbo.build/repo/docs)
