@@ -108,6 +108,73 @@ The FastAPI backend runs on `http://localhost:8000` and provides:
 - `GET /` - Welcome message
 - `GET /health` - Health check endpoint
 - `GET /api/hello` - Hello world endpoint
+- `GET /api/users/me` - Get current user info
+
+## 🔄 Type Sharing Between Frontend & Backend
+
+This monorepo keeps TypeScript and Python types in sync using **tag-based organization** for maintainable, scalable type management:
+
+### 🏗️ **Tag-Based Type Organization**
+
+Instead of one massive types file, we organize types by **feature areas** using OpenAPI tags:
+
+```
+packages/shared/src/generated/
+├── models/
+│   ├── AuthModels.ts      → Auth-related types
+│   ├── UserModels.ts      → User-related types  
+│   ├── ProjectModels.ts   → Project-related types
+│   └── SystemModels.ts    → System/health types
+├── services/
+│   ├── AuthService.ts     → Auth API calls
+│   ├── UserService.ts     → User API calls
+│   ├── ProjectService.ts  → Project API calls
+│   └── SystemService.ts   → System API calls
+└── index.ts               → Clean exports
+```
+
+### How It Works:
+1. **Organize Python models** by domain in proper FastAPI structure:
+   ```
+   apps/api/app/models/
+   ├── __init__.py       → Exports all models
+   ├── base.py          → Common models (ApiResponse)
+   ├── user.py          → User models
+   ├── auth.py          → Authentication models  
+   ├── project.py       → Project models
+   └── system.py        → System/health models
+   ```
+
+2. **Tag API endpoints** in FastAPI by feature area:
+   ```python
+   @app.post("/api/auth/login", tags=["auth"])
+   @app.get("/api/users/me", tags=["users"])
+   @app.get("/api/projects", tags=["projects"])
+   ```
+
+3. **Generate organized types** using advanced tooling:
+   ```bash
+   pnpm dev:api          # Start API
+   pnpm generate-types   # Generate organized types
+   ```
+
+4. **Use clean, organized imports**:
+   ```typescript
+   import { User, AuthToken, Project } from '@vantage/shared';
+   ```
+
+### 📁 **Scalable Structure**
+
+✅ **Feature-based files** instead of one massive file  
+✅ **Logical organization** by domain/resource  
+✅ **Easy maintenance** - find types quickly  
+✅ **Auto-generated services** with proper typing  
+✅ **Clean imports** from `@vantage/shared`
+
+### Commands:
+- `pnpm generate-types` - Generate organized TypeScript types
+- Types are organized in `packages/shared/src/generated/`
+- Import from `@vantage/shared` for clean, typed API access
 
 ## 🌟 Features
 
