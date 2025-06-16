@@ -31,7 +31,35 @@ try {
     exportServices: true,
   });
   
-  // Create a barrel export file
+  // Create barrel export files for models and services
+  const modelsDir = path.join(OUTPUT_DIR, 'models');
+  const servicesDir = path.join(OUTPUT_DIR, 'services');
+  
+  // Create models index
+  if (fs.existsSync(modelsDir)) {
+    const modelFiles = fs.readdirSync(modelsDir)
+      .filter(file => file.endsWith('.ts') && file !== 'index.ts')
+      .map(file => file.replace('.ts', ''));
+    
+    const modelsIndex = `// Auto-generated model exports
+${modelFiles.map(file => `export * from './${file}';`).join('\n')}`;
+    
+    fs.writeFileSync(path.join(modelsDir, 'index.ts'), modelsIndex);
+  }
+  
+  // Create services index
+  if (fs.existsSync(servicesDir)) {
+    const serviceFiles = fs.readdirSync(servicesDir)
+      .filter(file => file.endsWith('.ts') && file !== 'index.ts')
+      .map(file => file.replace('.ts', ''));
+    
+    const servicesIndex = `// Auto-generated service exports
+${serviceFiles.map(file => `export * from './${file}';`).join('\n')}`;
+    
+    fs.writeFileSync(path.join(servicesDir, 'index.ts'), servicesIndex);
+  }
+
+  // Create main barrel export file
   const indexContent = `// Auto-generated API types - organized by tags
 // Do not edit manually - regenerate with: pnpm generate-types
 
