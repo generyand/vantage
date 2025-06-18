@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "description": "Shared types and utilities for Vantage applications",
   "private": true,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./src/generated/index.ts",
+  "types": "./src/generated/index.ts",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "type-check": "tsc --noEmit"
+    "generate": "cd ../../ && pnpm generate-types",
+    "type-check": "tsc --noEmit --skipLibCheck"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.0.0"
