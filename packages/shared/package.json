@@ -10,7 +10,11 @@
     "dev": "tsc --watch",
     "type-check": "tsc --noEmit"
   },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.0.0"
+  },
   "devDependencies": {
+    "@tanstack/react-query": "^5.80.7",
     "typescript": "^5.0.0"
   }
 } 

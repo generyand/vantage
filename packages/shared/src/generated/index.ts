@@ -1,20 +1,19 @@
-// Auto-generated API types - organized by tags
-// Do not edit manually - regenerate with: pnpm generate-types
+// 🚀 Auto-generated API types and hooks by Orval
+// 🔄 Do not edit manually - regenerate with: pnpm generate-types
+// 📚 Includes React Query hooks for all endpoints
 
-export * from './models';
-export * from './services';
-export * from './core/ApiError';
-export * from './core/CancelablePromise';
-export { ApiClient } from './ApiClient';
+// Export all generated types and hooks
+export * from './vantageAPI.schemas';
+export * from './vantageAPI';
 
-// Re-export specific types for convenience
+// Common type re-exports for convenience
 export type {
   User,
-  ApiResponse,
-  HealthCheck,
-  AuthToken,
-  LoginRequest,
   Project,
   ProjectCreate,
   ProjectList,
-} from './models';
+  AuthToken,
+  LoginRequest,
+  ApiResponse,
+  HealthCheck,
+} from './vantageAPI.schemas';

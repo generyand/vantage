@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import { generate } from 'openapi-typescript-codegen';
+import { generate } from 'orval';
 import fs from 'fs';
 import path from 'path';
 
 const API_URL = 'http://localhost:8000/openapi.json';
 const OUTPUT_DIR = 'packages/shared/src/generated';
 
-console.log('🔄 Generating TypeScript types from FastAPI with tag-based splitting...');
+console.log('🚀 Generating TypeScript types with Orval + React Query...');
 
 try {
   // Clean output directory
@@ -17,80 +17,41 @@ try {
   
   console.log('📡 Fetching OpenAPI schema from:', API_URL);
   
-  // Generate types with modular structure
-  await generate({
-    input: API_URL,
-    output: OUTPUT_DIR,
-    httpClient: 'fetch',
-    clientName: 'ApiClient',
-    useOptions: true,
-    useUnionTypes: true,
-    exportCore: true,
-    exportSchemas: true,
-    exportModels: true,
-    exportServices: true,
-  });
+  // Generate types with Orval
+  await generate('orval.config.ts');
   
-  // Create barrel export files for models and services
-  const modelsDir = path.join(OUTPUT_DIR, 'models');
-  const servicesDir = path.join(OUTPUT_DIR, 'services');
-  
-  // Create models index
-  if (fs.existsSync(modelsDir)) {
-    const modelFiles = fs.readdirSync(modelsDir)
-      .filter(file => file.endsWith('.ts') && file !== 'index.ts')
-      .map(file => file.replace('.ts', ''));
-    
-    const modelsIndex = `// Auto-generated model exports
-${modelFiles.map(file => `export * from './${file}';`).join('\n')}`;
-    
-    fs.writeFileSync(path.join(modelsDir, 'index.ts'), modelsIndex);
-  }
-  
-  // Create services index
-  if (fs.existsSync(servicesDir)) {
-    const serviceFiles = fs.readdirSync(servicesDir)
-      .filter(file => file.endsWith('.ts') && file !== 'index.ts')
-      .map(file => file.replace('.ts', ''));
-    
-    const servicesIndex = `// Auto-generated service exports
-${serviceFiles.map(file => `export * from './${file}';`).join('\n')}`;
-    
-    fs.writeFileSync(path.join(servicesDir, 'index.ts'), servicesIndex);
-  }
+  // Create main barrel export file for Orval-generated code
+  const generatedFiles = fs.readdirSync(OUTPUT_DIR)
+    .filter(file => file.endsWith('.ts') && file !== 'index.ts' && file !== 'custom-client.ts')
+    .map(file => file.replace('.ts', ''));
 
-  // Create main barrel export file
-  const indexContent = `// Auto-generated API types - organized by tags
-// Do not edit manually - regenerate with: pnpm generate-types
+  const indexContent = `// 🚀 Auto-generated API types and hooks by Orval
+// 🔄 Do not edit manually - regenerate with: pnpm generate-types
+// 📚 Includes React Query hooks for all endpoints
 
-export * from './models';
-export * from './services';
-export * from './core/ApiError';
-export * from './core/CancelablePromise';
-export { ApiClient } from './ApiClient';
+// Export all generated types and hooks
+${generatedFiles.map(file => `export * from './${file}';`).join('\n')}
 
-// Re-export specific types for convenience
+// Export custom client utilities
+export * from './custom-client';
+
+// Common type re-exports for convenience
+// Note: Update these based on your actual generated types
 export type {
-  User,
-  ApiResponse,
-  HealthCheck,
-  AuthToken,
-  LoginRequest,
-  Project,
-  ProjectCreate,
-  ProjectList,
-} from './models';
+  ApiError,
+  CustomApiError,
+} from './custom-client';
 `;
 
   fs.writeFileSync(path.join(OUTPUT_DIR, 'index.ts'), indexContent);
   
-  console.log('✅ Types generated successfully with tag-based organization!');
+  console.log('✅ Types and React Query hooks generated successfully!');
   console.log(`📁 Generated files saved to: ${OUTPUT_DIR}`);
-  console.log('📋 Structure:');
-  console.log('  - models/     → Data models organized by tags');
-  console.log('  - services/   → API services organized by tags'); 
-  console.log('  - core/       → Core utilities and types');
-  console.log('  - index.ts    → Barrel export file');
+  console.log('📋 New features:');
+  console.log('  - 🪝 Auto-generated React Query hooks');
+  console.log('  - 🔧 Custom HTTP client with auth & error handling'); 
+  console.log('  - 📦 Smaller bundle size with better tree-shaking');
+  console.log('  - 🎯 Type-safe API calls with automatic caching');
   
 } catch (error) {
   console.error('❌ Error generating types:');
