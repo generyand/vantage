@@ -23,22 +23,22 @@ app.add_middleware(
 )
 
 
-@app.get("/", response_model=ApiResponse, tags=["system"])
+@app.get("/", response_model=ApiResponse, tags=["system"], operation_id="getRoot")
 async def root():
     return ApiResponse(message="Welcome to Vantage API")
 
 
-@app.get("/health", response_model=HealthCheck, tags=["system"])
+@app.get("/health", response_model=HealthCheck, tags=["system"], operation_id="getHealthCheck")
 async def health_check():
     return HealthCheck(status="healthy", timestamp=datetime.now())
 
 
-@app.get("/api/hello", response_model=ApiResponse, tags=["system"])
+@app.get("/api/hello", response_model=ApiResponse, tags=["system"], operation_id="getHello")
 async def hello():
     return ApiResponse(message="Hello from FastAPI backend!")
 
 
-@app.get("/api/users/me", response_model=User, tags=["users"])
+@app.get("/api/users/me", response_model=User, tags=["users"], operation_id="getCurrentUser")
 async def get_current_user():
     # Mock user data
     return User(
@@ -50,7 +50,7 @@ async def get_current_user():
 
 
 # Auth endpoints
-@app.post("/api/auth/login", response_model=AuthToken, tags=["auth"])
+@app.post("/api/auth/login", response_model=AuthToken, tags=["auth"], operation_id="login")
 async def login(login_data: LoginRequest):
     # Mock authentication
     return AuthToken(
@@ -59,13 +59,13 @@ async def login(login_data: LoginRequest):
     )
 
 
-@app.post("/api/auth/logout", response_model=ApiResponse, tags=["auth"])
+@app.post("/api/auth/logout", response_model=ApiResponse, tags=["auth"], operation_id="logout")
 async def logout():
     return ApiResponse(message="Successfully logged out")
 
 
 # Project endpoints
-@app.get("/api/projects", response_model=ProjectList, tags=["projects"])
+@app.get("/api/projects", response_model=ProjectList, tags=["projects"], operation_id="getProjects")
 async def get_projects():
     # Mock projects
     mock_projects = [
@@ -80,7 +80,7 @@ async def get_projects():
     return ProjectList(projects=mock_projects, total=1)
 
 
-@app.post("/api/projects", response_model=Project, tags=["projects"])
+@app.post("/api/projects", response_model=Project, tags=["projects"], operation_id="createProject")
 async def create_project(project_data: ProjectCreate):
     # Mock project creation
     return Project(

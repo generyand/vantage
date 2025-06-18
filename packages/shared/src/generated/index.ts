@@ -6,14 +6,12 @@
 export * from './vantageAPI.schemas';
 export * from './vantageAPI';
 
+// Export custom client utilities
+export * from './custom-client';
+
 // Common type re-exports for convenience
+// Note: Update these based on your actual generated types
 export type {
-  User,
-  Project,
-  ProjectCreate,
-  ProjectList,
-  AuthToken,
-  LoginRequest,
-  ApiResponse,
-  HealthCheck,
-} from './vantageAPI.schemas';
+  ApiError,
+  CustomApiError,
+} from './custom-client';
