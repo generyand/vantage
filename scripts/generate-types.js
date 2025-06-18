@@ -20,27 +20,46 @@ try {
   // Generate types with Orval
   await generate('orval.config.ts');
   
-  // Create main barrel export file for Orval-generated code
-  const generatedFiles = fs.readdirSync(OUTPUT_DIR)
-    .filter(file => file.endsWith('.ts') && file !== 'index.ts' && file !== 'custom-client.ts')
-    .map(file => file.replace('.ts', ''));
-
-  const indexContent = `// 🚀 Auto-generated API types and hooks by Orval
+  // Create main barrel export file for tag-split organized code
+  const indexContent = `// 🚀 Auto-generated API types and hooks by Orval (Tag-Split Mode)
 // 🔄 Do not edit manually - regenerate with: pnpm generate-types
-// 📚 Includes React Query hooks for all endpoints
+// 📁 Organized by FastAPI tags for maximum maintainability
+// 
+// 🎯 Professional API client structure:
+// - endpoints/auth/     → Authentication hooks (useLogin, useLogout)
+// - endpoints/projects/ → Project management hooks (useGetProjects, useCreateProject)
+// - endpoints/system/   → System hooks (useGetRoot, useGetHealthCheck, useGetHello)
+// - endpoints/users/    → User hooks (useGetCurrentUser)
+// - schemas/           → All TypeScript types organized by schema
 
-// Export all generated types and hooks
-${generatedFiles.map(file => `export * from './${file}';`).join('\n')}
+// 📦 Export all endpoint hooks organized by feature
+export * from './endpoints/auth/auth';
+export * from './endpoints/projects/projects';
+export * from './endpoints/system/system';
+export * from './endpoints/users/users';
 
-// Export custom client utilities
-export * from './custom-client';
+// 📝 Export all TypeScript types
+export * from './schemas';
 
-// Common type re-exports for convenience
-// Note: Update these based on your actual generated types
+// 🔄 Common re-exports for convenience
 export type {
-  ApiError,
-  CustomApiError,
-} from './custom-client';
+  // User & Auth types
+  User,
+  AuthToken,
+  LoginRequest,
+  
+  // Project types  
+  Project,
+  ProjectCreate,
+  ProjectList,
+  
+  // System types
+  ApiResponse,
+  HealthCheck,
+  
+  // Error types
+  HTTPValidationError,
+} from './schemas';
 `;
 
   fs.writeFileSync(path.join(OUTPUT_DIR, 'index.ts'), indexContent);
