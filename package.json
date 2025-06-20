@@ -14,7 +14,8 @@
     "test": "turbo test",
     "clean": "turbo clean",
     "generate-types": "node scripts/generate-types.js",
-    "watch-types": "node scripts/watch-generate.js"
+    "watch-types": "node scripts/watch-generate.js",
+    "tree": "treee --dirs-first -I \"node_modules|.git|dist|build|.next|.turbo|coverage|.cache|__pycache__|.venv|.idea|.vscode\""
   },
   "keywords": [
     "monorepo",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "lodash-es": "^4.17.21",
     "orval": "^7.10.0",
+    "tree-node-cli": "^1.6.0",
     "turbo": "^2.5.4"
   }
 }
