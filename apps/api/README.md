@@ -57,14 +57,23 @@ uv run mypy app/
 
 ### **Database Operations**
 ```bash
-# Apply database migrations (when implemented)
-# uv run alembic upgrade head
+# Apply all pending migrations
+uv run alembic upgrade head
 
-# Create new migration (when implemented)
-# uv run alembic revision --autogenerate -m "description"
+# Create new migration from model changes
+uv run alembic revision --autogenerate -m "description"
 
-# Reset database (when implemented)
-# uv run alembic downgrade base
+# Check current migration status
+uv run alembic current
+
+# Show migration history
+uv run alembic history
+
+# Rollback one migration
+uv run alembic downgrade -1
+
+# Reset database (use with caution!)
+uv run alembic downgrade base
 ```
 
 ### **Dependencies**
@@ -376,6 +385,236 @@ With Supabase, you get access to:
 - **Database GUI**: Built-in table editor and SQL editor
 - **API Documentation**: Auto-generated from your schema
 - **Logs & Analytics**: Real-time monitoring
+
+## 🗄️ **Database Migrations with Alembic**
+
+This project uses **Alembic** for database schema migrations with SQLAlchemy. Alembic provides version control for your database schema changes.
+
+### **Initial Setup (Already Done)**
+
+The migration environment is already configured. Here's what was set up:
+
+```bash
+# Alembic was initialized with:
+uv run alembic init alembic
+
+# Configuration files created:
+├── alembic.ini              # Alembic configuration
+├── alembic/
+│   ├── env.py              # Migration environment (configured for our app)
+│   ├── script.py.mako      # Migration template
+│   └── versions/           # Migration files directory
+│       └── 92831e959bbb_initial_migration_create_user_project_.py
+```
+
+### **Current Database Schema**
+
+The initial migration (ID: `92831e959bbb`) creates:
+
+1. **`users` table**: Authentication and user management
+   - `id`, `email`, `name`, `hashed_password`
+   - `is_active`, `is_superuser`
+   - `created_at`, `updated_at`
+
+2. **`projects` table**: Assessment projects
+   - `id`, `name`, `description`, `owner_id`
+   - Foreign key to `users.id`
+   - `created_at`, `updated_at`
+
+3. **`assessments` table**: SGLGB leadership assessments
+   - `id`, `project_id`, `user_id`, `title`, `description`
+   - Assessment status enum: `PENDING`, `IN_PROGRESS`, `COMPLETED`, `REVIEWED`
+   - Video metadata: `video_filename`, `video_url`, `video_duration`
+   - SGLGB scores: `score_strong`, `score_gallant`, `score_loyal`, `score_guiding`, `score_bold`
+   - Analysis data: `analysis_data`, `recommendations` (JSON fields)
+   - Timestamps: `processing_started_at`, `processing_completed_at`, `created_at`, `updated_at`
+
+### **Common Migration Commands**
+
+#### **Check Migration Status**
+```bash
+# Show current migration revision
+uv run alembic current
+
+# Show migration history
+uv run alembic history --verbose
+
+# Show pending migrations
+uv run alembic show head
+```
+
+#### **Apply Migrations**
+```bash
+# Apply all pending migrations (recommended)
+uv run alembic upgrade head
+
+# Apply specific migration
+uv run alembic upgrade <revision_id>
+
+# Apply next migration only
+uv run alembic upgrade +1
+```
+
+#### **Create New Migrations**
+```bash
+# Auto-generate migration from model changes (recommended)
+uv run alembic revision --autogenerate -m "Add new field to user table"
+
+# Create empty migration file (for data-only changes)
+uv run alembic revision -m "Add default admin user"
+
+# Create migration in specific directory (if using branches)
+uv run alembic revision --autogenerate -m "Description" --head=head
+```
+
+#### **Rollback Migrations**
+```bash
+# Rollback one migration
+uv run alembic downgrade -1
+
+# Rollback to specific revision
+uv run alembic downgrade <revision_id>
+
+# Reset database completely (⚠️ DESTRUCTIVE)
+uv run alembic downgrade base
+```
+
+### **Migration Workflow**
+
+#### **1. Making Model Changes**
+```python
+# Example: Add a new field to User model
+# In app/db/models/user.py
+
+class User(Base):
+    # ... existing fields ...
+    phone_number = Column(String, nullable=True)  # New field
+```
+
+#### **2. Generate Migration**
+```bash
+uv run alembic revision --autogenerate -m "Add phone number to user"
+```
+
+#### **3. Review Generated Migration**
+Always review the generated migration file in `alembic/versions/` before applying:
+
+```python
+def upgrade() -> None:
+    # Check these operations are correct
+    op.add_column('users', sa.Column('phone_number', sa.String(), nullable=True))
+
+def downgrade() -> None:
+    # Check rollback operations
+    op.drop_column('users', 'phone_number')
+```
+
+#### **4. Apply Migration**
+```bash
+uv run alembic upgrade head
+```
+
+### **Migration Best Practices**
+
+#### **🔍 Always Review Migrations**
+- Check generated SQL before applying
+- Ensure backward compatibility
+- Test rollback procedures
+
+#### **📝 Migration Naming**
+```bash
+# Good examples:
+uv run alembic revision --autogenerate -m "Add user preferences table"
+uv run alembic revision --autogenerate -m "Add index to email field"
+uv run alembic revision --autogenerate -m "Remove deprecated status field"
+
+# Bad examples:
+uv run alembic revision --autogenerate -m "Update"
+uv run alembic revision --autogenerate -m "Fix"
+```
+
+#### **🔒 Production Safety**
+```bash
+# Always backup before production migrations
+# Test migrations on staging first
+# Consider maintenance windows for large changes
+
+# For production, prefer:
+uv run alembic upgrade head
+```
+
+#### **🔄 Data Migrations**
+For data-only changes, create empty migrations:
+
+```python
+def upgrade() -> None:
+    """Add default admin user."""
+    # Use raw SQL or SQLAlchemy operations
+    connection = op.get_bind()
+    connection.execute(text("""
+        INSERT INTO users (id, email, name, hashed_password, is_superuser)
+        VALUES ('admin-001', 'admin@vantage.com', 'Admin', 'hashed_password', true)
+    """))
+
+def downgrade() -> None:
+    """Remove default admin user."""
+    connection = op.get_bind()
+    connection.execute(text("DELETE FROM users WHERE email = 'admin@vantage.com'"))
+```
+
+### **Troubleshooting**
+
+#### **Common Issues**
+
+**Migration Not Detected:**
+```bash
+# Ensure model is imported in alembic/env.py
+# Check that Base.metadata includes your model
+
+# Force detection:
+uv run alembic revision --autogenerate -m "Force detection" --head=head
+```
+
+**Database Connection Issues:**
+```bash
+# Verify DATABASE_URL in .env file
+# Check Supabase connection string format
+
+# Test connection:
+uv run python -c "from app.core.config import settings; print(settings.DATABASE_URL)"
+```
+
+**Migration Conflicts:**
+```bash
+# If multiple developers create migrations simultaneously
+uv run alembic merge -m "Merge migrations" <rev1> <rev2>
+```
+
+#### **Recovery Commands**
+```bash
+# If migration state is inconsistent
+uv run alembic stamp head  # Mark as current without running
+
+# Force revision (dangerous)
+uv run alembic stamp <revision_id>
+```
+
+### **Database Connection Configuration**
+
+The migration system is configured to use your Supabase database:
+
+```python
+# In alembic/env.py - automatically configured
+from app.core.config import settings
+from app.db.base import Base
+
+# Database URL is loaded from settings
+if settings.DATABASE_URL:
+    config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+
+# All models are imported for autogeneration
+target_metadata = Base.metadata
+```
 
 ## 🧪 **Testing Guidelines**
 
