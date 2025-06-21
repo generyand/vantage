@@ -1,22 +1,61 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
-from app.models import (
-    User, ApiResponse, HealthCheck,
-    LoginRequest, AuthToken,
-    Project, ProjectCreate, ProjectList
-)
+from typing import List
+from pydantic import BaseModel
+
+# Import from our restructured modules
+from app.core.config import settings
+
+# Temporary Pydantic schemas (will be moved to app/schemas later)
+class ApiResponse(BaseModel):
+    message: str
+
+class HealthCheck(BaseModel):
+    status: str
+    timestamp: datetime
+
+class User(BaseModel):
+    id: str
+    email: str
+    name: str
+    created_at: datetime
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class AuthToken(BaseModel):
+    access_token: str
+    expires_in: int
+
+class Project(BaseModel):
+    id: str
+    name: str
+    description: str
+    owner_id: str
+    created_at: datetime
+
+class ProjectCreate(BaseModel):
+    name: str
+    description: str
+
+class ProjectList(BaseModel):
+    projects: List[Project]
+    total: int
 
 app = FastAPI(
-    title="Vantage API", 
-    version="0.1.0",
-    description="Vantage monorepo API with organized endpoints"
+    title=settings.PROJECT_NAME,
+    version=settings.VERSION,
+    description=settings.DESCRIPTION,
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
-# Configure CORS
+# Configure CORS using settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # NextJS dev server
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -93,4 +132,5 @@ async def create_project(project_data: ProjectCreate):
 
 
 if __name__ == "__main__":
-    main()
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
