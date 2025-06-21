@@ -22,7 +22,7 @@ export default function Home() {
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               🔐 Authentication Test
             </h2>
-            <LoginForm />
+      <LoginForm />
           </div>
 
           {/* User Profile Section */}
