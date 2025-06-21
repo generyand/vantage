@@ -1,9 +1,9 @@
 // 🚀 Modern component using auto-generated React Query hooks
 'use client';
 
-import { useGetCurrentUser } from '../lib/api';
+import { useGetCurrentUser } from '@vantage/shared';
 
-export default function UserProfile() {
+export default function UserNav() {
   // ✨ Auto-generated hook with caching, loading states, and error handling
   const { data: user, isLoading, error } = useGetCurrentUser();
 
@@ -27,7 +27,7 @@ export default function UserProfile() {
     );
   }
 
-  if (!user?.data) {
+  if (!user) {
     return (
       <div className="text-gray-500 p-4">
         No user data available
@@ -44,10 +44,10 @@ export default function UserProfile() {
           </svg>
         </div>
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">{user.data.name}</h2>
-          <p className="text-gray-600">{user.data.email}</p>
+          <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
+          <p className="text-gray-600">{user.email}</p>
           <p className="text-sm text-gray-500">
-            Member since {new Date(user.data.created_at).toLocaleDateString()}
+            Member since {new Date(user.created_at).toLocaleDateString()}
           </p>
         </div>
       </div>

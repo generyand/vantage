@@ -1,5 +1,5 @@
-import LoginForm from "@/components/LoginForm";
-import UserProfile from "@/components/UserProfile";
+import LoginForm from "@/components/features/auth/LoginForm";
+import UserNav from "@/components/shared/UserNav";
 
 export default function Home() {
   return (
@@ -30,7 +30,7 @@ export default function Home() {
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               👥 User Profile Test
             </h2>
-            <UserProfile />
+            <UserNav />
           </div>
         </div>
 
