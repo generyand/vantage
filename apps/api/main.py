@@ -1,136 +1,94 @@
+# 🚀 VANTAGE API Main Application
+# FastAPI application entry point with configuration and middleware setup
+
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import logging
 from datetime import datetime
-from typing import List
-from pydantic import BaseModel
 
 # Import from our restructured modules
 from app.core.config import settings
+from app.api.v1 import api_router as api_router_v1
+from app.db.base import check_all_connections
 
-# Temporary Pydantic schemas (will be moved to app/schemas later)
-class ApiResponse(BaseModel):
-    message: str
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-class HealthCheck(BaseModel):
-    status: str
-    timestamp: datetime
 
-class User(BaseModel):
-    id: str
-    email: str
-    name: str
-    created_at: datetime
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Application lifespan context manager.
+    
+    Handles startup and shutdown events.
+    """
+    # Startup
+    logger.info("🚀 Starting VANTAGE API server...")
+    logger.info(f"📊 Environment: {settings.ENVIRONMENT}")
+    logger.info(f"🔧 Debug mode: {settings.DEBUG}")
+    
+    # Check database connections
+    logger.info("🔍 Checking database connections...")
+    db_status = await check_all_connections()
+    
+    if db_status["overall_status"] == "healthy":
+        logger.info("✅ Database connections established successfully!")
+        
+        # Log individual connection details
+        if db_status["database"]["connected"]:
+            logger.info(f"  🗄️  PostgreSQL: {db_status['database']['status']}")
+        
+        if db_status["supabase"]["connected"]:
+            logger.info(f"  ⚡ Supabase: {db_status['supabase']['status']}")
+            
+    else:
+        logger.warning("⚠️  Database connection issues detected:")
+        
+        if not db_status["database"]["connected"]:
+            logger.warning(f"  🗄️  PostgreSQL: {db_status['database']['error']}")
+            
+        if not db_status["supabase"]["connected"]:
+            logger.warning(f"  ⚡ Supabase: {db_status['supabase']['error']}")
+            
+        logger.warning("  📝 Server will start but some features may be unavailable")
+    
+    logger.info("🎯 VANTAGE API server startup complete!")
+    
+    # Application is running
+    yield
+    
+    # Shutdown
+    logger.info("🛑 Shutting down VANTAGE API server...")
+    logger.info("👋 Goodbye!")
 
-class LoginRequest(BaseModel):
-    email: str
-    password: str
 
-class AuthToken(BaseModel):
-    access_token: str
-    expires_in: int
-
-class Project(BaseModel):
-    id: str
-    name: str
-    description: str
-    owner_id: str
-    created_at: datetime
-
-class ProjectCreate(BaseModel):
-    name: str
-    description: str
-
-class ProjectList(BaseModel):
-    projects: List[Project]
-    total: int
-
+# Create the FastAPI application with lifespan
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     description=settings.DESCRIPTION,
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
-# Configure CORS using settings
+# Configure CORS middleware using settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
-@app.get("/", response_model=ApiResponse, tags=["system"], operation_id="getRoot")
-async def root():
-    return ApiResponse(message="Welcome to Vantage API")
-
-
-@app.get("/health", response_model=HealthCheck, tags=["system"], operation_id="getHealthCheck")
-async def health_check():
-    return HealthCheck(status="healthy", timestamp=datetime.now())
+# Include the V1 API router
+# All routes from auth.py, users.py, etc., will be available under the /api/v1 prefix
+app.include_router(api_router_v1, prefix="/api/v1")
 
 
-@app.get("/api/hello", response_model=ApiResponse, tags=["system"], operation_id="getHello")
-async def hello():
-    return ApiResponse(message="Hello from FastAPI backend!")
-
-
-@app.get("/api/users/me", response_model=User, tags=["users"], operation_id="getCurrentUser")
-async def get_current_user():
-    # Mock user data
-    return User(
-        id="user-123",
-        email="user@example.com", 
-        name="John Doe",
-        created_at=datetime.now()
-    )
-
-
-# Auth endpoints
-@app.post("/api/auth/login", response_model=AuthToken, tags=["auth"], operation_id="login")
-async def login(login_data: LoginRequest):
-    # Mock authentication
-    return AuthToken(
-        access_token="mock-jwt-token",
-        expires_in=3600
-    )
-
-
-@app.post("/api/auth/logout", response_model=ApiResponse, tags=["auth"], operation_id="logout")
-async def logout():
-    return ApiResponse(message="Successfully logged out")
-
-
-# Project endpoints
-@app.get("/api/projects", response_model=ProjectList, tags=["projects"], operation_id="getProjects")
-async def get_projects():
-    # Mock projects
-    mock_projects = [
-        Project(
-            id="proj-1",
-            name="My First Project",
-            description="A sample project",
-            owner_id="user-123",
-            created_at=datetime.now()
-        )
-    ]
-    return ProjectList(projects=mock_projects, total=1)
-
-
-@app.post("/api/projects", response_model=Project, tags=["projects"], operation_id="createProject")
-async def create_project(project_data: ProjectCreate):
-    # Mock project creation
-    return Project(
-        id="proj-new",
-        name=project_data.name,
-        description=project_data.description,
-        owner_id="user-123",
-        created_at=datetime.now()
-    )
-
-
+# Local development server (optional)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

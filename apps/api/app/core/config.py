@@ -3,7 +3,7 @@
 
 import secrets
 from typing import Optional, List
-from pydantic import validator
+from pydantic import field_validator, ValidationInfo
 from pydantic_settings import BaseSettings
 
 
@@ -34,7 +34,8 @@ class Settings(BaseSettings):
         "https://localhost:3001",
     ]
     
-    @validator("BACKEND_CORS_ORIGINS", pre=True)
+    @field_validator("BACKEND_CORS_ORIGINS", mode="before")
+    @classmethod
     def assemble_cors_origins(cls, v):
         """Parse CORS origins from string or list."""
         if isinstance(v, str) and not v.startswith("["):
@@ -51,14 +52,15 @@ class Settings(BaseSettings):
     # Database (Supabase PostgreSQL)
     DATABASE_URL: Optional[str] = None
     
-    @validator("DATABASE_URL", pre=True)
-    def assemble_supabase_db_url(cls, v, values):
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def assemble_supabase_db_url(cls, v, info: ValidationInfo):
         """Assemble Supabase database URL."""
         if isinstance(v, str) and v:
             return v
         
         # Extract database URL from Supabase URL if not provided directly
-        supabase_url = values.get("SUPABASE_URL", "")
+        supabase_url = info.data.get("SUPABASE_URL", "") if info.data else ""
         if supabase_url:
             # Supabase database URL pattern: 
             # postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres

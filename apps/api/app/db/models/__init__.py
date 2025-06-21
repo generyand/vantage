@@ -1,25 +1,17 @@
 # 🗄️ Database Models
-# SQLAlchemy ORM models
+# SQLAlchemy ORM models for database tables
 
-from ..base import Base
 from .user import User
-from .auth import Auth
 from .project import Project
-from .system import System
+from .assessment import Assessment, AssessmentStatus
 
-# Import assessment model when created
-# from .assessment import Assessment
-# from .mov import MOV
+# Import Base for migrations and table creation
+from ..base import Base
 
 __all__ = [
-    # Base
     "Base",
-    # User models
-    "User",
-    # Auth models
-    "Auth",
-    # Project models
+    "User", 
     "Project",
-    # System models
-    "System",
+    "Assessment",
+    "AssessmentStatus",
 ] 

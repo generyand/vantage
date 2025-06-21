@@ -1,13 +1,17 @@
 # 🗄️ Database Base Configuration
 # Supabase client, SQLAlchemy engine, session management, and base models
 
-from typing import Generator
-from sqlalchemy import create_engine
+from typing import Generator, Dict, Any
+from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from supabase import create_client, Client
+import logging
 
 from app.core.config import settings
+
+# Setup logging
+logger = logging.getLogger(__name__)
 
 # Supabase client for real-time features, auth, and storage
 supabase: Client = create_client(
@@ -89,4 +93,103 @@ def get_supabase_admin() -> Client:
     if not supabase_admin:
         raise RuntimeError("Supabase admin client not configured. Please set SUPABASE_SERVICE_ROLE_KEY.")
     
-    return supabase_admin 
+    return supabase_admin
+
+
+# 🔍 Database Connectivity Checks
+
+async def check_database_connection() -> Dict[str, Any]:
+    """
+    Check SQLAlchemy database connection health.
+    
+    Returns:
+        Dict containing connection status and details
+    """
+    if not engine:
+        return {
+            "connected": False,
+            "error": "Database engine not configured",
+            "details": "DATABASE_URL not set in environment variables"
+        }
+    
+    try:
+        # Test connection with a simple query
+        with engine.connect() as connection:
+            result = connection.execute(text("SELECT 1 as test"))
+            test_value = result.scalar()
+            
+            if test_value == 1:
+                return {
+                    "connected": True,
+                    "database": "PostgreSQL (via SQLAlchemy)",
+                    "status": "healthy"
+                }
+            else:
+                return {
+                    "connected": False,
+                    "error": "Database query returned unexpected result",
+                    "details": f"Expected 1, got {test_value}"
+                }
+                
+    except Exception as e:
+        logger.error(f"Database connection check failed: {str(e)}")
+        return {
+            "connected": False,
+            "error": "Database connection failed",
+            "details": str(e)
+        }
+
+
+async def check_supabase_connection() -> Dict[str, Any]:
+    """
+    Check Supabase client connection health.
+    
+    Returns:
+        Dict containing connection status and details
+    """
+    if not settings.SUPABASE_URL or not settings.SUPABASE_ANON_KEY:
+        return {
+            "connected": False,
+            "error": "Supabase not configured",
+            "details": "SUPABASE_URL or SUPABASE_ANON_KEY not set"
+        }
+    
+    try:
+        # Test Supabase connection by checking auth status
+        # This is a lightweight check that doesn't require authentication
+        response = supabase.auth.get_session()
+        
+        return {
+            "connected": True,
+            "service": "Supabase",
+            "status": "healthy",
+            "url": settings.SUPABASE_URL
+        }
+        
+    except Exception as e:
+        logger.error(f"Supabase connection check failed: {str(e)}")
+        return {
+            "connected": False,
+            "error": "Supabase connection failed",
+            "details": str(e)
+        }
+
+
+async def check_all_connections() -> Dict[str, Any]:
+    """
+    Check all database connections (SQLAlchemy + Supabase).
+    
+    Returns:
+        Dict containing overall status and individual connection details
+    """
+    db_check = await check_database_connection()
+    supabase_check = await check_supabase_connection()
+    
+    overall_healthy = db_check.get("connected", False) or supabase_check.get("connected", False)
+    
+    return {
+        "overall_status": "healthy" if overall_healthy else "unhealthy",
+        "database": db_check,
+        "supabase": supabase_check,
+        "timestamp": None  # Will be set by caller
+    } 
