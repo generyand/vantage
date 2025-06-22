@@ -31,58 +31,64 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
+ * Get current user information.
+
+In production, this will:
+1. Extract user ID from JWT token
+2. Query user data from database
+3. Return user profile information
  * @summary Get Current User
  */
-export const GetCurrentUser = (
+export const Get_current_user_api_v1_users_me_get = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
       
       
       return mutator<User>(
-      {url: `http://localhost:8000/api/users/me`, method: 'GET', signal
+      {url: `http://localhost:8000/api/v1/users/me`, method: 'GET', signal
     },
       options);
     }
   
 
-export const getGetCurrentUserQueryKey = () => {
-    return [`http://localhost:8000/api/users/me`] as const;
+export const getGetCurrentUserApiV1UsersMeGetQueryKey = () => {
+    return [`http://localhost:8000/api/v1/users/me`] as const;
     }
 
     
-export const getGetCurrentUserQueryOptions = <TData = Awaited<ReturnType<typeof GetCurrentUser>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof GetCurrentUser>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetCurrentUserApiV1UsersMeGetQueryOptions = <TData = Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetCurrentUserQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetCurrentUserApiV1UsersMeGetQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof GetCurrentUser>>> = ({ signal }) => GetCurrentUser(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>> = ({ signal }) => Get_current_user_api_v1_users_me_get(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof GetCurrentUser>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type GetCurrentUserQueryResult = NonNullable<Awaited<ReturnType<typeof GetCurrentUser>>>
-export type GetCurrentUserQueryError = unknown
+export type GetCurrentUserApiV1UsersMeGetQueryResult = NonNullable<Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>>
+export type GetCurrentUserApiV1UsersMeGetQueryError = unknown
 
 
 /**
  * @summary Get Current User
  */
 
-export function useGetCurrentUser<TData = Awaited<ReturnType<typeof GetCurrentUser>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof GetCurrentUser>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGetCurrentUserApiV1UsersMeGet<TData = Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>, TError = unknown>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getGetCurrentUserQueryOptions(options)
+  const queryOptions = getGetCurrentUserApiV1UsersMeGetQueryOptions(options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

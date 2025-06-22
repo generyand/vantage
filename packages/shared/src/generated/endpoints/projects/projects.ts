@@ -38,58 +38,64 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
+ * Get list of projects for the current user.
+
+In production, this will:
+1. Extract user ID from JWT token
+2. Query projects owned by or shared with the user
+3. Apply pagination and filtering
  * @summary Get Projects
  */
-export const GetProjects = (
+export const Get_projects_api_v1_projects__get = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
       
       
       return mutator<ProjectList>(
-      {url: `http://localhost:8000/api/projects`, method: 'GET', signal
+      {url: `http://localhost:8000/api/v1/projects/`, method: 'GET', signal
     },
       options);
     }
   
 
-export const getGetProjectsQueryKey = () => {
-    return [`http://localhost:8000/api/projects`] as const;
+export const getGetProjectsApiV1ProjectsGetQueryKey = () => {
+    return [`http://localhost:8000/api/v1/projects/`] as const;
     }
 
     
-export const getGetProjectsQueryOptions = <TData = Awaited<ReturnType<typeof GetProjects>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof GetProjects>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetProjectsApiV1ProjectsGetQueryOptions = <TData = Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetProjectsQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetProjectsApiV1ProjectsGetQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof GetProjects>>> = ({ signal }) => GetProjects(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>> = ({ signal }) => Get_projects_api_v1_projects__get(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof GetProjects>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type GetProjectsQueryResult = NonNullable<Awaited<ReturnType<typeof GetProjects>>>
-export type GetProjectsQueryError = unknown
+export type GetProjectsApiV1ProjectsGetQueryResult = NonNullable<Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>>
+export type GetProjectsApiV1ProjectsGetQueryError = unknown
 
 
 /**
  * @summary Get Projects
  */
 
-export function useGetProjects<TData = Awaited<ReturnType<typeof GetProjects>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof GetProjects>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGetProjectsApiV1ProjectsGet<TData = Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>, TError = unknown>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getGetProjectsQueryOptions(options)
+  const queryOptions = getGetProjectsApiV1ProjectsGetQueryOptions(options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -101,16 +107,23 @@ export function useGetProjects<TData = Awaited<ReturnType<typeof GetProjects>>, 
 
 
 /**
+ * Create a new project.
+
+In production, this will:
+1. Extract user ID from JWT token
+2. Validate project data
+3. Create project in database
+4. Set up initial project resources
  * @summary Create Project
  */
-export const CreateProject = (
+export const Create_project_api_v1_projects__post = (
     projectCreate: ProjectCreate,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
       
       
       return mutator<Project>(
-      {url: `http://localhost:8000/api/projects`, method: 'POST',
+      {url: `http://localhost:8000/api/v1/projects/`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: projectCreate, signal
     },
@@ -119,11 +132,11 @@ export const CreateProject = (
   
 
 
-export const getCreateProjectMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof CreateProject>>, TError,{data: ProjectCreate}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof CreateProject>>, TError,{data: ProjectCreate}, TContext> => {
+export const getCreateProjectApiV1ProjectsPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Create_project_api_v1_projects__post>>, TError,{data: ProjectCreate}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof Create_project_api_v1_projects__post>>, TError,{data: ProjectCreate}, TContext> => {
 
-const mutationKey = ['createProject'];
+const mutationKey = ['createProjectApiV1ProjectsPost'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -133,10 +146,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof CreateProject>>, {data: ProjectCreate}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Create_project_api_v1_projects__post>>, {data: ProjectCreate}> = (props) => {
           const {data} = props ?? {};
 
-          return  CreateProject(data,requestOptions)
+          return  Create_project_api_v1_projects__post(data,requestOptions)
         }
 
         
@@ -144,23 +157,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type CreateProjectMutationResult = NonNullable<Awaited<ReturnType<typeof CreateProject>>>
-    export type CreateProjectMutationBody = ProjectCreate
-    export type CreateProjectMutationError = HTTPValidationError
+    export type CreateProjectApiV1ProjectsPostMutationResult = NonNullable<Awaited<ReturnType<typeof Create_project_api_v1_projects__post>>>
+    export type CreateProjectApiV1ProjectsPostMutationBody = ProjectCreate
+    export type CreateProjectApiV1ProjectsPostMutationError = HTTPValidationError
 
     /**
  * @summary Create Project
  */
-export const useCreateProject = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof CreateProject>>, TError,{data: ProjectCreate}, TContext>, request?: SecondParameter<typeof mutator>}
+export const useCreateProjectApiV1ProjectsPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Create_project_api_v1_projects__post>>, TError,{data: ProjectCreate}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof CreateProject>>,
+        Awaited<ReturnType<typeof Create_project_api_v1_projects__post>>,
         TError,
         {data: ProjectCreate},
         TContext
       > => {
 
-      const mutationOptions = getCreateProjectMutationOptions(options);
+      const mutationOptions = getCreateProjectApiV1ProjectsPostMutationOptions(options);
 
       return useMutation(mutationOptions );
     }

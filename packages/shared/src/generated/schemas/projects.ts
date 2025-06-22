@@ -7,9 +7,9 @@
  * Project
  */
 export interface Project {
-  id: string;
   name: string;
-  description?: ProjectDescription;
+  description: string;
+  id: string;
   owner_id: string;
   created_at: string;
 }
@@ -20,20 +20,8 @@ export interface Project {
  */
 export interface ProjectCreate {
   name: string;
-  description?: ProjectCreateDescription;
+  description: string;
 }
-
-
-/**
- * ProjectCreateDescription
- */
-export type ProjectCreateDescription = string | null;
-
-
-/**
- * ProjectDescription
- */
-export type ProjectDescription = string | null;
 
 
 /**

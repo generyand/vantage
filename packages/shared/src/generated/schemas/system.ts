@@ -8,27 +8,4 @@
  */
 export interface ApiResponse {
   message: string;
-  status?: string;
-  data?: ApiResponseData;
-}
-
-
-/**
- * ApiResponseData
- */
-export type ApiResponseData = ApiResponseDataAnyOf | null;
-
-
-/**
- * ApiResponseDataAnyOf
- */
-export type ApiResponseDataAnyOf = { [key: string]: unknown };
-
-
-/**
- * HealthCheck
- */
-export interface HealthCheck {
-  status: string;
-  timestamp: string;
 }

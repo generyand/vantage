@@ -33,16 +33,22 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
+ * Login endpoint - authenticate user and return JWT token.
+
+In production, this will:
+1. Validate user credentials against the database
+2. Generate a secure JWT token
+3. Return token with expiration info
  * @summary Login
  */
-export const Login = (
+export const Login_api_v1_auth_login_post = (
     loginRequest: LoginRequest,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
       
       
       return mutator<AuthToken>(
-      {url: `http://localhost:8000/api/auth/login`, method: 'POST',
+      {url: `http://localhost:8000/api/v1/auth/login`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: loginRequest, signal
     },
@@ -51,11 +57,11 @@ export const Login = (
   
 
 
-export const getLoginMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Login>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof Login>>, TError,{data: LoginRequest}, TContext> => {
+export const getLoginApiV1AuthLoginPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Login_api_v1_auth_login_post>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof Login_api_v1_auth_login_post>>, TError,{data: LoginRequest}, TContext> => {
 
-const mutationKey = ['login'];
+const mutationKey = ['loginApiV1AuthLoginPost'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -65,10 +71,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Login>>, {data: LoginRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Login_api_v1_auth_login_post>>, {data: LoginRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  Login(data,requestOptions)
+          return  Login_api_v1_auth_login_post(data,requestOptions)
         }
 
         
@@ -76,48 +82,54 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type LoginMutationResult = NonNullable<Awaited<ReturnType<typeof Login>>>
-    export type LoginMutationBody = LoginRequest
-    export type LoginMutationError = HTTPValidationError
+    export type LoginApiV1AuthLoginPostMutationResult = NonNullable<Awaited<ReturnType<typeof Login_api_v1_auth_login_post>>>
+    export type LoginApiV1AuthLoginPostMutationBody = LoginRequest
+    export type LoginApiV1AuthLoginPostMutationError = HTTPValidationError
 
     /**
  * @summary Login
  */
-export const useLogin = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Login>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof mutator>}
+export const useLoginApiV1AuthLoginPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Login_api_v1_auth_login_post>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof Login>>,
+        Awaited<ReturnType<typeof Login_api_v1_auth_login_post>>,
         TError,
         {data: LoginRequest},
         TContext
       > => {
 
-      const mutationOptions = getLoginMutationOptions(options);
+      const mutationOptions = getLoginApiV1AuthLoginPostMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
     /**
+ * Logout endpoint - invalidate user session.
+
+In production, this will:
+1. Blacklist the JWT token
+2. Clear any session data
+3. Log the logout event
  * @summary Logout
  */
-export const Logout = (
+export const Logout_api_v1_auth_logout_post = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
       
       
       return mutator<ApiResponse>(
-      {url: `http://localhost:8000/api/auth/logout`, method: 'POST', signal
+      {url: `http://localhost:8000/api/v1/auth/logout`, method: 'POST', signal
     },
       options);
     }
   
 
 
-export const getLogoutMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Logout>>, TError,void, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof Logout>>, TError,void, TContext> => {
+export const getLogoutApiV1AuthLogoutPostMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Logout_api_v1_auth_logout_post>>, TError,void, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof Logout_api_v1_auth_logout_post>>, TError,void, TContext> => {
 
-const mutationKey = ['logout'];
+const mutationKey = ['logoutApiV1AuthLogoutPost'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -127,10 +139,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Logout>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Logout_api_v1_auth_logout_post>>, void> = () => {
           
 
-          return  Logout(requestOptions)
+          return  Logout_api_v1_auth_logout_post(requestOptions)
         }
 
         
@@ -138,23 +150,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type LogoutMutationResult = NonNullable<Awaited<ReturnType<typeof Logout>>>
+    export type LogoutApiV1AuthLogoutPostMutationResult = NonNullable<Awaited<ReturnType<typeof Logout_api_v1_auth_logout_post>>>
     
-    export type LogoutMutationError = unknown
+    export type LogoutApiV1AuthLogoutPostMutationError = unknown
 
     /**
  * @summary Logout
  */
-export const useLogout = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Logout>>, TError,void, TContext>, request?: SecondParameter<typeof mutator>}
+export const useLogoutApiV1AuthLogoutPost = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Logout_api_v1_auth_logout_post>>, TError,void, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof Logout>>,
+        Awaited<ReturnType<typeof Logout_api_v1_auth_logout_post>>,
         TError,
         void,
         TContext
       > => {
 
-      const mutationOptions = getLogoutMutationOptions(options);
+      const mutationOptions = getLogoutApiV1AuthLogoutPostMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
