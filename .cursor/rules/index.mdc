@@ -5,7 +5,7 @@ alwaysApply: true
 ---
 # JUST A SAMPLE (CHANGE THIS LATER ON)
 ---
-description: 
+description: Project rules
 globs: 
 alwaysApply: true
 ---
