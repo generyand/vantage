@@ -1,0 +1,305 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Commenting Guidelines
+
+Comprehensive guidelines for writing clear, maintainable, and helpful code documentation through comments and docstrings.
+
+## Core Principles
+
+1. **Write comments that explain WHY, not WHAT**
+2. **Keep comments concise but complete**
+3. **Update comments when code changes**
+4. **Write self-documenting code first, then add comments for clarity**
+5. **Never delete existing docstrings without replacing them**
+
+## When to Write Comments
+
+### Always Comment
+- Complex business logic or algorithms
+- Non-obvious code behavior
+- Workarounds or temporary solutions
+- Public APIs and interfaces
+- Function/method purposes and parameters
+- Class definitions and their responsibilities
+- Regular expressions
+- Magic numbers or constants
+
+### Don't Comment
+- Obvious code (`i++; // increment i`)
+- Self-explanatory variable names
+- Standard language constructs
+- Code that should be refactored instead
+
+## TypeScript/JavaScript Guidelines
+
+### Function Documentation
+```typescript
+/**
+ * Calculates the total price including tax and discounts
+ * @param basePrice - The original price before modifications
+ * @param taxRate - Tax rate as decimal (0.1 = 10%)
+ * @param discountPercent - Discount percentage (10 = 10% off)
+ * @returns The final price after tax and discount
+ * @throws {Error} When basePrice is negative
+ */
+function calculateTotalPrice(
+  basePrice: number, 
+  taxRate: number, 
+  discountPercent: number
+): number {
+  if (basePrice < 0) {
+    throw new Error('Base price cannot be negative');
+  }
+  
+  // Apply discount first, then tax (business rule)
+  const discountAmount = basePrice * (discountPercent / 100);
+  const discountedPrice = basePrice - discountAmount;
+  return discountedPrice * (1 + taxRate);
+}
+```
+
+### Interface/Type Documentation
+```typescript
+/**
+ * Represents a user assessment submission
+ */
+interface AssessmentSubmission {
+  /** Unique identifier for the assessment */
+  id: string;
+  /** User who submitted the assessment */
+  userId: string;
+  /** Assessment completion status */
+  status: 'pending' | 'completed' | 'failed';
+  /** Submission timestamp in ISO format */
+  submittedAt: string;
+  /** Raw assessment data as JSON */
+  data: Record<string, unknown>;
+}
+```
+
+### React Component Documentation
+```tsx
+/**
+ * Login form component with validation and error handling
+ * 
+ * @param onSubmit - Callback fired when form is successfully submitted
+ * @param isLoading - Whether the form is in a loading state
+ * @param errorMessage - Optional error message to display
+ */
+interface LoginFormProps {
+  onSubmit: (credentials: LoginCredentials) => void;
+  isLoading?: boolean;
+  errorMessage?: string;
+}
+
+export function LoginForm({ onSubmit, isLoading, errorMessage }: LoginFormProps) {
+  // Component implementation
+}
+```
+
+### Complex Logic Comments
+```typescript
+// Use binary search for performance with large datasets
+// Time complexity: O(log n) vs O(n) for linear search
+const findUserIndex = (users: User[], targetId: string): number => {
+  let left = 0;
+  let right = users.length - 1;
+  
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    // ... implementation
+  }
+  
+  return -1;
+};
+```
+
+## Python Guidelines
+
+### Function/Method Documentation
+```python
+def process_assessment_data(
+    raw_data: Dict[str, Any], 
+    user_id: str, 
+    validation_rules: Optional[List[str]] = None
+) -> ProcessedAssessment:
+    """
+    Process and validate raw assessment data from user submission.
+    
+    Args:
+        raw_data: Unvalidated assessment data from frontend
+        user_id: ID of the user submitting the assessment
+        validation_rules: Optional custom validation rules to apply
+        
+    Returns:
+        ProcessedAssessment: Validated and normalized assessment data
+        
+    Raises:
+        ValidationError: When assessment data fails validation
+        UserNotFoundError: When user_id doesn't exist
+        
+    Example:
+        >>> raw_data = {"score": 85, "answers": ["A", "B", "C"]}
+        >>> result = process_assessment_data(raw_data, "user123")
+        >>> result.score
+        85
+    """
+    if not raw_data:
+        raise ValidationError("Assessment data cannot be empty")
+    
+    # Validate user exists before processing data
+    user = get_user_by_id(user_id)
+    if not user:
+        raise UserNotFoundError(f"User {user_id} not found")
+    
+    # Apply default validation rules if none provided
+    rules = validation_rules or DEFAULT_VALIDATION_RULES
+    
+    # ... rest of implementation
+```
+
+### Class Documentation
+```python
+class AssessmentService:
+    """
+    Service for managing assessment lifecycle and data processing.
+    
+    This service handles assessment creation, submission processing,
+    scoring calculations, and result storage. It integrates with the
+    database layer and external scoring APIs.
+    
+    Attributes:
+        db_session: Database session for data operations
+        scorer: External scoring service client
+        cache: Redis cache for performance optimization
+    """
+    
+    def __init__(self, db_session: Session, scorer: ScoringClient):
+        """
+        Initialize the assessment service.
+        
+        Args:
+            db_session: Active database session
+            scorer: Configured scoring service client
+        """
+        self.db_session = db_session
+        self.scorer = scorer
+        self.cache = get_redis_client()
+```
+
+### API Endpoint Documentation
+```python
+@router.post("/assessments", response_model=AssessmentResponse)
+async def create_assessment(
+    assessment_data: AssessmentCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> AssessmentResponse:
+    """
+    Create a new assessment for the authenticated user.
+    
+    Creates a new assessment instance and returns the assessment ID
+    for subsequent submissions. Validates user permissions and
+    assessment data structure.
+    
+    Args:
+        assessment_data: Assessment creation data
+        current_user: Authenticated user from JWT token
+        db: Database session dependency
+        
+    Returns:
+        AssessmentResponse with created assessment details
+        
+    Raises:
+        HTTPException: 403 if user lacks permission
+        HTTPException: 422 if assessment data is invalid
+    """
+    # Implementation here
+```
+
+## Inline Comments Best Practices
+
+### Good Examples
+```typescript
+// Retry mechanism for failed API calls (3 attempts with exponential backoff)
+const maxRetries = 3;
+
+// Convert to UTC to avoid timezone issues in date calculations
+const utcDate = new Date(localDate.getTime() + localDate.getTimezoneOffset() * 60000);
+
+// Cache results for 5 minutes to reduce database load
+const CACHE_DURATION = 5 * 60 * 1000;
+```
+
+```python
+# Use bulk insert for performance with large datasets
+db.bulk_insert_mappings(User, user_data_list)
+
+# Fallback to default config if environment variable not set
+api_timeout = int(os.getenv('API_TIMEOUT', 30))
+
+# Lock prevents race condition in concurrent user creation
+with user_creation_lock:
+    user = create_user(user_data)
+```
+
+### Bad Examples
+```typescript
+// Bad: States the obvious
+const users = []; // Create empty array
+
+// Bad: Doesn't explain why
+const timeout = 5000; // Set timeout
+
+// Bad: Vague and unhelpful
+// TODO: Fix this later
+const result = someComplexCalculation();
+```
+
+## Documentation Standards
+
+### README and Documentation Comments
+- Include usage examples
+- Document environment variables
+- Explain setup and deployment
+- Link to external dependencies
+- Provide troubleshooting guides
+
+### API Documentation
+- Document all endpoints with examples
+- Include error responses
+- Specify authentication requirements
+- Document rate limits and constraints
+
+### TODO Comments
+```typescript
+// TODO: Implement caching layer for improved performance (Issue #123)
+// FIXME: Race condition possible with concurrent users (Priority: High)
+// NOTE: This workaround is needed until library v2.0 is released
+```
+
+## Review Checklist
+
+Before submitting code, ensure:
+- [ ] All public functions have docstrings/JSDoc
+- [ ] Complex logic has explanatory comments
+- [ ] Comments explain business logic, not implementation
+- [ ] No commented-out code remains
+- [ ] TODOs include context and tracking info
+- [ ] Comments are up-to-date with code changes
+
+## Tools and Automation
+
+### TypeScript/JavaScript
+- Use ESLint rules for JSDoc validation
+- Configure TypeScript to require documentation
+- Use tools like typedoc for API documentation
+
+### Python
+- Use docstring linting tools (pydocstyle, flake8-docstrings)
+- Follow PEP 257 docstring conventions
+- Generate API docs with Sphinx or similar tools
+
