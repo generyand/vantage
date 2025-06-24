@@ -3,3 +3,230 @@ description:
 globs: 
 alwaysApply: false
 ---
+# Project Structure
+
+## Main Structure
+
+- We use Turborepo with pnpm workspaces
+- Backend API is in `apps/api` (Python FastAPI)
+- Frontend web app is in `apps/web` (Next.js)
+- Shared types are generated in `packages/shared`
+- Documentation is in `docs/` folder
+
+```tree
+vantage/
+├── apps/
+│   ├── api/                    # Python FastAPI backend
+│   │   ├── alembic/           # Database migrations
+│   │   │   ├── versions/      # Migration files
+│   │   │   ├── env.py         # Alembic configuration
+│   │   │   └── script.py.mako # Migration template
+│   │   ├── app/               # Main application code
+│   │   │   ├── api/           # API route handlers
+│   │   │   │   ├── v1/        # API v1 endpoints
+│   │   │   │   │   ├── assessments.py  # Assessment endpoints
+│   │   │   │   │   ├── auth.py         # Authentication endpoints
+│   │   │   │   │   ├── projects.py     # Project endpoints
+│   │   │   │   │   ├── reports.py      # Report endpoints
+│   │   │   │   │   ├── system.py       # System endpoints
+│   │   │   │   │   └── users.py        # User endpoints
+│   │   │   │   └── deps.py    # API dependencies
+│   │   │   ├── core/          # Core configuration
+│   │   │   │   ├── config.py  # App configuration
+│   │   │   │   └── security.py # Security utilities
+│   │   │   ├── db/            # Database layer
+│   │   │   │   ├── models/    # SQLAlchemy models
+│   │   │   │   │   ├── assessment.py   # Assessment models
+│   │   │   │   │   ├── auth.py         # Auth models
+│   │   │   │   │   ├── base.py         # Base model class
+│   │   │   │   │   ├── project.py      # Project models
+│   │   │   │   │   ├── system.py       # System models
+│   │   │   │   │   └── user.py         # User models
+│   │   │   │   └── base.py    # Database session management
+│   │   │   ├── schemas/       # Pydantic schemas
+│   │   │   │   ├── project.py # Project schemas
+│   │   │   │   ├── system.py  # System schemas
+│   │   │   │   ├── token.py   # Token schemas
+│   │   │   │   └── user.py    # User schemas
+│   │   │   ├── services/      # Business logic services
+│   │   │   └── workers/       # Background task workers
+│   │   │       └── sglgb_classifier.py # Classification worker
+│   │   ├── tests/             # Test files
+│   │   ├── main.py            # FastAPI application entry point
+│   │   ├── pyproject.toml     # Python dependencies
+│   │   ├── uv.lock           # UV lock file
+│   │   └── alembic.ini       # Alembic configuration
+│   └── web/                   # Next.js frontend
+│       ├── src/
+│       │   ├── app/           # Next.js App Router
+│       │   │   ├── (app)/     # Main application routes
+│       │   │   │   ├── assessments/    # Assessment pages
+│       │   │   │   │   ├── [id]/       # Dynamic assessment page
+│       │   │   │   │   │   └── page.tsx
+│       │   │   │   │   └── page.tsx    # Assessment list page
+│       │   │   │   ├── dashboard/      # Dashboard page
+│       │   │   │   │   └── page.tsx
+│       │   │   │   ├── reports/        # Reports page
+│       │   │   │   │   └── page.tsx
+│       │   │   │   └── layout.tsx      # App layout
+│       │   │   ├── (auth)/    # Authentication routes
+│       │   │   │   ├── login/          # Login page
+│       │   │   │   │   └── page.tsx
+│       │   │   │   └── layout.tsx      # Auth layout
+│       │   │   ├── globals.css         # Global styles
+│       │   │   ├── layout.tsx          # Root layout
+│       │   │   └── page.tsx            # Home page
+│       │   ├── components/    # React components
+│       │   │   ├── features/  # Feature-specific components
+│       │   │   │   ├── assessments/    # Assessment components
+│       │   │   │   │   ├── PeaceAndOrderForm.tsx
+│       │   │   │   │   └── index.ts
+│       │   │   │   ├── auth/           # Auth components
+│       │   │   │   │   ├── LoginForm.tsx
+│       │   │   │   │   └── index.ts
+│       │   │   │   └── index.ts
+│       │   │   ├── shared/    # Shared/reusable components
+│       │   │   │   ├── DataTable.tsx
+│       │   │   │   ├── FileUploader.tsx
+│       │   │   │   ├── PageHeader.tsx
+│       │   │   │   ├── UserNav.tsx
+│       │   │   │   └── index.ts
+│       │   │   └── ui/        # Shadcn UI components
+│       │   │       └── button.tsx
+│       │   ├── lib/           # Utility libraries
+│       │   │   ├── api.ts     # API client utilities
+│       │   │   └── utils.ts   # General utilities
+│       │   ├── constants/     # Application constants
+│       │   ├── hooks/         # Custom React hooks
+│       │   ├── providers/     # React context providers
+│       │   ├── store/         # State management
+│       │   └── types/         # TypeScript type definitions
+│       ├── public/            # Static assets
+│       ├── components.json    # Shadcn UI configuration
+│       ├── next.config.ts     # Next.js configuration
+│       ├── package.json       # Frontend dependencies
+│       └── tsconfig.json      # TypeScript configuration
+├── packages/
+│   └── shared/                # Shared code between apps
+│       ├── src/
+│       │   └── generated/     # Auto-generated API client
+│       │       ├── endpoints/ # API endpoint functions
+│       │       │   ├── auth/
+│       │       │   ├── projects/
+│       │       │   ├── system/
+│       │       │   └── users/
+│       │       ├── schemas/   # TypeScript schemas
+│       │       │   ├── auth.ts
+│       │       │   ├── error.ts
+│       │       │   ├── projects.ts
+│       │       │   ├── system.ts
+│       │       │   └── users.ts
+│       │       └── index.ts   # Main export
+│       ├── package.json       # Shared package dependencies
+│       └── tsconfig.json      # TypeScript configuration
+├── docs/                      # Project documentation
+│   ├── architecture.md        # Architecture documentation
+│   └── decisions.md          # Architecture decision records
+├── scripts/                   # Build and utility scripts
+│   ├── generate-types.js      # Type generation script
+│   └── watch-generate.js      # Watch mode for type generation
+├── orval.config.ts           # Orval configuration for API client generation
+├── package.json              # Root package.json for workspace
+├── pnpm-workspace.yaml       # pnpm workspace configuration
+├── turbo.json               # Turborepo configuration
+└── README.md                # Project readme
+```
+
+## Backend (Python FastAPI)
+
+### API Structure
+- All API routes are in `apps/api/app/api/v1/`
+- Each domain has its own route file (auth, users, projects, assessments, etc.)
+- Use FastAPI dependency injection via `deps.py`
+- Follow RESTful conventions for endpoint naming
+
+### Database Models
+- SQLAlchemy models are in `apps/api/app/db/models/`
+- Each domain has its own model file
+- All models inherit from `Base` class in `base.py`
+- Use Alembic for database migrations
+
+### Schemas
+- Pydantic schemas are in `apps/api/app/schemas/`
+- Separate request/response schemas when needed
+- Use type hints for better IDE support
+
+### Services
+- Business logic goes in `apps/api/app/services/`
+- Keep controllers thin, services fat
+- Services handle complex business operations
+
+## Frontend (Next.js)
+
+### Page Structure
+- Use Next.js App Router in `apps/web/src/app/`
+- Group related routes with route groups: `(app)` and `(auth)`
+- Pages are Server Components by default
+- Use `page.tsx` for page components, `layout.tsx` for layouts
+
+### Component Organization
+- **Feature components**: `components/features/[domain]/` - Domain-specific components
+- **Shared components**: `components/shared/` - Reusable across features
+- **UI components**: `components/ui/` - Shadcn UI components
+- Use PascalCase for component file names
+- Export components from `index.ts` files
+
+### File Naming Conventions
+- Use kebab-case for route directories (`assessment-details`)
+- Use PascalCase for component files (`AssessmentForm.tsx`)
+- Use camelCase for utility files (`apiClient.ts`)
+- Use lowercase for configuration files (`next.config.ts`)
+
+## Shared Package
+
+### Generated Code
+- API client is auto-generated using Orval
+- Types and schemas are generated from OpenAPI spec
+- Never edit generated files directly
+- Run `pnpm generate` to regenerate after API changes
+
+### Type Safety
+- Import types from `@vantage/shared` package
+- Use generated schemas for form validation
+- Leverage TypeScript for compile-time type checking
+
+## Development Workflow
+
+### Adding New Features
+1. **Backend**: Create model → schema → route → service
+2. **Frontend**: Create page → components → integrate API
+3. **Generate types**: Run `pnpm generate` after API changes
+
+### File Creation Guidelines
+- Create new API endpoints in appropriate domain files
+- Add new pages in `(app)` or `(auth)` route groups
+- Place feature-specific components in `features/[domain]/`
+- Add shared utilities to `lib/` or `hooks/`
+
+### Testing Structure
+- Backend tests in `apps/api/tests/`
+- Frontend tests can be added alongside components
+- Use Vitest for testing (configured in the project)
+
+## Configuration Files
+
+- **Root**: `turbo.json`, `pnpm-workspace.yaml`, `orval.config.ts`
+- **Backend**: `pyproject.toml`, `alembic.ini`, `main.py`
+- **Frontend**: `next.config.ts`, `tailwind.config.ts`, `components.json`
+- **Shared**: Individual `package.json` and `tsconfig.json` files
+
+## Best Practices
+
+1. **Monorepo**: Use workspace references for cross-package dependencies
+2. **Type Safety**: Leverage generated types from shared package
+3. **API Integration**: Use generated API client functions
+4. **Component Structure**: Organize by feature, then by type
+5. **Database**: Use migrations for all schema changes
+6. **Environment**: Separate configs for dev/staging/production
+
+
