@@ -192,7 +192,7 @@ async def check_all_connections() -> Dict[str, Any]:
         "database": db_check,
         "supabase": supabase_check,
         "timestamp": None  # Will be set by caller
-    }
+    } 
 
 
 async def validate_connections_startup(require_all: bool = True) -> None:

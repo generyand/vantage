@@ -48,10 +48,10 @@ async def lifespan(app: FastAPI):
             logger.info(f"  🗄️  PostgreSQL: healthy")
         else:
             logger.warning(f"  🗄️  PostgreSQL: not connected (some features may be unavailable)")
-            
+        
         if connection_details["supabase"]["connected"]:
             logger.info(f"  ⚡ Supabase: healthy")
-        else:
+    else:
             logger.warning(f"  ⚡ Supabase: not connected (some features may be unavailable)")
     except Exception as e:
         logger.critical(f"❌ Failed to establish required connections: {str(e)}")

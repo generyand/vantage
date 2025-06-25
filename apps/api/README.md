@@ -327,12 +327,33 @@ From your Supabase project dashboard:
 
 2. **Database Connection String**: Go to `Settings > Database > Connection string`
    - Select **URI** tab
-   - Copy the connection string (it will look like):
-   ```
-   postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
-   ```
+   - Copy the connection string
 
-### **3. Configure Environment Variables**
+### **3. Connection Types and Network Compatibility**
+
+Supabase offers multiple ways to connect to your database:
+
+#### **Direct Connection (IPv6 Only)**
+```
+postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres
+```
+⚠️ **Note**: The direct connection uses IPv6 by default. If your network does not support IPv6, you **must** use one of the Supavisor connection options below.
+
+#### **Supavisor Transaction Mode (IPv4 Compatible)**
+```
+postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
+```
+✅ **Recommended for**: Environments without IPv6 support, serverless functions, or transient connections.
+
+#### **Supavisor Session Mode (IPv4 Compatible)**
+```
+postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres
+```
+✅ **Recommended for**: Persistent connections that need IPv4 compatibility and prepared statements.
+
+If your network does not support IPv6 (as indicated by ping failures to IPv6 addresses), you **must** use the Supavisor Transaction Mode connection string (port 6543) or Session Mode (port 5432).
+
+### **4. Configure Environment Variables**
 
 Create a `.env` file (copy from `.env.example`):
 
@@ -343,7 +364,11 @@ SUPABASE_ANON_KEY=your-anon-key-here
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
 
 # 🗄️ DATABASE CONNECTION
-DATABASE_URL=postgresql://postgres.your-ref:password@aws-0-region.pooler.supabase.com:6543/postgres
+# For IPv6 environments (direct connection):
+# DATABASE_URL=postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres
+
+# For IPv4 environments (via Supavisor transaction pooler):
+DATABASE_URL=postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
 
 # 🔐 SECURITY
 SECRET_KEY=your-super-secret-key-here
@@ -367,7 +392,7 @@ CELERY_BROKER_URL=redis://localhost:6379/0
 CELERY_RESULT_BACKEND=redis://localhost:6379/0
 ```
 
-### **4. Database Features Available**
+### **5. Database Features Available**
 
 With Supabase, you get access to:
 
@@ -379,7 +404,7 @@ With Supabase, you get access to:
 - **Edge Functions**: Server-side logic
 - **Auto-generated APIs**: RESTful and GraphQL endpoints
 
-### **5. Development Tools**
+### **6. Development Tools**
 
 - **Supabase Dashboard**: `https://supabase.com/dashboard/project/[your-project-ref]`
 - **Database GUI**: Built-in table editor and SQL editor
