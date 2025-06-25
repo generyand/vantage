@@ -185,11 +185,74 @@ async def check_all_connections() -> Dict[str, Any]:
     db_check = await check_database_connection()
     supabase_check = await check_supabase_connection()
     
-    overall_healthy = db_check.get("connected", False) or supabase_check.get("connected", False)
+    overall_healthy = db_check.get("connected", False) and supabase_check.get("connected", False)
     
     return {
         "overall_status": "healthy" if overall_healthy else "unhealthy",
         "database": db_check,
         "supabase": supabase_check,
         "timestamp": None  # Will be set by caller
-    } 
+    }
+
+
+async def validate_connections_startup(require_all: bool = True) -> None:
+    """
+    Validates database connections during application startup.
+    Raises a clear exception if connections fail based on requirements.
+    
+    Args:
+        require_all: If True, both PostgreSQL and Supabase connections must succeed.
+                    If False, at least one connection must succeed.
+    
+    Raises:
+        RuntimeError: If database connections fail according to requirements
+    """
+    connection_status = await check_all_connections()
+    
+    # Collect error messages for failed connections
+    errors = []
+    success_messages = []
+    
+    # Check database connection
+    if not connection_status["database"]["connected"]:
+        db_error = connection_status["database"].get("error", "Unknown error")
+        db_details = connection_status["database"].get("details", "No details provided")
+        errors.append(f"PostgreSQL connection failed: {db_error} ({db_details})")
+    else:
+        success_messages.append("PostgreSQL connection: Successful")
+    
+    # Check Supabase connection
+    if not connection_status["supabase"]["connected"]:
+        supabase_error = connection_status["supabase"].get("error", "Unknown error")
+        supabase_details = connection_status["supabase"].get("details", "No details provided")
+        errors.append(f"Supabase connection failed: {supabase_error} ({supabase_details})")
+    else:
+        success_messages.append("Supabase connection: Successful")
+
+    # Check if we should fail startup based on requirements
+    should_fail = False
+    if require_all:
+        # Fail if ANY connection failed
+        should_fail = len(errors) > 0
+    else:
+        # Fail only if ALL connections failed
+        should_fail = len(success_messages) == 0
+    
+    # If validation failed, raise an exception with detailed error message
+    if should_fail:
+        error_message = "🚨 Failed to start application due to connection errors:\n\n"
+        
+        if require_all:
+            error_message += "All connections are required but the following failed:\n"
+        else:
+            error_message += "At least one connection is required but all failed:\n"
+            
+        error_message += "- " + "\n- ".join(errors) + "\n\n"
+        
+        # Include information about successful connections if any
+        if success_messages:
+            error_message += "Successful connections:\n- " + "\n- ".join(success_messages)
+            
+        error_message += "\n\nPlease check your database configuration and connection settings."
+        
+        raise RuntimeError(error_message) 

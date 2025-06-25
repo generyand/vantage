@@ -69,6 +69,9 @@ class Settings(BaseSettings):
         
         return None
     
+    # Connection Requirements
+    REQUIRE_ALL_CONNECTIONS: bool = True  # If False, server can start with at least one working connection
+    
     # Email Configuration (for notifications)
     SMTP_TLS: bool = True
     SMTP_PORT: Optional[int] = None

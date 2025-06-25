@@ -10,7 +10,7 @@ from datetime import datetime
 # Import from our restructured modules
 from app.core.config import settings
 from app.api.v1 import api_router as api_router_v1
-from app.db.base import check_all_connections
+from app.db.base import check_all_connections, validate_connections_startup
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -29,30 +29,34 @@ async def lifespan(app: FastAPI):
     logger.info(f"📊 Environment: {settings.ENVIRONMENT}")
     logger.info(f"🔧 Debug mode: {settings.DEBUG}")
     
-    # Check database connections
+    # Check and validate database connections on startup
     logger.info("🔍 Checking database connections...")
-    db_status = await check_all_connections()
     
-    if db_status["overall_status"] == "healthy":
-        logger.info("✅ Database connections established successfully!")
+    connection_requirement = "all" if settings.REQUIRE_ALL_CONNECTIONS else "at least one"
+    logger.info(f"🔐 Connection requirement: {connection_requirement} connection(s) must be healthy")
+    
+    try:
+        # This will throw an exception if connections fail according to requirements
+        await validate_connections_startup(require_all=settings.REQUIRE_ALL_CONNECTIONS)
+        logger.info("✅ Database connection requirements satisfied!")
+        
+        # Get detailed status for logging
+        connection_details = await check_all_connections()
         
         # Log individual connection details
-        if db_status["database"]["connected"]:
-            logger.info(f"  🗄️  PostgreSQL: {db_status['database']['status']}")
-        
-        if db_status["supabase"]["connected"]:
-            logger.info(f"  ⚡ Supabase: {db_status['supabase']['status']}")
+        if connection_details["database"]["connected"]:
+            logger.info(f"  🗄️  PostgreSQL: healthy")
+        else:
+            logger.warning(f"  🗄️  PostgreSQL: not connected (some features may be unavailable)")
             
-    else:
-        logger.warning("⚠️  Database connection issues detected:")
-        
-        if not db_status["database"]["connected"]:
-            logger.warning(f"  🗄️  PostgreSQL: {db_status['database']['error']}")
-            
-        if not db_status["supabase"]["connected"]:
-            logger.warning(f"  ⚡ Supabase: {db_status['supabase']['error']}")
-            
-        logger.warning("  📝 Server will start but some features may be unavailable")
+        if connection_details["supabase"]["connected"]:
+            logger.info(f"  ⚡ Supabase: healthy")
+        else:
+            logger.warning(f"  ⚡ Supabase: not connected (some features may be unavailable)")
+    except Exception as e:
+        logger.critical(f"❌ Failed to establish required connections: {str(e)}")
+        # Re-raise the exception to prevent server startup
+        raise
     
     logger.info("🎯 VANTAGE API server startup complete!")
     
