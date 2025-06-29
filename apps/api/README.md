@@ -641,21 +641,358 @@ if settings.DATABASE_URL:
 target_metadata = Base.metadata
 ```
 
-## 🧪 **Testing Guidelines**
+## 🧪 **Testing**
 
-- Place tests in `tests/` directory
-- Use `pytest` for test runner
-- Follow naming convention: `test_*.py`
-- Test files should mirror app structure
-- Include both unit and integration tests
+This project includes a comprehensive testing setup using **pytest** with FastAPI integration. Testing is essential for maintaining code quality with a 2-person team.
 
-Example test structure:
+### **Quick Testing Commands**
+
+```bash
+# Run all tests (recommended)
+make test
+
+# Run tests with coverage report
+make test-cov
+
+# Run specific test file
+uv run pytest tests/test_health.py -v
+
+# Run tests matching a pattern
+uv run pytest -k "health" -v
+
+# Run tests with detailed output
+uv run pytest -v --tb=long
+```
+
+### **Test Structure**
+
 ```
 tests/
-├── conftest.py          # Shared fixtures
-├── test_auth.py         # Authentication tests
-├── test_users.py        # User management tests
-└── test_projects.py     # Project tests
+├── conftest.py          # Shared test fixtures and configuration
+├── test_health.py       # Health check and basic endpoint tests
+├── test_auth.py         # Authentication tests (planned)
+├── test_users.py        # User management tests (planned)
+├── test_projects.py     # Project CRUD tests (planned)
+└── test_assessments.py  # Assessment logic tests (planned)
+```
+
+### **Test Configuration**
+
+The testing setup includes:
+
+- **Test Database**: SQLite in-memory database for fast, isolated tests
+- **Test Client**: FastAPI TestClient with dependency overrides
+- **Fixtures**: Reusable test data and setup in `conftest.py`
+- **Coverage**: HTML coverage reports in `htmlcov/` directory
+
+### **Running Tests**
+
+#### **Basic Test Execution**
+```bash
+# Run all tests
+make test
+# OR
+uv run pytest
+
+# Run with verbose output
+uv run pytest -v
+
+# Run specific test file
+uv run pytest tests/test_health.py
+
+# Run specific test function
+uv run pytest tests/test_health.py::test_health_endpoint
+```
+
+#### **Coverage Reports**
+```bash
+# Run tests with coverage
+make test-cov
+# OR
+uv run pytest --cov=app --cov-report=term-missing --cov-report=html
+
+# View HTML coverage report
+# Open htmlcov/index.html in your browser
+```
+
+#### **Test Filtering**
+```bash
+# Run tests matching pattern
+uv run pytest -k "health"
+
+# Run tests with specific marker (when implemented)
+uv run pytest -m "integration"
+
+# Run failed tests from last run
+uv run pytest --lf
+```
+
+### **Writing Tests**
+
+#### **Basic Test Example**
+```python
+# tests/test_example.py
+def test_example_endpoint(client):
+    """Test example endpoint returns expected response."""
+    response = client.get("/api/v1/example")
+    
+    assert response.status_code == 200
+    data = response.json()
+    assert "message" in data
+```
+
+#### **Database Test Example**
+```python
+# tests/test_users.py
+def test_create_user(client, db_session, sample_user_data):
+    """Test user creation endpoint."""
+    response = client.post("/api/v1/users/", json=sample_user_data)
+    
+    assert response.status_code == 201
+    data = response.json()
+    assert data["email"] == sample_user_data["email"]
+    assert "id" in data
+```
+
+#### **Authentication Test Example**
+```python
+# tests/test_auth.py
+def test_login_success(client, sample_user_data):
+    """Test successful user login."""
+    # First create user
+    client.post("/api/v1/auth/register", json=sample_user_data)
+    
+    # Then login
+    login_data = {
+        "email": sample_user_data["email"],
+        "password": sample_user_data["password"]
+    }
+    response = client.post("/api/v1/auth/login", json=login_data)
+    
+    assert response.status_code == 200
+    data = response.json()
+    assert "access_token" in data
+```
+
+### **Available Fixtures**
+
+The `conftest.py` provides these fixtures:
+
+#### **`client`** - FastAPI Test Client
+```python
+def test_example(client):
+    response = client.get("/health")
+    assert response.status_code == 200
+```
+
+#### **`db_session`** - Database Session
+```python
+def test_database_operation(db_session):
+    from app.db.models.user import User
+    
+    user = User(email="test@example.com", name="Test User")
+    db_session.add(user)
+    db_session.commit()
+    
+    assert user.id is not None
+```
+
+#### **`sample_user_data`** - Test User Data
+```python
+def test_user_creation(client, sample_user_data):
+    response = client.post("/api/v1/users/", json=sample_user_data)
+    assert response.status_code == 201
+```
+
+### **Testing Best Practices**
+
+#### **✅ DO**
+- Write tests for all new endpoints
+- Test both success and error cases
+- Use descriptive test names
+- Keep tests independent and isolated
+- Test business logic in services separately
+- Use fixtures for common test data
+- Run tests before committing code
+
+#### **❌ DON'T**
+- Don't test third-party library code
+- Don't write tests that depend on external services
+- Don't use production database for tests
+- Don't write tests that depend on test execution order
+- Don't ignore failing tests
+
+### **Test Categories**
+
+#### **Unit Tests**
+Test individual functions and methods in isolation:
+```python
+# Test service logic
+def test_calculate_sglgb_score():
+    from app.services.assessment_service import calculate_sglgb_score
+    
+    result = calculate_sglgb_score(assessment_data)
+    assert result.total_score > 0
+```
+
+#### **Integration Tests**
+Test API endpoints with database interactions:
+```python
+# Test full endpoint workflow
+def test_complete_assessment_workflow(client, auth_headers):
+    # Create project
+    project_response = client.post("/api/v1/projects/", json=project_data, headers=auth_headers)
+    project_id = project_response.json()["id"]
+    
+    # Create assessment
+    assessment_data = {"project_id": project_id, "title": "Test Assessment"}
+    response = client.post("/api/v1/assessments/", json=assessment_data, headers=auth_headers)
+    
+    assert response.status_code == 201
+```
+
+#### **Authentication Tests**
+Test security and access control:
+```python
+def test_protected_endpoint_requires_auth(client):
+    """Test that protected endpoints require authentication."""
+    response = client.get("/api/v1/users/me")
+    assert response.status_code == 401
+```
+
+### **Test Data Management**
+
+#### **Factory Pattern** (Future Enhancement)
+When using `factory-boy` for test data generation:
+```python
+# tests/factories.py
+import factory
+from app.db.models.user import User
+
+class UserFactory(factory.Factory):
+    class Meta:
+        model = User
+    
+    email = factory.Sequence(lambda n: f"user{n}@example.com")
+    name = factory.Faker("name")
+    is_active = True
+```
+
+### **Continuous Testing**
+
+#### **Pre-commit Testing**
+```bash
+# Add to your development workflow
+make lint && make test
+```
+
+#### **Watch Mode** (Optional)
+```bash
+# Install pytest-watch for continuous testing
+uv add --dev pytest-watch
+
+# Run tests in watch mode
+uv run ptw tests/
+```
+
+### **Debugging Tests**
+
+#### **Debugging Failed Tests**
+```bash
+# Run with detailed output
+uv run pytest tests/test_failing.py -v --tb=long
+
+# Drop into debugger on failure
+uv run pytest tests/test_failing.py --pdb
+
+# Print statements (use capfd fixture to capture)
+def test_with_output(client, capfd):
+    print("Debug information")
+    response = client.get("/health")
+    captured = capfd.readouterr()
+    print(f"Captured output: {captured.out}")
+```
+
+#### **Test Database Inspection**
+```python
+def test_database_state(db_session):
+    """Check database state during test."""
+    from app.db.models.user import User
+    
+    # Query test database
+    users = db_session.query(User).all()
+    print(f"Users in test DB: {len(users)}")
+```
+
+### **Performance Testing**
+
+#### **Response Time Testing**
+```python
+import time
+
+def test_endpoint_performance(client):
+    """Test endpoint responds within acceptable time."""
+    start_time = time.time()
+    response = client.get("/api/v1/projects/")
+    duration = time.time() - start_time
+    
+    assert response.status_code == 200
+    assert duration < 1.0  # Should respond within 1 second
+```
+
+### **Mocking External Services**
+
+```python
+from unittest.mock import patch
+
+def test_external_service_call(client):
+    """Test handling of external service calls."""
+    with patch('app.services.external_service.call_api') as mock_call:
+        mock_call.return_value = {"status": "success"}
+        
+        response = client.post("/api/v1/process/")
+        assert response.status_code == 200
+        mock_call.assert_called_once()
+```
+
+### **Test Environment**
+
+The test environment is automatically configured with:
+
+- **Isolated database**: SQLite in-memory, created fresh for each test session
+- **Override dependencies**: Database and authentication dependencies are mocked
+- **Environment variables**: Test-specific settings loaded automatically
+- **Cleanup**: Database and temporary files cleaned up after tests
+
+### **Troubleshooting Tests**
+
+#### **Common Issues**
+
+**Import Errors:**
+```bash
+# Ensure Python path is correct
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+uv run pytest
+```
+
+**Database Connection Issues:**
+```bash
+# Check test database configuration
+uv run python -c "from tests.conftest import SQLALCHEMY_DATABASE_URL; print(SQLALCHEMY_DATABASE_URL)"
+```
+
+**Fixture Not Found:**
+```bash
+# Ensure conftest.py is in tests/ directory
+# Check fixture names match function parameters
+```
+
+**Tests Running Slowly:**
+```bash
+# Use SQLite for faster tests (already configured)
+# Consider parallel testing for large test suites:
+uv add --dev pytest-xdist
+uv run pytest -n auto
 ```
 
 ## 📝 **Code Style**
