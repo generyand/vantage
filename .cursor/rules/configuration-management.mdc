@@ -1,0 +1,111 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Configuration and Environment Variables
+
+This document explains how to manage configuration for the Vantage backend API. We use a combination of Pydantic's `BaseSettings`, a `.env` file for local development, and environment variables for production.
+
+The main configuration logic is located in `apps/api/app/core/config.py`.
+
+## The `.env` File
+
+For local development, we use a `.env` file in the root of the `apps/api` directory to store configuration variables. This file should be listed in `.gitignore` and **should never be committed to version control.**
+
+An example `.env` file might look like this:
+```env
+# .env
+
+# Application settings
+API_V1_STR="/api/v1"
+SECRET_KEY="a-very-secret-key-that-should-be-changed"
+
+# Database settings
+POSTGRES_SERVER="localhost"
+POSTGRES_USER="vantage_user"
+POSTGRES_PASSWORD="vantage_password"
+POSTGRES_DB="vantage_dev_db"
+
+# First superuser
+FIRST_SUPERUSER_EMAIL="admin@example.com"
+FIRST_SUPERUSER_PASSWORD="password"
+```
+
+## The `Settings` Model
+
+In `apps/api/app/core/config.py`, we define a `Settings` class that inherits from `pydantic_settings.BaseSettings`. This class defines all the configuration variables our application expects.
+
+Pydantic automatically reads variables from the environment and the `.env` file (if `python-dotenv` is installed) and validates their types.
+
+**Example `Settings` class:**
+```python
+# apps/api/app/core/config.py
+
+from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    # API settings
+    API_V1_STR: str = "/api/v1"
+    SECRET_KEY: str
+
+    # Database
+    POSTGRES_SERVER: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
+    
+    SQLALCHEMY_DATABASE_URI: str | None = None
+
+    def model_post_init(self, __context) -> None:
+        if self.SQLALCHEMY_DATABASE_URI is None:
+            self.SQLALCHEMY_DATABASE_URI = (
+                f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@"
+                f"{self.POSTGRES_SERVER}/{self.POSTGRES_DB}"
+            )
+        return super().model_post_init(__context)
+    
+    # ... other settings
+
+    class Config:
+        case_sensitive = True
+        env_file = ".env"
+
+settings = Settings()
+```
+
+## How to Add a New Configuration Variable
+
+1.  **Add the variable to your `.env` file** for local development.
+    ```env
+    # .env
+    # ...
+    NEW_SETTING="some_value"
+    ```
+2.  **Add the variable to the `Settings` class** in `config.py`. Make sure to include the correct type hint.
+    ```python
+    # apps/api/app/core/config.py
+    class Settings(BaseSettings):
+        # ...
+        NEW_SETTING: str
+        # ...
+    ```
+
+## How to Use Settings in the Application
+
+An instance of the `Settings` class is created as `settings` at the bottom of `config.py`. To use your settings elsewhere in the application, simply import this instance.
+
+**Example:**
+```python
+from app.core.config import settings
+from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.get("/info")
+def get_app_info():
+    # Access settings like attributes on an object
+    return {"api_prefix": settings.API_V1_STR}
+```
+This approach ensures that all configuration is centralized, type-checked, and easily accessible throughout the backend application.
+

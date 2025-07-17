@@ -1,0 +1,91 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Service Layer Pattern
+
+This document explains the purpose and implementation of the service layer in the Vantage backend. The service layer is a crucial part of our architecture, designed to separate business logic from the API/presentation layer.
+
+## Core Principle: Fat Services, Thin Routers
+
+-   **Service Layer (`apps/api/app/services/`)**: Contains all the complex business logic, data manipulation, and interactions with the database. This is the "fat" part.
+-   **Router Layer (`apps/api/app/api/v1/`)**: Should be as "thin" as possible. Its only responsibilities are to handle incoming HTTP requests, validate inputs (delegated to FastAPI and Pydantic), call the appropriate service method, and return the response. It should not contain any business logic.
+
+## Why Use a Service Layer?
+
+-   **Separation of Concerns:** Keeps business logic isolated from the web framework (FastAPI). This makes the code easier to understand and maintain.
+-   **Reusability:** Business logic can be reused by different parts of the application (e.g., different API endpoints, background workers) without duplicating code.
+-   **Testability:** Business logic can be tested in isolation without needing to make HTTP requests, leading to simpler and faster unit tests.
+
+## How to Implement
+
+### 1. Create a Service File
+
+For each major domain or resource, create a corresponding service file.
+
+-   **Location:** `apps/api/app/services/[domain]_service.py`
+-   **Example:** `apps/api/app/services/user_service.py`
+
+### 2. Define a Service Class
+
+Inside the file, create a class that will contain the related business logic methods.
+
+```python
+# apps/api/app/services/project_service.py
+
+from sqlalchemy.orm import Session
+from app.db.models import project as project_model
+from app.schemas import project as project_schema
+
+class ProjectService:
+    def get_project_by_id(self, db: Session, project_id: int) -> project_model.Project | None:
+        return db.query(project_model.Project).filter(project_model.Project.id == project_id).first()
+
+    def create_project(self, db: Session, project_in: project_schema.ProjectCreate, owner_id: int) -> project_model.Project:
+        # Complex logic can go here: check permissions, validate data, etc.
+        db_project = project_model.Project(
+            **project_in.dict(),
+            owner_id=owner_id
+        )
+        db.add(db_project)
+        db.commit()
+        db.refresh(db_project)
+        return db_project
+
+# Create a single instance to be used across the application
+project_service = ProjectService()
+```
+
+### 3. Use the Service in the API Router
+
+Import the service instance into your API router file and call its methods.
+
+```python
+# apps/api/app/api/v1/projects.py
+
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from app.api import deps
+from app.schemas import project as project_schema
+from app.services.project_service import project_service # Import the service
+
+router = APIRouter()
+
+@router.post("/", response_model=project_schema.Project)
+def create_project(
+    *,
+    db: Session = Depends(deps.get_db),
+    project_in: project_schema.ProjectCreate,
+    current_user: User = Depends(deps.get_current_active_user)
+):
+    # The router's job is just to call the service
+    project = project_service.create_project(db=db, project_in=project_in, owner_id=current_user.id)
+    return project
+```
+
+## Best Practices
+
+-   Services should accept Pydantic schemas as input and generally return SQLAlchemy models.
+-   Services are responsible for all database session operations (`db.add()`, `db.commit()`, `db.refresh()`).
+-   Inject the database session (`db: Session`) into service methods from the router layer. This keeps the services flexible for testing.

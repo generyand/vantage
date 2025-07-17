@@ -1,0 +1,85 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Dependency Injection in FastAPI
+
+This guide explains how to use FastAPI's dependency injection system, focusing on the patterns used within the Vantage project. The core of our dependency injection system is located in `apps/api/app/api/deps.py`.
+
+## What is Dependency Injection?
+
+Dependency Injection (DI) is a design pattern where components (in our case, API route functions) receive their dependencies from an external source rather than creating them internally. FastAPI has a powerful, built-in DI system that we use to manage common dependencies like database sessions and user authentication.
+
+A "dependency" is simply a function (or a "callable") that FastAPI will run before your route function. The return value of the dependency function is then passed as an argument to your route function.
+
+## How to Use Existing Dependencies
+
+Using a dependency in a route is straightforward: just add a parameter to your route function, type-hint it with the dependency's return type, and set its default value to `Depends(your_dependency_function)`.
+
+### Common Dependencies
+
+-   **`get_db`**: Provides a SQLAlchemy `Session` for database interactions. It also handles closing the session automatically after the request is finished.
+-   **`get_current_user`**: Validates the JWT token from the `Authorization` header and returns the corresponding `User` model from the database. If the token is invalid or the user doesn't exist, it raises an `HTTPException`.
+
+**Example: Using `get_db` and `get_current_user`**
+```python
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from app.api import deps
+from app.db.models import User
+from app.schemas import project as project_schema
+
+router = APIRouter()
+
+@router.post("/")
+def create_project(
+    *,
+    # Inject the database session
+    db: Session = Depends(deps.get_db),
+    # Inject the current authenticated user
+    current_user: User = Depends(deps.get_current_user),
+    project_in: project_schema.ProjectCreate
+):
+    # Now you can use `db` and `current_user` inside your route
+    # ...
+    return {"message": f"Project created by {current_user.email}"}
+```
+
+## How to Create a New Dependency
+
+You can create new dependencies for any logic that needs to be shared across multiple routes.
+
+### Steps to Create a New Dependency
+
+1.  **Define a function** in `apps/api/app/api/deps.py`. This function can accept other dependencies itself.
+2.  **Add any logic** you need inside the function.
+3.  **Return a value.** This value will be injected into your route function.
+4.  **(Optional) Raise an `HTTPException`** if a condition is not met (e.g., user doesn't have required permissions).
+
+**Example: A dependency to get a specific project and verify ownership**
+```python
+# in apps/api/app/api/deps.py
+
+from fastapi import Depends, HTTPException, status
+# ... other imports
+
+def get_project_from_path(
+    project_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> Project:
+    """
+    Dependency to get a project by its ID from the path
+    and verify the current user is the owner.
+    """
+    project = project_service.get_project_by_id(db, project_id=project_id)
+    if not project:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    if project.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions")
+    
+    return project
+```
+
+This new `get_project_from_path` dependency can then be used in any route that has a `project_id` path parameter to automatically handle fetching the project and checking permissions.

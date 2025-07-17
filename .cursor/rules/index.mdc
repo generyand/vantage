@@ -6,20 +6,51 @@ This document serves as the central index for all active Cursor rules within thi
 
 Fundamental project structure, setup, and general development guidelines.
 
-| Rule File | Description |
-| :--- | :--- |
-| @cursor-rules.mdc | How to add or edit Cursor rules in our project. |
-| @project-structure.mdc | Project structure and file organization guidelines. |
-| @tech-stack.mdc | A summary of the project's technology stack. |
+| Rule File                  | Description                                                                          |
+| :------------------------- | :----------------------------------------------------------------------------------- |
+| @cursor-rules.mdc          | How to add or edit Cursor rules in our project.                                      |
+| @project-structure.mdc     | Project structure and file organization guidelines.                                  |
+| @tech-stack.mdc            | A summary of the project's technology stack.                                         |
 | @commenting-guidelines.mdc | Comprehensive guidelines for writing clear, maintainable, and helpful code documentation. |
-| @testing.mdc | Guidelines for writing backend and frontend tests. |
 
-## Feature & Task Management
+## Backend & API
+
+Guidelines for implementing backend logic and APIs.
+
+| Rule File                        | Description                                                              |
+| :------------------------------- | :----------------------------------------------------------------------- |
+| @api-endpoint-creation.mdc       | A step-by-step guide for creating a new API endpoint in the FastAPI backend. |
+| @database-migrations.mdc         | Guidelines for managing database schemas with Alembic migrations.        |
+| @service-layer-pattern.mdc       | Guidelines for implementing the service layer pattern for business logic.  |
+| @dependency-injection.mdc        | A guide to using FastAPI's dependency injection system.                  |
+| @configuration-management.mdc    | How to manage environment variables and application settings.            |
+
+## Frontend & UI
+
+Guidelines for building user interfaces and handling frontend logic.
+
+| Rule File              | Description                                              |
+| :--------------------- | :------------------------------------------------------- |
+| @page-structure.mdc    | Page structure guidelines. *(Content pending)*          |
+| @ui-components.mdc     | UI component and styling guidelines. *(Content pending)* |
+| @form-handling.mdc     | Form handling guidelines. *(Content pending)*           |
+| @data-fetching.mdc     | Data fetching patterns and guidelines. *(Content pending)* |
+| @hooks.mdc             | Custom React hooks guidelines. *(Content pending)*      |
+
+## Feature Management
 
 Rules for defining features and managing development tasks.
 
-| Rule File | Description |
-| :--- | :--- |
-| @create-prd.mdc | Guides the AI in creating a detailed Product Requirements Document (PRD). |
-| @generate-tasks.mdc | Guides the AI in creating a detailed, step-by-step task list for a feature from a PRD. |
-| @process-task-list.mdc | Guidelines for managing and tracking progress on developer task lists. |
+| Rule File                | Description                                                                              |
+| :----------------------- | :--------------------------------------------------------------------------------------- |
+| @create-prd.mdc          | Guides the AI in creating a detailed Product Requirements Document (PRD).                |
+| @generate-tasks.mdc      | Guides the AI in creating a detailed, step-by-step task list for a feature from a PRD.    |
+| @process-task-list.mdc   | Guidelines for managing and tracking progress on developer task lists.                   |
+
+## Testing
+
+General guidelines for application testing.
+
+| Rule File      | Description                                                                              |
+| :------------- | :--------------------------------------------------------------------------------------- |
+| @testing.mdc   | Provides guidelines for writing effective and maintainable tests for the VANTAGE monorepo. |

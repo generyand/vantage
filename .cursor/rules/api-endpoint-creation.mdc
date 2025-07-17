@@ -1,0 +1,145 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Creating a New API Endpoint
+
+This guide outlines the complete process for adding a new API endpoint to the Vantage backend. Following these steps ensures that all parts of the application (database, schemas, services, and API layer) are correctly implemented.
+
+## The Core Pattern
+
+Creating a new endpoint generally follows this sequence:
+
+1.  **Model (`app/db/models/`)**: Define or update the database table structure.
+2.  **Schema (`app/schemas/`)**: Define the Pydantic models for data validation and serialization (request/response shapes).
+3.  **Service (`app/services/`)**: Implement the core business logic.
+4.  **Router (`app/api/v1/`)**: Expose the functionality via an API route.
+5.  **Test (`apps/api/tests/`)**: Write a test to validate the endpoint.
+
+---
+
+### Step 1: Create/Update the SQLAlchemy Model
+
+If your endpoint handles a new type of data, define its structure in a SQLAlchemy model.
+
+-   **Location:** `apps/api/app/db/models/[domain].py`
+-   **Action:** Create a new class that inherits from `Base`.
+
+**Example: A new `Widget` model in `apps/api/app/db/models/widget.py`**
+```python
+from sqlalchemy import Column, Integer, String
+from app.db.models.base import Base
+
+class Widget(Base):
+    __tablename__ = "widgets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True, nullable=False)
+    description = Column(String)
+```
+*After creating a new model, you must generate a database migration. See `@database-migrations.mdc`.*
+
+---
+
+### Step 2: Define Pydantic Schemas
+
+Create schemas to define the shape of your API's inputs and outputs.
+
+-   **Location:** `apps/api/app/schemas/[domain].py`
+-   **Action:** Create Pydantic models for base properties, creation, updates, and responses.
+
+**Example: `Widget` schemas in `apps/api/app/schemas/widget.py`**
+```python
+from pydantic import BaseModel
+from typing import Optional
+
+# Base properties shared by all schemas
+class WidgetBase(BaseModel):
+    name: str
+    description: Optional[str] = None
+
+# Schema for creating a new widget (request body)
+class WidgetCreate(WidgetBase):
+    pass
+
+# Schema for reading a widget (response body)
+class Widget(WidgetBase):
+    id: int
+
+    class Config:
+        orm_mode = True # Allows Pydantic to read data from ORM models
+```
+
+---
+
+### Step 3: Implement the Service Layer
+
+This is where the business logic lives. The service interacts with the database and performs the core operations.
+
+-   **Location:** `apps/api/app/services/[domain]_service.py`
+-   **Action:** Create functions that take schemas as input and return database models or other results.
+
+**Example: `WidgetService` in `apps/api/app/services/widget_service.py`**
+```python
+from sqlalchemy.orm import Session
+from app.db.models import widget as widget_model
+from app.schemas import widget as widget_schema
+
+class WidgetService:
+    def create_widget(self, db: Session, widget: widget_schema.WidgetCreate) -> widget_model.Widget:
+        db_widget = widget_model.Widget(
+            name=widget.name,
+            description=widget.description
+        )
+        db.add(db_widget)
+        db.commit()
+        db.refresh(db_widget)
+        return db_widget
+
+widget_service = WidgetService()
+```
+
+---
+
+### Step 4: Create the API Route
+
+Expose the service logic through a FastAPI router.
+
+-   **Location:** `apps/api/app/api/v1/[domain].py`
+-   **Action:** Create a new router and define an endpoint that calls the service.
+
+**Example: `Widget` router in `apps/api/app/api/v1/widgets.py`**
+```python
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from app.api import deps
+from app.schemas import widget as widget_schema
+from app.services.widget_service import widget_service
+
+router = APIRouter()
+
+@router.post("/", response_model=widget_schema.Widget)
+def create_widget(
+    *,
+    db: Session = Depends(deps.get_db),
+    widget_in: widget_schema.WidgetCreate
+):
+    """
+    Create a new widget.
+    """
+    widget = widget_service.create_widget(db=db, widget=widget_in)
+    return widget
+```
+*Remember to include this new router in the main API router in `main.py`.*
+
+---
+
+### Step 5: Write a Test
+
+Always add a test for your new endpoint.
+
+-   **Location:** `apps/api/tests/api/v1/test_[domain].py`
+-   **Action:** Write a test case using `httpx.AsyncClient` to call the endpoint and assert the response.
+
+See `@testing.mdc` for detailed examples.

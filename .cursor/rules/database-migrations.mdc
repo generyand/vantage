@@ -1,0 +1,73 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Database Migrations with Alembic
+
+This guide covers how to create and apply database migrations using Alembic in the Vantage project. Alembic is used to manage changes to our PostgreSQL database schema in a structured and version-controlled way.
+
+All Alembic commands should be run from the `apps/api` directory.
+
+```bash
+cd apps/api
+```
+
+## When to Create a Migration
+
+You need to create a new migration whenever you make a change to a SQLAlchemy model in `apps/api/app/db/models/` that should be reflected in the database schema.
+
+Common changes include:
+- Creating a new table (a new model class).
+- Adding, removing, or modifying a column in an existing table.
+- Adding or removing an index or constraint.
+
+## Step 1: Auto-Generate the Migration Script
+
+Alembic can compare your SQLAlchemy models to the current state of the database and automatically generate a migration script with the necessary changes.
+
+Use the `revision` command with the `--autogenerate` flag to create it.
+
+```bash
+alembic revision --autogenerate -m "A descriptive name for your migration"
+```
+**Example:**
+```bash
+alembic revision --autogenerate -m "Add description column to widgets table"
+```
+
+This will create a new file in `apps/api/alembic/versions/` named something like `xxxxxxxxxxxx_add_description_column_to_widgets_table.py`.
+
+## Step 2: Review and Customize the Script
+
+**This is a critical step.** Auto-generation is not perfect. Always open the newly created migration file and review the `upgrade()` and `downgrade()` functions.
+
+- **Verify correctness:** Ensure the generated code accurately reflects the changes you intended.
+- **Check for data migrations:** If a schema change requires data to be updated (e.g., populating a new column with default values), you must add the data migration logic manually using `op.execute()`.
+- **Ensure `downgrade()` is correct:** The downgrade path should correctly revert the schema changes.
+
+## Step 3: Apply the Migration
+
+Once you have reviewed the script, you can apply it to the database using the `upgrade` command.
+
+To apply all migrations up to the latest version:
+```bash
+alembic upgrade head
+```
+
+## Other Useful Commands
+
+- **Check Current Revision:** To see the current version of the database.
+  ```bash
+  alembic current
+  ```
+
+- **View Migration History:** To see all revisions and the current position.
+  ```bash
+  alembic history --verbose
+  ```
+
+- **Downgrade a Migration:** To revert the last applied migration.
+  ```bash
+  alembic downgrade -1
+  ```
