@@ -1,0 +1,64 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Vantage Tech Stack
+
+This document outlines the core technologies and libraries used in the Vantage project.
+
+## Monorepo & Tooling
+
+The project is structured as a monorepo managed with pnpm workspaces and built with Turborepo.
+
+| Tool         | Purpose                                |
+| :----------- | :------------------------------------- |
+| **pnpm**     | Dependency management (workspaces)     |
+| **Turborepo**  | High-performance build system          |
+| **Orval**    | OpenAPI client/schema generation       |
+| **TypeScript** | Static typing across the codebase      |
+| **ESLint**   | Code linting for the frontend          |
+| **Ruff**     | Code linting/formatting for the backend  |
+| **Pytest**   | Testing framework for Python           |
+
+## Backend (`apps/api`)
+
+The backend is a Python application built with the FastAPI framework.
+
+| Technology      | Role                                       |
+| :-------------- | :----------------------------------------- |
+| **Python 3.13+**  | Core language                              |
+| **FastAPI**     | High-performance web framework             |
+| **Uvicorn**     | ASGI server                                |
+| **SQLAlchemy**  | Object-Relational Mapper (ORM)             |
+| **Alembic**     | Database migrations                        |
+| **PostgreSQL**  | Primary database (via `psycopg2`)          |
+| **Pydantic**    | Data validation and settings management    |
+| **Celery**      | Distributed task queue for background jobs |
+| **Redis**       | Message broker for Celery and caching      |
+| **Passlib**     | Password hashing (`bcrypt`)                |
+| **python-jose** | JWT implementation for authentication      |
+| **Loguru**      | Logging library                            |
+
+## Frontend (`apps/web`)
+
+The frontend is a modern web application built with Next.js.
+
+| Technology         | Role                                      |
+| :----------------- | :---------------------------------------- |
+| **Next.js**        | React framework (App Router, Turbopack)   |
+| **React 19**       | UI library                                |
+| **TypeScript**     | Language for static typing                |
+| **Tailwind CSS**   | Utility-first CSS framework               |
+| **Shadcn UI**      | Reusable UI components                    |
+| **TanStack Query** | Data fetching and server state management |
+| **Axios**          | HTTP client                               |
+| **Lucide React**   | Icon library                              |
+| **clsx/tailwind-merge** | Utilities for managing CSS classes      |
+
+## Shared Code (`packages/shared`)
+
+This package contains code shared between the frontend and backend, primarily auto-generated types and API client logic.
+
+- **Orval**: Generates a type-safe API client for the frontend from the FastAPI OpenAPI specification.
+- **TypeScript Schemas**: Pydantic models from the backend are converted into TypeScript interfaces/types, ensuring type safety across the stack.
