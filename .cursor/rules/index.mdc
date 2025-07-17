@@ -1,15 +1,4 @@
----
-description: 
-globs: 
-alwaysApply: true
----
-# JUST A SAMPLE (CHANGE THIS LATER ON)
----
-description: Project rules
-globs: 
-alwaysApply: true
----
-# Inbox Zero AI - Master Rule Index
+# Vantage Rule Index
 
 This document serves as the central index for all active Cursor rules within this repository, organized by category. These rules define processes, structures, and guidelines for development.
 
@@ -17,63 +6,20 @@ This document serves as the central index for all active Cursor rules within thi
 
 Fundamental project structure, setup, and general development guidelines.
 
-| Rule File                          | Description                                                 |
-| :--------------------------------- | :---------------------------------------------------------- |
-| @cursor-rules.mdc                  | How to add or edit Cursor rules in our project              |
-| @project-structure.mdc             | Project structure and file organization guidelines          |
-| @installing-packages.mdc           | How to install packages                                     |
-| @environment-variables.mdc         | Add environment variable                                    |
-| @logging.mdc                       | How to do backend logging                                   |
-| @utilities.mdc                     | Util functions                                              |
-| @task-list.mdc                     | Guidelines for creating and managing task lists             |
+| Rule File | Description |
+| :--- | :--- |
+| @cursor-rules.mdc | How to add or edit Cursor rules in our project. |
+| @project-structure.mdc | Project structure and file organization guidelines. |
+| @tech-stack.mdc | A summary of the project's technology stack. |
+| @commenting-guidelines.mdc | Comprehensive guidelines for writing clear, maintainable, and helpful code documentation. |
+| @testing.mdc | Guidelines for writing backend and frontend tests. |
 
-## Frontend & UI
+## Feature & Task Management
 
-Guidelines for building user interfaces and handling frontend logic.
+Rules for defining features and managing development tasks.
 
-| Rule File                          | Description                                                 |
-| :--------------------------------- | :---------------------------------------------------------- |
-| @page-structure.mdc                | Page structure guidelines                                   |
-| @ui-components.mdc                 | UI component and styling guidelines (Shadcn, Tailwind)      |
-| @form-handling.mdc                 | Form handling using React Hook Form and Zod                 |
-| @data-fetching.mdc                 | Fetching data from the API using SWR                        |
-| @hooks.mdc                         | Guidelines for creating custom React hooks                  |
-
-## Backend & API
-
-Guidelines for implementing backend logic, APIs, and data persistence.
-
-| Rule File                          | Description                                                 |
-| :--------------------------------- | :---------------------------------------------------------- |
-| @get-api-route.mdc                 | Guidelines for implementing GET API routes in Next.js       |
-| @server-actions.mdc                | Guidelines for implementing Next.js server actions          |
-| @prisma.mdc                        | How to use Prisma                                           |
-| @gmail-api.mdc                     | Guidelines for working with Gmail API                       |
-
-## AI / LLM
-
-Guidelines specific to implementing and testing AI and Language Model features.
-
-| Rule File                          | Description                                                 |
-| :--------------------------------- | :---------------------------------------------------------- |
-| @llm.mdc                           | Guidelines for implementing LLM functionality               |
-| @llm-test.mdc                      | Guidelines for writing tests for LLM-related functionality  |
-
-## Testing
-
-General guidelines for application testing.
-
-| Rule File                          | Description                                                 |
-| :--------------------------------- | :---------------------------------------------------------- |
-| @testing.mdc                       | Guidelines for testing the application with Vitest          |
-
-## Features
-
-Rules specific to major application features.
-
-| Rule File                          | Description                                                 |
-| :--------------------------------- | :---------------------------------------------------------- |
-| @features/cleaner.mdc              | Explains the Inbox Cleaner feature                          |
-| @features/knowledge.mdc            | Explains the Knowledge Base feature                         |
-
-| @features/reply-tracker.mdc        | Explains the Reply Tracker (Reply Zero) feature             |
+| Rule File | Description |
+| :--- | :--- |
+| @create-prd.mdc | Guides the AI in creating a detailed Product Requirements Document (PRD). |
+| @generate-tasks.mdc | Guides the AI in creating a detailed, step-by-step task list for a feature from a PRD. |
+| @process-task-list.mdc | Guidelines for managing and tracking progress on developer task lists. |

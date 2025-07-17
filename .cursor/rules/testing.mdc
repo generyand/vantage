@@ -1,0 +1,119 @@
+---
+description: Provides guidelines for writing effective and maintainable tests for the VANTAGE monorepo.
+globs: ["**/*.test.py", "**/*.test.tsx"]
+alwaysApply: false
+---
+# Testing Guidelines
+
+This document provides guidelines for writing effective and maintainable tests for both the backend (Python/FastAPI) and frontend (Next.js/React) applications within the VANTAGE monorepo.
+
+## Core Principles
+
+-   **Test Behavior, Not Implementation:** Focus tests on what the code does from a user's perspective, not how it does it. This makes tests more resilient to refactoring.
+-   **Isolate Tests:** Each test should be independent and not rely on the state of other tests.
+-   **Write Clean Test Code:** Treat your test code with the same care as your application code. It should be readable and maintainable.
+-   **Cover Edge Cases:** Test for expected failures, invalid inputs, and boundary conditions, not just the "happy path."
+-   **Aim for High-Impact Tests:** Prioritize tests that cover critical paths and complex business logic. 100% coverage is not always the goal; effective coverage is.
+
+## Backend Testing (`apps/api`)
+
+The backend uses **`pytest`** for testing. Tests are located in the `apps/api/tests/` directory.
+
+### Running Tests
+
+To run the backend test suite, navigate to the `api` app directory and execute `pytest`.
+
+```bash
+cd apps/api
+pytest
+```
+
+### Writing Tests
+
+-   Use `pytest` fixtures for setting up test conditions (e.g., database sessions, test clients).
+-   Use `httpx.AsyncClient` for testing FastAPI endpoints asynchronously.
+-   Structure tests within directories that mirror the application structure (e.g., `tests/api/v1/test_users.py`).
+
+### Example: API Endpoint Test
+
+```python
+# apps/api/tests/api/v1/test_system.py
+
+from httpx import AsyncClient
+from starlette import status
+import pytest
+
+pytestmark = pytest.mark.asyncio
+
+class TestSystemRoutes:
+    async def test_health_check_succeeds(self, client: AsyncClient) -> None:
+        # Arrange
+        url = "/api/v1/system/health"
+
+        # Act
+        response = await client.get(url)
+
+        # Assert
+        assert response.status_code == status.HTTP_200_OK
+        json_response = response.json()
+        assert json_response["status"] == "healthy"
+```
+
+## Frontend Testing (`apps/web`)
+
+The frontend uses **Jest** as the test runner and **React Testing Library** for rendering and interacting with components.
+
+### File Convention
+
+-   Test files should be co-located with the component they are testing.
+-   Use the `.test.tsx` extension (e.g., `LoginForm.test.tsx`).
+
+### Running Tests
+
+To run the frontend test suite, navigate to the `web` app directory and execute the test script.
+
+```bash
+cd apps/web
+pnpm test
+```
+*(Note: Ensure the `test` script in `package.json` is configured to run Jest.)*
+
+### Writing Tests
+
+-   Use React Testing Library queries (`getByRole`, `findByText`, etc.) to find elements in a way that resembles how users find them.
+-   Use `user-event` to simulate user interactions like typing and clicking.
+-   Mock API requests using **Jest's built-in mocking capabilities** or a library like `msw` (Mock Service Worker) to keep tests fast and reliable.
+
+### Example: Component Test
+
+```tsx
+// src/components/features/auth/LoginForm.test.tsx
+
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { LoginForm } from './LoginForm';
+
+describe('LoginForm', () => {
+  it('submits credentials when the form is filled out and submitted', async () => {
+    // Arrange
+    const handleSubmit = jest.fn();
+    render(<LoginForm onSubmit={handleSubmit} />);
+    
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+    const submitButton = screen.getByRole('button', { name: /log in/i });
+
+    // Act
+    await userEvent.type(emailInput, 'test@example.com');
+    await userEvent.type(passwordInput, 'password123');
+    await userEvent.click(submitButton);
+
+    // Assert
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
+    expect(handleSubmit).toHaveBeenCalledWith({
+      email: 'test@example.com',
+      password: 'password123',
+    });
+  });
+});
+```
