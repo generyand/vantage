@@ -38,12 +38,12 @@
     -   [x] 2.3 Create a new endpoint `/api/v1/auth/change-password` that allows an authenticated user to update their password. This endpoint should set `must_change_password` to `False`.
     -   [x] 2.4 In `apps/api/app/api/deps.py`, create a dependency `get_current_active_user` that verifies the JWT and ensures the user is active.
 
--   [ ] 3.0 **Implement Backend User Management API (Admin)**
-    -   [ ] 3.1 In `apps/api/app/schemas/user.py`, create `UserCreate`, `UserUpdate` schemas to handle the new fields.
-    -   [ ] 3.2 Create `apps/api/app/services/user_service.py` to encapsulate the business logic for creating, reading, updating, and deactivating users.
-    -   [ ] 3.3 Create a new router `apps/api/app/api/v1/users.py`.
-    -   [ ] 3.4 Implement CRUD endpoints for user management (`GET /users`, `POST /users`, `GET /users/{id}`, `PUT /users/{id}`).
-    -   [ ] 3.5 In `deps.py`, create a permission dependency that restricts access to these user management endpoints to users with the "MLGOO-DILG" role only.
+-   [x] 3.0 **Implement Backend User Management API (Admin)**
+    -   [x] 3.1 In `apps/api/app/schemas/user.py`, create `UserCreate`, `UserUpdate` schemas to handle the new fields.
+    -   [x] 3.2 Create `apps/api/app/services/user_service.py` to encapsulate the business logic for creating, reading, updating, and deactivating users.
+    -   [x] 3.3 Create a new router `apps/api/app/api/v1/users.py`.
+    -   [x] 3.4 Implement CRUD endpoints for user management (`GET /users`, `POST /users`, `GET /users/{id}`, `PUT /users/{id}`).
+    -   [x] 3.5 In `deps.py`, create a permission dependency that restricts access to these user management endpoints to users with the "MLGOO-DILG" role only.
 
 -   [ ] 4.0 **Frontend Foundation & Login Flow**
     -   [ ] 4.1 Create `apps/web/src/store/useAuthStore.ts` using Zustand to hold `user`, `token`, and `isAuthenticated` state.

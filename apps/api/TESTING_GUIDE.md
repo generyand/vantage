@@ -37,7 +37,98 @@ curl -X POST "http://localhost:8000/api/v1/auth/change-password" \
   -d '{"current_password": "old", "new_password": "new"}'
 ```
 
-### Option 3: Create Test User
+### Option 3: Postman Testing
+
+#### Step 1: Environment Setup
+Create a new Postman environment with these variables:
+```json
+{
+  "name": "VANTAGE API",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "enabled": true
+    },
+    {
+      "key": "token",
+      "value": "",
+      "enabled": true
+    }
+  ]
+}
+```
+
+#### Step 2: Collection Setup
+Create a new collection "VANTAGE Authentication" with these requests:
+
+**1. Login Request**
+- Method: `POST`
+- URL: `{{base_url}}/api/v1/auth/login`
+- Headers: `Content-Type: application/json`
+- Body (raw JSON):
+```json
+{
+  "email": "test@example.com",
+  "password": "testpass123"
+}
+```
+- Tests (to save token):
+```javascript
+if (pm.response.code === 200) {
+    const response = pm.response.json();
+    pm.environment.set("token", response.access_token);
+    pm.test("Login successful", function () {
+        pm.response.to.have.status(200);
+        pm.expect(response.access_token).to.exist;
+    });
+}
+```
+
+**2. Change Password Request**
+- Method: `POST`
+- URL: `{{base_url}}/api/v1/auth/change-password`
+- Headers: 
+  - `Content-Type: application/json`
+  - `Authorization: Bearer {{token}}`
+- Body (raw JSON):
+```json
+{
+  "current_password": "testpass123",
+  "new_password": "newpass456"
+}
+```
+- Tests:
+```javascript
+pm.test("Password change successful", function () {
+    pm.response.to.have.status(200);
+    const response = pm.response.json();
+    pm.expect(response.message).to.exist;
+});
+```
+
+**3. Get Current User Request**
+- Method: `GET`
+- URL: `{{base_url}}/api/v1/users/me`
+- Headers: `Authorization: Bearer {{token}}`
+- Tests:
+```javascript
+pm.test("Get current user successful", function () {
+    pm.response.to.have.status(200);
+    const response = pm.response.json();
+    pm.expect(response.email).to.exist;
+    pm.expect(response.name).to.exist;
+});
+```
+
+#### Step 3: Test Flow
+1. **First, create a test user** (see Option 4 below)
+2. **Run Login request** - This will automatically save the token
+3. **Run Get Current User** - Verify authentication works
+4. **Run Change Password** - Test password change functionality
+5. **Run Login again** with new password to verify change
+
+### Option 4: Create Test User
 ```python
 # Run this in a Python shell to create a test user
 from app.db.base import SessionLocal
