@@ -105,7 +105,19 @@ export default function LoginForm() {
       // Step 4: Save to Zustand store
       login(completeUser, token);
 
-      // Step 5: Show success and redirect
+      // Step 5: Set authentication cookie for middleware
+      // Set cookie with secure options
+      const cookieOptions = [
+        'auth-token=' + token,
+        'Path=/',
+        'Max-Age=604800', // 7 days (7 * 24 * 60 * 60)
+        'SameSite=Strict',
+        // Add Secure flag in production
+        ...(process.env.NODE_ENV === 'production' ? ['Secure'] : [])
+      ];
+      document.cookie = cookieOptions.join('; ');
+
+      // Step 6: Show success and redirect
       setSuccess(true);
       setTimeout(() => {
         router.push("/dashboard");

@@ -1,8 +1,8 @@
 // 🔐 Authentication Store
 // Zustand store for managing global authentication state
 
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 // User interface matching the backend schema
 interface User {
@@ -22,7 +22,7 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
-  
+
   // Actions
   login: (user: User, token: string) => void;
   logout: () => void;
@@ -49,6 +49,11 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        // Clear the auth cookie
+        if (typeof document !== 'undefined') {
+          document.cookie = 'auth-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Strict';
+        }
+        
         set({
           user: null,
           token: null,
@@ -74,7 +79,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'auth-storage', // localStorage key
+      name: "auth-storage", // localStorage key
       storage: createJSONStorage(() => localStorage),
       // Only persist these fields
       partialize: (state) => ({
@@ -89,4 +94,5 @@ export const useAuthStore = create<AuthState>()(
 // Selectors for easy access to specific parts of the state
 export const useUser = () => useAuthStore((state) => state.user);
 export const useToken = () => useAuthStore((state) => state.token);
-export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated); 
+export const useIsAuthenticated = () =>
+  useAuthStore((state) => state.isAuthenticated);
