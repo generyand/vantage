@@ -32,11 +32,11 @@
     -   [x] 1.4 Run `uv run alembic revision --autogenerate -m "Add user fields and barangay table"` to create the migration file. Review the generated script.
     -   [x] 1.5 Create a seeding script or a one-time service to populate the `barangays` table with the 25 barangays of Sulop.
 
--   [ ] 2.0 **Implement Backend Authentication Endpoints**
-    -   [ ] 2.1 In `apps/api/app/api/v1/auth.py`, enhance the `/login` endpoint to check if `is_active` is true.
-    -   [ ] 2.2 The JWT payload should include `user_id`, `role`, and `must_change_password`.
-    -   [ ] 2.3 Create a new endpoint `/api/v1/auth/change-password` that allows an authenticated user to update their password. This endpoint should set `must_change_password` to `False`.
-    -   [ ] 2.4 In `apps/api/app/api/deps.py`, create a dependency `get_current_active_user` that verifies the JWT and ensures the user is active.
+-   [x] 2.0 **Implement Backend Authentication Endpoints**
+    -   [x] 2.1 In `apps/api/app/api/v1/auth.py`, enhance the `/login` endpoint to check if `is_active` is true.
+    -   [x] 2.2 The JWT payload should include `user_id`, `role`, and `must_change_password`.
+    -   [x] 2.3 Create a new endpoint `/api/v1/auth/change-password` that allows an authenticated user to update their password. This endpoint should set `must_change_password` to `False`.
+    -   [x] 2.4 In `apps/api/app/api/deps.py`, create a dependency `get_current_active_user` that verifies the JWT and ensures the user is active.
 
 -   [ ] 3.0 **Implement Backend User Management API (Admin)**
     -   [ ] 3.1 In `apps/api/app/schemas/user.py`, create `UserCreate`, `UserUpdate` schemas to handle the new fields.
