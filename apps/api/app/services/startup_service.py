@@ -12,6 +12,9 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.db.base import check_all_connections, validate_connections_startup, SessionLocal
 from app.db.models.barangay import Barangay
+from app.db.models.user import User
+from app.core.security import get_password_hash
+import uuid
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +59,9 @@ class StartupService:
         # Seed initial data
         self._seed_initial_data()
         
+        # Create first superuser if needed
+        self._create_first_superuser()
+        
         # Log detailed connection status
         await self._log_connection_details()
         
@@ -87,6 +93,40 @@ class StartupService:
                 logger.info("  - Barangays already seeded. Skipping.")
         except Exception as e:
             logger.warning(f"⚠️  Could not seed initial data: {str(e)}")
+            db.rollback()
+        finally:
+            db.close()
+    
+    def _create_first_superuser(self) -> None:
+        """Create the first superuser if it doesn't exist."""
+        logger.info("👤 Checking for first superuser...")
+        db: Session = SessionLocal()
+        try:
+            # Check if any superuser exists
+            existing_user = db.query(User).filter(User.email == settings.FIRST_SUPERUSER).first()
+            if existing_user:
+                logger.info("  - First superuser already exists. Skipping.")
+                return
+            
+            # Create first superuser
+            logger.info(f"  - Creating first superuser: {settings.FIRST_SUPERUSER}")
+            user = User(
+                id=str(uuid.uuid4()),
+                email=settings.FIRST_SUPERUSER,
+                name="System Administrator",
+                hashed_password=get_password_hash(settings.FIRST_SUPERUSER_PASSWORD),
+                role="MLGOO-DILG",
+                is_active=True,
+                is_superuser=True,
+                must_change_password=True
+            )
+            db.add(user)
+            db.commit()
+            logger.info("  - First superuser created successfully.")
+            logger.info("  - 🔐 Default password: changethis (please change on first login)")
+            
+        except Exception as e:
+            logger.warning(f"⚠️  Could not create first superuser: {str(e)}")
             db.rollback()
         finally:
             db.close()

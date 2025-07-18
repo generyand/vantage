@@ -42,4 +42,4 @@ class User(Base):
     # Relationships
     projects = relationship("Project", back_populates="owner")
     assessments = relationship("Assessment", back_populates="user")
-    barangay = relationship("Barangay") 
+    barangay = relationship("Barangay", back_populates="users") 
