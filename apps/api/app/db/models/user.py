@@ -24,6 +24,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=False)
     phone_number = Column(String, nullable=True)
+    role = Column(String, nullable=False, default="BLGU User")
     barangay_id = Column(Integer, ForeignKey("barangays.id"), nullable=True)
     
     # Authentication

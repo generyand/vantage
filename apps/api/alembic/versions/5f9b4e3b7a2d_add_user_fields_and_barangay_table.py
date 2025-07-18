@@ -30,6 +30,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_barangays_name'), 'barangays', ['name'], unique=True)
     
     op.add_column('users', sa.Column('phone_number', sa.String(), nullable=True))
+    op.add_column('users', sa.Column('role', sa.String(), nullable=False, server_default=sa.text("'BLGU User'")))
     op.add_column('users', sa.Column('must_change_password', sa.Boolean(), nullable=False, server_default=sa.text('true')))
     op.add_column('users', sa.Column('barangay_id', sa.Integer(), nullable=True))
     op.create_foreign_key(None, 'users', 'barangays', ['barangay_id'], ['id'])
@@ -42,6 +43,7 @@ def downgrade() -> None:
     op.drop_constraint(None, 'users', type_='foreignkey')
     op.drop_column('users', 'barangay_id')
     op.drop_column('users', 'must_change_password')
+    op.drop_column('users', 'role')
     op.drop_column('users', 'phone_number')
 
     op.drop_index(op.f('ix_barangays_name'), table_name='barangays')

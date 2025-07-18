@@ -13,7 +13,10 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def create_access_token(
-    subject: Union[str, Any], expires_delta: Optional[timedelta] = None
+    subject: Union[str, Any], 
+    expires_delta: Optional[timedelta] = None,
+    role: Optional[str] = None,
+    must_change_password: Optional[bool] = None
 ) -> str:
     """
     Create a new JWT access token.
@@ -21,6 +24,8 @@ def create_access_token(
     Args:
         subject: The subject (usually user ID) to encode in the token
         expires_delta: Custom expiration time, defaults to settings value
+        role: User role to include in token payload
+        must_change_password: Whether user must change password
         
     Returns:
         str: Encoded JWT token
@@ -32,7 +37,18 @@ def create_access_token(
             minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
         )
     
-    to_encode = {"exp": expire, "sub": str(subject)}
+    to_encode = {
+        "exp": expire, 
+        "sub": str(subject),
+        "user_id": str(subject)
+    }
+    
+    # Add optional fields to payload
+    if role is not None:
+        to_encode["role"] = role
+    if must_change_password is not None:
+        to_encode["must_change_password"] = must_change_password
+    
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
