@@ -1,5 +1,123 @@
 ---
-description:
-globs:
-alwaysApply: false
+description: "Guidelines for structuring pages and components in the Next.js frontend, including App Router conventions and component organization."
+globs: [
+  "apps/web/src/app/**/*.tsx",
+  "apps/web/src/components/**/*.tsx"
+]
+alwaysApply: true
 ---
+# Frontend Page & Component Structure
+
+This document provides guidelines for creating and organizing pages and components in the VANTAGE Next.js frontend. A consistent structure is crucial for scalability and maintainability.
+
+## 1. Directory Structure (App Router)
+
+We use the Next.js App Router, located in `apps/web/src/app`.
+
+### Route Groups
+
+Routes are organized into groups to manage layouts and logical separation without affecting the URL path.
+
+-   `(app)`: Contains all protected routes that require user authentication. These routes use the main application layout (`apps/web/src/app/(app)/layout.tsx`).
+-   `(auth)`: Contains all authentication-related routes (e.g., login, password reset). These routes use a simpler layout specific to authentication flows.
+
+### Special Files
+
+-   `page.tsx`: The main UI component for a route. Pages are **Server Components** by default.
+-   `layout.tsx`: A UI component that wraps a route segment and its children.
+-   `loading.tsx`: An optional UI to show while a page's content is loading.
+-   `error.tsx`: An optional UI to display for errors. It must be a **Client Component**.
+
+## 2. Component Organization
+
+Components are located in `apps/web/src/components` and organized by their scope and purpose.
+
+-   `components/ui/`: Contains all `shadcn/ui` components. **Do not modify these directly.** Use them to build other components.
+-   `components/shared/`: Contains generic, reusable components that are not tied to a specific feature domain (e.g., `PageHeader`, `DataTable`, `FileUploader`).
+-   `components/features/[domain]/`: Contains components that are specific to a particular feature or domain. Each domain gets its own subdirectory.
+    -   `components/features/assessments/`: Components for the assessments feature.
+    -   `components/features/auth/`: Components for the authentication feature, like `LoginForm`.
+
+## 3. Creating a New Page (Example: User Profile)
+
+Here is a step-by-step walkthrough for creating a new "User Profile" page.
+
+### Step 1: Create the Route
+
+Create a new directory for the page within the `(app)` route group.
+
+```
+/apps/web/src/app/(app)/profile/
+```
+
+### Step 2: Create the Page Component
+
+Inside the new directory, create `page.tsx`. This is a Server Component, so it can fetch data directly.
+
+```tsx
+// /apps/web/src/app/(app)/profile/page.tsx
+import { PageHeader } from '@/components/shared';
+import { ProfileForm } from '@/components/features/profile';
+import { getCurrentUser } from '@/lib/session'; // Fictional server-side utility
+
+export default async function ProfilePage() {
+  const user = await getCurrentUser();
+
+  return (
+    <div>
+      <PageHeader
+        title="My Profile"
+        description="Update your personal information."
+      />
+      <div className="mt-8">
+        {/* Pass server-fetched data to the client component */}
+        <ProfileForm user={user} />
+      </div>
+    </div>
+  );
+}
+```
+
+### Step 3: Create Feature Components
+
+Create the specific components for the profile feature in `components/features/`. Since this form will handle user interaction, it must be a Client Component.
+
+```tsx
+// /apps/web/src/components/features/profile/ProfileForm.tsx
+'use client';
+
+import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useUpdateUser } from '@/hooks/useUser'; // From hooks guidelines
+import { User } from '@vantage/shared';
+
+interface ProfileFormProps {
+  user: User;
+}
+
+export function ProfileForm({ user }: ProfileFormProps) {
+  const { register, handleSubmit } = useForm({ defaultValues: user });
+  const updateUserMutation = useUpdateUser();
+
+  const onSubmit = (data: User) => {
+    updateUserMutation.mutate(data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Input {...register('fullName')} />
+      <Input {...register('email')} disabled />
+      <Button type="submit" isLoading={updateUserMutation.isPending}>
+        Save Changes
+      </Button>
+    </form>
+  );
+}
+```
+
+## 4. Server vs. Client Components
+
+-   **Default to Server Components:** They are better for performance as they run on the server and can reduce the amount of JavaScript sent to the client. Use them for fetching data and composing other components.
+-   **Use `'use client'` for Interactivity:** Only mark a component as a Client Component if it uses hooks (`useState`, `useEffect`), event listeners (`onClick`), or other browser-only APIs.
+-   **Keep Client Components Small:** Where possible, pass server-fetched data as props to Client Components to keep them small and focused on interactivity. This is demonstrated in the `ProfilePage` example above.

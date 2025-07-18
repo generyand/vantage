@@ -1,8 +1,9 @@
 ---
-description: 
-globs: 
+description: "High-level overview of the monorepo structure, detailing the backend, frontend, and shared packages."
+globs: ["**/*"]
 alwaysApply: true
 ---
+
 # Project Structure
 
 ## Main Structure
@@ -226,6 +227,11 @@ vantage/
 2. **Type Safety**: Leverage generated types from shared package
 3. **API Integration**: Use generated API client functions
 4. **Component Structure**: Organize by feature, then by type
+5. **Database**: Use migrations for all schema changes
+6. **Environment**: Separate configs for dev/staging/production
+
+
+
 5. **Database**: Use migrations for all schema changes
 6. **Environment**: Separate configs for dev/staging/production
 

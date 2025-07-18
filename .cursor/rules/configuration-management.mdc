@@ -1,8 +1,12 @@
 ---
-description:
-globs:
-alwaysApply: false
+description: "Guidelines for managing backend API configuration using Pydantic Settings and .env files."
+globs: [
+  "apps/api/app/core/config.py",
+  "apps/api/**/*.py"
+]
+alwaysApply: true
 ---
+
 # Configuration and Environment Variables
 
 This document explains how to manage configuration for the Vantage backend API. We use a combination of Pydantic's `BaseSettings`, a `.env` file for local development, and environment variables for production.
@@ -105,6 +109,11 @@ router = APIRouter()
 @router.get("/info")
 def get_app_info():
     # Access settings like attributes on an object
+    return {"api_prefix": settings.API_V1_STR}
+```
+This approach ensures that all configuration is centralized, type-checked, and easily accessible throughout the backend application.
+
+
     return {"api_prefix": settings.API_V1_STR}
 ```
 This approach ensures that all configuration is centralized, type-checked, and easily accessible throughout the backend application.

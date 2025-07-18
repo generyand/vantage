@@ -1,8 +1,12 @@
 ---
-description:
-globs:
-alwaysApply: false
+description: "Guidelines for implementing the service layer pattern in the backend to separate business logic from the API layer."
+globs: [
+  "apps/api/app/services/**/*.py",
+  "apps/api/app/api/v1/**/*.py"
+]
+alwaysApply: true
 ---
+
 # Service Layer Pattern
 
 This document explains the purpose and implementation of the service layer in the Vantage backend. The service layer is a crucial part of our architecture, designed to separate business logic from the API/presentation layer.
@@ -84,6 +88,11 @@ def create_project(
     return project
 ```
 
+## Best Practices
+
+-   Services should accept Pydantic schemas as input and generally return SQLAlchemy models.
+-   Services are responsible for all database session operations (`db.add()`, `db.commit()`, `db.refresh()`).
+-   Inject the database session (`db: Session`) into service methods from the router layer. This keeps the services flexible for testing.
 ## Best Practices
 
 -   Services should accept Pydantic schemas as input and generally return SQLAlchemy models.

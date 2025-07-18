@@ -1,5 +1,129 @@
 ---
-description:
-globs:
-alwaysApply: false
+description: "Guidelines for data fetching in the frontend application, covering TanStack Query and the auto-generated API client from the shared package."
+globs: [
+  "apps/web/src/**/*.ts",
+  "apps/web/src/**/*.tsx",
+  "packages/shared/src/**/*.ts"
+]
+alwaysApply: true
 ---
+
+# Data Fetching Architecture
+
+This document outlines the standard process for fetching and updating data in the VANTAGE frontend application. Our architecture is designed to be robust, type-safe, and maintainable, leveraging code generation and modern state management tools.
+
+## Core Technologies
+
+-   **TanStack Query (`@tanstack/react-query`):** The primary tool for managing server state, including caching, refetching, and mutations.
+-   **Orval:** A tool that generates a type-safe API client and TypeScript schemas directly from our FastAPI backend's OpenAPI specification.
+-   **`@vantage/shared` Package:** A local workspace package that contains the Orval-generated client. This is the **only** way the frontend should interact with the API.
+-   **Axios:** The underlying HTTP client used by the generated API client. It is configured with interceptors to automatically handle authentication tokens.
+
+## Data Flow
+
+The standard data fetching flow follows these steps:
+
+1.  **API Endpoint (Backend):** An endpoint is defined or updated in the FastAPI application (`apps/api`).
+2.  **Code Generation (CLI):** The developer runs `pnpm generate` in the project root.
+3.  **Client Update (`@vantage/shared`):** Orval introspects the new OpenAPI spec and updates the TypeScript functions and schemas in the `packages/shared/src/generated` directory.
+4.  **Data Hook (`apps/web`):** A custom hook using `useQuery` or `useMutation` is created in `apps/web/src/hooks/`.
+5.  **Hook Logic:** The hook's `queryFn` or `mutationFn` calls the relevant, type-safe function from the `@vantage/shared` package.
+6.  **Component (`apps/web`):** A React component consumes the hook to access data, loading states, and error states.
+
+**Under no circumstances should you use `axios` directly from a component or hook.** Always use the generated client from `@vantage/shared`.
+
+## How to Fetch Data (`useQuery`)
+
+### Step 1: Create a Data-Fetching Hook
+
+Create a hook that encapsulates the query logic, including the query key and the query function.
+
+```typescript
+// apps/web/src/hooks/useProjects.ts
+import { useQuery } from '@tanstack/react-query';
+import { projects } from '@vantage/shared'; // 1. Import from the generated client
+
+// 2. Define a structured query key
+const projectKeys = {
+  all: ['projects'] as const,
+  lists: () => [...projectKeys.all, 'list'] as const,
+  detail: (id: string) => [...projectKeys.all, 'detail', id] as const,
+};
+
+// 3. Create the hook
+export function useProjects() {
+  return useQuery({
+    queryKey: projectKeys.lists(),
+    queryFn: projects.projectsListProjects, // 4. Call the generated function
+  });
+}
+
+export function useProject(id: string) {
+  return useQuery({
+    queryKey: projectKeys.detail(id),
+    queryFn: () => projects.projectsReadProject({ projectId: id }),
+    enabled: !!id,
+  });
+}
+```
+
+### Step 2: Use the Hook in a Component
+
+```tsx
+// apps/web/src/app/(app)/dashboard/page.tsx
+'use client';
+
+import { useProjects } from '@/hooks/useProjects';
+
+export default function DashboardPage() {
+  const { data: projects, isLoading, error } = useProjects();
+
+  if (isLoading) {
+    return <div>Loading projects...</div>;
+  }
+
+  if (error) {
+    return <div>An error occurred: {error.message}</div>;
+  }
+
+  return (
+    <ul>
+      {projects?.data.map((project) => (
+        <li key={project.id}>{project.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## How to Mutate Data (`useMutation`)
+
+Mutations (Create, Update, Delete) follow a similar pattern, using `useMutation` and invalidating queries on success to keep the UI in sync.
+
+```typescript
+// apps/web/src/hooks/useProjects.ts
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { projects, ProjectCreate } from '@vantage/shared';
+import { projectKeys } from './useProjects';
+
+export function useCreateProject() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (newProject: ProjectCreate) =>
+      projects.projectsCreateProject({ requestBody: newProject }),
+
+    onSuccess: () => {
+      // Invalidate the query for the list of projects to trigger a refetch
+      queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
+    },
+  });
+}
+```
+
+Remember to always regenerate the client after any backend API changes by running `pnpm generate`.
+
+}
+```
+
+Remember to always regenerate the client after any backend API changes by running `pnpm generate`.

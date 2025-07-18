@@ -1,8 +1,15 @@
 ---
-description:
-globs:
-alwaysApply: false
+description: "Guidelines for creating new API endpoints in the FastAPI backend, covering models, schemas, services, and routes."
+globs: [
+  "apps/api/app/db/models/**/*.py",
+  "apps/api/app/schemas/**/*.py",
+  "apps/api/app/services/**/*.py",
+  "apps/api/app/api/v1/**/*.py",
+  "apps/api/tests/**/*.py"
+]
+alwaysApply: true
 ---
+
 # Creating a New API Endpoint
 
 This guide outlines the complete process for adding a new API endpoint to the Vantage backend. Following these steps ensures that all parts of the application (database, schemas, services, and API layer) are correctly implemented.
@@ -138,6 +145,11 @@ def create_widget(
 ### Step 5: Write a Test
 
 Always add a test for your new endpoint.
+
+-   **Location:** `apps/api/tests/api/v1/test_[domain].py`
+-   **Action:** Write a test case using `httpx.AsyncClient` to call the endpoint and assert the response.
+
+See `@testing.mdc` for detailed examples.
 
 -   **Location:** `apps/api/tests/api/v1/test_[domain].py`
 -   **Action:** Write a test case using `httpx.AsyncClient` to call the endpoint and assert the response.

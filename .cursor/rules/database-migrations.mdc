@@ -1,8 +1,12 @@
 ---
-description:
-globs:
-alwaysApply: false
+description: "Guidelines for creating and applying database migrations using Alembic for the backend database schema."
+globs: [
+  "apps/api/app/db/models/**/*.py",
+  "apps/api/alembic/versions/**/*.py"
+]
+alwaysApply: true
 ---
+
 # Database Migrations with Alembic
 
 This guide covers how to create and apply database migrations using Alembic in the Vantage project. Alembic is used to manage changes to our PostgreSQL database schema in a structured and version-controlled way.
@@ -65,6 +69,11 @@ alembic upgrade head
 - **View Migration History:** To see all revisions and the current position.
   ```bash
   alembic history --verbose
+  ```
+
+- **Downgrade a Migration:** To revert the last applied migration.
+  ```bash
+  alembic downgrade -1
   ```
 
 - **Downgrade a Migration:** To revert the last applied migration.

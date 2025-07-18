@@ -1,5 +1,144 @@
 ---
-description:
-globs:
-alwaysApply: false
+description: "Guidelines for creating and using React hooks in the frontend application."
+globs: ["apps/web/src/hooks/**/*.ts", "apps/web/src/hooks/**/*.tsx"]
+alwaysApply: true
 ---
+# Frontend Hooks Guidelines
+
+This document outlines the best practices for creating and using custom React hooks within the VANTAGE frontend application. Adhering to these guidelines ensures consistency, maintainability, and optimal performance.
+
+## Core Principles
+
+1.  **Single Responsibility:** Each hook should have a single, well-defined purpose.
+2.  **Descriptive Naming:** Hooks must be prefixed with `use` and have a name that clearly describes their function (e.g., `useCurrentUser`, `useToggle`).
+3.  **Reusability:** Design hooks to be reusable across different components.
+4.  **Colocation:** Place hooks in the `apps/web/src/hooks/` directory.
+
+## File Structure
+
+All custom hooks should be placed in `apps/web/src/hooks/`. Organize them by feature or domain if necessary.
+
+```
+apps/web/src/hooks/
+├── useAuth.ts
+├── useAssessments.ts
+├── useFeatureA.ts
+└── index.ts
+```
+
+## Data Fetching with `useQuery`
+
+For all server-state management, use `@tanstack/react-query`.
+
+-   **Query Keys:** Use a structured, serializable array for query keys. The first element should be the domain, followed by any parameters.
+
+-   **Query Functions:** The query function should use the shared API client from `@vantage/shared`.
+
+### Example: Fetching a User
+
+```typescript
+// apps/web/src/hooks/useUser.ts
+import { useQuery } from '@tanstack/react-query';
+import { users } from '@vantage/shared';
+
+const userKeys = {
+  all: ['users'] as const,
+  detail: (id: string) => [...userKeys.all, 'detail', id] as const,
+};
+
+export function useUser(id: string) {
+  return useQuery({
+    queryKey: userKeys.detail(id),
+    queryFn: () => users.usersReadUser({ userId: id }),
+    enabled: !!id, // Only run the query if the ID is available
+  });
+}
+```
+
+## Data Mutation with `useMutation`
+
+For creating, updating, or deleting data, use `useMutation`.
+
+-   **Invalidation:** After a successful mutation, invalidate relevant queries to refetch stale data and keep the UI in sync.
+
+### Example: Updating a User
+
+```typescript
+// apps/web/src/hooks/useUser.ts
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { users, UserUpdate } from '@vantage/shared';
+import { userKeys } from './useUser'; // Assuming keys are in the same file or exported
+
+export function useUpdateUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userData: UserUpdate & { id: string }) => {
+      const { id, ...data } = userData;
+      return users.usersUpdateUser({ userId: id, requestBody: data });
+    },
+    onSuccess: (data, variables) => {
+      // Invalidate the specific user query
+      queryClient.invalidateQueries({ queryKey: userKeys.detail(variables.id) });
+      // Invalidate the list of all users
+      queryClient.invalidateQueries({ queryKey: userKeys.all });
+    },
+  });
+}
+```
+
+## Client-Side State with Zustand
+
+For managing global client-side state, use `Zustand`. The PRD specifies `useAuthStore` for authentication state.
+
+-   **Store Structure:** Define the state and actions within the `create` function.
+-   **Location:** Place store definitions in `apps/web/src/store/`.
+
+### Example: Auth Store
+
+```typescript
+// apps/web/src/store/useAuthStore.ts
+import { create } from 'zustand';
+import { User } from '@vantage/shared';
+
+interface AuthState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  setUser: (user: User) => void;
+  setToken: (token: string) => void;
+  logout: () => void;
+}
+
+export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
+  token: null,
+
+  isAuthenticated: false,
+  setUser: (user) => set({ user, isAuthenticated: true }),
+  setToken: (token) => set({ token }),
+  logout: () => set({ user: null, token: null, isAuthenticated: false }),
+}));
+```
+
+## General Custom Hooks
+
+For other client-side logic (e.g., toggles, form state), create general-purpose custom hooks.
+
+### Example: `useToggle`
+
+```typescript
+// apps/web/src/hooks/useToggle.ts
+import { useState, useCallback } from 'react';
+
+export function useToggle(initialState = false): [boolean, () => void] {
+  const [state, setState] = useState(initialState);
+  const toggle = useCallback(() => setState((s) => !s), []);
+  return [state, toggle];
+}
+```
+
+  const toggle = useCallback(() => setState((s) => !s), []);
+  return [state, toggle];
+}
+```

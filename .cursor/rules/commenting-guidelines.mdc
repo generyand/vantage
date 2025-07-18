@@ -1,8 +1,14 @@
 ---
-description: 
-globs: 
+description: "Project-wide guidelines for writing clear and maintainable code comments and docstrings for both Python and TypeScript."
+globs: [
+  "apps/**/*.py",
+  "apps/**/*.ts",
+  "apps/**/*.tsx",
+  "packages/**/*.ts"
+]
 alwaysApply: true
 ---
+
 # Commenting Guidelines
 
 Comprehensive guidelines for writing clear, maintainable, and helpful code documentation through comments and docstrings.
@@ -299,6 +305,11 @@ Before submitting code, ensure:
 - Use tools like typedoc for API documentation
 
 ### Python
+- Use docstring linting tools (pydocstyle, flake8-docstrings)
+- Follow PEP 257 docstring conventions
+- Generate API docs with Sphinx or similar tools
+
+
 - Use docstring linting tools (pydocstyle, flake8-docstrings)
 - Follow PEP 257 docstring conventions
 - Generate API docs with Sphinx or similar tools

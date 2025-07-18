@@ -1,5 +1,142 @@
 ---
-description:
-globs:
-alwaysApply: false
+description: "Guidelines for using and creating UI components with shadcn/ui and Tailwind CSS, focusing on composition, styling, and reusability."
+globs: [
+  "apps/web/src/components/**/*.tsx",
+  "apps/web/src/app/**/*.tsx"
+]
+alwaysApply: true
 ---
+
+# UI Component Guidelines
+
+This document provides rules and best practices for working with UI components in the VANTAGE frontend. Our component library is built upon `shadcn/ui`, and consistency is key to a maintainable and visually coherent application.
+
+## 1. Core Principles
+
+-   **Composition over Modification:** Do not modify the base `shadcn/ui` components located in `apps/web/src/components/ui/`. Instead, wrap them in your own shared or feature-specific components to add new functionality or styles.
+-   **Clarity and Reusability:** Build components to be reusable and self-contained. Use `shared` components for cross-feature elements and `features` components for domain-specific ones.
+-   **Consistent Styling:** Use `tailwind-merge` via the `cn` utility to intelligently merge Tailwind CSS classes, preventing style conflicts.
+
+## 2. The `cn` Utility
+
+A `cn` utility function for merging Tailwind classes should exist in `apps/web/src/lib/utils.ts`. Always use it when conditionally applying classes or creating component variants.
+
+```typescript
+// apps/web/src/lib/utils.ts
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+## 3. Extending UI Components
+
+When you need a `Button` with a specific icon and style that will be used in multiple places, create a new, more specific component.
+
+### Bad Practice: Repeating Styles
+
+```tsx
+// Repetitive and hard to maintain
+<Button variant="outline" size="icon">
+  <FilePlus className="h-4 w-4" />
+</Button>
+
+<Button variant="outline" size="icon">
+  <Trash2 className="h-4 w-4" />
+</Button>
+```
+
+### Good Practice: Creating a Shared Component
+
+Create a reusable `IconButton` that accepts an `icon` prop.
+
+**Step 1: Create the new component**
+
+```tsx
+// apps/web/src/components/shared/IconButton.tsx
+import * as React from 'react';
+import { Slot } from '@radix-ui/react-slot';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+
+interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  icon: React.ElementType;
+}
+
+const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
+  ({ className, icon: Icon, ...props }, ref) => {
+    return (
+      <Button
+        ref={ref}
+        variant="outline"
+        size="icon"
+        className={cn('shrink-0', className)}
+        {...props}
+      >
+        <Icon className="h-4 w-4" />
+      </Button>
+    );
+  }
+);
+IconButton.displayName = 'IconButton';
+
+export { IconButton };
+```
+
+**Step 2: Use the new component**
+
+```tsx
+// Clean and easy to reuse
+import { IconButton } from '@/components/shared/IconButton';
+import { FilePlus, Trash2 } from 'lucide-react';
+
+<IconButton icon={FilePlus} onClick={handleAddNew} />
+<IconButton icon={Trash2} onClick={handleDelete} />
+```
+
+## 4. Using `class-variance-authority` (CVA)
+
+For components with multiple style variants, use CVA to keep the styling logic organized and co-located with the component.
+
+### Example: A StatusBadge Component
+
+This component will have different colors based on the `variant` prop.
+
+```tsx
+// apps/web/src/components/shared/StatusBadge.tsx
+import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+
+const badgeVariants = cva(
+  'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors',
+  {
+    variants: {
+      variant: {
+        default: 'border-transparent bg-primary text-primary-foreground',
+        success: 'border-transparent bg-green-500 text-white',
+        warning: 'border-transparent bg-yellow-500 text-white',
+        danger: 'border-transparent bg-red-500 text-white',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  }
+);
+
+export interface BadgeProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof badgeVariants> {}
+
+function StatusBadge({ className, variant, ...props }: BadgeProps) {
+  return (
+    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+  );
+}
+
+export { StatusBadge, badgeVariants };
+```
