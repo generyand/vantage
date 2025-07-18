@@ -16,7 +16,7 @@ async def root():
     return ApiResponse(message="Welcome to Vantage API")
 
 
-@router.get("/health", tags=["system"])
+@router.get("/health", response_model=HealthCheck, tags=["system"])
 async def health_check():
     """
     Comprehensive health check endpoint.

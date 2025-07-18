@@ -3,6 +3,7 @@
 
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Dict, Any
 
 
 class ApiResponse(BaseModel):
@@ -14,6 +15,9 @@ class HealthCheck(BaseModel):
     """Health check response schema."""
     status: str
     timestamp: datetime
+    api: Dict[str, Any]
+    connections: Dict[str, Any]
+    checks: Dict[str, Any]
 
 
 class ErrorResponse(BaseModel):

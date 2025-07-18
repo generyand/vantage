@@ -127,7 +127,7 @@ export default function ReportsPage() {
         </div>
         <div className="p-6">
           <div className="flex items-end space-x-4 h-64">
-            {reportData.trends.map((item, index) => (
+            {reportData.trends.map((item) => (
               <div key={item.month} className="flex-1 flex flex-col items-center">
                 <div
                   className="bg-blue-500 rounded-t w-full mb-2 transition-all duration-300 hover:bg-blue-600"

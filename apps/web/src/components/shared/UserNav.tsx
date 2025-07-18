@@ -1,31 +1,19 @@
-// 🚀 Modern component using auto-generated React Query hooks
+// 🚀 Modern component with logout functionality
 'use client';
 
-import { useGetCurrentUser } from '@vantage/shared';
+import { useRouter } from 'next/navigation';
+import { useAuthStore, useUser } from '@/store/useAuthStore';
+import { Button } from '@/components/ui/button';
 
 export default function UserNav() {
-  // ✨ Auto-generated hook with caching, loading states, and error handling
-  const { data: user, isLoading, error } = useGetCurrentUser();
+  const router = useRouter();
+  const { logout } = useAuthStore();
+  const user = useUser();
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-4">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-2 text-gray-600">Loading user...</span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 rounded-md p-4">
-        <div className="text-red-600 font-medium">Error loading user</div>
-        <div className="text-red-500 text-sm mt-1">
-          {error instanceof Error ? error.message : 'Something went wrong'}
-        </div>
-      </div>
-    );
-  }
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   if (!user) {
     return (
@@ -37,18 +25,33 @@ export default function UserNav() {
 
   return (
     <div className="bg-white shadow rounded-lg p-6">
-      <div className="flex items-center space-x-4">
-        <div className="bg-blue-100 rounded-full p-3">
-          <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
-          </svg>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="bg-blue-100 rounded-full p-3">
+            <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
+            <p className="text-gray-600">{user.email}</p>
+            <p className="text-sm text-gray-500">
+              Member since {new Date(user.created_at).toLocaleDateString()}
+            </p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
-          <p className="text-gray-600">{user.email}</p>
-          <p className="text-sm text-gray-500">
-            Member since {new Date(user.created_at).toLocaleDateString()}
-          </p>
+        <div className="flex items-center space-x-3">
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            size="sm"
+            className="text-gray-700 hover:text-gray-900"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Logout
+          </Button>
         </div>
       </div>
     </div>

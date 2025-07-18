@@ -1,9 +1,16 @@
 import Link from 'next/link';
 
-export default function AssessmentDetailPage({ params }: { params: { id: string } }) {
-  // Mock data - replace with actual API call using params.id
+
+// export default function AssessmentDetailPage({ params }: { params: { id: string } }) {
+//   // Mock data - replace with actual API call using params.id
+
+export default async function AssessmentDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  
+  // Mock data - replace with actual API call using id
   const assessment = {
-    id: params.id,
+    // id: params.id,
+    id: id,
     title: 'Q1 2024 Leadership Assessment',
     description: 'Comprehensive leadership evaluation focusing on strategic decision-making, team management, and organizational vision.',
     status: 'completed',

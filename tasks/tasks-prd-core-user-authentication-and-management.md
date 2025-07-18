@@ -45,11 +45,11 @@
     -   [x] 3.4 Implement CRUD endpoints for user management (`GET /users`, `POST /users`, `GET /users/{id}`, `PUT /users/{id}`).
     -   [x] 3.5 In `deps.py`, create a permission dependency that restricts access to these user management endpoints to users with the "MLGOO-DILG" role only.
 
--   [ ] 4.0 **Frontend Foundation & Login Flow**
+-   [x] 4.0 **Frontend Foundation & Login Flow**
     -   [x] 4.1 Create `apps/web/src/store/useAuthStore.ts` using Zustand to hold `user`, `token`, and `isAuthenticated` state.
     -   [x] 4.2 Update the `LoginForm` component to use a `useMutation` hook to call the login endpoint. On success, save state to Zustand and redirect to the dashboard.
-    -   [ ] 4.3 Create `apps/web/middleware.ts` to protect all routes inside the `(app)` group. Unauthenticated users should be redirected to `/login`.
-    -   [ ] 4.4 Implement a "Logout" button in the `UserNav` component that clears the auth store and redirects to login.
+    -   [x] 4.3 Create `apps/web/middleware.ts` to protect all routes inside the `(app)` group. Unauthenticated users should be redirected to `/login`.
+    -   [x] 4.4 Implement a "Logout" button in the `UserNav` component that clears the auth store and redirects to login.
 
 -   [ ] 5.0 **Build Frontend User Management Interface (Admin)**
     -   [ ] 5.1 Create the page `apps/web/src/app/(app)/user-management/page.tsx`. This page should be accessible only to the admin role.
