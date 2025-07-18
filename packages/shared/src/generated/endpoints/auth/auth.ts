@@ -17,6 +17,7 @@ import type {
 import type {
   ApiResponse,
   AuthToken,
+  ChangePasswordRequest,
   HTTPValidationError,
   LoginRequest
 } from '../../schemas';
@@ -35,10 +36,11 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * Login endpoint - authenticate user and return JWT token.
 
-In production, this will:
-1. Validate user credentials against the database
-2. Generate a secure JWT token
-3. Return token with expiration info
+This endpoint:
+1. Validates user credentials against the database
+2. Checks if the user account is active
+3. Generates a secure JWT token
+4. Returns token with expiration info
  * @summary Login
  */
 export const Login_api_v1_auth_login_post = (
@@ -99,6 +101,77 @@ export const useLoginApiV1AuthLoginPost = <TError = HTTPValidationError,
       > => {
 
       const mutationOptions = getLoginApiV1AuthLoginPostMutationOptions(options);
+
+      return useMutation(mutationOptions );
+    }
+    /**
+ * Change user password endpoint.
+
+This endpoint:
+1. Verifies the current password
+2. Updates the user's password
+3. Sets must_change_password to False
+4. Returns success message
+ * @summary Change Password
+ */
+export const Change_password_api_v1_auth_change_password_post = (
+    changePasswordRequest: ChangePasswordRequest,
+ options?: SecondParameter<typeof mutator>,signal?: AbortSignal
+) => {
+      
+      
+      return mutator<ApiResponse>(
+      {url: `http://localhost:8000/api/v1/auth/change-password`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: changePasswordRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getChangePasswordApiV1AuthChangePasswordPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Change_password_api_v1_auth_change_password_post>>, TError,{data: ChangePasswordRequest}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof Change_password_api_v1_auth_change_password_post>>, TError,{data: ChangePasswordRequest}, TContext> => {
+
+const mutationKey = ['changePasswordApiV1AuthChangePasswordPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Change_password_api_v1_auth_change_password_post>>, {data: ChangePasswordRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  Change_password_api_v1_auth_change_password_post(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ChangePasswordApiV1AuthChangePasswordPostMutationResult = NonNullable<Awaited<ReturnType<typeof Change_password_api_v1_auth_change_password_post>>>
+    export type ChangePasswordApiV1AuthChangePasswordPostMutationBody = ChangePasswordRequest
+    export type ChangePasswordApiV1AuthChangePasswordPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Change Password
+ */
+export const useChangePasswordApiV1AuthChangePasswordPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Change_password_api_v1_auth_change_password_post>>, TError,{data: ChangePasswordRequest}, TContext>, request?: SecondParameter<typeof mutator>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof Change_password_api_v1_auth_change_password_post>>,
+        TError,
+        {data: ChangePasswordRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getChangePasswordApiV1AuthChangePasswordPostMutationOptions(options);
 
       return useMutation(mutationOptions );
     }

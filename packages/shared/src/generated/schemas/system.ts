@@ -9,3 +9,33 @@
 export interface ApiResponse {
   message: string;
 }
+
+
+/**
+ * HealthCheck
+ */
+export interface HealthCheck {
+  status: string;
+  timestamp: string;
+  api: HealthCheckApi;
+  connections: HealthCheckConnections;
+  checks: HealthCheckChecks;
+}
+
+
+/**
+ * HealthCheckApi
+ */
+export type HealthCheckApi = { [key: string]: unknown };
+
+
+/**
+ * HealthCheckChecks
+ */
+export type HealthCheckChecks = { [key: string]: unknown };
+
+
+/**
+ * HealthCheckConnections
+ */
+export type HealthCheckConnections = { [key: string]: unknown };

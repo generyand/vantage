@@ -16,7 +16,8 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  ApiResponse
+  ApiResponse,
+  HealthCheck
 } from '../../schemas';
 
 import { mutator } from '../../../../../../apps/web/src/lib/api';
@@ -109,7 +110,7 @@ export const Health_check_api_v1_health_get = (
 ) => {
       
       
-      return mutator<unknown>(
+      return mutator<HealthCheck>(
       {url: `http://localhost:8000/api/v1/health`, method: 'GET', signal
     },
       options);
