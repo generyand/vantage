@@ -1,7 +1,7 @@
 # 👥 User Database Model
 # SQLAlchemy model for the users table
 
-from sqlalchemy import Column, String, DateTime, Boolean
+from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, Integer
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
@@ -23,9 +23,12 @@ class User(Base):
     # User information
     email = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=False)
+    phone_number = Column(String, nullable=True)
+    barangay_id = Column(Integer, ForeignKey("barangays.id"), nullable=True)
     
     # Authentication
     hashed_password = Column(String, nullable=False)
+    must_change_password = Column(Boolean, default=True, nullable=False)
     
     # User status
     is_active = Column(Boolean, default=True, nullable=False)
@@ -37,4 +40,5 @@ class User(Base):
     
     # Relationships
     projects = relationship("Project", back_populates="owner")
-    assessments = relationship("Assessment", back_populates="user") 
+    assessments = relationship("Assessment", back_populates="user")
+    barangay = relationship("Barangay") 

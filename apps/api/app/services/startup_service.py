@@ -7,10 +7,21 @@ import logging
 from typing import Dict, Any
 from datetime import datetime
 
+from sqlalchemy.orm import Session
+
 from app.core.config import settings
-from app.db.base import check_all_connections, validate_connections_startup
+from app.db.base import check_all_connections, validate_connections_startup, SessionLocal
+from app.db.models.barangay import Barangay
 
 logger = logging.getLogger(__name__)
+
+
+BARANGAYS = [
+    "Balasinon", "Buguis", "Carre", "Clib", "Harada Butai", "Katipunan",
+    "Kiblagon", "Labon", "Laperas", "Lapla", "Litos", "Luparan", "Mckinley",
+    "New Cebu", "Osmeña", "Palili", "Parame", "Poblacion", "Roxas",
+    "Solongvale", "Tagolilong", "Tala-o", "Talas", "Tanwalang", "Waterfall"
+]
 
 
 class StartupService:
@@ -42,6 +53,9 @@ class StartupService:
         # Validate database connections
         await self._validate_database_connections()
         
+        # Seed initial data
+        self._seed_initial_data()
+        
         # Log detailed connection status
         await self._log_connection_details()
         
@@ -55,6 +69,28 @@ class StartupService:
         logger.info(f"🔧 Debug mode: {settings.DEBUG}")
         logger.info(f"📝 Project: {settings.PROJECT_NAME} v{settings.VERSION}")
     
+    def _seed_initial_data(self) -> None:
+        """Seed the database with initial required data."""
+        logger.info("🌱 Seeding initial data...")
+        db: Session = SessionLocal()
+        try:
+            # Check if barangays already exist
+            count = db.query(Barangay).count()
+            if count == 0:
+                logger.info("  - Seeding 25 barangays for Sulop...")
+                for name in BARANGAYS:
+                    db_barangay = Barangay(name=name)
+                    db.add(db_barangay)
+                db.commit()
+                logger.info("  - Barangay seeding complete.")
+            else:
+                logger.info("  - Barangays already seeded. Skipping.")
+        except Exception as e:
+            logger.warning(f"⚠️  Could not seed initial data: {str(e)}")
+            db.rollback()
+        finally:
+            db.close()
+
     async def _validate_database_connections(self) -> None:
         """
         Validate database connections according to configuration requirements.
@@ -98,8 +134,11 @@ class StartupService:
     
     def _log_startup_success(self) -> None:
         """Log successful startup completion"""
-        startup_duration = (datetime.now() - self.startup_time).total_seconds()
-        logger.info(f"🎯 VANTAGE API server startup complete! ({startup_duration:.2f}s)")
+        if self.startup_time:
+            startup_duration = (datetime.now() - self.startup_time).total_seconds()
+            logger.info(f"🎯 VANTAGE API server startup complete! ({startup_duration:.2f}s)")
+        else:
+            logger.info("🎯 VANTAGE API server startup complete!")
     
     def log_shutdown(self) -> None:
         """Log application shutdown"""
