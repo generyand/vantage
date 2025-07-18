@@ -25,12 +25,12 @@
 
 ## Tasks
 
--   [ ] 1.0 **Backend Foundation & Database Schema**
-    -   [ ] 1.1 In `apps/api/app/db/models/user.py`, add `phone_number` (String, nullable), `is_active` (Boolean, default True), and `must_change_password` (Boolean, default True) columns to the `User` model.
-    -   [ ] 1.2 Create `apps/api/app/db/models/barangay.py` with a `Barangay` model containing `id` and `name`.
-    -   [ ] 1.3 Establish the relationship between `User` and `Barangay` (a user can be linked to one barangay).
-    -   [ ] 1.4 Run `uv run alembic revision --autogenerate -m "Add user fields and barangay table"` to create the migration file. Review the generated script.
-    -   [ ] 1.5 Create a seeding script or a one-time service to populate the `barangays` table with the 25 barangays of Sulop.
+-   [x] 1.0 **Backend Foundation & Database Schema**
+    -   [x] 1.1 In `apps/api/app/db/models/user.py`, add `phone_number` (String, nullable), `is_active` (Boolean, default True), and `must_change_password` (Boolean, default True) columns to the `User` model.
+    -   [x] 1.2 Create `apps/api/app/db/models/barangay.py` with a `Barangay` model containing `id` and `name`.
+    -   [x] 1.3 Establish the relationship between `User` and `Barangay` (a user can be linked to one barangay).
+    -   [x] 1.4 Run `uv run alembic revision --autogenerate -m "Add user fields and barangay table"` to create the migration file. Review the generated script.
+    -   [x] 1.5 Create a seeding script or a one-time service to populate the `barangays` table with the 25 barangays of Sulop.
 
 -   [ ] 2.0 **Implement Backend Authentication Endpoints**
     -   [ ] 2.1 In `apps/api/app/api/v1/auth.py`, enhance the `/login` endpoint to check if `is_active` is true.

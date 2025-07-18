@@ -3,7 +3,7 @@
 
 import secrets
 from typing import Optional, List
-from pydantic import field_validator, ValidationInfo
+from pydantic import field_validator, ValidationInfo, ConfigDict
 from pydantic_settings import BaseSettings
 
 
@@ -98,9 +98,10 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER: str = "admin@vantage.com"
     FIRST_SUPERUSER_PASSWORD: str = "changethis"
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = ConfigDict(
+        env_file=".env",
+        case_sensitive=True
+    )
 
 
 # Global settings instance
