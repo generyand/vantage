@@ -30,8 +30,10 @@ interface ApiUser {
 }
 
 // Temporary API functions until the shared package is properly configured
+const API_BASE_URL = "http://localhost:8000";
+
 const loginApi = async (credentials: LoginRequest): Promise<AuthToken> => {
-  const response = await fetch("/api/v1/auth/login", {
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -47,7 +49,7 @@ const loginApi = async (credentials: LoginRequest): Promise<AuthToken> => {
 };
 
 const getCurrentUser = async (token: string): Promise<ApiUser> => {
-  const response = await fetch("/api/v1/users/me", {
+  const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
