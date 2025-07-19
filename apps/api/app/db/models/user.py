@@ -25,7 +25,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=False)
     phone_number = Column(String, nullable=True)
-    role = Column(Enum(UserRole), nullable=False, default=UserRole.BLGU_USER)
+    role = Column(Enum(UserRole, name="user_role_enum", create_constraint=True), nullable=False, default=UserRole.BLGU_USER)
     assessor_area = Column(SmallInteger, nullable=True)  # Reference to governance_areas.id for Area Assessors
     barangay_id = Column(Integer, ForeignKey("barangays.id"), nullable=True)
     

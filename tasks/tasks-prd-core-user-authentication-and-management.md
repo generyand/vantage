@@ -1,12 +1,12 @@
 ## Relevant Files
 
--   `apps/api/app/db/enums.py` - **Create** Python enums for `UserRole` and `GovernanceAreaType` to improve type safety and code readability.
--   `apps/api/app/db/models/user.py` - **Modify** the `User` model to use an `Integer` primary key and enum-based `role` field.
--   `apps/api/app/db/models/governance_area.py` - **Create** a new model for governance areas with enum-based `area_type` field.
+-   `apps/api/app/db/enums.py` - **Create/Refactor** Python enums for `UserRole` and `AreaType` to use strings for better readability.
+-   `apps/api/app/db/models/user.py` - **Modify** the `User` model to use a string-based enum for the `role` field.
+-   `apps/api/app/db/models/governance_area.py` - **Modify** the `GovernanceArea` model to use a string-based enum for the `area_type` field.
 -   `apps/api/alembic/versions/` - A **new** Alembic migration file will be generated for all schema alterations.
 -   `apps/api/app/schemas/user.py` - **Update** Pydantic schemas to reflect the new `Integer` `id` and `assessor_area` field.
 -   `apps/api/app/api/v1/users.py` - **Update** endpoints to handle `assessor_area` logic.
--   `apps/api/app/services/user_service.py` - **Update** service logic to manage `assessor_area` and use enum-based roles.
+-   `apps/api/app/services/user_service.py` - **Update** service logic to use string-based enums for roles.
 -   `apps/api/app/services/governance_area_service.py` - **Update** seeding service to use enum values.
 -   `apps/api/app/services/startup_service.py` - **Update** to use enum-based roles for first superuser creation.
 -   `apps/api/app/api/deps.py` - **Update** dependencies to handle enum-based roles.
@@ -39,14 +39,22 @@
     -   [x] 1.9 Create a one-time seeding service to populate the `governance_areas` table with the 6 predefined SGLGB areas and their types (Core/Essential).
     -   [x] 1.10 Run `uv run alembic revision --autogenerate -m "Alter user table and add governance areas"` to create a new migration file. Review the script.
 
--   [x] 1.11 **Implement Enums for Type Safety and Better Code Quality**
-    -   [x] 1.11.1 Create `apps/api/app/db/enums.py` with `UserRole` and `GovernanceAreaType` enums using Python's `enum.IntEnum`.
-    -   [x] 1.11.2 Update `apps/api/app/db/models/user.py` to use `Enum(UserRole)` instead of `SmallInteger` for the `role` column.
-    -   [x] 1.11.3 Update `apps/api/app/db/models/governance_area.py` to use `Enum(GovernanceAreaType)` instead of `SmallInteger` for the `area_type` column.
-    -   [x] 1.11.4 Update `apps/api/app/services/governance_area_service.py` to use enum values in the seeding data.
-    -   [x] 1.11.5 Update `apps/api/app/services/startup_service.py` to use `UserRole.SYSTEM_ADMIN` instead of integer `3`.
-    -   [x] 1.11.6 Create a new Alembic migration to add CHECK constraints for the enum values in the database.
-    -   [x] 1.11.7 Update all existing code that references integer role values to use the new enums.
+-   [x] 1.11 ~~**Implement Enums for Type Safety and Better Code Quality**~~ (Superseded by string-based enum refactor)
+    -   [x] ~~1.11.1 Create `apps/api/app/db/enums.py` with `UserRole` and `GovernanceAreaType` enums using Python's `enum.IntEnum`.~~
+    -   [x] ~~1.11.2 Update `apps/api/app/db/models/user.py` to use `Enum(UserRole)` instead of `SmallInteger` for the `role` column.~~
+    -   [x] ~~1.11.3 Update `apps/api/app/db/models/governance_area.py` to use `Enum(GovernanceAreaType)` instead of `SmallInteger` for the `area_type` column.~~
+    -   [x] ~~1.11.4 Update `apps/api/app/services/governance_area_service.py` to use enum values in the seeding data.~~
+    -   [x] ~~1.11.5 Update `apps/api/app/services/startup_service.py` to use `UserRole.SYSTEM_ADMIN` instead of integer `3`.~~
+    -   [x] ~~1.11.6 Create a new Alembic migration to add CHECK constraints for the enum values in the database.~~
+    -   [x] ~~1.11.7 Update all existing code that references integer role values to use the new enums.~~
+
+-   [x] 1.12 **Refactor Roles & Area Types to use String-Based Enums**
+    -   [x] 1.12.1 In `enums.py`, refactor `UserRole` to be a `(str, enum.Enum)` with values like `"SUPERADMIN"`, `"MLGOO_DILG"`, etc. Create a new `AreaType(str, enum.Enum)` for `"Core"` and `"Essential"`.
+    -   [x] 1.12.2 Update `user.py` and `governance_area.py` models to use the new string-based enums.
+    -   [x] 1.12.3 In `governance_area_service.py`, update the seeding data to use the new `AreaType` enum string values.
+    -   [x] 1.12.4 In `startup_service.py`, update the superuser creation to use `UserRole.SUPERADMIN`.
+    -   [x] 1.12.5 In `deps.py`, update the admin check to use `UserRole.SUPERADMIN`.
+    -   [x] 1.12.6 Create a new Alembic migration to change the `role` and `area_type` columns to `VARCHAR`, update existing data from integers to strings, and update the `CHECK` constraints.
 
 -   [ ] 2.0 **Implement Backend Authentication Endpoints (Revision 1)**
     -   [x] 2.1 ~~*Original login endpoint enhancement*~~ (Completed)

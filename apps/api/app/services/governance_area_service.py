@@ -3,7 +3,7 @@
 
 from sqlalchemy.orm import Session
 from app.db.models.governance_area import GovernanceArea
-from app.db.enums import GovernanceAreaType
+from app.db.enums import AreaType
 
 
 class GovernanceAreaService:
@@ -21,12 +21,12 @@ class GovernanceAreaService:
         
         # Predefined governance areas data
         governance_areas_data = [
-            {"id": 1, "name": "Financial Administration and Sustainability", "area_type": GovernanceAreaType.CORE},
-            {"id": 2, "name": "Disaster Preparedness", "area_type": GovernanceAreaType.CORE},
-            {"id": 3, "name": "Safety, Peace and Order", "area_type": GovernanceAreaType.CORE},
-            {"id": 4, "name": "Social Protection and Sensitivity", "area_type": GovernanceAreaType.ESSENTIAL},
-            {"id": 5, "name": "Business-Friendliness and Competitiveness", "area_type": GovernanceAreaType.ESSENTIAL},
-            {"id": 6, "name": "Environmental Management", "area_type": GovernanceAreaType.ESSENTIAL},
+            {"id": 1, "name": "Financial Administration and Sustainability", "area_type": AreaType.CORE},
+            {"id": 2, "name": "Disaster Preparedness", "area_type": AreaType.CORE},
+            {"id": 3, "name": "Safety, Peace and Order", "area_type": AreaType.CORE},
+            {"id": 4, "name": "Social Protection and Sensitivity", "area_type": AreaType.ESSENTIAL},
+            {"id": 5, "name": "Business-Friendliness and Competitiveness", "area_type": AreaType.ESSENTIAL},
+            {"id": 6, "name": "Environmental Management", "area_type": AreaType.ESSENTIAL},
         ]
         
         # Create governance area records

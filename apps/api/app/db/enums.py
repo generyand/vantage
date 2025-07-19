@@ -1,26 +1,24 @@
 # 🎯 Database Enums
 # Python enums for database fields to improve type safety and code readability
 
-from enum import IntEnum
+import enum
 
 
-class UserRole(IntEnum):
+class UserRole(str, enum.Enum):
     """
-    User role enumeration for the role field in the users table.
+    Enum for user roles.
     
-    Using IntEnum allows storage as integers in the database while providing
-    type safety and readability in Python code.
+    Using a string-based enum improves readability and maintainability.
     """
-    BLGU_USER = 1
-    AREA_ASSESSOR = 2
-    SYSTEM_ADMIN = 3
+    SUPERADMIN = "SUPERADMIN"
+    MLGOO_DILG = "MLGOO_DILG"
+    AREA_ASSESSOR = "AREA_ASSESSOR"
+    BLGU_USER = "BLGU_USER"
 
 
-class GovernanceAreaType(IntEnum):
+class AreaType(str, enum.Enum):
     """
-    Governance area type enumeration for the area_type field in governance_areas table.
-    
-    Categorizes SGLGB governance areas into Core and Essential types.
+    Enum for the type of governance area (Core or Essential).
     """
-    CORE = 1
-    ESSENTIAL = 2 
+    CORE = "Core"
+    ESSENTIAL = "Essential" 

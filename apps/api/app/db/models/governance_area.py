@@ -4,7 +4,7 @@
 from sqlalchemy import Column, String, SmallInteger, Enum
 
 from app.db.base import Base
-from app.db.enums import GovernanceAreaType
+from app.db.enums import AreaType
 
 
 class GovernanceArea(Base):
@@ -21,4 +21,4 @@ class GovernanceArea(Base):
     
     # Area information
     name = Column(String, nullable=False, unique=True)
-    area_type = Column(Enum(GovernanceAreaType), nullable=False) 
+    area_type = Column(Enum(AreaType, name="area_type_enum", create_constraint=True), nullable=False) 

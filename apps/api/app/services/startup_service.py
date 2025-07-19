@@ -111,9 +111,9 @@ class StartupService:
         db: Session = SessionLocal()
         try:
             # Check if any superuser exists
-            existing_user = db.query(User).filter(User.email == settings.FIRST_SUPERUSER).first()
+            existing_user = db.query(User).filter(User.role == UserRole.SUPERADMIN).first()
             if existing_user:
-                logger.info("  - First superuser already exists. Skipping.")
+                logger.info("  - Superuser already exists. Skipping.")
                 return
             
             # Create first superuser
@@ -122,15 +122,14 @@ class StartupService:
                 email=settings.FIRST_SUPERUSER,
                 name="System Administrator",
                 hashed_password=get_password_hash(settings.FIRST_SUPERUSER_PASSWORD),
-                role=UserRole.SYSTEM_ADMIN,
+                role=UserRole.SUPERADMIN,
                 is_active=True,
                 is_superuser=True,
-                must_change_password=True
+                must_change_password=False
             )
             db.add(user)
             db.commit()
-            logger.info("  - First superuser created successfully.")
-            logger.info("  - 🔐 Default password: changethis (please change on first login)")
+            logger.info("  - Superuser created successfully.")
             
         except Exception as e:
             logger.warning(f"⚠️  Could not create first superuser: {str(e)}")
