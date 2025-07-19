@@ -35,7 +35,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Root endpoint - welcome message for the API.
  * @summary Root
  */
-export const Root_api_v1__get = (
+export const getV1 = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -48,43 +48,43 @@ export const Root_api_v1__get = (
     }
   
 
-export const getRootApiV1GetQueryKey = () => {
+export const getGetV1QueryKey = () => {
     return [`http://localhost:8000/api/v1/`] as const;
     }
 
     
-export const getRootApiV1GetQueryOptions = <TData = Awaited<ReturnType<typeof Root_api_v1__get>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Root_api_v1__get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetV1QueryOptions = <TData = Awaited<ReturnType<typeof getV1>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getV1>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getRootApiV1GetQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetV1QueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof Root_api_v1__get>>> = ({ signal }) => Root_api_v1__get(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1>>> = ({ signal }) => getV1(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof Root_api_v1__get>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type RootApiV1GetQueryResult = NonNullable<Awaited<ReturnType<typeof Root_api_v1__get>>>
-export type RootApiV1GetQueryError = unknown
+export type GetV1QueryResult = NonNullable<Awaited<ReturnType<typeof getV1>>>
+export type GetV1QueryError = unknown
 
 
 /**
  * @summary Root
  */
 
-export function useRootApiV1Get<TData = Awaited<ReturnType<typeof Root_api_v1__get>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Root_api_v1__get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGetV1<TData = Awaited<ReturnType<typeof getV1>>, TError = unknown>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getV1>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getRootApiV1GetQueryOptions(options)
+  const queryOptions = getGetV1QueryOptions(options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -104,7 +104,7 @@ Checks:
 - Overall system health
  * @summary Health Check
  */
-export const Health_check_api_v1_health_get = (
+export const getHealth = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -117,43 +117,43 @@ export const Health_check_api_v1_health_get = (
     }
   
 
-export const getHealthCheckApiV1HealthGetQueryKey = () => {
+export const getGetHealthQueryKey = () => {
     return [`http://localhost:8000/api/v1/health`] as const;
     }
 
     
-export const getHealthCheckApiV1HealthGetQueryOptions = <TData = Awaited<ReturnType<typeof Health_check_api_v1_health_get>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Health_check_api_v1_health_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetHealthQueryOptions = <TData = Awaited<ReturnType<typeof getHealth>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getHealthCheckApiV1HealthGetQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetHealthQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof Health_check_api_v1_health_get>>> = ({ signal }) => Health_check_api_v1_health_get(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getHealth>>> = ({ signal }) => getHealth(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof Health_check_api_v1_health_get>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type HealthCheckApiV1HealthGetQueryResult = NonNullable<Awaited<ReturnType<typeof Health_check_api_v1_health_get>>>
-export type HealthCheckApiV1HealthGetQueryError = unknown
+export type GetHealthQueryResult = NonNullable<Awaited<ReturnType<typeof getHealth>>>
+export type GetHealthQueryError = unknown
 
 
 /**
  * @summary Health Check
  */
 
-export function useHealthCheckApiV1HealthGet<TData = Awaited<ReturnType<typeof Health_check_api_v1_health_get>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Health_check_api_v1_health_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = unknown>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getHealthCheckApiV1HealthGetQueryOptions(options)
+  const queryOptions = getGetHealthQueryOptions(options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -173,7 +173,7 @@ Returns detailed information about:
 - Connection errors and troubleshooting info
  * @summary Database Status
  */
-export const Database_status_api_v1_db_status_get = (
+export const getDbStatus = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -186,43 +186,43 @@ export const Database_status_api_v1_db_status_get = (
     }
   
 
-export const getDatabaseStatusApiV1DbStatusGetQueryKey = () => {
+export const getGetDbStatusQueryKey = () => {
     return [`http://localhost:8000/api/v1/db-status`] as const;
     }
 
     
-export const getDatabaseStatusApiV1DbStatusGetQueryOptions = <TData = Awaited<ReturnType<typeof Database_status_api_v1_db_status_get>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Database_status_api_v1_db_status_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetDbStatusQueryOptions = <TData = Awaited<ReturnType<typeof getDbStatus>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDbStatus>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getDatabaseStatusApiV1DbStatusGetQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetDbStatusQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof Database_status_api_v1_db_status_get>>> = ({ signal }) => Database_status_api_v1_db_status_get(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDbStatus>>> = ({ signal }) => getDbStatus(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof Database_status_api_v1_db_status_get>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDbStatus>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type DatabaseStatusApiV1DbStatusGetQueryResult = NonNullable<Awaited<ReturnType<typeof Database_status_api_v1_db_status_get>>>
-export type DatabaseStatusApiV1DbStatusGetQueryError = unknown
+export type GetDbStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getDbStatus>>>
+export type GetDbStatusQueryError = unknown
 
 
 /**
  * @summary Database Status
  */
 
-export function useDatabaseStatusApiV1DbStatusGet<TData = Awaited<ReturnType<typeof Database_status_api_v1_db_status_get>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Database_status_api_v1_db_status_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGetDbStatus<TData = Awaited<ReturnType<typeof getDbStatus>>, TError = unknown>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDbStatus>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getDatabaseStatusApiV1DbStatusGetQueryOptions(options)
+  const queryOptions = getGetDbStatusQueryOptions(options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -237,7 +237,7 @@ export function useDatabaseStatusApiV1DbStatusGet<TData = Awaited<ReturnType<typ
  * Simple hello endpoint for testing connectivity.
  * @summary Hello
  */
-export const Hello_api_v1_hello_get = (
+export const getHello = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -250,43 +250,43 @@ export const Hello_api_v1_hello_get = (
     }
   
 
-export const getHelloApiV1HelloGetQueryKey = () => {
+export const getGetHelloQueryKey = () => {
     return [`http://localhost:8000/api/v1/hello`] as const;
     }
 
     
-export const getHelloApiV1HelloGetQueryOptions = <TData = Awaited<ReturnType<typeof Hello_api_v1_hello_get>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Hello_api_v1_hello_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetHelloQueryOptions = <TData = Awaited<ReturnType<typeof getHello>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getHello>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getHelloApiV1HelloGetQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetHelloQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof Hello_api_v1_hello_get>>> = ({ signal }) => Hello_api_v1_hello_get(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getHello>>> = ({ signal }) => getHello(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof Hello_api_v1_hello_get>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getHello>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type HelloApiV1HelloGetQueryResult = NonNullable<Awaited<ReturnType<typeof Hello_api_v1_hello_get>>>
-export type HelloApiV1HelloGetQueryError = unknown
+export type GetHelloQueryResult = NonNullable<Awaited<ReturnType<typeof getHello>>>
+export type GetHelloQueryError = unknown
 
 
 /**
  * @summary Hello
  */
 
-export function useHelloApiV1HelloGet<TData = Awaited<ReturnType<typeof Hello_api_v1_hello_get>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Hello_api_v1_hello_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGetHello<TData = Awaited<ReturnType<typeof getHello>>, TError = unknown>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getHello>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getHelloApiV1HelloGetQueryOptions(options)
+  const queryOptions = getGetHelloQueryOptions(options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

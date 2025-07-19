@@ -4,15 +4,9 @@
 // 🏷️  Based on FastAPI tag: "users"
 
 /**
- * GetUserStatsApiV1UsersStatsDashboardGet200
+ * GetUsersParams
  */
-export type GetUserStatsApiV1UsersStatsDashboardGet200 = { [key: string]: unknown };
-
-
-/**
- * GetUsersApiV1UsersGetParams
- */
-export type GetUsersApiV1UsersGetParams = {
+export type GetUsersParams = {
 /**
  * Page number
  * @minimum 1
@@ -36,20 +30,6 @@ role?: string | null;
  * Filter by active status
  */
 is_active?: boolean | null;
-};
-
-
-/**
- * ResetUserPasswordApiV1UsersUserIdResetPasswordPost200
- */
-export type ResetUserPasswordApiV1UsersUserIdResetPasswordPost200 = { [key: string]: unknown };
-
-
-/**
- * ResetUserPasswordApiV1UsersUserIdResetPasswordPostParams
- */
-export type ResetUserPasswordApiV1UsersUserIdResetPasswordPostParams = {
-new_password: string;
 };
 
 

@@ -20,11 +20,11 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  GetUserStatsApiV1UsersStatsDashboardGet200,
-  GetUsersApiV1UsersGetParams,
+  GetDashboard200,
+  GetUsersParams,
   HTTPValidationError,
-  ResetUserPasswordApiV1UsersUserIdResetPasswordPost200,
-  ResetUserPasswordApiV1UsersUserIdResetPasswordPostParams,
+  PostResetPassword200,
+  PostResetPasswordParams,
   User,
   UserAdminCreate,
   UserAdminUpdate,
@@ -49,7 +49,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 Returns the profile information of the authenticated user.
  * @summary Get Current User
  */
-export const Get_current_user_api_v1_users_me_get = (
+export const getMe = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -62,43 +62,43 @@ export const Get_current_user_api_v1_users_me_get = (
     }
   
 
-export const getGetCurrentUserApiV1UsersMeGetQueryKey = () => {
+export const getGetMeQueryKey = () => {
     return [`http://localhost:8000/api/v1/users/me`] as const;
     }
 
     
-export const getGetCurrentUserApiV1UsersMeGetQueryOptions = <TData = Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetMeQueryOptions = <TData = Awaited<ReturnType<typeof getMe>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetCurrentUserApiV1UsersMeGetQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetMeQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>> = ({ signal }) => Get_current_user_api_v1_users_me_get(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMe>>> = ({ signal }) => getMe(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type GetCurrentUserApiV1UsersMeGetQueryResult = NonNullable<Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>>
-export type GetCurrentUserApiV1UsersMeGetQueryError = unknown
+export type GetMeQueryResult = NonNullable<Awaited<ReturnType<typeof getMe>>>
+export type GetMeQueryError = unknown
 
 
 /**
  * @summary Get Current User
  */
 
-export function useGetCurrentUserApiV1UsersMeGet<TData = Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_current_user_api_v1_users_me_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGetMe<TData = Awaited<ReturnType<typeof getMe>>, TError = unknown>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getGetCurrentUserApiV1UsersMeGetQueryOptions(options)
+  const queryOptions = getGetMeQueryOptions(options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -115,7 +115,7 @@ export function useGetCurrentUserApiV1UsersMeGet<TData = Awaited<ReturnType<type
 Allows users to update their own profile information.
  * @summary Update Current User
  */
-export const Update_current_user_api_v1_users_me_put = (
+export const putMe = (
     userUpdate: UserUpdate,
  options?: SecondParameter<typeof mutator>,) => {
       
@@ -130,11 +130,11 @@ export const Update_current_user_api_v1_users_me_put = (
   
 
 
-export const getUpdateCurrentUserApiV1UsersMePutMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Update_current_user_api_v1_users_me_put>>, TError,{data: UserUpdate}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof Update_current_user_api_v1_users_me_put>>, TError,{data: UserUpdate}, TContext> => {
+export const getPutMeMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putMe>>, TError,{data: UserUpdate}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof putMe>>, TError,{data: UserUpdate}, TContext> => {
 
-const mutationKey = ['updateCurrentUserApiV1UsersMePut'];
+const mutationKey = ['putMe'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -144,10 +144,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Update_current_user_api_v1_users_me_put>>, {data: UserUpdate}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putMe>>, {data: UserUpdate}> = (props) => {
           const {data} = props ?? {};
 
-          return  Update_current_user_api_v1_users_me_put(data,requestOptions)
+          return  putMe(data,requestOptions)
         }
 
         
@@ -155,23 +155,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type UpdateCurrentUserApiV1UsersMePutMutationResult = NonNullable<Awaited<ReturnType<typeof Update_current_user_api_v1_users_me_put>>>
-    export type UpdateCurrentUserApiV1UsersMePutMutationBody = UserUpdate
-    export type UpdateCurrentUserApiV1UsersMePutMutationError = HTTPValidationError
+    export type PutMeMutationResult = NonNullable<Awaited<ReturnType<typeof putMe>>>
+    export type PutMeMutationBody = UserUpdate
+    export type PutMeMutationError = HTTPValidationError
 
     /**
  * @summary Update Current User
  */
-export const useUpdateCurrentUserApiV1UsersMePut = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Update_current_user_api_v1_users_me_put>>, TError,{data: UserUpdate}, TContext>, request?: SecondParameter<typeof mutator>}
+export const usePutMe = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putMe>>, TError,{data: UserUpdate}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof Update_current_user_api_v1_users_me_put>>,
+        Awaited<ReturnType<typeof putMe>>,
         TError,
         {data: UserUpdate},
         TContext
       > => {
 
-      const mutationOptions = getUpdateCurrentUserApiV1UsersMePutMutationOptions(options);
+      const mutationOptions = getPutMeMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
@@ -181,8 +181,8 @@ export const useUpdateCurrentUserApiV1UsersMePut = <TError = HTTPValidationError
 Requires admin privileges (MLGOO-DILG role).
  * @summary Get Users
  */
-export const Get_users_api_v1_users__get = (
-    params?: GetUsersApiV1UsersGetParams,
+export const getUsers = (
+    params?: GetUsersParams,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
       
@@ -195,43 +195,43 @@ export const Get_users_api_v1_users__get = (
     }
   
 
-export const getGetUsersApiV1UsersGetQueryKey = (params?: GetUsersApiV1UsersGetParams,) => {
+export const getGetUsersQueryKey = (params?: GetUsersParams,) => {
     return [`http://localhost:8000/api/v1/users/`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getGetUsersApiV1UsersGetQueryOptions = <TData = Awaited<ReturnType<typeof Get_users_api_v1_users__get>>, TError = HTTPValidationError>(params?: GetUsersApiV1UsersGetParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_users_api_v1_users__get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetUsersQueryOptions = <TData = Awaited<ReturnType<typeof getUsers>>, TError = HTTPValidationError>(params?: GetUsersParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUsersApiV1UsersGetQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getGetUsersQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof Get_users_api_v1_users__get>>> = ({ signal }) => Get_users_api_v1_users__get(params, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsers>>> = ({ signal }) => getUsers(params, requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof Get_users_api_v1_users__get>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type GetUsersApiV1UsersGetQueryResult = NonNullable<Awaited<ReturnType<typeof Get_users_api_v1_users__get>>>
-export type GetUsersApiV1UsersGetQueryError = HTTPValidationError
+export type GetUsersQueryResult = NonNullable<Awaited<ReturnType<typeof getUsers>>>
+export type GetUsersQueryError = HTTPValidationError
 
 
 /**
  * @summary Get Users
  */
 
-export function useGetUsersApiV1UsersGet<TData = Awaited<ReturnType<typeof Get_users_api_v1_users__get>>, TError = HTTPValidationError>(
- params?: GetUsersApiV1UsersGetParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_users_api_v1_users__get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGetUsers<TData = Awaited<ReturnType<typeof getUsers>>, TError = HTTPValidationError>(
+ params?: GetUsersParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getGetUsersApiV1UsersGetQueryOptions(params,options)
+  const queryOptions = getGetUsersQueryOptions(params,options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -248,7 +248,7 @@ export function useGetUsersApiV1UsersGet<TData = Awaited<ReturnType<typeof Get_u
 Requires admin privileges (MLGOO-DILG role).
  * @summary Create User
  */
-export const Create_user_api_v1_users__post = (
+export const postUsers = (
     userAdminCreate: UserAdminCreate,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -264,11 +264,11 @@ export const Create_user_api_v1_users__post = (
   
 
 
-export const getCreateUserApiV1UsersPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Create_user_api_v1_users__post>>, TError,{data: UserAdminCreate}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof Create_user_api_v1_users__post>>, TError,{data: UserAdminCreate}, TContext> => {
+export const getPostUsersMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUsers>>, TError,{data: UserAdminCreate}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postUsers>>, TError,{data: UserAdminCreate}, TContext> => {
 
-const mutationKey = ['createUserApiV1UsersPost'];
+const mutationKey = ['postUsers'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -278,10 +278,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Create_user_api_v1_users__post>>, {data: UserAdminCreate}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postUsers>>, {data: UserAdminCreate}> = (props) => {
           const {data} = props ?? {};
 
-          return  Create_user_api_v1_users__post(data,requestOptions)
+          return  postUsers(data,requestOptions)
         }
 
         
@@ -289,23 +289,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type CreateUserApiV1UsersPostMutationResult = NonNullable<Awaited<ReturnType<typeof Create_user_api_v1_users__post>>>
-    export type CreateUserApiV1UsersPostMutationBody = UserAdminCreate
-    export type CreateUserApiV1UsersPostMutationError = HTTPValidationError
+    export type PostUsersMutationResult = NonNullable<Awaited<ReturnType<typeof postUsers>>>
+    export type PostUsersMutationBody = UserAdminCreate
+    export type PostUsersMutationError = HTTPValidationError
 
     /**
  * @summary Create User
  */
-export const useCreateUserApiV1UsersPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Create_user_api_v1_users__post>>, TError,{data: UserAdminCreate}, TContext>, request?: SecondParameter<typeof mutator>}
+export const usePostUsers = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUsers>>, TError,{data: UserAdminCreate}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof Create_user_api_v1_users__post>>,
+        Awaited<ReturnType<typeof postUsers>>,
         TError,
         {data: UserAdminCreate},
         TContext
       > => {
 
-      const mutationOptions = getCreateUserApiV1UsersPostMutationOptions(options);
+      const mutationOptions = getPostUsersMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
@@ -315,7 +315,7 @@ export const useCreateUserApiV1UsersPost = <TError = HTTPValidationError,
 Requires admin privileges (MLGOO-DILG role).
  * @summary Get User
  */
-export const Get_user_api_v1_users__user_id__get = (
+export const get${userId} = (
     userId: string,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -328,43 +328,43 @@ export const Get_user_api_v1_users__user_id__get = (
     }
   
 
-export const getGetUserApiV1UsersUserIdGetQueryKey = (userId: string,) => {
+export const getGetUserIdQueryKey = (userId: string,) => {
     return [`http://localhost:8000/api/v1/users/${userId}`] as const;
     }
 
     
-export const getGetUserApiV1UsersUserIdGetQueryOptions = <TData = Awaited<ReturnType<typeof Get_user_api_v1_users__user_id__get>>, TError = HTTPValidationError>(userId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_user_api_v1_users__user_id__get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetUserIdQueryOptions = <TData = Awaited<ReturnType<typeof get${userId}>>, TError = HTTPValidationError>(userId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof get${userId}>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUserApiV1UsersUserIdGetQueryKey(userId);
+  const queryKey =  queryOptions?.queryKey ?? getGetUserIdQueryKey(userId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof Get_user_api_v1_users__user_id__get>>> = ({ signal }) => Get_user_api_v1_users__user_id__get(userId, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof get${userId}>>> = ({ signal }) => get${userId}(userId, requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(userId),  staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof Get_user_api_v1_users__user_id__get>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(userId),  staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof get${userId}>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type GetUserApiV1UsersUserIdGetQueryResult = NonNullable<Awaited<ReturnType<typeof Get_user_api_v1_users__user_id__get>>>
-export type GetUserApiV1UsersUserIdGetQueryError = HTTPValidationError
+export type GetUserIdQueryResult = NonNullable<Awaited<ReturnType<typeof get${userId}>>>
+export type GetUserIdQueryError = HTTPValidationError
 
 
 /**
  * @summary Get User
  */
 
-export function useGetUserApiV1UsersUserIdGet<TData = Awaited<ReturnType<typeof Get_user_api_v1_users__user_id__get>>, TError = HTTPValidationError>(
- userId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_user_api_v1_users__user_id__get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGetUserId<TData = Awaited<ReturnType<typeof get${userId}>>, TError = HTTPValidationError>(
+ userId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof get${userId}>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getGetUserApiV1UsersUserIdGetQueryOptions(userId,options)
+  const queryOptions = getGetUserIdQueryOptions(userId,options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -381,7 +381,7 @@ export function useGetUserApiV1UsersUserIdGet<TData = Awaited<ReturnType<typeof 
 Requires admin privileges (MLGOO-DILG role).
  * @summary Update User
  */
-export const Update_user_api_v1_users__user_id__put = (
+export const put${userId} = (
     userId: string,
     userAdminUpdate: UserAdminUpdate,
  options?: SecondParameter<typeof mutator>,) => {
@@ -397,11 +397,11 @@ export const Update_user_api_v1_users__user_id__put = (
   
 
 
-export const getUpdateUserApiV1UsersUserIdPutMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Update_user_api_v1_users__user_id__put>>, TError,{userId: string;data: UserAdminUpdate}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof Update_user_api_v1_users__user_id__put>>, TError,{userId: string;data: UserAdminUpdate}, TContext> => {
+export const getPutUserIdMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof put${userId}>>, TError,{userId: string;data: UserAdminUpdate}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof put${userId}>>, TError,{userId: string;data: UserAdminUpdate}, TContext> => {
 
-const mutationKey = ['updateUserApiV1UsersUserIdPut'];
+const mutationKey = ['putUserId'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -411,10 +411,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Update_user_api_v1_users__user_id__put>>, {userId: string;data: UserAdminUpdate}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof put${userId}>>, {userId: string;data: UserAdminUpdate}> = (props) => {
           const {userId,data} = props ?? {};
 
-          return  Update_user_api_v1_users__user_id__put(userId,data,requestOptions)
+          return  put${userId}(userId,data,requestOptions)
         }
 
         
@@ -422,23 +422,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type UpdateUserApiV1UsersUserIdPutMutationResult = NonNullable<Awaited<ReturnType<typeof Update_user_api_v1_users__user_id__put>>>
-    export type UpdateUserApiV1UsersUserIdPutMutationBody = UserAdminUpdate
-    export type UpdateUserApiV1UsersUserIdPutMutationError = HTTPValidationError
+    export type PutUserIdMutationResult = NonNullable<Awaited<ReturnType<typeof put${userId}>>>
+    export type PutUserIdMutationBody = UserAdminUpdate
+    export type PutUserIdMutationError = HTTPValidationError
 
     /**
  * @summary Update User
  */
-export const useUpdateUserApiV1UsersUserIdPut = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Update_user_api_v1_users__user_id__put>>, TError,{userId: string;data: UserAdminUpdate}, TContext>, request?: SecondParameter<typeof mutator>}
+export const usePutUserId = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof put${userId}>>, TError,{userId: string;data: UserAdminUpdate}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof Update_user_api_v1_users__user_id__put>>,
+        Awaited<ReturnType<typeof put${userId}>>,
         TError,
         {userId: string;data: UserAdminUpdate},
         TContext
       > => {
 
-      const mutationOptions = getUpdateUserApiV1UsersUserIdPutMutationOptions(options);
+      const mutationOptions = getPutUserIdMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
@@ -448,7 +448,7 @@ export const useUpdateUserApiV1UsersUserIdPut = <TError = HTTPValidationError,
 Requires admin privileges (MLGOO-DILG role).
  * @summary Deactivate User
  */
-export const Deactivate_user_api_v1_users__user_id__delete = (
+export const delete${userId} = (
     userId: string,
  options?: SecondParameter<typeof mutator>,) => {
       
@@ -461,11 +461,11 @@ export const Deactivate_user_api_v1_users__user_id__delete = (
   
 
 
-export const getDeactivateUserApiV1UsersUserIdDeleteMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Deactivate_user_api_v1_users__user_id__delete>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof Deactivate_user_api_v1_users__user_id__delete>>, TError,{userId: string}, TContext> => {
+export const getDeleteUserIdMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof delete${userId}>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof delete${userId}>>, TError,{userId: string}, TContext> => {
 
-const mutationKey = ['deactivateUserApiV1UsersUserIdDelete'];
+const mutationKey = ['deleteUserId'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -475,10 +475,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Deactivate_user_api_v1_users__user_id__delete>>, {userId: string}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof delete${userId}>>, {userId: string}> = (props) => {
           const {userId} = props ?? {};
 
-          return  Deactivate_user_api_v1_users__user_id__delete(userId,requestOptions)
+          return  delete${userId}(userId,requestOptions)
         }
 
         
@@ -486,23 +486,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type DeactivateUserApiV1UsersUserIdDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof Deactivate_user_api_v1_users__user_id__delete>>>
+    export type DeleteUserIdMutationResult = NonNullable<Awaited<ReturnType<typeof delete${userId}>>>
     
-    export type DeactivateUserApiV1UsersUserIdDeleteMutationError = HTTPValidationError
+    export type DeleteUserIdMutationError = HTTPValidationError
 
     /**
  * @summary Deactivate User
  */
-export const useDeactivateUserApiV1UsersUserIdDelete = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Deactivate_user_api_v1_users__user_id__delete>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof mutator>}
+export const useDeleteUserId = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof delete${userId}>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof Deactivate_user_api_v1_users__user_id__delete>>,
+        Awaited<ReturnType<typeof delete${userId}>>,
         TError,
         {userId: string},
         TContext
       > => {
 
-      const mutationOptions = getDeactivateUserApiV1UsersUserIdDeleteMutationOptions(options);
+      const mutationOptions = getDeleteUserIdMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
@@ -512,7 +512,7 @@ export const useDeactivateUserApiV1UsersUserIdDelete = <TError = HTTPValidationE
 Requires admin privileges (MLGOO-DILG role).
  * @summary Activate User
  */
-export const Activate_user_api_v1_users__user_id__activate_post = (
+export const postActivate = (
     userId: string,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -526,11 +526,11 @@ export const Activate_user_api_v1_users__user_id__activate_post = (
   
 
 
-export const getActivateUserApiV1UsersUserIdActivatePostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Activate_user_api_v1_users__user_id__activate_post>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof Activate_user_api_v1_users__user_id__activate_post>>, TError,{userId: string}, TContext> => {
+export const getPostActivateMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postActivate>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postActivate>>, TError,{userId: string}, TContext> => {
 
-const mutationKey = ['activateUserApiV1UsersUserIdActivatePost'];
+const mutationKey = ['postActivate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -540,10 +540,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Activate_user_api_v1_users__user_id__activate_post>>, {userId: string}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postActivate>>, {userId: string}> = (props) => {
           const {userId} = props ?? {};
 
-          return  Activate_user_api_v1_users__user_id__activate_post(userId,requestOptions)
+          return  postActivate(userId,requestOptions)
         }
 
         
@@ -551,23 +551,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type ActivateUserApiV1UsersUserIdActivatePostMutationResult = NonNullable<Awaited<ReturnType<typeof Activate_user_api_v1_users__user_id__activate_post>>>
+    export type PostActivateMutationResult = NonNullable<Awaited<ReturnType<typeof postActivate>>>
     
-    export type ActivateUserApiV1UsersUserIdActivatePostMutationError = HTTPValidationError
+    export type PostActivateMutationError = HTTPValidationError
 
     /**
  * @summary Activate User
  */
-export const useActivateUserApiV1UsersUserIdActivatePost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Activate_user_api_v1_users__user_id__activate_post>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof mutator>}
+export const usePostActivate = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postActivate>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof Activate_user_api_v1_users__user_id__activate_post>>,
+        Awaited<ReturnType<typeof postActivate>>,
         TError,
         {userId: string},
         TContext
       > => {
 
-      const mutationOptions = getActivateUserApiV1UsersUserIdActivatePostMutationOptions(options);
+      const mutationOptions = getPostActivateMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
@@ -578,14 +578,14 @@ Requires admin privileges (MLGOO-DILG role).
 Sets must_change_password to True.
  * @summary Reset User Password
  */
-export const Reset_user_password_api_v1_users__user_id__reset_password_post = (
+export const postResetPassword = (
     userId: string,
-    params: ResetUserPasswordApiV1UsersUserIdResetPasswordPostParams,
+    params: PostResetPasswordParams,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
       
       
-      return mutator<ResetUserPasswordApiV1UsersUserIdResetPasswordPost200>(
+      return mutator<PostResetPassword200>(
       {url: `http://localhost:8000/api/v1/users/${userId}/reset-password`, method: 'POST',
         params, signal
     },
@@ -594,11 +594,11 @@ export const Reset_user_password_api_v1_users__user_id__reset_password_post = (
   
 
 
-export const getResetUserPasswordApiV1UsersUserIdResetPasswordPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Reset_user_password_api_v1_users__user_id__reset_password_post>>, TError,{userId: string;params: ResetUserPasswordApiV1UsersUserIdResetPasswordPostParams}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof Reset_user_password_api_v1_users__user_id__reset_password_post>>, TError,{userId: string;params: ResetUserPasswordApiV1UsersUserIdResetPasswordPostParams}, TContext> => {
+export const getPostResetPasswordMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postResetPassword>>, TError,{userId: string;params: PostResetPasswordParams}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postResetPassword>>, TError,{userId: string;params: PostResetPasswordParams}, TContext> => {
 
-const mutationKey = ['resetUserPasswordApiV1UsersUserIdResetPasswordPost'];
+const mutationKey = ['postResetPassword'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -608,10 +608,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Reset_user_password_api_v1_users__user_id__reset_password_post>>, {userId: string;params: ResetUserPasswordApiV1UsersUserIdResetPasswordPostParams}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postResetPassword>>, {userId: string;params: PostResetPasswordParams}> = (props) => {
           const {userId,params} = props ?? {};
 
-          return  Reset_user_password_api_v1_users__user_id__reset_password_post(userId,params,requestOptions)
+          return  postResetPassword(userId,params,requestOptions)
         }
 
         
@@ -619,23 +619,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type ResetUserPasswordApiV1UsersUserIdResetPasswordPostMutationResult = NonNullable<Awaited<ReturnType<typeof Reset_user_password_api_v1_users__user_id__reset_password_post>>>
+    export type PostResetPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof postResetPassword>>>
     
-    export type ResetUserPasswordApiV1UsersUserIdResetPasswordPostMutationError = HTTPValidationError
+    export type PostResetPasswordMutationError = HTTPValidationError
 
     /**
  * @summary Reset User Password
  */
-export const useResetUserPasswordApiV1UsersUserIdResetPasswordPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Reset_user_password_api_v1_users__user_id__reset_password_post>>, TError,{userId: string;params: ResetUserPasswordApiV1UsersUserIdResetPasswordPostParams}, TContext>, request?: SecondParameter<typeof mutator>}
+export const usePostResetPassword = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postResetPassword>>, TError,{userId: string;params: PostResetPasswordParams}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof Reset_user_password_api_v1_users__user_id__reset_password_post>>,
+        Awaited<ReturnType<typeof postResetPassword>>,
         TError,
-        {userId: string;params: ResetUserPasswordApiV1UsersUserIdResetPasswordPostParams},
+        {userId: string;params: PostResetPasswordParams},
         TContext
       > => {
 
-      const mutationOptions = getResetUserPasswordApiV1UsersUserIdResetPasswordPostMutationOptions(options);
+      const mutationOptions = getPostResetPasswordMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
@@ -645,56 +645,56 @@ export const useResetUserPasswordApiV1UsersUserIdResetPasswordPost = <TError = H
 Requires admin privileges (MLGOO-DILG role).
  * @summary Get User Stats
  */
-export const Get_user_stats_api_v1_users_stats_dashboard_get = (
+export const getDashboard = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
       
       
-      return mutator<GetUserStatsApiV1UsersStatsDashboardGet200>(
+      return mutator<GetDashboard200>(
       {url: `http://localhost:8000/api/v1/users/stats/dashboard`, method: 'GET', signal
     },
       options);
     }
   
 
-export const getGetUserStatsApiV1UsersStatsDashboardGetQueryKey = () => {
+export const getGetDashboardQueryKey = () => {
     return [`http://localhost:8000/api/v1/users/stats/dashboard`] as const;
     }
 
     
-export const getGetUserStatsApiV1UsersStatsDashboardGetQueryOptions = <TData = Awaited<ReturnType<typeof Get_user_stats_api_v1_users_stats_dashboard_get>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_user_stats_api_v1_users_stats_dashboard_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetDashboardQueryOptions = <TData = Awaited<ReturnType<typeof getDashboard>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDashboard>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUserStatsApiV1UsersStatsDashboardGetQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetDashboardQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof Get_user_stats_api_v1_users_stats_dashboard_get>>> = ({ signal }) => Get_user_stats_api_v1_users_stats_dashboard_get(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDashboard>>> = ({ signal }) => getDashboard(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof Get_user_stats_api_v1_users_stats_dashboard_get>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDashboard>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type GetUserStatsApiV1UsersStatsDashboardGetQueryResult = NonNullable<Awaited<ReturnType<typeof Get_user_stats_api_v1_users_stats_dashboard_get>>>
-export type GetUserStatsApiV1UsersStatsDashboardGetQueryError = unknown
+export type GetDashboardQueryResult = NonNullable<Awaited<ReturnType<typeof getDashboard>>>
+export type GetDashboardQueryError = unknown
 
 
 /**
  * @summary Get User Stats
  */
 
-export function useGetUserStatsApiV1UsersStatsDashboardGet<TData = Awaited<ReturnType<typeof Get_user_stats_api_v1_users_stats_dashboard_get>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_user_stats_api_v1_users_stats_dashboard_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGetDashboard<TData = Awaited<ReturnType<typeof getDashboard>>, TError = unknown>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDashboard>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getGetUserStatsApiV1UsersStatsDashboardGetQueryOptions(options)
+  const queryOptions = getGetDashboardQueryOptions(options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

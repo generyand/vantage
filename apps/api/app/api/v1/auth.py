@@ -56,7 +56,11 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     )
 
 
-@router.post("/change-password", response_model=ApiResponse, tags=["auth"])
+@router.post(
+    "/change-password",
+    response_model=ApiResponse,
+    tags=["auth"],
+)
 async def change_password(
     password_data: ChangePasswordRequest,
     current_user: User = Depends(get_current_active_user),

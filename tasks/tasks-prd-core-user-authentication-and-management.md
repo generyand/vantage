@@ -47,23 +47,23 @@
 
 -   [ ] 4.0 **Frontend Foundation & Login Flow**
     -   [ ] 4.1 Create `apps/web/src/store/useAuthStore.ts` using Zustand to hold `user`, `token`, and `isAuthenticated` state.
-    -   [ ] 4.2 Update the `LoginForm` component to use a `useMutation` hook to call the login endpoint. On success, save state to Zustand and redirect to the dashboard.
+    -   [ ] 4.2 In the `LoginForm` component, use the auto-generated `usePostLogin` mutation hook from `@vantage/shared`. On success, save the returned token and user state to the Zustand store and redirect to the dashboard.
     -   [ ] 4.3 Create `apps/web/middleware.ts` to protect all routes inside the `(app)` group. Unauthenticated users should be redirected to `/login`.
-    -   [ ] 4.4 Implement a "Logout" button in the `UserNav` component that clears the auth store and redirects to login.
+    -   [ ] 4.4 In the `UserNav` component, use the auto-generated `usePostLogout` mutation hook. On success, clear the auth store and redirect to the login page.
 
 -   [ ] 5.0 **Build Frontend User Management Interface (Admin)**
     -   [ ] 5.1 Create the page `apps/web/src/app/(app)/user-management/page.tsx`. This page should be accessible only to the admin role.
-    -   [ ] 5.2 Create a `useUsers` hook with `useQuery` to fetch the list of all users.
+    -   [ ] 5.2 On this page, use the auto-generated `useGetUsers` query hook to fetch the list of all users.
     -   [ ] 5.3 Build the `UserManagementTable.tsx` component using the shared `DataTable` to display users. Include columns for all relevant data and action buttons (Edit, Activate/Deactivate).
     -   [ ] 5.4 Create a `UserForm.tsx` component for the user creation/editing modal/dialog.
     -   [ ] 5.5 The form should conditionally display the "Assigned Barangay" dropdown only when the "BLGU User" role is selected.
-    -   [ ] 5.6 Create `useCreateUser` and `useUpdateUser` mutation hooks. On success, invalidate the user list query to refetch data.
+    -   [ ] 5.6 The `UserForm` should use the auto-generated `usePostUser` and `usePutUser` mutation hooks. On success, invalidate the `useGetUsers` query to automatically refetch the user list.
 
 -   [ ] 6.0 **Implement Forced Password Change Flow**
     -   [ ] 6.1 In the main application layout (`apps/web/src/app/(app)/layout.tsx`), add a check that reads `must_change_password` from the `useAuthStore`.
     -   [ ] 6.2 If `must_change_password` is `true`, redirect the user to the `/change-password` page.
     -   [ ] 6.3 Create the `apps/web/src/app/(app)/change-password/page.tsx` page with a form for changing the password.
-    -   [ ] 6.4 Create a `useChangePassword` mutation hook. On success, update the auth store and redirect the user to their dashboard.
+    -   [ ] 6.4 The password change form should use the auto-generated `usePostChangePassword` mutation hook. On success, update the auth store and redirect the user to their dashboard.
 
 -   [ ] 7.0 **End-to-End Testing and Refinement**
     -   [ ] 7.1 Write `pytest` tests for the auth and user management endpoints, including permission checks.

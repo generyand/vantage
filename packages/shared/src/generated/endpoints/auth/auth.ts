@@ -43,7 +43,7 @@ This endpoint:
 4. Returns token with expiration info
  * @summary Login
  */
-export const Login_api_v1_auth_login_post = (
+export const postLogin = (
     loginRequest: LoginRequest,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -59,11 +59,11 @@ export const Login_api_v1_auth_login_post = (
   
 
 
-export const getLoginApiV1AuthLoginPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Login_api_v1_auth_login_post>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof Login_api_v1_auth_login_post>>, TError,{data: LoginRequest}, TContext> => {
+export const getPostLoginMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postLogin>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postLogin>>, TError,{data: LoginRequest}, TContext> => {
 
-const mutationKey = ['loginApiV1AuthLoginPost'];
+const mutationKey = ['postLogin'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -73,10 +73,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Login_api_v1_auth_login_post>>, {data: LoginRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postLogin>>, {data: LoginRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  Login_api_v1_auth_login_post(data,requestOptions)
+          return  postLogin(data,requestOptions)
         }
 
         
@@ -84,23 +84,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type LoginApiV1AuthLoginPostMutationResult = NonNullable<Awaited<ReturnType<typeof Login_api_v1_auth_login_post>>>
-    export type LoginApiV1AuthLoginPostMutationBody = LoginRequest
-    export type LoginApiV1AuthLoginPostMutationError = HTTPValidationError
+    export type PostLoginMutationResult = NonNullable<Awaited<ReturnType<typeof postLogin>>>
+    export type PostLoginMutationBody = LoginRequest
+    export type PostLoginMutationError = HTTPValidationError
 
     /**
  * @summary Login
  */
-export const useLoginApiV1AuthLoginPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Login_api_v1_auth_login_post>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof mutator>}
+export const usePostLogin = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postLogin>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof Login_api_v1_auth_login_post>>,
+        Awaited<ReturnType<typeof postLogin>>,
         TError,
         {data: LoginRequest},
         TContext
       > => {
 
-      const mutationOptions = getLoginApiV1AuthLoginPostMutationOptions(options);
+      const mutationOptions = getPostLoginMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
@@ -114,7 +114,7 @@ This endpoint:
 4. Returns success message
  * @summary Change Password
  */
-export const Change_password_api_v1_auth_change_password_post = (
+export const postChangePassword = (
     changePasswordRequest: ChangePasswordRequest,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -130,11 +130,11 @@ export const Change_password_api_v1_auth_change_password_post = (
   
 
 
-export const getChangePasswordApiV1AuthChangePasswordPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Change_password_api_v1_auth_change_password_post>>, TError,{data: ChangePasswordRequest}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof Change_password_api_v1_auth_change_password_post>>, TError,{data: ChangePasswordRequest}, TContext> => {
+export const getPostChangePasswordMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postChangePassword>>, TError,{data: ChangePasswordRequest}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postChangePassword>>, TError,{data: ChangePasswordRequest}, TContext> => {
 
-const mutationKey = ['changePasswordApiV1AuthChangePasswordPost'];
+const mutationKey = ['postChangePassword'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -144,10 +144,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Change_password_api_v1_auth_change_password_post>>, {data: ChangePasswordRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postChangePassword>>, {data: ChangePasswordRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  Change_password_api_v1_auth_change_password_post(data,requestOptions)
+          return  postChangePassword(data,requestOptions)
         }
 
         
@@ -155,23 +155,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type ChangePasswordApiV1AuthChangePasswordPostMutationResult = NonNullable<Awaited<ReturnType<typeof Change_password_api_v1_auth_change_password_post>>>
-    export type ChangePasswordApiV1AuthChangePasswordPostMutationBody = ChangePasswordRequest
-    export type ChangePasswordApiV1AuthChangePasswordPostMutationError = HTTPValidationError
+    export type PostChangePasswordMutationResult = NonNullable<Awaited<ReturnType<typeof postChangePassword>>>
+    export type PostChangePasswordMutationBody = ChangePasswordRequest
+    export type PostChangePasswordMutationError = HTTPValidationError
 
     /**
  * @summary Change Password
  */
-export const useChangePasswordApiV1AuthChangePasswordPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Change_password_api_v1_auth_change_password_post>>, TError,{data: ChangePasswordRequest}, TContext>, request?: SecondParameter<typeof mutator>}
+export const usePostChangePassword = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postChangePassword>>, TError,{data: ChangePasswordRequest}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof Change_password_api_v1_auth_change_password_post>>,
+        Awaited<ReturnType<typeof postChangePassword>>,
         TError,
         {data: ChangePasswordRequest},
         TContext
       > => {
 
-      const mutationOptions = getChangePasswordApiV1AuthChangePasswordPostMutationOptions(options);
+      const mutationOptions = getPostChangePasswordMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
@@ -184,7 +184,7 @@ In production, this will:
 3. Log the logout event
  * @summary Logout
  */
-export const Logout_api_v1_auth_logout_post = (
+export const postLogout = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -198,11 +198,11 @@ export const Logout_api_v1_auth_logout_post = (
   
 
 
-export const getLogoutApiV1AuthLogoutPostMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Logout_api_v1_auth_logout_post>>, TError,void, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof Logout_api_v1_auth_logout_post>>, TError,void, TContext> => {
+export const getPostLogoutMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postLogout>>, TError,void, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postLogout>>, TError,void, TContext> => {
 
-const mutationKey = ['logoutApiV1AuthLogoutPost'];
+const mutationKey = ['postLogout'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -212,10 +212,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Logout_api_v1_auth_logout_post>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postLogout>>, void> = () => {
           
 
-          return  Logout_api_v1_auth_logout_post(requestOptions)
+          return  postLogout(requestOptions)
         }
 
         
@@ -223,23 +223,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type LogoutApiV1AuthLogoutPostMutationResult = NonNullable<Awaited<ReturnType<typeof Logout_api_v1_auth_logout_post>>>
+    export type PostLogoutMutationResult = NonNullable<Awaited<ReturnType<typeof postLogout>>>
     
-    export type LogoutApiV1AuthLogoutPostMutationError = unknown
+    export type PostLogoutMutationError = unknown
 
     /**
  * @summary Logout
  */
-export const useLogoutApiV1AuthLogoutPost = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Logout_api_v1_auth_logout_post>>, TError,void, TContext>, request?: SecondParameter<typeof mutator>}
+export const usePostLogout = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postLogout>>, TError,void, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof Logout_api_v1_auth_logout_post>>,
+        Awaited<ReturnType<typeof postLogout>>,
         TError,
         void,
         TContext
       > => {
 
-      const mutationOptions = getLogoutApiV1AuthLogoutPostMutationOptions(options);
+      const mutationOptions = getPostLogoutMutationOptions(options);
 
       return useMutation(mutationOptions );
     }

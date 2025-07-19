@@ -10,3 +10,23 @@ export interface ChangePasswordRequest {
   current_password: string;
   new_password: string;
 }
+
+
+/**
+ * GetDashboard200
+ */
+export type GetDashboard200 = { [key: string]: unknown };
+
+
+/**
+ * PostResetPassword200
+ */
+export type PostResetPassword200 = { [key: string]: unknown };
+
+
+/**
+ * PostResetPasswordParams
+ */
+export type PostResetPasswordParams = {
+new_password: string;
+};

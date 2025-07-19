@@ -46,7 +46,7 @@ In production, this will:
 3. Apply pagination and filtering
  * @summary Get Projects
  */
-export const Get_projects_api_v1_projects__get = (
+export const getProjects = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -59,43 +59,43 @@ export const Get_projects_api_v1_projects__get = (
     }
   
 
-export const getGetProjectsApiV1ProjectsGetQueryKey = () => {
+export const getGetProjectsQueryKey = () => {
     return [`http://localhost:8000/api/v1/projects/`] as const;
     }
 
     
-export const getGetProjectsApiV1ProjectsGetQueryOptions = <TData = Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetProjectsQueryOptions = <TData = Awaited<ReturnType<typeof getProjects>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProjects>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetProjectsApiV1ProjectsGetQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetProjectsQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>> = ({ signal }) => Get_projects_api_v1_projects__get(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProjects>>> = ({ signal }) => getProjects(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProjects>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type GetProjectsApiV1ProjectsGetQueryResult = NonNullable<Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>>
-export type GetProjectsApiV1ProjectsGetQueryError = unknown
+export type GetProjectsQueryResult = NonNullable<Awaited<ReturnType<typeof getProjects>>>
+export type GetProjectsQueryError = unknown
 
 
 /**
  * @summary Get Projects
  */
 
-export function useGetProjectsApiV1ProjectsGet<TData = Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Get_projects_api_v1_projects__get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGetProjects<TData = Awaited<ReturnType<typeof getProjects>>, TError = unknown>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProjects>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getGetProjectsApiV1ProjectsGetQueryOptions(options)
+  const queryOptions = getGetProjectsQueryOptions(options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -116,7 +116,7 @@ In production, this will:
 4. Set up initial project resources
  * @summary Create Project
  */
-export const Create_project_api_v1_projects__post = (
+export const postProjects = (
     projectCreate: ProjectCreate,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -132,11 +132,11 @@ export const Create_project_api_v1_projects__post = (
   
 
 
-export const getCreateProjectApiV1ProjectsPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Create_project_api_v1_projects__post>>, TError,{data: ProjectCreate}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof Create_project_api_v1_projects__post>>, TError,{data: ProjectCreate}, TContext> => {
+export const getPostProjectsMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postProjects>>, TError,{data: ProjectCreate}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postProjects>>, TError,{data: ProjectCreate}, TContext> => {
 
-const mutationKey = ['createProjectApiV1ProjectsPost'];
+const mutationKey = ['postProjects'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -146,10 +146,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof Create_project_api_v1_projects__post>>, {data: ProjectCreate}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postProjects>>, {data: ProjectCreate}> = (props) => {
           const {data} = props ?? {};
 
-          return  Create_project_api_v1_projects__post(data,requestOptions)
+          return  postProjects(data,requestOptions)
         }
 
         
@@ -157,23 +157,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type CreateProjectApiV1ProjectsPostMutationResult = NonNullable<Awaited<ReturnType<typeof Create_project_api_v1_projects__post>>>
-    export type CreateProjectApiV1ProjectsPostMutationBody = ProjectCreate
-    export type CreateProjectApiV1ProjectsPostMutationError = HTTPValidationError
+    export type PostProjectsMutationResult = NonNullable<Awaited<ReturnType<typeof postProjects>>>
+    export type PostProjectsMutationBody = ProjectCreate
+    export type PostProjectsMutationError = HTTPValidationError
 
     /**
  * @summary Create Project
  */
-export const useCreateProjectApiV1ProjectsPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof Create_project_api_v1_projects__post>>, TError,{data: ProjectCreate}, TContext>, request?: SecondParameter<typeof mutator>}
+export const usePostProjects = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postProjects>>, TError,{data: ProjectCreate}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof Create_project_api_v1_projects__post>>,
+        Awaited<ReturnType<typeof postProjects>>,
         TError,
         {data: ProjectCreate},
         TContext
       > => {
 
-      const mutationOptions = getCreateProjectApiV1ProjectsPostMutationOptions(options);
+      const mutationOptions = getPostProjectsMutationOptions(options);
 
       return useMutation(mutationOptions );
     }

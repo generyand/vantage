@@ -1,14 +1,3 @@
----
-description: "Guidelines for creating new API endpoints in the FastAPI backend, covering models, schemas, services, and routes."
-globs: [
-  "apps/api/app/db/models/**/*.py",
-  "apps/api/app/schemas/**/*.py",
-  "apps/api/app/services/**/*.py",
-  "apps/api/app/api/v1/**/*.py",
-  "apps/api/tests/**/*.py"
-]
-alwaysApply: true
----
 
 # Creating a New API Endpoint
 
@@ -58,7 +47,7 @@ Create schemas to define the shape of your API's inputs and outputs.
 
 **Example: `Widget` schemas in `apps/api/app/schemas/widget.py`**
 ```python
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 # Base properties shared by all schemas
@@ -73,10 +62,7 @@ class WidgetCreate(WidgetBase):
 # Schema for reading a widget (response body)
 class Widget(WidgetBase):
     id: int
-
-    class Config:
-        orm_mode = True # Allows Pydantic to read data from ORM models
-```
+    model_config = ConfigDict(from_attributes=True)
 
 ---
 
@@ -126,7 +112,7 @@ from app.services.widget_service import widget_service
 
 router = APIRouter()
 
-@router.post("/", response_model=widget_schema.Widget)
+@router.post("/", response_model=widget_schema.Widget, tags=["widgets"])
 def create_widget(
     *,
     db: Session = Depends(deps.get_db),
@@ -142,8 +128,31 @@ def create_widget(
 
 ---
 
+### Step 4: Generate a Type-Safe Client for the Frontend
+
+After creating or modifying an endpoint, you **must** regenerate the shared API client so the frontend can use it. This is a critical step in our monorepo workflow.
+
+From the project root, run:
+```bash
+pnpm generate-types
+```
+This command introspects your FastAPI application and automatically generates/updates:
+- Type-safe React Query hooks in `packages/shared/src/generated/endpoints`.
+- TypeScript interfaces in `packages/shared/src/generated/schemas`.
+
 ### Step 5: Write a Test
 
+Always add a test for your new endpoint.
+
+-   **Location:** `apps/api/tests/api/v1/test_[domain].py`
+-   **Action:** Write a test case using `httpx.AsyncClient` to call the endpoint and assert the response.
+
+See `@testing.mdc` for detailed examples.
+
+-   **Location:** `apps/api/tests/api/v1/test_[domain].py`
+-   **Action:** Write a test case using `httpx.AsyncClient` to call the endpoint and assert the response.
+
+See `@testing.mdc` for detailed examples.
 Always add a test for your new endpoint.
 
 -   **Location:** `apps/api/tests/api/v1/test_[domain].py`
