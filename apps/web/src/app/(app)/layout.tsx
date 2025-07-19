@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import UserNav from '@/components/shared/UserNav';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: 'home' },
@@ -42,6 +43,7 @@ export default function AppLayout({
 }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -142,13 +144,25 @@ export default function AppLayout({
                 
                 {/* Profile dropdown */}
                 <div className="relative">
-                  <button className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <button 
+                    className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                  >
                     <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
                       <svg className="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                     </div>
                   </button>
+                  
+                  {/* Profile dropdown menu */}
+                  {profileDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                      <div className="py-1">
+                        <UserNav />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -164,6 +178,14 @@ export default function AppLayout({
           </div>
         </main>
       </div>
+      
+      {/* Click outside to close dropdown */}
+      {profileDropdownOpen && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setProfileDropdownOpen(false)}
+        />
+      )}
     </div>
   );
 } 

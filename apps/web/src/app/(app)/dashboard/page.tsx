@@ -1,6 +1,23 @@
-import UserNav from '@/components/shared/UserNav';
+'use client';
+
+import { useEffect } from 'react';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useGetUsersMe } from '@vantage/shared';
 
 export default function DashboardPage() {
+  const { user, setUser } = useAuthStore();
+
+  // Auto-generated hook to fetch current user data
+  const userQuery = useGetUsersMe();
+
+  // Handle user data fetch success
+  useEffect(() => {
+    if (userQuery.data && !user) {
+      console.log('User data fetched in dashboard:', userQuery.data);
+      setUser(userQuery.data);
+    }
+  }, [userQuery.data, user, setUser]);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -69,7 +86,42 @@ export default function DashboardPage() {
           <h2 className="text-lg font-medium text-gray-900">Profile Information</h2>
         </div>
         <div className="p-6">
-          <UserNav />
+          {user ? (
+            <div className="flex items-center space-x-4">
+              <div className="bg-blue-100 rounded-full p-3">
+                <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900">{user.name}</h3>
+                <p className="text-gray-600">{user.email}</p>
+                <p className="text-sm text-gray-500">
+                  Role: {user.role}
+                </p>
+                <p className="text-sm text-gray-500">
+                  Member since {new Date(user.created_at).toLocaleDateString()}
+                </p>
+                {user.must_change_password && (
+                  <p className="text-sm text-red-600 mt-2">
+                    ⚠️ You must change your password
+                  </p>
+                )}
+              </div>
+            </div>
+          ) : userQuery.isLoading ? (
+            <div className="text-gray-500">
+              Loading user data...
+            </div>
+          ) : userQuery.error ? (
+            <div className="text-red-500">
+              Error loading user data. Please try refreshing the page.
+            </div>
+          ) : (
+            <div className="text-gray-500">
+              No user data available. Please log out and log back in.
+            </div>
+          )}
         </div>
       </div>
     </div>
