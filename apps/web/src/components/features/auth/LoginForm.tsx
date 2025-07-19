@@ -1,19 +1,20 @@
 // 🚀 Modern login form using React Query hooks
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useLogin, type LoginRequest } from '../../../hooks/useLogin';
+import { useState } from "react";
+import { useLogin } from "../../../hooks/useLogin";
+import type { LoginRequest } from "@vantage/shared/src/generated/schemas";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   // ✨ Custom login mutation hook with auth store integration
   const login = useLogin();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const credentials: LoginRequest = {
       email,
       password,
@@ -26,10 +27,13 @@ export default function LoginForm() {
   return (
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Sign In</h2>
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
             Email
           </label>
           <input
@@ -44,7 +48,10 @@ export default function LoginForm() {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
             Password
           </label>
           <input
@@ -62,7 +69,9 @@ export default function LoginForm() {
         {login.error && (
           <div className="bg-red-50 border border-red-200 rounded-md p-3">
             <div className="text-red-600 text-sm">
-              {login.error instanceof Error ? login.error.message : 'Login failed'}
+              {login.error instanceof Error
+                ? login.error.message
+                : "Login failed"}
             </div>
           </div>
         )}
@@ -79,7 +88,7 @@ export default function LoginForm() {
               Signing in...
             </>
           ) : (
-            'Sign In'
+            "Sign In"
           )}
         </button>
       </form>
@@ -94,4 +103,4 @@ export default function LoginForm() {
       )}
     </div>
   );
-} 
+}

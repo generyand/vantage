@@ -5,14 +5,11 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuthStore } from "../store/useAuthStore";
 import { useRouter } from "next/navigation";
-import type { User } from "@vantage/shared/src/generated/schemas";
-import type { AuthToken } from "@vantage/shared/src/generated/schemas";
-
-// Define the login request type
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
+import type {
+  User,
+  AuthToken,
+  LoginRequest,
+} from "@vantage/shared/src/generated/schemas";
 
 // Create the login hook
 export function useLogin() {
