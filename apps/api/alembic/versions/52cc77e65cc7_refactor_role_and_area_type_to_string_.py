@@ -59,7 +59,7 @@ def upgrade() -> None:
     
     op.execute("ALTER TABLE governance_areas ALTER COLUMN area_type TYPE area_type_enum USING area_type::area_type_enum")
 
-    # ### end Alembic commands ###
+    # ### end Alembic commands ###                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 
 
 def downgrade() -> None:
