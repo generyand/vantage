@@ -1,9 +1,9 @@
 ---
-description: "High-level overview of the monorepo structure, detailing the backend, frontend, and shared packages."
+description: "High-level overview of the monorepo structure, 
+detailing the backend, frontend, and shared packages."
 globs: ["**/*"]
 alwaysApply: true
 ---
-
 # Project Structure
 
 ## Main Structure
@@ -193,6 +193,7 @@ vantage/
 
 ### Type Safety
 - Import types from `@vantage/shared` package
+- API client functions are also imported from `@vantage/shared` (e.g., `import { users } from '@vantage/shared'`).
 - Use generated schemas for form validation
 - Leverage TypeScript for compile-time type checking
 
@@ -227,6 +228,11 @@ vantage/
 2. **Type Safety**: Leverage generated types from shared package
 3. **API Integration**: Use generated API client functions
 4. **Component Structure**: Organize by feature, then by type
+5. **Database**: Use migrations for all schema changes
+6. **Environment**: Separate configs for dev/staging/production
+
+
+
 5. **Database**: Use migrations for all schema changes
 6. **Environment**: Separate configs for dev/staging/production
 

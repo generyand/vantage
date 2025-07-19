@@ -1,5 +1,7 @@
 ---
-description: "Guidelines for data fetching in the frontend application, covering TanStack Query and the auto-generated API client from the shared package."
+description: "Guidelines for data fetching in the frontend 
+application, covering TanStack Query and the auto-generated 
+API client from the shared package."
 globs: [
   "apps/web/src/**/*.ts",
   "apps/web/src/**/*.tsx",
@@ -7,7 +9,6 @@ globs: [
 ]
 alwaysApply: true
 ---
-
 # Data Fetching Architecture
 
 This document outlines the standard process for fetching and updating data in the VANTAGE frontend application. Our architecture is designed to be robust, type-safe, and maintainable, leveraging code generation and modern state management tools.
@@ -18,6 +19,27 @@ This document outlines the standard process for fetching and updating data in th
 -   **Orval:** A tool that generates a type-safe API client and TypeScript schemas directly from our FastAPI backend's OpenAPI specification.
 -   **`@vantage/shared` Package:** A local workspace package that contains the Orval-generated client. This is the **only** way the frontend should interact with the API.
 -   **Axios:** The underlying HTTP client used by the generated API client. It is configured with interceptors to automatically handle authentication tokens.
+
+## State Management Philosophy: Axios vs. TanStack Query vs. Zustand
+
+In the VANTAGE web application, Axios, TanStack Query, and Zustand are used together to form a modern and robust state management stack. Each tool has a distinct and non-overlapping responsibility, creating a clear separation of concerns between transporting data, managing server state, and handling client state.
+
+#### **1. Axios: The Transporter**
+Axios's sole responsibility is to **make and receive HTTP requests**. It is the low-level "delivery truck" that communicates with our Python API. In VANTAGE, its most critical function is its **interceptor system**, which we use to automatically attach the user's JWT authentication token to every outgoing request and to globally handle API errors, such as redirecting to the login page on a `401 Unauthorized` response. It knows how to talk to the server, but it is completely unaware of React, component state, or caching.
+
+#### **2. TanStack Query: The Server State Manager**
+TanStack Query's responsibility is to **manage the lifecycle of server data** within the application. It acts as the intelligent "warehouse manager" for the data that Axios delivers. It decides when to fetch data, keeps it **cached** to make the UI feel instant, and automatically handles all the UI states associated with that data (e.g., `isLoading`, `isError`, `isSuccess`). Crucially, TanStack Query **uses** our configured Axios instance to perform the actual network request, but its primary job is managing the cache, not making the call itself.
+
+#### **3. Zustand: The Client State Manager**
+Zustand's responsibility is to manage **global state that is created and lives only on the client**. It is the application's "UI control panel" or short-term memory. It is used for data that has nothing to do with the server, such as tracking whether the sidebar is open, managing the state of a multi-step form, or storing the logged-in user's role and name *after* it has been fetched once. It does not handle data caching, API error states, or the lifecycle of data that originates from the server.
+
+### **Summary of Differences**
+
+| Tool | Primary Role | VANTAGE Use Case |
+| :--- | :--- | :--- |
+| **Axios** | API Communication Layer | Making the actual HTTP calls and attaching auth tokens. |
+| **TanStack Query** | Server State Cache | Managing caching, loading, and error states for data from the API. |
+| **Zustand** | Global Client State | Storing UI state (e.g., sidebar visibility) and user session data. |
 
 ## Data Flow
 
@@ -119,6 +141,10 @@ export function useCreateProject() {
     },
   });
 }
+```
+
+Remember to always regenerate the client after any backend API changes by running `pnpm generate`.
+
 ```
 
 Remember to always regenerate the client after any backend API changes by running `pnpm generate`.
