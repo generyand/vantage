@@ -26,6 +26,21 @@ interface AuthState {
 }
 
 /**
+ * Set auth token in cookies for middleware access
+ */
+const setAuthCookie = (token: string | null) => {
+  if (typeof window === 'undefined') return; // Server-side check
+  
+  if (token) {
+    // Set cookie with token (expires in 7 days)
+    document.cookie = `auth-token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`;
+  } else {
+    // Remove cookie
+    document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+  }
+};
+
+/**
  * Zustand store for managing global authentication state
  * 
  * This store holds the current user, JWT token, and authentication status.
@@ -43,21 +58,33 @@ export const useAuthStore = create<AuthState>((set) => ({
     mustChangePassword: user.must_change_password 
   }),
 
-  setToken: (token) => set({ token }),
+  setToken: (token) => {
+    // Set cookie for middleware access
+    setAuthCookie(token);
+    set({ token });
+  },
 
   setMustChangePassword: (mustChange) => set({ mustChangePassword: mustChange }),
 
-  logout: () => set({ 
-    user: null, 
-    token: null, 
-    isAuthenticated: false,
-    mustChangePassword: false 
-  }),
+  logout: () => {
+    // Clear cookie
+    setAuthCookie(null);
+    set({ 
+      user: null, 
+      token: null, 
+      isAuthenticated: false,
+      mustChangePassword: false 
+    });
+  },
 
-  initialize: (user, token) => set({
-    user,
-    token,
-    isAuthenticated: !!user && !!token,
-    mustChangePassword: user?.must_change_password || false
-  }),
+  initialize: (user, token) => {
+    // Set cookie if token exists
+    setAuthCookie(token);
+    set({
+      user,
+      token,
+      isAuthenticated: !!user && !!token,
+      mustChangePassword: user?.must_change_password || false
+    });
+  },
 })); 
