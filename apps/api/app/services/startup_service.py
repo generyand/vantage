@@ -13,6 +13,7 @@ from app.core.config import settings
 from app.db.base import check_all_connections, validate_connections_startup, SessionLocal
 from app.db.models.barangay import Barangay
 from app.db.models.user import User
+from app.services.governance_area_service import governance_area_service
 from app.core.security import get_password_hash
 import uuid
 
@@ -91,6 +92,12 @@ class StartupService:
                 logger.info("  - Barangay seeding complete.")
             else:
                 logger.info("  - Barangays already seeded. Skipping.")
+            
+            # Seed governance areas
+            logger.info("  - Seeding SGLGB governance areas...")
+            governance_area_service.seed_governance_areas(db)
+            logger.info("  - Governance areas seeding complete.")
+            
         except Exception as e:
             logger.warning(f"⚠️  Could not seed initial data: {str(e)}")
             db.rollback()
@@ -111,11 +118,10 @@ class StartupService:
             # Create first superuser
             logger.info(f"  - Creating first superuser: {settings.FIRST_SUPERUSER}")
             user = User(
-                id=str(uuid.uuid4()),
                 email=settings.FIRST_SUPERUSER,
                 name="System Administrator",
                 hashed_password=get_password_hash(settings.FIRST_SUPERUSER_PASSWORD),
-                role="MLGOO-DILG",
+                role=3,  # 3 = System Admin
                 is_active=True,
                 is_superuser=True,
                 must_change_password=True

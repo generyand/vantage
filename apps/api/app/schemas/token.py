@@ -25,7 +25,7 @@ class Token(BaseModel):
 
 class TokenPayload(BaseModel):
     """Schema for token payload data."""
-    sub: str | None = None
+    sub: str | None = None 
     user_id: str | None = None
     role: str | None = None
     must_change_password: bool | None = None

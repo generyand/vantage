@@ -82,5 +82,5 @@ class UserListResponse(BaseModel):
 class UserInDB(User):
     """User model as stored in database (includes sensitive fields)."""
     hashed_password: str
-    is_superuser: bool = False
+    is_superuser: bool = False 
     updated_at: Optional[datetime] = None 

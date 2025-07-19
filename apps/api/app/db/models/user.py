@@ -1,7 +1,7 @@
 # 👥 User Database Model
 # SQLAlchemy model for the users table
 
-from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, Integer
+from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, Integer, SmallInteger
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
@@ -18,13 +18,14 @@ class User(Base):
     __tablename__ = "users"
     
     # Primary key
-    id = Column(String, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     
     # User information
     email = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=False)
     phone_number = Column(String, nullable=True)
-    role = Column(String, nullable=False, default="BLGU User")
+    role = Column(SmallInteger, nullable=False, default=1)  # 1=BLGU User, 2=Area Assessor, 3=System Admin
+    assessor_area = Column(SmallInteger, nullable=True)  # Reference to governance_areas.id for Area Assessors
     barangay_id = Column(Integer, ForeignKey("barangays.id"), nullable=True)
     
     # Authentication
