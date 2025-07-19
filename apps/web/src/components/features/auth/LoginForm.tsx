@@ -1,29 +1,15 @@
-// 🚀 Modern login form using auto-generated React Query hooks
+// 🚀 Modern login form using React Query hooks
 'use client';
 
 import { useState } from 'react';
-import { useLogin, type LoginRequest } from '../../../lib/api';
+import { useLogin, type LoginRequest } from '../../../hooks/useLogin';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // ✨ Auto-generated mutation hook with optimistic updates and error handling
-  const login = useLogin({
-    mutation: {
-      onSuccess: (response) => {
-        console.log('Login successful:', response.data);
-        // Store token and redirect (check if response is successful)
-        if (response.status === 200 && 'access_token' in response.data) {
-          localStorage.setItem('auth_token', response.data.access_token);
-          // You could use Next.js router here: router.push('/dashboard')
-        }
-      },
-      onError: (error) => {
-        console.error('Login failed:', error);
-      }
-    }
-  });
+  // ✨ Custom login mutation hook with auth store integration
+  const login = useLogin();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,8 +19,8 @@ export default function LoginForm() {
       password,
     };
 
-    // 🚀 Type-safe mutation with automatic loading states
-    login.mutate({ data: credentials });
+    // 🚀 Type-safe mutation with automatic loading states and redirection
+    login.mutate(credentials);
   };
 
   return (

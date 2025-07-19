@@ -51,7 +51,7 @@
 - [ ] 4.0 **Frontend Foundation & Login Flow**
 
   - [x] 4.1 Create `apps/web/src/store/useAuthStore.ts` using Zustand to hold `user`, `token`, and `isAuthenticated` state.
-  - [ ] 4.2 Update the `LoginForm` component to use a `useMutation` hook to call the login endpoint. On success, save state to Zustand and redirect to the dashboard.
+  - [x] 4.2 Update the `LoginForm` component to use a `useMutation` hook to call the login endpoint. On success, save state to Zustand and redirect to the dashboard.
   - [ ] 4.3 Create `apps/web/middleware.ts` to protect all routes inside the `(app)` group. Unauthenticated users should be redirected to `/login`.
   - [ ] 4.4 Implement a "Logout" button in the `UserNav` component that clears the auth store and redirects to login.
 
