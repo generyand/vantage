@@ -66,7 +66,7 @@ async def get_users(
     """
     Get paginated list of users with optional filtering.
     
-    Requires admin privileges (MLGOO-DILG role).
+    Requires admin privileges (System Admin role).
     """
     skip = (page - 1) * size
     users, total = user_service.get_users(
@@ -98,7 +98,7 @@ async def create_user(
     """
     Create a new user.
     
-    Requires admin privileges (MLGOO-DILG role).
+    Requires admin privileges (System Admin role).
     """
     return user_service.create_user_admin(db, user_create)
 
@@ -112,7 +112,7 @@ async def get_user(
     """
     Get user by ID.
     
-    Requires admin privileges (MLGOO-DILG role).
+    Requires admin privileges (System Admin role).
     """
     user = user_service.get_user_by_id(db, user_id)
     if not user:
@@ -133,7 +133,7 @@ async def update_user(
     """
     Update user by ID.
     
-    Requires admin privileges (MLGOO-DILG role).
+    Requires admin privileges (System Admin role).
     """
     updated_user = user_service.update_user_admin(db, user_id, user_update)
     if not updated_user:
@@ -153,7 +153,7 @@ async def deactivate_user(
     """
     Deactivate user by ID (soft delete).
     
-    Requires admin privileges (MLGOO-DILG role).
+    Requires admin privileges (System Admin role).
     """
     if user_id == current_user.id:
         raise HTTPException(
@@ -179,7 +179,7 @@ async def activate_user(
     """
     Activate user by ID.
     
-    Requires admin privileges (MLGOO-DILG role).
+    Requires admin privileges (System Admin role).
     """
     activated_user = user_service.activate_user(db, user_id)
     if not activated_user:
@@ -200,7 +200,7 @@ async def reset_user_password(
     """
     Reset user password.
     
-    Requires admin privileges (MLGOO-DILG role).
+    Requires admin privileges (System Admin role).
     Sets must_change_password to True.
     """
     reset_user = user_service.reset_password(db, user_id, new_password)
@@ -220,6 +220,6 @@ async def get_user_stats(
     """
     Get user statistics for admin dashboard.
     
-    Requires admin privileges (MLGOO-DILG role).
+    Requires admin privileges (System Admin role).
     """
     return user_service.get_user_stats(db) 

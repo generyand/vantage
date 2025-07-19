@@ -1,11 +1,12 @@
 # 👥 User Database Model
 # SQLAlchemy model for the users table
 
-from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, Integer, SmallInteger
+from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, Integer, SmallInteger, Enum
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
+from app.db.enums import UserRole
 
 
 class User(Base):
@@ -24,7 +25,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=False)
     phone_number = Column(String, nullable=True)
-    role = Column(SmallInteger, nullable=False, default=1)  # 1=BLGU User, 2=Area Assessor, 3=System Admin
+    role = Column(Enum(UserRole), nullable=False, default=UserRole.BLGU_USER)
     assessor_area = Column(SmallInteger, nullable=True)  # Reference to governance_areas.id for Area Assessors
     barangay_id = Column(Integer, ForeignKey("barangays.id"), nullable=True)
     

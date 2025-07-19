@@ -13,6 +13,7 @@ from app.core.config import settings
 from app.db.base import check_all_connections, validate_connections_startup, SessionLocal
 from app.db.models.barangay import Barangay
 from app.db.models.user import User
+from app.db.enums import UserRole
 from app.services.governance_area_service import governance_area_service
 from app.core.security import get_password_hash
 import uuid
@@ -121,7 +122,7 @@ class StartupService:
                 email=settings.FIRST_SUPERUSER,
                 name="System Administrator",
                 hashed_password=get_password_hash(settings.FIRST_SUPERUSER_PASSWORD),
-                role=3,  # 3 = System Admin
+                role=UserRole.SYSTEM_ADMIN,
                 is_active=True,
                 is_superuser=True,
                 must_change_password=True

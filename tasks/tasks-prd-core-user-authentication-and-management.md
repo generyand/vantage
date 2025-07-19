@@ -1,12 +1,15 @@
 ## Relevant Files
 
--   `apps/api/app/db/models/user.py` - **Modify** the `User` model to use an `Integer` primary key and add `role` and `assessor_area` as `SMALLINT` fields.
--   `apps/api/app/db/models/governance_area.py` - **Create** a new model for the predefined list of governance areas for assessors.
+-   `apps/api/app/db/enums.py` - **Create** Python enums for `UserRole` and `GovernanceAreaType` to improve type safety and code readability.
+-   `apps/api/app/db/models/user.py` - **Modify** the `User` model to use an `Integer` primary key and enum-based `role` field.
+-   `apps/api/app/db/models/governance_area.py` - **Create** a new model for governance areas with enum-based `area_type` field.
 -   `apps/api/alembic/versions/` - A **new** Alembic migration file will be generated for all schema alterations.
 -   `apps/api/app/schemas/user.py` - **Update** Pydantic schemas to reflect the new `Integer` `id` and `assessor_area` field.
 -   `apps/api/app/api/v1/users.py` - **Update** endpoints to handle `assessor_area` logic.
--   `apps/api/app/services/user_service.py` - **Update** service logic to manage `assessor_area`.
--   `apps/api/app/api/deps.py` - **Update** dependencies to handle integer-based roles.
+-   `apps/api/app/services/user_service.py` - **Update** service logic to manage `assessor_area` and use enum-based roles.
+-   `apps/api/app/services/governance_area_service.py` - **Update** seeding service to use enum values.
+-   `apps/api/app/services/startup_service.py` - **Update** to use enum-based roles for first superuser creation.
+-   `apps/api/app/api/deps.py` - **Update** dependencies to handle enum-based roles.
 -   `apps/api/tests/api/v1/test_users.py` - Backend tests for the new User Management API.
 -   `apps/web/src/store/useAuthStore.ts` - Create a new Zustand store for managing global authentication state.
 -   `apps/web/middleware.ts` - Create Next.js middleware for route protection.
@@ -35,6 +38,15 @@
     -   [x] 1.8 Create `apps/api/app/db/models/governance_area.py` with `id`, `name`, and `area_type` (`SMALLINT`) columns.
     -   [x] 1.9 Create a one-time seeding service to populate the `governance_areas` table with the 6 predefined SGLGB areas and their types (Core/Essential).
     -   [x] 1.10 Run `uv run alembic revision --autogenerate -m "Alter user table and add governance areas"` to create a new migration file. Review the script.
+
+-   [x] 1.11 **Implement Enums for Type Safety and Better Code Quality**
+    -   [x] 1.11.1 Create `apps/api/app/db/enums.py` with `UserRole` and `GovernanceAreaType` enums using Python's `enum.IntEnum`.
+    -   [x] 1.11.2 Update `apps/api/app/db/models/user.py` to use `Enum(UserRole)` instead of `SmallInteger` for the `role` column.
+    -   [x] 1.11.3 Update `apps/api/app/db/models/governance_area.py` to use `Enum(GovernanceAreaType)` instead of `SmallInteger` for the `area_type` column.
+    -   [x] 1.11.4 Update `apps/api/app/services/governance_area_service.py` to use enum values in the seeding data.
+    -   [x] 1.11.5 Update `apps/api/app/services/startup_service.py` to use `UserRole.SYSTEM_ADMIN` instead of integer `3`.
+    -   [x] 1.11.6 Create a new Alembic migration to add CHECK constraints for the enum values in the database.
+    -   [x] 1.11.7 Update all existing code that references integer role values to use the new enums.
 
 -   [ ] 2.0 **Implement Backend Authentication Endpoints (Revision 1)**
     -   [x] 2.1 ~~*Original login endpoint enhancement*~~ (Completed)
