@@ -2,22 +2,42 @@
 'use client';
 
 import { useState } from 'react';
-import { useLogin, type LoginRequest } from '../../../lib/api';
+import { useRouter } from 'next/navigation';
+import { usePostAuthLogin } from '@vantage/shared';
+import { useAuthStore } from '@/store/useAuthStore';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
+/**
+ * Login form component with authentication and redirect logic
+ * 
+ * Uses the auto-generated usePostAuthLogin hook and integrates with
+ * the Zustand auth store for state management.
+ */
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
+  
+  // Get auth store actions
+  const { setUser, setToken } = useAuthStore();
 
-  // ✨ Auto-generated mutation hook with optimistic updates and error handling
-  const login = useLogin({
+  // Auto-generated login mutation hook
+  const loginMutation = usePostAuthLogin({
     mutation: {
       onSuccess: (response) => {
-        console.log('Login successful:', response.data);
-        // Store token and redirect (check if response is successful)
-        if (response.status === 200 && 'access_token' in response.data) {
-          localStorage.setItem('auth_token', response.data.access_token);
-          // You could use Next.js router here: router.push('/dashboard')
-        }
+        console.log('Login successful:', response);
+        
+        // Extract token and user data from response
+        const { access_token } = response;
+        
+        // Store token in auth store
+        setToken(access_token);
+        
+        // For now, we'll need to fetch user data separately
+        // In a real implementation, the login response might include user data
+        // or we'd fetch it using the token
+        fetchUserData(access_token);
       },
       onError: (error) => {
         console.error('Login failed:', error);
@@ -25,16 +45,47 @@ export default function LoginForm() {
     }
   });
 
+  /**
+   * Fetch user data after successful login
+   * This will be replaced with a proper user fetch hook in task 4.4
+   */
+  const fetchUserData = async (token: string) => {
+    try {
+      // TODO: Replace with proper user fetch hook
+      // For now, we'll create a mock user object
+      // This will be updated when we implement the user fetch functionality
+      const mockUser = {
+        id: '1',
+        email: email,
+        name: 'User', // This will come from the actual user data
+        role: 'MLGOO_DILG',
+        phone_number: null,
+        barangay_id: null,
+        is_active: true,
+        must_change_password: false,
+        created_at: new Date().toISOString()
+      };
+      
+      // Store user in auth store
+      setUser(mockUser);
+      
+      // Redirect to dashboard
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Failed to fetch user data:', error);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const credentials: LoginRequest = {
+    const credentials = {
       email,
       password,
     };
 
-    // 🚀 Type-safe mutation with automatic loading states
-    login.mutate({ data: credentials });
+    // Trigger the login mutation
+    loginMutation.mutate({ data: credentials });
   };
 
   return (
@@ -73,21 +124,23 @@ export default function LoginForm() {
         </div>
 
         {/* Error Display */}
-        {login.error && (
+        {loginMutation.error && (
           <div className="bg-red-50 border border-red-200 rounded-md p-3">
             <div className="text-red-600 text-sm">
-              {login.error instanceof Error ? login.error.message : 'Login failed'}
+              {loginMutation.error instanceof Error 
+                ? loginMutation.error.message 
+                : 'Login failed. Please check your credentials.'}
             </div>
           </div>
         )}
 
         {/* Submit Button with Loading State */}
-        <button
+        <Button
           type="submit"
-          disabled={login.isPending}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={loginMutation.isPending}
+          className="w-full"
         >
-          {login.isPending ? (
+          {loginMutation.isPending ? (
             <>
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               Signing in...
@@ -95,11 +148,11 @@ export default function LoginForm() {
           ) : (
             'Sign In'
           )}
-        </button>
+        </Button>
       </form>
 
       {/* Success Message */}
-      {login.isSuccess && (
+      {loginMutation.isSuccess && (
         <div className="mt-4 bg-green-50 border border-green-200 rounded-md p-3">
           <div className="text-green-600 text-sm">
             ✅ Login successful! Redirecting...
