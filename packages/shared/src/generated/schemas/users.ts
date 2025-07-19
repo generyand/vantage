@@ -34,6 +34,26 @@ is_active?: boolean | null;
 
 
 /**
+ * GetUsersStatsDashboard200
+ */
+export type GetUsersStatsDashboard200 = { [key: string]: unknown };
+
+
+/**
+ * PostUsersUserIdResetPassword200
+ */
+export type PostUsersUserIdResetPassword200 = { [key: string]: unknown };
+
+
+/**
+ * PostUsersUserIdResetPasswordParams
+ */
+export type PostUsersUserIdResetPasswordParams = {
+new_password: string;
+};
+
+
+/**
  * User
  */
 export interface User {

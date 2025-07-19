@@ -31,11 +31,11 @@ Guidelines for building user interfaces and handling frontend logic.
 
 | Rule File              | Description                                              |
 | :--------------------- | :------------------------------------------------------- |
-| @page-structure.mdc    | Page structure guidelines. *(Content pending)*          |
-| @ui-components.mdc     | UI component and styling guidelines. *(Content pending)* |
-| @form-handling.mdc     | Form handling guidelines. *(Content pending)*           |
-| @data-fetching.mdc     | Data fetching patterns and guidelines. *(Content pending)* |
-| @hooks.mdc             | Custom React hooks guidelines. *(Content pending)*      |
+| @page-structure.mdc    | Page structure guidelines.          |
+| @ui-components.mdc     | UI component and styling guidelines. |
+| @form-handling.mdc     | Form handling guidelines.           |
+| @data-fetching.mdc     | Data fetching patterns and guidelines. |
+| @hooks.mdc             | Custom React hooks guidelines.      |
 
 ## Feature Management
 

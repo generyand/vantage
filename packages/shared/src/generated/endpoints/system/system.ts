@@ -35,7 +35,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * Root endpoint - welcome message for the API.
  * @summary Root
  */
-export const getV1 = (
+export const get = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -48,43 +48,43 @@ export const getV1 = (
     }
   
 
-export const getGetV1QueryKey = () => {
+export const getGetQueryKey = () => {
     return [`http://localhost:8000/api/v1/`] as const;
     }
 
     
-export const getGetV1QueryOptions = <TData = Awaited<ReturnType<typeof getV1>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getV1>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetQueryOptions = <TData = Awaited<ReturnType<typeof get>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetV1QueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1>>> = ({ signal }) => getV1(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof get>>> = ({ signal }) => get(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof get>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type GetV1QueryResult = NonNullable<Awaited<ReturnType<typeof getV1>>>
-export type GetV1QueryError = unknown
+export type GetQueryResult = NonNullable<Awaited<ReturnType<typeof get>>>
+export type GetQueryError = unknown
 
 
 /**
  * @summary Root
  */
 
-export function useGetV1<TData = Awaited<ReturnType<typeof getV1>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getV1>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGet<TData = Awaited<ReturnType<typeof get>>, TError = unknown>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getGetV1QueryOptions(options)
+  const queryOptions = getGetQueryOptions(options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

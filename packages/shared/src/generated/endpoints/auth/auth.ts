@@ -43,7 +43,7 @@ This endpoint:
 4. Returns token with expiration info
  * @summary Login
  */
-export const postLogin = (
+export const postAuthLogin = (
     loginRequest: LoginRequest,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -59,11 +59,11 @@ export const postLogin = (
   
 
 
-export const getPostLoginMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postLogin>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof postLogin>>, TError,{data: LoginRequest}, TContext> => {
+export const getPostAuthLoginMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAuthLogin>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postAuthLogin>>, TError,{data: LoginRequest}, TContext> => {
 
-const mutationKey = ['postLogin'];
+const mutationKey = ['postAuthLogin'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -73,10 +73,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postLogin>>, {data: LoginRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAuthLogin>>, {data: LoginRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postLogin(data,requestOptions)
+          return  postAuthLogin(data,requestOptions)
         }
 
         
@@ -84,23 +84,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PostLoginMutationResult = NonNullable<Awaited<ReturnType<typeof postLogin>>>
-    export type PostLoginMutationBody = LoginRequest
-    export type PostLoginMutationError = HTTPValidationError
+    export type PostAuthLoginMutationResult = NonNullable<Awaited<ReturnType<typeof postAuthLogin>>>
+    export type PostAuthLoginMutationBody = LoginRequest
+    export type PostAuthLoginMutationError = HTTPValidationError
 
     /**
  * @summary Login
  */
-export const usePostLogin = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postLogin>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof mutator>}
+export const usePostAuthLogin = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAuthLogin>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof postLogin>>,
+        Awaited<ReturnType<typeof postAuthLogin>>,
         TError,
         {data: LoginRequest},
         TContext
       > => {
 
-      const mutationOptions = getPostLoginMutationOptions(options);
+      const mutationOptions = getPostAuthLoginMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
@@ -114,7 +114,7 @@ This endpoint:
 4. Returns success message
  * @summary Change Password
  */
-export const postChangePassword = (
+export const postAuthChangePassword = (
     changePasswordRequest: ChangePasswordRequest,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -130,11 +130,11 @@ export const postChangePassword = (
   
 
 
-export const getPostChangePasswordMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postChangePassword>>, TError,{data: ChangePasswordRequest}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof postChangePassword>>, TError,{data: ChangePasswordRequest}, TContext> => {
+export const getPostAuthChangePasswordMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAuthChangePassword>>, TError,{data: ChangePasswordRequest}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postAuthChangePassword>>, TError,{data: ChangePasswordRequest}, TContext> => {
 
-const mutationKey = ['postChangePassword'];
+const mutationKey = ['postAuthChangePassword'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -144,10 +144,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postChangePassword>>, {data: ChangePasswordRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAuthChangePassword>>, {data: ChangePasswordRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postChangePassword(data,requestOptions)
+          return  postAuthChangePassword(data,requestOptions)
         }
 
         
@@ -155,23 +155,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PostChangePasswordMutationResult = NonNullable<Awaited<ReturnType<typeof postChangePassword>>>
-    export type PostChangePasswordMutationBody = ChangePasswordRequest
-    export type PostChangePasswordMutationError = HTTPValidationError
+    export type PostAuthChangePasswordMutationResult = NonNullable<Awaited<ReturnType<typeof postAuthChangePassword>>>
+    export type PostAuthChangePasswordMutationBody = ChangePasswordRequest
+    export type PostAuthChangePasswordMutationError = HTTPValidationError
 
     /**
  * @summary Change Password
  */
-export const usePostChangePassword = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postChangePassword>>, TError,{data: ChangePasswordRequest}, TContext>, request?: SecondParameter<typeof mutator>}
+export const usePostAuthChangePassword = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAuthChangePassword>>, TError,{data: ChangePasswordRequest}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof postChangePassword>>,
+        Awaited<ReturnType<typeof postAuthChangePassword>>,
         TError,
         {data: ChangePasswordRequest},
         TContext
       > => {
 
-      const mutationOptions = getPostChangePasswordMutationOptions(options);
+      const mutationOptions = getPostAuthChangePasswordMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
@@ -184,7 +184,7 @@ In production, this will:
 3. Log the logout event
  * @summary Logout
  */
-export const postLogout = (
+export const postAuthLogout = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -198,11 +198,11 @@ export const postLogout = (
   
 
 
-export const getPostLogoutMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postLogout>>, TError,void, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof postLogout>>, TError,void, TContext> => {
+export const getPostAuthLogoutMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAuthLogout>>, TError,void, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postAuthLogout>>, TError,void, TContext> => {
 
-const mutationKey = ['postLogout'];
+const mutationKey = ['postAuthLogout'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -212,10 +212,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postLogout>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAuthLogout>>, void> = () => {
           
 
-          return  postLogout(requestOptions)
+          return  postAuthLogout(requestOptions)
         }
 
         
@@ -223,23 +223,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PostLogoutMutationResult = NonNullable<Awaited<ReturnType<typeof postLogout>>>
+    export type PostAuthLogoutMutationResult = NonNullable<Awaited<ReturnType<typeof postAuthLogout>>>
     
-    export type PostLogoutMutationError = unknown
+    export type PostAuthLogoutMutationError = unknown
 
     /**
  * @summary Logout
  */
-export const usePostLogout = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postLogout>>, TError,void, TContext>, request?: SecondParameter<typeof mutator>}
+export const usePostAuthLogout = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAuthLogout>>, TError,void, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof postLogout>>,
+        Awaited<ReturnType<typeof postAuthLogout>>,
         TError,
         void,
         TContext
       > => {
 
-      const mutationOptions = getPostLogoutMutationOptions(options);
+      const mutationOptions = getPostAuthLogoutMutationOptions(options);
 
       return useMutation(mutationOptions );
     }
