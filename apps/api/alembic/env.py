@@ -16,8 +16,7 @@ from app.db.base import Base
 
 # Import all models to ensure they're registered with SQLAlchemy
 from app.db.models.user import User
-from app.db.models.project import Project
-from app.db.models.assessment import Assessment
+from app.db.models.barangay import Barangay
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

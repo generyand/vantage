@@ -40,6 +40,4 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     # Relationships
-    projects = relationship("Project", back_populates="owner")
-    assessments = relationship("Assessment", back_populates="user")
     barangay = relationship("Barangay", back_populates="users") 
