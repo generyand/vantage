@@ -5,16 +5,19 @@ from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import Optional
 
+from app.db.enums import UserRole
+
 
 class User(BaseModel):
     """User response model for API endpoints."""
     model_config = ConfigDict(from_attributes=True)
     
-    id: str
+    id: int
     email: str
     name: str
-    role: str
+    role: UserRole
     phone_number: Optional[str] = None
+    assessor_area: Optional[int] = None
     barangay_id: Optional[int] = None
     is_active: bool
     must_change_password: bool
@@ -26,7 +29,7 @@ class UserCreate(BaseModel):
     email: str
     name: str
     password: str
-    role: str = "BLGU User"
+    role: UserRole = UserRole.BLGU_USER
     phone_number: Optional[str] = None
     barangay_id: Optional[int] = None
     is_active: bool = True
@@ -37,8 +40,9 @@ class UserUpdate(BaseModel):
     """Schema for updating user information."""
     email: Optional[str] = None
     name: Optional[str] = None
-    role: Optional[str] = None
+    role: Optional[UserRole] = None
     phone_number: Optional[str] = None
+    assessor_area: Optional[int] = None
     barangay_id: Optional[int] = None
     is_active: Optional[bool] = None
 
@@ -48,8 +52,9 @@ class UserAdminCreate(BaseModel):
     email: str
     name: str
     password: str
-    role: str = "BLGU User"
+    role: UserRole = UserRole.BLGU_USER
     phone_number: Optional[str] = None
+    assessor_area: Optional[int] = None
     barangay_id: Optional[int] = None
     is_active: bool = True
     is_superuser: bool = False
@@ -60,8 +65,9 @@ class UserAdminUpdate(BaseModel):
     """Schema for admin updating user information with all permissions."""
     email: Optional[str] = None
     name: Optional[str] = None
-    role: Optional[str] = None
+    role: Optional[UserRole] = None
     phone_number: Optional[str] = None
+    assessor_area: Optional[int] = None
     barangay_id: Optional[int] = None
     is_active: Optional[bool] = None
     is_superuser: Optional[bool] = None

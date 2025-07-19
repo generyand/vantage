@@ -56,17 +56,17 @@
     -   [x] 1.12.5 In `deps.py`, update the admin check to use `UserRole.SUPERADMIN`.
     -   [x] 1.12.6 Create a new Alembic migration to change the `role` and `area_type` columns to `VARCHAR`, update existing data from integers to strings, and update the `CHECK` constraints.
 
--   [ ] 2.0 **Implement Backend Authentication Endpoints (Revision 1)**
+-   [x] 2.0 **Implement Backend Authentication Endpoints (Revision 1)**
     -   [x] 2.1 ~~*Original login endpoint enhancement*~~ (Completed)
-    -   [ ] 2.2 In `apps/api/app/core/security.py`, update `create_access_token` and `verify_token` to handle integer `user_id`.
-    -   [ ] 2.3 In `apps/api/app/api/v1/auth.py`, update the `/login` endpoint to query users by integer ID.
-    -   [ ] 2.4 Update the JWT payload to include the integer `role`.
+    -   [x] 2.2 In `apps/api/app/core/security.py`, update `create_access_token` and `verify_token` to handle integer `user_id`.
+    -   [x] 2.3 In `apps/api/app/api/v1/auth.py`, update the `/login` endpoint to query users by integer ID.
+    -   [x] 2.4 Update the JWT payload to include the string `role`.
 
--   [ ] 3.0 **Implement Backend User Management API (Admin) (Revision 1)**
-    -   [ ] 3.1 In `apps/api/app/schemas/user.py`, update all user schemas to use `int` for `id` and include the optional `assessor_area` field.
-    -   [ ] 3.2 In `apps/api/app/services/user_service.py`, refactor methods to handle the `assessor_area` field, ensuring it's only set for users with the "Area Assessor" role.
-    -   [ ] 3.3 In `apps/api/app/api/v1/users.py`, update the create and update endpoints to accept and process the `assessor_area`.
-    -   [ ] 3.4 In `apps/api/app/api/deps.py`, update `get_current_admin_user` to check for `role == 1` (MLGOO-DILG).
+-   [x] 3.0 **Implement Backend User Management API (Admin) (Revision 1)**
+    -   [x] 3.1 In `apps/api/app/schemas/user.py`, update all user schemas to use `int` for `id` and include the optional `assessor_area` field.
+    -   [x] 3.2 In `apps/api/app/services/user_service.py`, refactor methods to handle the `assessor_area` field, ensuring it's only set for users with the "Area Assessor" role.
+    -   [x] 3.3 In `apps/api/app/api/v1/users.py`, update the create and update endpoints to accept and process the `assessor_area`.
+    -   [x] 3.4 ~~In `apps/api/app/api/deps.py`, update `get_current_admin_user` to check for `role == 1` (MLGOO-DILG).~~ (Superseded by Task 1.12.5)
 
 -   [ ] 4.0 **Frontend Foundation & Login Flow**
     -   [ ] 4.1 Create `apps/web/src/store/useAuthStore.ts` using Zustand to hold `user`, `token`, and `isAuthenticated` state.

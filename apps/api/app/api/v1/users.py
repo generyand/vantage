@@ -105,7 +105,7 @@ async def create_user(
 
 @router.get("/{user_id}", response_model=UserSchema, tags=["admin"])
 async def get_user(
-    user_id: str,
+    user_id: int,
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_admin_user)
 ):
@@ -125,7 +125,7 @@ async def get_user(
 
 @router.put("/{user_id}", response_model=UserSchema, tags=["admin"])
 async def update_user(
-    user_id: str,
+    user_id: int,
     user_update: UserAdminUpdate,
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_admin_user)
@@ -146,7 +146,7 @@ async def update_user(
 
 @router.delete("/{user_id}", response_model=UserSchema, tags=["admin"])
 async def deactivate_user(
-    user_id: str,
+    user_id: int,
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_admin_user)
 ):
@@ -172,7 +172,7 @@ async def deactivate_user(
 
 @router.post("/{user_id}/activate", response_model=UserSchema, tags=["admin"])
 async def activate_user(
-    user_id: str,
+    user_id: int,
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_admin_user)
 ):
@@ -192,7 +192,7 @@ async def activate_user(
 
 @router.post("/{user_id}/reset-password", response_model=dict, tags=["admin"])
 async def reset_user_password(
-    user_id: str,
+    user_id: int,
     new_password: str,
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_admin_user)
