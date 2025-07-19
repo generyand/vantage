@@ -1,0 +1,45 @@
+[33me519fa2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31mupstream/main[m[33m)[m feat(user): add barangay relationship and implement first superuser creation
+[33m6cee5ea[m feat(system): enhance health check endpoint and update schemas
+[33m1c92c01[m feat: implement backend user management API with admin permissions
+[33m48da31b[m docs: add TESTING_GUIDE file
+[33m6fdce2e[m feat(auth): implement enhanced authentication endpoints
+[33m0b682ce[m feature: Implement Backend Foundation & Database Schema
+[33mcc760b7[m feat(auth): add user fields and barangay model
+[33m316aba6[m docs: edited epic 1 prd and added tasks
+[33m6247210[m docs: update cursor rules - add frontend rules
+[33m1d2771a[m docs: enhance Cursor rules index
+[33m454bdaf[m docs: update Vantage Rule Index
+[33m986c98e[m docs: update task generation rules for VANTAGE features
+[33mf1d3b77[m docs: edit Epic 1 PRD
+[33m6f7988b[m docs: move Core User Authentication & Management PRD document
+[33m75d94fa[m docs: added project roadmap (epics) and 1st epic PRD
+[33mb027754[m docs: enhance testing guidelines in README
+[33m5baaba3[m chore: remove SGLGB classification algorithm implementation
+[33mb0ebd23[m refactor: integrate startup service for application lifecycle management
+[33mfbc9968[m minor changes
+[33m6add520[m Task rules
+[33m32fff40[m fix: improve connection validation logging and update README for database connection options
+[33mfa2001d[m feat: update connection validation and enhance database checks
+[33m1a1298b[m feature: improve project-structure rules
+[33mf0a8086[m feature: added commenting-guidelines rules
+[33mf1c4e71[m minor change to rules
+[33m40f26fa[m feat: update API endpoints to v1 and enhance documentation
+[33ma58f685[m feat: enhance README with comprehensive Alembic migration documentation
+[33m2355e5d[m feat: restructure API main application and enhance database connectivity checks
+[33mf600954[m feat: refactor API models and enhance main application structure
+[33m8630510[m refactor: reorganize directory structure of client-side
+[33mb4a1e0a[m feat: integrate Axios for API requests and enhance Orval configuration
+[33m1f2eccb[m feat: add tree-node-cli and enhance package.json scripts
+[33m25e1310[m feat: group schemas by FastAPI tags and remove deprecated files
+[33mcf9f1ce[m feat: integrate @tanstack/react-query-devtools and update layout structure
+[33mfafa692[m feat: implement tag-split mode for API type generation
+[33mda6079f[m feat: enhance API operation IDs and add utility functions
+[33mccd4b61[m feat: migrate from openapi-typescript-codegen to Orval for API type generation
+[33me0e4756[m feat: added rules template
+[33m7480348[m feat: add environment configuration templates for monorepo apps
+[33m6da7d43[m docs: add comprehensive README documentation for Vantage API and Web applications, including setup instructions, available commands, project structure, and development tools
+[33mbe7f90d[m refactor: update .gitignore, enhance TypeScript configuration, remove deprecated api-types, and improve type generation script for better organization
+[33mc066d92[m feat: add type generation script
+[33mfcc73c3[m chore: install shadcn
+[33m2d454a8[m docs: add Git workflow guidelines and .gitattributes for cross-platform compatibility
+[33m3709de4[m Initial commit: Setup Vantage monorepo with NextJS + FastAPI + Turborepo
