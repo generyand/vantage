@@ -108,7 +108,7 @@ export default function LoginForm() {
       login(completeUser, token);
 
       // Step 5: Set authentication cookie for middleware
-      // Set cookie with secure options
+      // Set cookie with secure optionsss
       const cookieOptions = [
         'auth-token=' + token,
         'Path=/',
