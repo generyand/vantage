@@ -1,9 +1,9 @@
 // 🚀 Modern login form using auto-generated React Query hooks
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { usePostAuthLogin } from '@vantage/shared';
+import { usePostAuthLogin, useGetUsersMe } from '@vantage/shared';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [shouldFetchUser, setShouldFetchUser] = useState(false);
   const router = useRouter();
   
   // Get auth store actions
@@ -28,16 +29,14 @@ export default function LoginForm() {
       onSuccess: (response) => {
         console.log('Login successful:', response);
         
-        // Extract token and user data from response
+        // Extract token from response
         const { access_token } = response;
         
         // Store token in auth store
         setToken(access_token);
         
-        // For now, we'll need to fetch user data separately
-        // In a real implementation, the login response might include user data
-        // or we'd fetch it using the token
-        fetchUserData(access_token);
+        // Trigger user data fetch
+        setShouldFetchUser(true);
       },
       onError: (error) => {
         console.error('Login failed:', error);
@@ -45,36 +44,30 @@ export default function LoginForm() {
     }
   });
 
-  /**
-   * Fetch user data after successful login
-   * This will be replaced with a proper user fetch hook in task 4.4
-   */
-  const fetchUserData = async (token: string) => {
-    try {
-      // TODO: Replace with proper user fetch hook
-      // For now, we'll create a mock user object
-      // This will be updated when we implement the user fetch functionality
-      const mockUser = {
-        id: '1',
-        email: email,
-        name: 'User', // This will come from the actual user data
-        role: 'MLGOO_DILG',
-        phone_number: null,
-        barangay_id: null,
-        is_active: true,
-        must_change_password: false,
-        created_at: new Date().toISOString()
-      };
-      
-      // Store user in auth store
-      setUser(mockUser);
-      
-      // Redirect to dashboard
-      router.push('/dashboard');
-    } catch (error) {
-      console.error('Failed to fetch user data:', error);
+  // Auto-generated hook to fetch current user data
+  const userQuery = useGetUsersMe();
+
+  // Handle user data fetch success/error
+  useEffect(() => {
+    if (shouldFetchUser) {
+      // Trigger user data fetch
+      userQuery.refetch().then((result) => {
+        if (result.data) {
+          console.log('User data fetched:', result.data);
+          // Store user in auth store
+          setUser(result.data);
+          // Redirect to dashboard
+          router.push('/dashboard');
+        } else if (result.error) {
+          console.error('Failed to fetch user data:', result.error);
+          // Even if user fetch fails, we can still redirect to dashboard
+          router.push('/dashboard');
+        }
+        // Reset the flag
+        setShouldFetchUser(false);
+      });
     }
-  };
+  }, [shouldFetchUser, userQuery, setUser, router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,13 +130,13 @@ export default function LoginForm() {
         {/* Submit Button with Loading State */}
         <Button
           type="submit"
-          disabled={loginMutation.isPending}
+          disabled={loginMutation.isPending || userQuery.isFetching}
           className="w-full"
         >
-          {loginMutation.isPending ? (
+          {loginMutation.isPending || userQuery.isFetching ? (
             <>
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-              Signing in...
+              {loginMutation.isPending ? 'Signing in...' : 'Loading user data...'}
             </>
           ) : (
             'Sign In'
