@@ -11,7 +11,7 @@
 -   `apps/api/app/services/startup_service.py` - **Update** to use enum-based roles for first superuser creation.
 -   `apps/api/app/api/deps.py` - **Update** dependencies to handle enum-based roles.
 -   `apps/api/tests/api/v1/test_users.py` - Backend tests for the new User Management API.
--   `apps/web/src/store/useAuthStore.ts` - Create a new Zustand store for managing global authentication state.
+-   `apps/web/src/store/useAuthStore.ts` - **Create** Zustand store for managing global authentication state with user, token, and must_change_password tracking.
 -   `apps/web/middleware.ts` - Create Next.js middleware for route protection.
 -   `apps/web/src/hooks/useAuth.ts` - Create a hook for handling login, logout, and password changes.
 -   `apps/web/src/hooks/useUsers.ts` - Create hooks for fetching and managing user data for the admin interface.
@@ -69,7 +69,7 @@
     -   [x] 3.4 ~~In `apps/api/app/api/deps.py`, update `get_current_admin_user` to check for `role == 1` (MLGOO-DILG).~~ (Superseded by Task 1.12.5)
 
 -   [ ] 4.0 **Frontend Foundation & Login Flow**
-    -   [ ] 4.1 Create `apps/web/src/store/useAuthStore.ts` using Zustand to hold `user`, `token`, and `isAuthenticated` state.
+    -   [x] 4.1 Create `apps/web/src/store/useAuthStore.ts` using Zustand to hold `user`, `token`, and `isAuthenticated` state.
     -   [ ] 4.2 In the `LoginForm` component, use the auto-generated `usePostLogin` mutation hook from `@vantage/shared`. On success, save the returned token and user state to the Zustand store and redirect to the dashboard.
     -   [ ] 4.3 Create `apps/web/middleware.ts` to protect all routes inside the `(app)` group. Unauthenticated users should be redirected to `/login`.
     -   [ ] 4.4 In the `UserNav` component, use the auto-generated `usePostLogout` mutation hook. On success, clear the auth store and redirect to the login page.
