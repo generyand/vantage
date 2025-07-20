@@ -3,6 +3,8 @@
 // 📁 Admin-related types
 // 🏷️  Based on FastAPI tag: "admin"
 
+import type { UserRole } from './users';
+
 /**
  * UserAdminCreate
  */
@@ -10,13 +12,20 @@ export interface UserAdminCreate {
   email: string;
   name: string;
   password: string;
-  role?: string;
+  role?: UserRole;
   phone_number?: UserAdminCreatePhoneNumber;
+  assessor_area?: UserAdminCreateAssessorArea;
   barangay_id?: UserAdminCreateBarangayId;
   is_active?: boolean;
   is_superuser?: boolean;
   must_change_password?: boolean;
 }
+
+
+/**
+ * UserAdminCreateAssessorArea
+ */
+export type UserAdminCreateAssessorArea = number | null;
 
 
 /**
@@ -39,11 +48,18 @@ export interface UserAdminUpdate {
   name?: UserAdminUpdateName;
   role?: UserAdminUpdateRole;
   phone_number?: UserAdminUpdatePhoneNumber;
+  assessor_area?: UserAdminUpdateAssessorArea;
   barangay_id?: UserAdminUpdateBarangayId;
   is_active?: UserAdminUpdateIsActive;
   is_superuser?: UserAdminUpdateIsSuperuser;
   must_change_password?: UserAdminUpdateMustChangePassword;
 }
+
+
+/**
+ * UserAdminUpdateAssessorArea
+ */
+export type UserAdminUpdateAssessorArea = number | null;
 
 
 /**
@@ -91,4 +107,4 @@ export type UserAdminUpdatePhoneNumber = string | null;
 /**
  * UserAdminUpdateRole
  */
-export type UserAdminUpdateRole = string | null;
+export type UserAdminUpdateRole = UserRole | null;

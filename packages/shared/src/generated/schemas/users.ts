@@ -57,11 +57,12 @@ new_password: string;
  * User
  */
 export interface User {
-  id: string;
+  id: number;
   email: string;
   name: string;
-  role: string;
+  role: UserRole;
   phone_number?: UserPhoneNumber;
+  assessor_area?: UserAssessorArea;
   barangay_id?: UserBarangayId;
   is_active: boolean;
   must_change_password: boolean;
@@ -76,13 +77,20 @@ export interface UserAdminCreate {
   email: string;
   name: string;
   password: string;
-  role?: string;
+  role?: UserRole;
   phone_number?: UserAdminCreatePhoneNumber;
+  assessor_area?: UserAdminCreateAssessorArea;
   barangay_id?: UserAdminCreateBarangayId;
   is_active?: boolean;
   is_superuser?: boolean;
   must_change_password?: boolean;
 }
+
+
+/**
+ * UserAdminCreateAssessorArea
+ */
+export type UserAdminCreateAssessorArea = number | null;
 
 
 /**
@@ -105,11 +113,18 @@ export interface UserAdminUpdate {
   name?: UserAdminUpdateName;
   role?: UserAdminUpdateRole;
   phone_number?: UserAdminUpdatePhoneNumber;
+  assessor_area?: UserAdminUpdateAssessorArea;
   barangay_id?: UserAdminUpdateBarangayId;
   is_active?: UserAdminUpdateIsActive;
   is_superuser?: UserAdminUpdateIsSuperuser;
   must_change_password?: UserAdminUpdateMustChangePassword;
 }
+
+
+/**
+ * UserAdminUpdateAssessorArea
+ */
+export type UserAdminUpdateAssessorArea = number | null;
 
 
 /**
@@ -157,7 +172,13 @@ export type UserAdminUpdatePhoneNumber = string | null;
 /**
  * UserAdminUpdateRole
  */
-export type UserAdminUpdateRole = string | null;
+export type UserAdminUpdateRole = UserRole | null;
+
+
+/**
+ * UserAssessorArea
+ */
+export type UserAssessorArea = number | null;
 
 
 /**
@@ -185,6 +206,21 @@ export type UserPhoneNumber = string | null;
 
 
 /**
+ * UserRole
+ */
+export type UserRole = typeof UserRole[keyof typeof UserRole];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UserRole = {
+  SUPERADMIN: 'SUPERADMIN',
+  MLGOO_DILG: 'MLGOO_DILG',
+  AREA_ASSESSOR: 'AREA_ASSESSOR',
+  BLGU_USER: 'BLGU_USER',
+} as const;
+
+
+/**
  * UserUpdate
  */
 export interface UserUpdate {
@@ -192,9 +228,16 @@ export interface UserUpdate {
   name?: UserUpdateName;
   role?: UserUpdateRole;
   phone_number?: UserUpdatePhoneNumber;
+  assessor_area?: UserUpdateAssessorArea;
   barangay_id?: UserUpdateBarangayId;
   is_active?: UserUpdateIsActive;
 }
+
+
+/**
+ * UserUpdateAssessorArea
+ */
+export type UserUpdateAssessorArea = number | null;
 
 
 /**
@@ -230,4 +273,4 @@ export type UserUpdatePhoneNumber = string | null;
 /**
  * UserUpdateRole
  */
-export type UserUpdateRole = string | null;
+export type UserUpdateRole = UserRole | null;
