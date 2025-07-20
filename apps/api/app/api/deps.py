@@ -10,6 +10,7 @@ from supabase import Client
 from app.core.security import verify_token
 from app.db.base import SessionLocal, get_supabase, get_supabase_admin
 from app.db.models.user import User
+from app.db.enums import UserRole
 
 # Security scheme for JWT tokens
 security = HTTPBearer()
@@ -96,7 +97,7 @@ async def get_current_admin_user(
     """
     Get the current authenticated admin user.
     
-    Restricts access to users with "MLGOO-DILG" role only.
+    Restricts access to users with SUPERADMIN role only.
     
     Args:
         current_user: Current active user from get_current_active_user dependency
@@ -107,7 +108,7 @@ async def get_current_admin_user(
     Raises:
         HTTPException: If user doesn't have admin privileges
     """
-    if current_user.role != "MLGOO-DILG":
+    if current_user.role != UserRole.SUPERADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions. Admin access required."

@@ -4,9 +4,10 @@
 # 📋 API V1 Router
 # Combines all individual routers into a single V1 API router
 
+# 📦 Imports
 from fastapi import APIRouter
 
-from . import auth, users, projects, system
+from . import auth, users, system
 
 # Create the main API router for V1
 api_router = APIRouter()
@@ -14,5 +15,4 @@ api_router = APIRouter()
 # Include all individual routers with their prefixes
 api_router.include_router(system.router, tags=["system"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
-api_router.include_router(users.router, prefix="/users", tags=["users"])
-api_router.include_router(projects.router, prefix="/projects", tags=["projects"]) 
+api_router.include_router(users.router, prefix="/users", tags=["users"]) 

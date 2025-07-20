@@ -13,7 +13,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def create_access_token(
-    subject: Union[str, Any], 
+    subject: Union[str, int], 
     expires_delta: Optional[timedelta] = None,
     role: Optional[str] = None,
     must_change_password: Optional[bool] = None
@@ -39,8 +39,7 @@ def create_access_token(
     
     to_encode = {
         "exp": expire, 
-        "sub": str(subject),
-        "user_id": str(subject)
+        "sub": str(subject)
     }
     
     # Add optional fields to payload

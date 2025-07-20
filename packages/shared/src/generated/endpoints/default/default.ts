@@ -32,7 +32,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 Returns detailed status of all system components.
  * @summary Health Check
  */
-export const Health_check_health_get = (
+export const getHealth = (
     
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -45,43 +45,43 @@ export const Health_check_health_get = (
     }
   
 
-export const getHealthCheckHealthGetQueryKey = () => {
+export const getGetHealthQueryKey = () => {
     return [`http://localhost:8000/health`] as const;
     }
 
     
-export const getHealthCheckHealthGetQueryOptions = <TData = Awaited<ReturnType<typeof Health_check_health_get>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Health_check_health_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetHealthQueryOptions = <TData = Awaited<ReturnType<typeof getHealth>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getHealthCheckHealthGetQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetHealthQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof Health_check_health_get>>> = ({ signal }) => Health_check_health_get(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getHealth>>> = ({ signal }) => getHealth(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof Health_check_health_get>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type HealthCheckHealthGetQueryResult = NonNullable<Awaited<ReturnType<typeof Health_check_health_get>>>
-export type HealthCheckHealthGetQueryError = unknown
+export type GetHealthQueryResult = NonNullable<Awaited<ReturnType<typeof getHealth>>>
+export type GetHealthQueryError = unknown
 
 
 /**
  * @summary Health Check
  */
 
-export function useHealthCheckHealthGet<TData = Awaited<ReturnType<typeof Health_check_health_get>>, TError = unknown>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof Health_check_health_get>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = unknown>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getHealthCheckHealthGetQueryOptions(options)
+  const queryOptions = getGetHealthQueryOptions(options)
 
   const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

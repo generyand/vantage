@@ -1,11 +1,12 @@
 # 👥 User Database Model
 # SQLAlchemy model for the users table
 
-from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, Integer
+from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, Integer, SmallInteger, Enum
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
+from app.db.enums import UserRole
 
 
 class User(Base):
@@ -18,13 +19,14 @@ class User(Base):
     __tablename__ = "users"
     
     # Primary key
-    id = Column(String, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     
     # User information
     email = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=False)
     phone_number = Column(String, nullable=True)
-    role = Column(String, nullable=False, default="BLGU User")
+    role = Column(Enum(UserRole, name="user_role_enum", create_constraint=True), nullable=False, default=UserRole.BLGU_USER)
+    assessor_area = Column(SmallInteger, nullable=True)  # Reference to governance_areas.id for Area Assessors
     barangay_id = Column(Integer, ForeignKey("barangays.id"), nullable=True)
     
     # Authentication
@@ -40,6 +42,4 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     # Relationships
-    projects = relationship("Project", back_populates="owner")
-    assessments = relationship("Assessment", back_populates="user")
     barangay = relationship("Barangay", back_populates="users") 

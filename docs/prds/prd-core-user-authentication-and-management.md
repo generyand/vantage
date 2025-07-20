@@ -30,8 +30,9 @@ The goal is to create a secure, closed authentication system where users are man
 *   View a table of all registered users in the system.
 *   Create new user accounts by providing their full name, email, and phone number.
 *   When creating a user, I must be able to assign them a specific, predefined role (e.g., "BLGU User," "Area Assessor - Environmental").
+*   **If I assign the "Area Assessor" role, I must also be able to assign them a specific governance area (e.g., "Financial Administration") from a predefined list.**
 *   If I assign the "BLGU User" role, I must also be able to link that user to a specific barangay from a predefined list.
-*   Edit the details (name, role, phone number, assigned barangay) of an existing user.
+*   Edit the details (name, role, phone number, assigned barangay, and assigned assessor area) of an existing user.
 *   Activate or deactivate a user account to grant or revoke their access.
 
 ### **4. Functional Requirements**
@@ -49,11 +50,12 @@ The goal is to create a secure, closed authentication system where users are man
 
 2.  **User Management (MLGOO-DILG Only)**
     2.1. A "User Management" interface must be accessible to users with the "MLGOO-DILG" role.
-    2.2. This interface must display a table of all users with the following columns: **Full Name, Email Address, Phone Number, Role, Assigned Barangay, Account Status (Active/Inactive)**.
+    2.2. This interface must display a table of all users with the following columns: **Full Name, Email Address, Phone Number, Role, Assigned Barangay/Area, Account Status (Active/Inactive)**.
     2.3. The MLGOO-DILG must be able to create a new user by providing a full name, email address, phone number, and assigning a role from a fixed, predefined list.
-    2.4. If the "BLGU User" role is selected, a dropdown menu populated with a predefined list of barangays must be presented, and the MLGOO-DILG must select one. The "Assigned Barangay" field is not applicable to other roles.
-    2.5. The MLGOO-DILG must be able to edit an existing user's full name, role, phone number, and assigned barangay.
-    2.6. The MLGOO-DILG must be able to toggle a user's account status between "Active" and "Inactive". Inactive users must not be able to log in.
+    2.4. If the "BLGU User" role is selected, a dropdown menu populated with a predefined list of barangays must be presented, and the MLGOO-DILG must select one.
+    2.5. **If the "Area Assessor" role is selected during user creation or editing, a second dropdown menu must be presented, requiring the MLGOO-DILG to select a specific governance area (e.g., Financial, Disaster Prep) for that assessor. This field is only applicable and visible when the role is "Area Assessor".**
+    2.6. The MLGOO-DILG must be able to edit an existing user's full name, role, phone number, and assigned barangay/area.
+    2.7. The MLGOO-DILG must be able to toggle a user's account status between "Active" and "Inactive". Inactive users must not be able to log in.
 
 ### **5. Non-Goals (Out of Scope for this Epic)**
 
@@ -83,13 +85,21 @@ The goal is to create a secure, closed authentication system where users are man
     *   A Zustand store (`useAuthStore`) will manage the global authentication state (user info, token).
     *   Next.js middleware (`middleware.ts`) will handle route protection and redirection logic.
 *   **Database:**
-    *   The `users` table must be updated to include a **`phone_number`** column (VARCHAR, nullable).
+    *   The `users` table will be structured for performance and clarity with integer-based keys and roles.
+        *   `id`: `Integer` (Primary Key) for performance.
+        *   `phone_number`: `VARCHAR` (nullable). A field to store the user's contact number.
+        *   `role`: `SMALLINT` representing user permissions:
+            *   `0`: SUPERADMIN
+            *   `1`: MLGOO-DILG
+            *   `2`: Area Assessor
+            *   `3`: BLGU User
+        *   `assessor_area`: `SMALLINT` (nullable). A field that specifies an assessor's area of responsibility (e.g., `1` for Financial, `2` for Disaster Prep). This field is only used when `role` is `2`.
     *   A `barangays` table will be seeded with the predefined list of the 25 barangays of Sulop.
 
 ### **8. Success Metrics**
 
 *   100% of internal application routes are inaccessible to unauthenticated users.
-*   The MLGOO-DILG can successfully perform all specified user management functions (Create, Read, Update, Activate/Deactivate), including managing phone numbers.
+*   The MLGOO-DILG can successfully perform all specified user management functions, including creating an Area Assessor with a specific governance area.
 *   Users are correctly redirected to their role-specific dashboard after logging in.
 *   The forced password change flow for new users works as required.
 

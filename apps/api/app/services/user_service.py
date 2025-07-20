@@ -7,6 +7,7 @@ from sqlalchemy import func
 from fastapi import HTTPException, status
 
 from app.db.models.user import User
+from app.db.enums import UserRole
 from app.schemas.user import UserCreate, UserUpdate, UserAdminCreate, UserAdminUpdate
 from app.core.security import get_password_hash, verify_password
 import uuid
@@ -15,7 +16,7 @@ import uuid
 class UserService:
     """Service class for user management operations."""
     
-    def get_user_by_id(self, db: Session, user_id: str) -> Optional[User]:
+    def get_user_by_id(self, db: Session, user_id: int) -> Optional[User]:
         """Get a user by their ID."""
         return db.query(User).filter(User.id == user_id).first()
     
@@ -63,24 +64,14 @@ class UserService:
     
     def create_user(self, db: Session, user_create: UserCreate) -> User:
         """Create a new user (regular user creation)."""
-        # Check if email already exists
-        if self.get_user_by_email(db, user_create.email):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Email already registered"
-            )
-        
-        # Create user with hashed password
+        # This function is simplified as regular users can't choose complex roles.
         db_user = User(
-            id=str(uuid.uuid4()),
             email=user_create.email,
             name=user_create.name,
             phone_number=user_create.phone_number,
-            role=user_create.role,
+            role=UserRole.BLGU_USER, # Enforce default role
             barangay_id=user_create.barangay_id,
             hashed_password=get_password_hash(user_create.password),
-            is_active=user_create.is_active,
-            must_change_password=user_create.must_change_password
         )
         
         db.add(db_user)
@@ -90,25 +81,28 @@ class UserService:
     
     def create_user_admin(self, db: Session, user_create: UserAdminCreate) -> User:
         """Create a new user with admin privileges (can set all fields)."""
-        # Check if email already exists
         if self.get_user_by_email(db, user_create.email):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email already registered"
             )
-        
-        # Create user with hashed password
+
+        # Business logic for role-specific fields
+        if user_create.role == UserRole.AREA_ASSESSOR:
+            if not user_create.assessor_area:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Assessor area is required for Area Assessor role."
+                )
+            # Ensure barangay_id is null for assessors
+            user_create.barangay_id = None
+        else:
+            # Ensure assessor_area is null for non-assessor roles
+            user_create.assessor_area = None
+
         db_user = User(
-            id=str(uuid.uuid4()),
-            email=user_create.email,
-            name=user_create.name,
-            phone_number=user_create.phone_number,
-            role=user_create.role,
-            barangay_id=user_create.barangay_id,
-            hashed_password=get_password_hash(user_create.password),
-            is_active=user_create.is_active,
-            is_superuser=user_create.is_superuser,
-            must_change_password=user_create.must_change_password
+            **user_create.model_dump(exclude={"password"}),
+            hashed_password=get_password_hash(user_create.password)
         )
         
         db.add(db_user)
@@ -116,7 +110,7 @@ class UserService:
         db.refresh(db_user)
         return db_user
     
-    def update_user(self, db: Session, user_id: str, user_update: UserUpdate) -> Optional[User]:
+    def update_user(self, db: Session, user_id: int, user_update: UserUpdate) -> Optional[User]:
         """Update user information (regular user update)."""
         db_user = self.get_user_by_id(db, user_id)
         if not db_user:
@@ -139,22 +133,36 @@ class UserService:
         db.refresh(db_user)
         return db_user
     
-    def update_user_admin(self, db: Session, user_id: str, user_update: UserAdminUpdate) -> Optional[User]:
+    def update_user_admin(self, db: Session, user_id: int, user_update: UserAdminUpdate) -> Optional[User]:
         """Update user information with admin privileges (can update all fields)."""
         db_user = self.get_user_by_id(db, user_id)
         if not db_user:
             return None
         
+        update_data = user_update.model_dump(exclude_unset=True)
+
+        # Business logic for role-specific fields
+        role = update_data.get("role", db_user.role)
+        if role == UserRole.AREA_ASSESSOR:
+            if "assessor_area" not in update_data and not db_user.assessor_area:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Assessor area is required for Area Assessor role."
+                )
+            # Ensure barangay_id is set to null if role is changed to Assessor
+            update_data["barangay_id"] = None
+        else:
+            # Ensure assessor_area is set to null for non-assessor roles
+            update_data["assessor_area"] = None
+
         # Check email uniqueness if email is being updated
-        if user_update.email and user_update.email != db_user.email:
-            if self.get_user_by_email(db, user_update.email):
+        if "email" in update_data and update_data["email"] != db_user.email:
+            if self.get_user_by_email(db, update_data["email"]):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Email already registered"
                 )
         
-        # Update fields that are provided
-        update_data = user_update.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(db_user, field, value)
         
@@ -162,7 +170,7 @@ class UserService:
         db.refresh(db_user)
         return db_user
     
-    def deactivate_user(self, db: Session, user_id: str) -> Optional[User]:
+    def deactivate_user(self, db: Session, user_id: int) -> Optional[User]:
         """Deactivate a user (soft delete)."""
         db_user = self.get_user_by_id(db, user_id)
         if not db_user:
@@ -173,7 +181,7 @@ class UserService:
         db.refresh(db_user)
         return db_user
     
-    def activate_user(self, db: Session, user_id: str) -> Optional[User]:
+    def activate_user(self, db: Session, user_id: int) -> Optional[User]:
         """Activate a user."""
         db_user = self.get_user_by_id(db, user_id)
         if not db_user:
@@ -184,7 +192,7 @@ class UserService:
         db.refresh(db_user)
         return db_user
     
-    def change_password(self, db: Session, user_id: str, current_password: str, new_password: str) -> bool:
+    def change_password(self, db: Session, user_id: int, current_password: str, new_password: str) -> bool:
         """Change user password after verifying current password."""
         db_user = self.get_user_by_id(db, user_id)
         if not db_user:
@@ -200,7 +208,7 @@ class UserService:
         db.commit()
         return True
     
-    def reset_password(self, db: Session, user_id: str, new_password: str) -> Optional[User]:
+    def reset_password(self, db: Session, user_id: int, new_password: str) -> Optional[User]:
         """Reset user password (admin function)."""
         db_user = self.get_user_by_id(db, user_id)
         if not db_user:
