@@ -8,7 +8,7 @@
 
 // 📦 Export all endpoint hooks organized by FastAPI tags
 export * from './endpoints/auth/auth';
-export * from './endpoints/projects/projects';
+// export * from './endpoints/projects/projects';
 export * from './endpoints/system/system';
 export * from './endpoints/users/users';
 
@@ -23,9 +23,9 @@ export type {
   LoginRequest,
   
   // Project types  
-  Project,
-  ProjectCreate,
-  ProjectList,
+  // Project,
+  // ProjectCreate,
+  // ProjectList,
   
   // System types
   ApiResponse,
