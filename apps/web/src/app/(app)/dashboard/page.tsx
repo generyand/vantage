@@ -110,8 +110,9 @@ export default function DashboardPage() {
               </div>
             </div>
           ) : userQuery.isLoading ? (
-            <div className="text-gray-500">
-              Loading user data...
+            <div className="flex items-center space-x-2 text-gray-500">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-500"></div>
+              <span>Loading user data...</span>
             </div>
           ) : userQuery.error ? (
             <div className="text-red-500">
