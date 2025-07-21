@@ -1,5 +1,6 @@
 // API utilities for file uploads and other operations
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { useAuthStore } from '../store/useAuthStore';
 
 // Create axios instance with base configuration
 const axiosInstance = axios.create({
@@ -12,17 +13,10 @@ const axiosInstance = axios.create({
 // Request interceptor to add auth token
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Get token from localStorage (Zustand store persists there)
-    const authData = localStorage.getItem('auth-storage');
-    if (authData) {
-      try {
-        const { state } = JSON.parse(authData);
-        if (state.token) {
-          config.headers.Authorization = `Bearer ${state.token}`;
-        }
-      } catch (error) {
-        console.warn('Failed to parse auth data from localStorage:', error);
-      }
+    // Get token directly from Zustand store
+    const token = useAuthStore.getState().token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -37,8 +31,8 @@ axiosInstance.interceptors.response.use(
   (error) => {
     // Handle 401 Unauthorized - redirect to login
     if (error.response?.status === 401) {
-      // Clear auth data
-      localStorage.removeItem('auth-storage');
+      // Clear auth data using the store
+      useAuthStore.getState().logout();
       // Redirect to login (only in browser)
       if (typeof window !== 'undefined') {
         window.location.href = '/login';
