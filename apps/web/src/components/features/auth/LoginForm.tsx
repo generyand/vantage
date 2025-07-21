@@ -1,9 +1,11 @@
+
 // 🚀 Modern login form using auto-generated React Query hooks
 "use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { usePostAuthLogin, useGetUsersMe } from "@vantage/shared";
+
 import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -23,8 +25,15 @@ export default function LoginForm() {
   // Get auth store actions
   const { setToken, setUser } = useAuthStore();
 
-  // Auto-generated login mutation hook
-  const loginMutation = usePostAuthLogin({
+
+  // Get user data and logout function from auth store
+  const { user, logout } = useAuthStore();
+
+  // Debug: Log the user data
+  console.log("UserNav - User data:", user);
+
+  // Auto-generated logout mutation hook
+  const logoutMutation = usePostAuthLogout({
     mutation: {
       onSuccess: (response) => {
         console.log("Login successful:", response);
@@ -155,13 +164,19 @@ export default function LoginForm() {
             placeholder="••••••••"
           />
         </div>
+      </div>
+    );
+  }
 
         {/* Error Display */}
         {loginMutation.error && (
           <div className="bg-red-50 border border-red-200 rounded-md p-3">
             <div className="text-red-600 text-sm">{getErrorMessage()}</div>
           </div>
-        )}
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
+            <p className="text-gray-600">{user.email}</p>
+            <p className="text-sm text-gray-500">Role: {user.role}</p>
 
         {/* Submit Button with Loading State */}
         <Button
@@ -189,7 +204,27 @@ export default function LoginForm() {
             ✅ Login successful! Redirecting...
           </div>
         </div>
-      )}
+
+        {/* Logout Button */}
+        <div className="flex flex-col items-end space-y-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleLogout}
+            disabled={logoutMutation.isPending}
+            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+          >
+            {logoutMutation.isPending ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600 mr-2"></div>
+                Logging out...
+              </>
+            ) : (
+              "Logout"
+            )}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
