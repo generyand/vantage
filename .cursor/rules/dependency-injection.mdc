@@ -1,12 +1,8 @@
 ---
-description: "Guidelines for using and creating FastAPI dependencies for shared logic like database sessions and authentication."
-globs: [
-  "apps/api/app/api/deps.py",
-  "apps/api/app/api/v1/**/*.py"
-]
-alwaysApply: true
+description:
+globs:
+alwaysApply: false
 ---
-
 # Dependency Injection in FastAPI
 
 This guide explains how to use FastAPI's dependency injection system, focusing on the patterns used within the Vantage project. The core of our dependency injection system is located in `apps/api/app/api/deps.py`.
@@ -83,11 +79,6 @@ def get_project_from_path(
     if project.owner_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions")
     
-    return project
-```
-
-This new `get_project_from_path` dependency can then be used in any route that has a `project_id` path parameter to automatically handle fetching the project and checking permissions.
-
     return project
 ```
 

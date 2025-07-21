@@ -47,10 +47,14 @@ axiosInstance.interceptors.response.use(
  * This is the main function that handles all API requests
  */
 export const mutator = async <T = unknown, D = unknown>(
-  config: AxiosRequestConfig<D>
+  config: AxiosRequestConfig<D>,
+  options?: AxiosRequestConfig<D>
 ): Promise<T> => {
   try {
-    const response: AxiosResponse<T> = await axiosInstance(config);
+    const response: AxiosResponse<T> = await axiosInstance({
+      ...config,
+      ...options,
+    });
     return response.data;
   } catch (error) {
     // Re-throw the error for React Query to handle
