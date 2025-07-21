@@ -1,5 +1,6 @@
 import PageHeader from '@/components/shared/PageHeader';
 import { redirect } from 'next/navigation';
+import UserListSection from '@/components/features/users/UserListSection';
 // import { useAuthStore } from '@/store/useAuthStore'; // Not used in server component
 
 // TODO: Replace with actual server-side role check when available
@@ -23,10 +24,7 @@ export default async function UserManagementPage() {
         description="Manage users, roles, and assignments."
       />
       <div className="mt-8">
-        {/* UserManagementTable will be rendered here in a later task */}
-        <div className="border rounded p-8 text-center text-muted-foreground">
-          User management table coming soon...
-        </div>
+        <UserListSection />
       </div>
     </div>
   );
