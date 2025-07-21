@@ -178,7 +178,7 @@ export const usePutUsersMe = <TError = HTTPValidationError,
     /**
  * Get paginated list of users with optional filtering.
 
-Requires admin privileges (MLGOO-DILG role).
+Requires admin privileges (System Admin role).
  * @summary Get Users
  */
 export const getUsers = (
@@ -245,7 +245,7 @@ export function useGetUsers<TData = Awaited<ReturnType<typeof getUsers>>, TError
 /**
  * Create a new user.
 
-Requires admin privileges (MLGOO-DILG role).
+Requires admin privileges (System Admin role).
  * @summary Create User
  */
 export const postUsers = (
@@ -312,11 +312,11 @@ export const usePostUsers = <TError = HTTPValidationError,
     /**
  * Get user by ID.
 
-Requires admin privileges (MLGOO-DILG role).
+Requires admin privileges (System Admin role).
  * @summary Get User
  */
 export const getUsers$UserId = (
-    userId: string,
+    userId: number,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
       
@@ -328,12 +328,12 @@ export const getUsers$UserId = (
     }
   
 
-export const getGetUsersUserIdQueryKey = (userId: string,) => {
+export const getGetUsersUserIdQueryKey = (userId: number,) => {
     return [`http://localhost:8000/api/v1/users/${userId}`] as const;
     }
 
     
-export const getGetUsersUserIdQueryOptions = <TData = Awaited<ReturnType<typeof getUsers$UserId>>, TError = HTTPValidationError>(userId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUsers$UserId>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+export const getGetUsersUserIdQueryOptions = <TData = Awaited<ReturnType<typeof getUsers$UserId>>, TError = HTTPValidationError>(userId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUsers$UserId>>, TError, TData>, request?: SecondParameter<typeof mutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -360,7 +360,7 @@ export type GetUsersUserIdQueryError = HTTPValidationError
  */
 
 export function useGetUsersUserId<TData = Awaited<ReturnType<typeof getUsers$UserId>>, TError = HTTPValidationError>(
- userId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUsers$UserId>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+ userId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUsers$UserId>>, TError, TData>, request?: SecondParameter<typeof mutator>}
   
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
@@ -378,11 +378,11 @@ export function useGetUsersUserId<TData = Awaited<ReturnType<typeof getUsers$Use
 /**
  * Update user by ID.
 
-Requires admin privileges (MLGOO-DILG role).
+Requires admin privileges (System Admin role).
  * @summary Update User
  */
 export const putUsers$UserId = (
-    userId: string,
+    userId: number,
     userAdminUpdate: UserAdminUpdate,
  options?: SecondParameter<typeof mutator>,) => {
       
@@ -398,8 +398,8 @@ export const putUsers$UserId = (
 
 
 export const getPutUsersUserIdMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putUsers$UserId>>, TError,{userId: string;data: UserAdminUpdate}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof putUsers$UserId>>, TError,{userId: string;data: UserAdminUpdate}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putUsers$UserId>>, TError,{userId: number;data: UserAdminUpdate}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof putUsers$UserId>>, TError,{userId: number;data: UserAdminUpdate}, TContext> => {
 
 const mutationKey = ['putUsersUserId'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -411,7 +411,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putUsers$UserId>>, {userId: string;data: UserAdminUpdate}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putUsers$UserId>>, {userId: number;data: UserAdminUpdate}> = (props) => {
           const {userId,data} = props ?? {};
 
           return  putUsers$UserId(userId,data,requestOptions)
@@ -430,11 +430,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Update User
  */
 export const usePutUsersUserId = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putUsers$UserId>>, TError,{userId: string;data: UserAdminUpdate}, TContext>, request?: SecondParameter<typeof mutator>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putUsers$UserId>>, TError,{userId: number;data: UserAdminUpdate}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof putUsers$UserId>>,
         TError,
-        {userId: string;data: UserAdminUpdate},
+        {userId: number;data: UserAdminUpdate},
         TContext
       > => {
 
@@ -445,11 +445,11 @@ export const usePutUsersUserId = <TError = HTTPValidationError,
     /**
  * Deactivate user by ID (soft delete).
 
-Requires admin privileges (MLGOO-DILG role).
+Requires admin privileges (System Admin role).
  * @summary Deactivate User
  */
 export const deleteUsers$UserId = (
-    userId: string,
+    userId: number,
  options?: SecondParameter<typeof mutator>,) => {
       
       
@@ -462,8 +462,8 @@ export const deleteUsers$UserId = (
 
 
 export const getDeleteUsersUserIdMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUsers$UserId>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteUsers$UserId>>, TError,{userId: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUsers$UserId>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteUsers$UserId>>, TError,{userId: number}, TContext> => {
 
 const mutationKey = ['deleteUsersUserId'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -475,7 +475,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteUsers$UserId>>, {userId: string}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteUsers$UserId>>, {userId: number}> = (props) => {
           const {userId} = props ?? {};
 
           return  deleteUsers$UserId(userId,requestOptions)
@@ -494,11 +494,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Deactivate User
  */
 export const useDeleteUsersUserId = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUsers$UserId>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof mutator>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUsers$UserId>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof deleteUsers$UserId>>,
         TError,
-        {userId: string},
+        {userId: number},
         TContext
       > => {
 
@@ -509,11 +509,11 @@ export const useDeleteUsersUserId = <TError = HTTPValidationError,
     /**
  * Activate user by ID.
 
-Requires admin privileges (MLGOO-DILG role).
+Requires admin privileges (System Admin role).
  * @summary Activate User
  */
 export const postUsers$UserIdActivate = (
-    userId: string,
+    userId: number,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
       
@@ -527,8 +527,8 @@ export const postUsers$UserIdActivate = (
 
 
 export const getPostUsersUserIdActivateMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUsers$UserIdActivate>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof postUsers$UserIdActivate>>, TError,{userId: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUsers$UserIdActivate>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postUsers$UserIdActivate>>, TError,{userId: number}, TContext> => {
 
 const mutationKey = ['postUsersUserIdActivate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -540,7 +540,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postUsers$UserIdActivate>>, {userId: string}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postUsers$UserIdActivate>>, {userId: number}> = (props) => {
           const {userId} = props ?? {};
 
           return  postUsers$UserIdActivate(userId,requestOptions)
@@ -559,11 +559,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Activate User
  */
 export const usePostUsersUserIdActivate = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUsers$UserIdActivate>>, TError,{userId: string}, TContext>, request?: SecondParameter<typeof mutator>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUsers$UserIdActivate>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof postUsers$UserIdActivate>>,
         TError,
-        {userId: string},
+        {userId: number},
         TContext
       > => {
 
@@ -574,12 +574,12 @@ export const usePostUsersUserIdActivate = <TError = HTTPValidationError,
     /**
  * Reset user password.
 
-Requires admin privileges (MLGOO-DILG role).
+Requires admin privileges (System Admin role).
 Sets must_change_password to True.
  * @summary Reset User Password
  */
 export const postUsers$UserIdResetPassword = (
-    userId: string,
+    userId: number,
     params: PostUsersUserIdResetPasswordParams,
  options?: SecondParameter<typeof mutator>,signal?: AbortSignal
 ) => {
@@ -595,8 +595,8 @@ export const postUsers$UserIdResetPassword = (
 
 
 export const getPostUsersUserIdResetPasswordMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUsers$UserIdResetPassword>>, TError,{userId: string;params: PostUsersUserIdResetPasswordParams}, TContext>, request?: SecondParameter<typeof mutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof postUsers$UserIdResetPassword>>, TError,{userId: string;params: PostUsersUserIdResetPasswordParams}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUsers$UserIdResetPassword>>, TError,{userId: number;params: PostUsersUserIdResetPasswordParams}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postUsers$UserIdResetPassword>>, TError,{userId: number;params: PostUsersUserIdResetPasswordParams}, TContext> => {
 
 const mutationKey = ['postUsersUserIdResetPassword'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -608,7 +608,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postUsers$UserIdResetPassword>>, {userId: string;params: PostUsersUserIdResetPasswordParams}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postUsers$UserIdResetPassword>>, {userId: number;params: PostUsersUserIdResetPasswordParams}> = (props) => {
           const {userId,params} = props ?? {};
 
           return  postUsers$UserIdResetPassword(userId,params,requestOptions)
@@ -627,11 +627,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Reset User Password
  */
 export const usePostUsersUserIdResetPassword = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUsers$UserIdResetPassword>>, TError,{userId: string;params: PostUsersUserIdResetPasswordParams}, TContext>, request?: SecondParameter<typeof mutator>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postUsers$UserIdResetPassword>>, TError,{userId: number;params: PostUsersUserIdResetPasswordParams}, TContext>, request?: SecondParameter<typeof mutator>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof postUsers$UserIdResetPassword>>,
         TError,
-        {userId: string;params: PostUsersUserIdResetPasswordParams},
+        {userId: number;params: PostUsersUserIdResetPasswordParams},
         TContext
       > => {
 
@@ -642,7 +642,7 @@ export const usePostUsersUserIdResetPassword = <TError = HTTPValidationError,
     /**
  * Get user statistics for admin dashboard.
 
-Requires admin privileges (MLGOO-DILG role).
+Requires admin privileges (System Admin role).
  * @summary Get User Stats
  */
 export const getUsersStatsDashboard = (

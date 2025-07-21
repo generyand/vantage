@@ -118,6 +118,7 @@ export default function UserNav() {
             <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
             <p className="text-gray-600">{user.email}</p>
             <p className="text-sm text-gray-500">Role: {user.role}</p>
+
             <p className="text-sm text-gray-500">
               Member since {new Date(user.created_at).toLocaleDateString()}
             </p>
