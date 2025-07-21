@@ -78,7 +78,7 @@
 -   [ ] 5.0 **Build Frontend User Management Interface (Admin)**
     -   [x] 5.1 Create the page `apps/web/src/app/(app)/user-management/page.tsx`. This page should be accessible only to the admin role.
     -   [x] 5.2 On this page, use the auto-generated `useGetUsers` query hook to fetch the list of all users.
-    -   [ ] 5.3 Build the `UserManagementTable.tsx` component to display the "Assigned Barangay/Area" column, showing the barangay for BLGU users and the governance area for Assessors.
+    -   [x] 5.3 Build the `UserManagementTable.tsx` component to display the "Assigned Barangay/Area" column, showing the barangay for BLGU users and the governance area for Assessors.
     -   [ ] 5.4 Create a `UserForm.tsx` component for the user creation/editing modal/dialog.
     -   [ ] 5.5 In the `UserForm`, conditionally display EITHER the "Assigned Barangay" dropdown (for "BLGU User" role) OR the "Assigned Governance Area" dropdown (for "Area Assessor" role).
     -   [ ] 5.6 The `UserForm` should use the auto-generated `usePostUser` and `usePutUser` mutation hooks, ensuring `assessor_area` is passed when required. On success, invalidate the `useGetUsers` query.

@@ -148,4 +148,6 @@ export default function DataTable<T extends Record<string, unknown>>({
       </table>
     </div>
   );
-} 
+}
+
+export type { Column }; 

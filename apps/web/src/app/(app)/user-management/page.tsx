@@ -1,19 +1,23 @@
 import PageHeader from '@/components/shared/PageHeader';
 import { redirect } from 'next/navigation';
 import UserListSection from '@/components/features/users/UserListSection';
-// import { useAuthStore } from '@/store/useAuthStore'; // Not used in server component
-
-// TODO: Replace with actual server-side role check when available
-async function checkAdminRole() {
-  // Placeholder: implement real admin check using session/auth context
-  // If not admin, redirect to dashboard
-  // For now, always allow
-  return true;
-}
+import { cookies } from 'next/headers';
+import { decodeJwtPayload } from '@/lib/api';
 
 export default async function UserManagementPage() {
-  const isAdmin = await checkAdminRole();
-  if (!isAdmin) {
+  // Read the auth-token from cookies (set by Zustand store)
+  const cookieStore = await cookies();
+  const token = cookieStore.get('auth-token')?.value;
+  let userRole: string | undefined;
+  if (token) {
+    const payload = decodeJwtPayload(token);
+    if (payload && typeof payload.role === 'string') {
+      userRole = payload.role;
+    }
+  }
+
+  // Only allow SUPERADMIN or MLGOO_DILG
+  if (userRole !== 'SUPERADMIN' && userRole !== 'MLGOO_DILG') {
     redirect('/dashboard');
   }
 

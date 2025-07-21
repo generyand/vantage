@@ -3,6 +3,7 @@
 import React from 'react';
 import { useUsers } from '@/hooks/useUsers';
 import type { UserListResponse } from '@vantage/shared/src/generated/schemas/users';
+import UserManagementTable from './UserManagementTable';
 
 export default function UserListSection() {
   const { data, isLoading, error } = useUsers() as { data?: UserListResponse, isLoading: boolean, error: unknown };
@@ -17,10 +18,5 @@ export default function UserListSection() {
     return <div>No users found.</div>;
   }
 
-  // Placeholder: show user count
-  return (
-    <div className="border rounded p-8 text-center text-muted-foreground">
-      {`Total users: ${data.users.length}`}
-    </div>
-  );
+  return <UserManagementTable users={data.users} />;
 } 

@@ -134,6 +134,28 @@ export async function uploadWithProgress(
   });
 }
 
+/**
+ * Decode a JWT token (without verification) to extract the payload.
+ * Used for server-side role checks in Next.js server components.
+ */
+export function decodeJwtPayload(token: string): Record<string, unknown> | null {
+  if (!token) return null;
+  try {
+    const payload = token.split('.')[1];
+    // Use atob if available (browser/edge), otherwise Buffer (Node.js)
+    let decoded: string;
+    if (typeof atob === 'function') {
+      decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+    } else {
+      // Node.js polyfill
+      decoded = Buffer.from(payload, 'base64').toString('utf-8');
+    }
+    return JSON.parse(decoded);
+  } catch {
+    return null;
+  }
+}
+
 // Additional API utilities can be added here
 export const apiClient = {
   uploadWithProgress,
