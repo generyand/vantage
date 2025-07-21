@@ -1,9 +1,10 @@
 // 🚀 Modern login form using auto-generated React Query hooks
 'use client';
 
-import { useState, useEffect } from 'react';
+
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { usePostAuthLogin, useGetUsersMe } from '@vantage/shared';
+import { usePostAuthLogin } from '@vantage/shared';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -17,11 +18,10 @@ import { cn } from '@/lib/utils';
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [shouldFetchUser, setShouldFetchUser] = useState(false);
   const router = useRouter();
   
   // Get auth store actions
-  const { setUser, setToken } = useAuthStore();
+  const { setToken } = useAuthStore();
 
   // Auto-generated login mutation hook
   const loginMutation = usePostAuthLogin({
@@ -35,8 +35,8 @@ export default function LoginForm() {
         // Store token in auth store
         setToken(access_token);
         
-        // Trigger user data fetch
-        setShouldFetchUser(true);
+        // Redirect immediately - user data will be fetched in dashboard
+        router.push('/dashboard');
       },
       onError: (error) => {
         console.error('Login failed:', error);
@@ -130,10 +130,10 @@ export default function LoginForm() {
         {/* Submit Button with Loading State */}
         <Button
           type="submit"
-          disabled={loginMutation.isPending || userQuery.isFetching}
+          disabled={loginMutation.isPending}
           className="w-full"
         >
-          {loginMutation.isPending || userQuery.isFetching ? (
+          {loginMutation.isPending ? (
             <>
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               {loginMutation.isPending ? 'Signing in...' : 'Loading user data...'}
