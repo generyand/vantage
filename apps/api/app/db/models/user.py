@@ -26,7 +26,7 @@ class User(Base):
     name = Column(String, nullable=False)
     phone_number = Column(String, nullable=True)
     role = Column(Enum(UserRole, name="user_role_enum", create_constraint=True), nullable=False, default=UserRole.BLGU_USER)
-    assessor_area = Column(SmallInteger, nullable=True)  # Reference to governance_areas.id for Area Assessors
+    governance_area_id = Column(SmallInteger, ForeignKey("governance_areas.id"), nullable=True)  # Reference to governance_areas.id for Area Assessors
     barangay_id = Column(Integer, ForeignKey("barangays.id"), nullable=True)
     
     # Authentication
@@ -42,4 +42,5 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     # Relationships
-    barangay = relationship("Barangay", back_populates="users") 
+    barangay = relationship("Barangay", back_populates="users")
+    governance_area = relationship("GovernanceArea", back_populates="assessors") 

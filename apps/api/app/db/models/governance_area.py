@@ -2,6 +2,7 @@
 # SQLAlchemy model for the governance_areas table
 
 from sqlalchemy import Column, String, SmallInteger, Enum
+from sqlalchemy.orm import relationship
 
 from app.db.base import Base
 from app.db.enums import AreaType
@@ -21,4 +22,7 @@ class GovernanceArea(Base):
     
     # Area information
     name = Column(String, nullable=False, unique=True)
-    area_type = Column(Enum(AreaType, name="area_type_enum", create_constraint=True), nullable=False) 
+    area_type = Column(Enum(AreaType, name="area_type_enum", create_constraint=True), nullable=False)
+    
+    # Relationships
+    assessors = relationship("User", back_populates="governance_area") 
