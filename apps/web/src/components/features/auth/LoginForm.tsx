@@ -1,157 +1,150 @@
-// 🚀 Modern login form using auto-generated React Query hooks
-'use client';
+// 🚀 Modern component using auto-generated React Query hooks
+"use client";
 
-
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { usePostAuthLogin } from '@vantage/shared';
-import { useAuthStore } from '@/store/useAuthStore';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { useRouter } from "next/navigation";
+import { usePostAuthLogout } from "@vantage/shared";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 /**
- * Login form component with authentication and redirect logic
- * 
- * Uses the auto-generated usePostAuthLogin hook and integrates with
- * the Zustand auth store for state management.
+ * User navigation component with logout functionality
+ *
+ * Displays current user information and provides logout functionality.
+ * Uses the Zustand auth store for user data and the auto-generated
+ * usePostAuthLogout hook for logout operations.
  */
-export default function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function UserNav() {
   const router = useRouter();
-  
-  // Get auth store actions
-  const { setToken } = useAuthStore();
 
-  // Auto-generated login mutation hook
-  const loginMutation = usePostAuthLogin({
+  // Get user data and logout function from auth store
+  const { user, logout } = useAuthStore();
+
+  // Debug: Log the user data
+  console.log("UserNav - User data:", user);
+
+  // Auto-generated logout mutation hook
+  const logoutMutation = usePostAuthLogout({
     mutation: {
-      onSuccess: (response) => {
-        console.log('Login successful:', response);
-        
-        // Extract token from response
-        const { access_token } = response;
-        
-        // Store token in auth store
-        setToken(access_token);
-        
-        // Redirect immediately - user data will be fetched in dashboard
-        router.push('/dashboard');
+      onSuccess: () => {
+        console.log("Logout successful");
+        // Clear auth store (this will also clear cookies)
+        logout();
+        // Redirect to login page
+        router.push("/login");
       },
       onError: (error) => {
-        console.error('Login failed:', error);
-      }
-    }
+        console.error("Logout failed:", error);
+        // Even if logout fails on server, clear local auth state
+        logout();
+        router.push("/login");
+      },
+    },
   });
 
-  // Auto-generated hook to fetch current user data
-  const userQuery = useGetUsersMe();
-
-  // Handle user data fetch success/error
-  useEffect(() => {
-    if (shouldFetchUser) {
-      // Trigger user data fetch
-      userQuery.refetch().then((result) => {
-        if (result.data) {
-          console.log('User data fetched:', result.data);
-          // Store user in auth store
-          setUser(result.data);
-          // Redirect to dashboard
-          router.push('/dashboard');
-        } else if (result.error) {
-          console.error('Failed to fetch user data:', result.error);
-          // Even if user fetch fails, we can still redirect to dashboard
-          router.push('/dashboard');
-        }
-        // Reset the flag
-        setShouldFetchUser(false);
-      });
-    }
-  }, [shouldFetchUser, userQuery, setUser, router]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const credentials = {
-      email,
-      password,
-    };
-
-    // Trigger the login mutation
-    loginMutation.mutate({ data: credentials });
+  const handleLogout = () => {
+    // Trigger the logout mutation
+    logoutMutation.mutate();
   };
 
-  return (
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Sign In</h2>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            placeholder="user@example.com"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            placeholder="••••••••"
-          />
-        </div>
-
-        {/* Error Display */}
-        {loginMutation.error && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-3">
-            <div className="text-red-600 text-sm">
-              {loginMutation.error instanceof Error 
-                ? loginMutation.error.message 
-                : 'Login failed. Please check your credentials.'}
+  if (!user) {
+    return (
+      <div className="py-2">
+        <div className="px-4 py-3 border-b border-gray-100">
+          <div className="flex items-center space-x-3">
+            <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">
+              <svg
+                className="w-4 h-4 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900">No user data</p>
+              <p className="text-xs text-gray-500">Please log in</p>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* Submit Button with Loading State */}
-        <Button
-          type="submit"
-          disabled={loginMutation.isPending}
-          className="w-full"
-        >
-          {loginMutation.isPending ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-              {loginMutation.isPending ? 'Signing in...' : 'Loading user data...'}
-            </>
-          ) : (
-            'Sign In'
-          )}
-        </Button>
-      </form>
+        {/* Logout Button */}
+        <div className="px-2 py-1">
+          <button
+            onClick={handleLogout}
+            disabled={logoutMutation.isPending}
+            className="w-full flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-md transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            Logout
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-      {/* Success Message */}
-      {loginMutation.isSuccess && (
-        <div className="mt-4 bg-green-50 border border-green-200 rounded-md p-3">
-          <div className="text-green-600 text-sm">
-            ✅ Login successful! Redirecting...
+  return (
+    <div className="bg-white shadow rounded-lg p-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className="bg-blue-100 rounded-full p-3">
+            <svg
+              className="w-8 h-8 text-blue-600"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
+            <p className="text-gray-600">{user.email}</p>
+            <p className="text-sm text-gray-500">Role: {user.role}</p>
+
+            <p className="text-sm text-gray-500">
+              Member since {new Date(user.created_at).toLocaleDateString()}
+            </p>
           </div>
         </div>
-      )}
+
+        {/* Logout Button */}
+        <div className="flex flex-col items-end space-y-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleLogout}
+            disabled={logoutMutation.isPending}
+            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+          >
+            {logoutMutation.isPending ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600 mr-2"></div>
+                Logging out...
+              </>
+            ) : (
+              "Logout"
+            )}
+          </Button>
+        </div>
+      </div>
     </div>
   );
-} 
+}
