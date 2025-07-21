@@ -3,8 +3,8 @@
 import { useState } from 'react';
 
 interface PeaceAndOrderFormProps {
-  onSubmit?: (data: any) => void;
-  initialData?: any;
+  onSubmit?: (data: FormData) => void;
+  initialData?: FormData;
   isLoading?: boolean;
 }
 

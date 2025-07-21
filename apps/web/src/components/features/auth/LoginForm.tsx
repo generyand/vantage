@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import { usePostAuthLogin, useGetUsersMe } from '@vantage/shared';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 
 /**
  * Login form component with authentication and redirect logic
@@ -99,7 +98,7 @@ export default function LoginForm() {
     
     // Handle API error responses
     if (typeof loginMutation.error === 'object' && loginMutation.error !== null) {
-      const apiError = loginMutation.error as any;
+      const apiError = loginMutation.error as { response?: { data?: { detail?: string } }, message?: string };
       if (apiError.response?.data?.detail) {
         return apiError.response.data.detail;
       }

@@ -72,9 +72,11 @@ export default function FileUploader({
         await uploadWithProgress(
           uploadUrl,
           file,
-          (progress) => {
-            const totalProgress = ((i * 100) + progress) / validFiles.length;
-            setUploadProgress(Math.round(totalProgress));
+          {
+            onProgress: (progress) => {
+              const totalProgress = ((i * 100) + progress.percentage) / validFiles.length;
+              setUploadProgress(Math.round(totalProgress));
+            }
           }
         );
       }

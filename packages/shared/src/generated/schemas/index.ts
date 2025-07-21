@@ -6,7 +6,7 @@
 // Export all grouped schemas
 export * from './auth';
 export * from './users';
-export * from './admin';
+// export * from './admin';
 export * from './system';
 export * from './error';
 export * from './common';

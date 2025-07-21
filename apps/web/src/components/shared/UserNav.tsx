@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { usePostAuthLogout } from "@vantage/shared";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 /**
  * User navigation component with logout functionality
