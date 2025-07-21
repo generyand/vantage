@@ -1,26 +1,25 @@
 // 🚀 Modern login form using auto-generated React Query hooks
-'use client';
+"use client";
 
-
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { usePostAuthLogin, useGetUsersMe } from '@vantage/shared';
-import { useAuthStore } from '@/store/useAuthStore';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { usePostAuthLogin, useGetUsersMe } from "@vantage/shared";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 /**
  * Login form component with authentication and redirect logic
- * 
+ *
  * Uses the auto-generated usePostAuthLogin hook and integrates with
  * the Zustand auth store for state management.
  */
 export default function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [shouldFetchUser, setShouldFetchUser] = useState(false);
   const router = useRouter();
-  
+
   // Get auth store actions
   const { setToken, setUser } = useAuthStore();
 
@@ -28,27 +27,27 @@ export default function LoginForm() {
   const loginMutation = usePostAuthLogin({
     mutation: {
       onSuccess: (response) => {
-        console.log('Login successful:', response);
-        
+        console.log("Login successful:", response);
+
         // Extract token from response
         const accessToken = response.access_token;
-        
+
         if (!accessToken) {
-          console.error('No access token received from server');
+          console.error("No access token received from server");
           return;
         }
-        
+
         // Store token in auth store
         setToken(accessToken);
-        
+
         // Trigger user data fetch
         setShouldFetchUser(true);
       },
       onError: (error) => {
-        console.error('Login failed:', error);
+        console.error("Login failed:", error);
         // Error will be displayed in the UI via loginMutation.error
-      }
-    }
+      },
+    },
   });
 
   // Auto-generated hook to fetch current user data
@@ -60,15 +59,15 @@ export default function LoginForm() {
       // Trigger user data fetch
       userQuery.refetch().then((result) => {
         if (result.data) {
-          console.log('User data fetched:', result.data);
+          console.log("User data fetched:", result.data);
           // Store user in auth store
           setUser(result.data);
           // Redirect to dashboard
-          router.push('/dashboard');
+          router.push("/dashboard");
         } else if (result.error) {
-          console.error('Failed to fetch user data:', result.error);
+          console.error("Failed to fetch user data:", result.error);
           // Even if user fetch fails, we can still redirect to dashboard
-          router.push('/dashboard');
+          router.push("/dashboard");
         }
         // Reset the flag
         setShouldFetchUser(false);
@@ -78,7 +77,7 @@ export default function LoginForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const credentials = {
       email,
       password,
@@ -91,14 +90,17 @@ export default function LoginForm() {
   // Get error message for display
   const getErrorMessage = () => {
     if (!loginMutation.error) return null;
-    
+
     // Handle different error types
     if (loginMutation.error instanceof Error) {
       return loginMutation.error.message;
     }
-    
+
     // Handle API error responses
-    if (typeof loginMutation.error === 'object' && loginMutation.error !== null) {
+    if (
+      typeof loginMutation.error === "object" &&
+      loginMutation.error !== null
+    ) {
       const apiError = loginMutation.error as any;
       if (apiError.response?.data?.detail) {
         return apiError.response.data.detail;
@@ -107,17 +109,20 @@ export default function LoginForm() {
         return apiError.message;
       }
     }
-    
-    return 'Login failed. Please check your credentials.';
+
+    return "Login failed. Please check your credentials.";
   };
 
   return (
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Sign In</h2>
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
             Email
           </label>
           <input
@@ -133,7 +138,10 @@ export default function LoginForm() {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
             Password
           </label>
           <input
@@ -151,9 +159,7 @@ export default function LoginForm() {
         {/* Error Display */}
         {loginMutation.error && (
           <div className="bg-red-50 border border-red-200 rounded-md p-3">
-            <div className="text-red-600 text-sm">
-              {getErrorMessage()}
-            </div>
+            <div className="text-red-600 text-sm">{getErrorMessage()}</div>
           </div>
         )}
 
@@ -166,10 +172,12 @@ export default function LoginForm() {
           {loginMutation.isPending ? (
             <>
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-              {loginMutation.isPending ? 'Signing in...' : 'Loading user data...'}
+              {loginMutation.isPending
+                ? "Signing in..."
+                : "Loading user data..."}
             </>
           ) : (
-            'Sign In'
+            "Sign In"
           )}
         </Button>
       </form>
@@ -184,4 +192,4 @@ export default function LoginForm() {
       )}
     </div>
   );
-} 
+}
