@@ -76,7 +76,7 @@
     -   [ ] 4.4 In the `UserNav` component, use the auto-generated `usePostLogout` mutation hook. On success, clear the auth store and redirect to the login page.
 
 -   [ ] 5.0 **Build Frontend User Management Interface (Admin)**
-    -   [ ] 5.1 Create the page `apps/web/src/app/(app)/user-management/page.tsx`. This page should be accessible only to the admin role.
+    -   [x] 5.1 Create the page `apps/web/src/app/(app)/user-management/page.tsx`. This page should be accessible only to the admin role.
     -   [ ] 5.2 On this page, use the auto-generated `useGetUsers` query hook to fetch the list of all users.
     -   [ ] 5.3 Build the `UserManagementTable.tsx` component to display the "Assigned Barangay/Area" column, showing the barangay for BLGU users and the governance area for Assessors.
     -   [ ] 5.4 Create a `UserForm.tsx` component for the user creation/editing modal/dialog.
