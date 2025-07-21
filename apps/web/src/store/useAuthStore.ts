@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { User } from '@vantage/shared';
 
 /**
@@ -46,45 +47,58 @@ const setAuthCookie = (token: string | null) => {
  * This store holds the current user, JWT token, and authentication status.
  * It provides actions for login, logout, and managing the forced password change flow.
  */
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  token: null,
-  isAuthenticated: false,
-  mustChangePassword: false,
-
-  setUser: (user) => set({ 
-    user, 
-    isAuthenticated: true,
-    mustChangePassword: user.must_change_password 
-  }),
-
-  setToken: (token) => {
-    // Set cookie for middleware access
-    setAuthCookie(token);
-    set({ token });
-  },
-
-  setMustChangePassword: (mustChange) => set({ mustChangePassword: mustChange }),
-
-  logout: () => {
-    // Clear cookie
-    setAuthCookie(null);
-    set({ 
-      user: null, 
-      token: null, 
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
       isAuthenticated: false,
-      mustChangePassword: false 
-    });
-  },
+      mustChangePassword: false,
 
-  initialize: (user, token) => {
-    // Set cookie if token exists
-    setAuthCookie(token);
-    set({
-      user,
-      token,
-      isAuthenticated: !!user && !!token,
-      mustChangePassword: user?.must_change_password || false
-    });
-  },
-})); 
+      setUser: (user) => set({ 
+        user, 
+        isAuthenticated: true,
+        mustChangePassword: user.must_change_password 
+      }),
+
+      setToken: (token) => {
+        // Set cookie for middleware access
+        setAuthCookie(token);
+        set({ token });
+      },
+
+      setMustChangePassword: (mustChange) => set({ mustChangePassword: mustChange }),
+
+      logout: () => {
+        // Clear cookie
+        setAuthCookie(null);
+        set({ 
+          user: null, 
+          token: null, 
+          isAuthenticated: false,
+          mustChangePassword: false 
+        });
+      },
+
+      initialize: (user, token) => {
+        // Set cookie if token exists
+        setAuthCookie(token);
+        set({
+          user,
+          token,
+          isAuthenticated: !!user && !!token,
+          mustChangePassword: user?.must_change_password || false
+        });
+      },
+    }),
+    {
+      name: 'auth-storage', // This matches what the API client expects
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isAuthenticated: state.isAuthenticated,
+        mustChangePassword: state.mustChangePassword,
+      }),
+    }
+  )
+); 
