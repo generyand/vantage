@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { uploadWithProgress } from '../../lib/api';
+import { Input } from '@/components/ui/input';
 
 interface FileUploaderProps {
   accept?: string;
@@ -128,7 +129,7 @@ export default function FileUploader({
 
   return (
     <div className="w-full">
-      <input
+      <Input
         ref={fileInputRef}
         type="file"
         accept={accept}
