@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import { usePostAuthLogin, useGetUsersMe } from '@vantage/shared';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 /**
  * Login form component with authentication and redirect logic
@@ -99,7 +100,7 @@ export default function LoginForm() {
     
     // Handle API error responses
     if (typeof loginMutation.error === 'object' && loginMutation.error !== null) {
-      const apiError = loginMutation.error as any;
+      const apiError = loginMutation.error as { response?: { data?: { detail?: string } }, message?: string };
       if (apiError.response?.data?.detail) {
         return apiError.response.data.detail;
       }
@@ -117,10 +118,10 @@ export default function LoginForm() {
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <Label htmlFor="email" className="block text-sm font-medium text-gray-700">
             Email
-          </label>
-          <input
+          </Label>
+          <Input
             id="email"
             type="email"
             value={email}
@@ -133,10 +134,10 @@ export default function LoginForm() {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <Label htmlFor="password" className="block text-sm font-medium text-gray-700">
             Password
-          </label>
-          <input
+          </Label>
+          <Input
             id="password"
             type="password"
             value={password}

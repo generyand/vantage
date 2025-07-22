@@ -17,7 +17,7 @@ interface DataTableProps<T> {
   onRowClick?: (row: T) => void;
 }
 
-export default function DataTable<T extends Record<string, any>>({
+export default function DataTable<T extends Record<string, unknown>>({
   data,
   columns,
   loading = false,
@@ -148,4 +148,6 @@ export default function DataTable<T extends Record<string, any>>({
       </table>
     </div>
   );
-} 
+}
+
+export type { Column }; 

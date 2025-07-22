@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { uploadWithProgress } from '../../lib/api';
+import { Input } from '@/components/ui/input';
 
 interface FileUploaderProps {
   accept?: string;
@@ -72,9 +73,11 @@ export default function FileUploader({
         await uploadWithProgress(
           uploadUrl,
           file,
-          (progress) => {
-            const totalProgress = ((i * 100) + progress) / validFiles.length;
-            setUploadProgress(Math.round(totalProgress));
+          {
+            onProgress: (progress) => {
+              const totalProgress = ((i * 100) + progress.percentage) / validFiles.length;
+              setUploadProgress(Math.round(totalProgress));
+            }
           }
         );
       }
@@ -126,7 +129,7 @@ export default function FileUploader({
 
   return (
     <div className="w-full">
-      <input
+      <Input
         ref={fileInputRef}
         type="file"
         accept={accept}
