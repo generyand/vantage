@@ -1,7 +1,7 @@
 "use client";
 
-import Image from 'next/image';
-import LoginForm from '@/components/features/auth/LoginForm';
+import Image from "next/image";
+import LoginForm from "@/components/features/auth/LoginForm";
 
 export default function LoginPage() {
   return (
@@ -21,9 +21,12 @@ export default function LoginPage() {
                 className="rounded-full border-4 border-white shadow-lg"
               />
             </div>
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight text-center">VANTAGE</h1>
+            <h1 className="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight text-center">
+              VANTAGE
+            </h1>
             <p className="text-lg text-gray-600 text-center max-w-md mb-6">
-              Validating Assessments and Nurturing Transparency for Advantaged Governance and Evaluation
+              Validating Assessments and Nurturing Transparency for Advantaged
+              Governance and Evaluation
             </p>
             <ul className="space-y-2 text-base text-gray-700 text-left max-w-md">
               <li className="flex items-center gap-2">
@@ -48,7 +51,9 @@ export default function LoginPage() {
               <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">
                 Welcome, Partner in Governance
               </h2>
-              <p className="text-lg md:text-xl text-gray-500 mb-8">Sign in to the VANTAGE Platform.</p>
+              <p className="text-lg md:text-xl text-gray-500 mb-8">
+                Sign in to the VANTAGE Platform.
+              </p>
             </div>
             <LoginForm />
             <p className="text-sm text-gray-500 text-center mt-6">
@@ -59,15 +64,23 @@ export default function LoginPage() {
       </div>
       {/* Footer */}
       <footer className="w-full bg-white/80 border-t border-gray-200 py-2 px-4 flex flex-col md:flex-row items-center justify-between text-base text-gray-500 gap-2">
-        <div>Office Hours: Mon-Fri 8:00 AM - 5:00 PM | Sat 8:00 AM - 12:00 PM</div>
+        <div>
+          Office Hours: Mon-Fri 8:00 AM - 5:00 PM | Sat 8:00 AM - 12:00 PM
+        </div>
         <div>Support: (02) 1234-5678 | support.vantage@dilg.gov.ph</div>
         <div>&copy; 2024 DILG-Sulop | The VANTAGE Project</div>
       </footer>
       <style jsx global>{`
         @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-16px); }
-          100% { transform: translateY(0px); }
+          0% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-16px);
+          }
+          100% {
+            transform: translateY(0px);
+          }
         }
         .animate-float {
           animation: float 3s ease-in-out infinite;
