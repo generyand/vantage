@@ -9,6 +9,8 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Mail, Lock } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 /**
  * Login form component with authentication and redirect logic
@@ -77,6 +79,13 @@ export default function LoginForm() {
     }
   }, [shouldFetchUser, userQuery, setUser, router]);
 
+  // Show toast on login success
+  useEffect(() => {
+    if (loginMutation.isSuccess) {
+      toast.success('Login Successfully');
+    }
+  }, [loginMutation.isSuccess]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -113,14 +122,15 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Sign In</h2>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label htmlFor="email" className="block text-sm font-medium text-gray-700">
-            Email
-          </Label>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <Label htmlFor="email" className="block text-base font-medium text-gray-700 mb-1">
+          Email Address
+        </Label>
+        <div className="relative">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+            <Mail className="w-5 h-5" />
+          </span>
           <Input
             id="email"
             type="email"
@@ -128,15 +138,21 @@ export default function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             required
             disabled={loginMutation.isPending}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed"
-            placeholder="user@example.com"
+            className="pl-10 block w-full py-3 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed"
+            placeholder="Enter your email address"
+            autoComplete="username"
           />
         </div>
+      </div>
 
-        <div>
-          <Label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Password
-          </Label>
+      <div>
+        <Label htmlFor="password" className="block text-base font-medium text-gray-700 mb-1">
+          Password
+        </Label>
+        <div className="relative">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+            <Lock className="w-5 h-5" />
+          </span>
           <Input
             id="password"
             type="password"
@@ -144,45 +160,37 @@ export default function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             disabled={loginMutation.isPending}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed"
-            placeholder="••••••••"
+            className="pl-10 block w-full py-3 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed"
+            placeholder="Enter your password"
+            autoComplete="current-password"
           />
         </div>
+      </div>
 
-        {/* Error Display */}
-        {loginMutation.error && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-3">
-            <div className="text-red-600 text-sm">
-              {getErrorMessage()}
-            </div>
-          </div>
-        )}
-
-        {/* Submit Button with Loading State */}
-        <Button
-          type="submit"
-          disabled={loginMutation.isPending}
-          className="w-full"
-        >
-          {loginMutation.isPending ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-              {loginMutation.isPending ? 'Signing in...' : 'Loading user data...'}
-            </>
-          ) : (
-            'Sign In'
-          )}
-        </Button>
-      </form>
-
-      {/* Success Message */}
-      {loginMutation.isSuccess && (
-        <div className="mt-4 bg-green-50 border border-green-200 rounded-md p-3">
-          <div className="text-green-600 text-sm">
-            ✅ Login successful! Redirecting...
+      {/* Error Display */}
+      {loginMutation.error && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-3">
+          <div className="text-red-600 text-sm">
+            {getErrorMessage()}
           </div>
         </div>
       )}
-    </div>
+
+      {/* Submit Button with Loading State */}
+      <Button
+        type="submit"
+        disabled={loginMutation.isPending}
+        className="w-full mt-2 text-lg h-12"
+      >
+        {loginMutation.isPending ? (
+          <>
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+            {loginMutation.isPending ? 'Signing in...' : 'Loading user data...'}
+          </>
+        ) : (
+          'Sign in'
+        )}
+      </Button>
+    </form>
   );
 } 
