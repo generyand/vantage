@@ -5,8 +5,18 @@ import LoginForm from "@/components/features/auth/LoginForm";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-gradient-to-br from-orange-50 via-white to-pink-50">
-      <div className="w-full max-w-6xl mx-auto flex items-center justify-center gap-x-24 flex-1">
+    <div className="relative h-screen bg-gradient-to-br from-slate-50 via-red-50 to-orange-50 flex flex-col overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {/* top right */}
+        <div className="absolute -top-40 -right-40 w-48 h-48 lg:w-60 lg:h-60 xl:w-80 xl:h-80 bg-[#fecaca] rounded-full mix-blend-multiply filter blur-xl animate-fade-in-blob animation-delay-800 animate-blob"></div>
+        {/* bottom left */}
+        <div className="absolute -bottom-40 -left-40 w-48 h-48 lg:w-60 lg:h-60 xl:w-80 xl:h-80 bg-[#fed7aa] rounded-full mix-blend-multiply filter blur-xl animate-fade-in-blob animation-delay-2000 animate-blob"></div>
+        {/* top left */}
+        <div className="absolute top-40 left-40 w-48 h-48 lg:w-60 lg:h-60 xl:w-80 xl:h-80 bg-[#e2e8f0] rounded-full mix-blend-multiply filter blur-xl animate-fade-in-blob-light animation-delay-4000 animate-blob"></div>
+      </div>
+      {/* Main content */}
+      <div className="relative z-10 w-full max-w-6xl mx-auto flex items-center justify-center gap-x-24 flex-1">
         {/* Left Panel */}
         <div className="hidden lg:flex flex-col items-center justify-center">
           {/* Floating Logo */}
@@ -66,7 +76,7 @@ export default function LoginPage() {
         </div>
       </div>
       {/* Footer */}
-      <footer className="w-full bg-white/80 border-t border-gray-200 py-2 px-4 flex flex-col md:flex-row items-center justify-between text-base text-gray-500 gap-2">
+      <footer className="relative z-20 w-full bg-white/80 border-t border-gray-200 py-2 px-4 flex flex-col md:flex-row items-center justify-between text-base text-gray-500 gap-2">
         <div>
           Office Hours: Mon-Fri 8:00 AM - 5:00 PM | Sat 8:00 AM - 12:00 PM
         </div>
@@ -87,6 +97,42 @@ export default function LoginPage() {
         }
         .animate-float {
           animation: float 3s ease-in-out infinite;
+        }
+        @keyframes fade-in-blob {
+          0% { opacity: 0; }
+          100% { opacity: 0.6; }
+        }
+        .animate-fade-in-blob {
+          animation: fade-in-blob 1.2s ease-in forwards;
+        }
+        .animate-fade-in-blob-light {
+          animation: fade-in-blob 1.2s 0.5s ease-in forwards;
+        }
+        .animate-blob {
+          animation: blob 8s infinite linear alternate;
+        }
+        @keyframes blob {
+          0% {
+            transform: scale(1) translate(0px, 0px);
+          }
+          33% {
+            transform: scale(1.1, 0.9) translate(30px, -20px);
+          }
+          66% {
+            transform: scale(0.9, 1.1) translate(-20px, 30px);
+          }
+          100% {
+            transform: scale(1) translate(0px, 0px);
+          }
+        }
+        .animation-delay-800 {
+          animation-delay: 0.8s;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
         }
       `}</style>
     </div>
