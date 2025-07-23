@@ -46,8 +46,9 @@ export default function LoginPage() {
         </div>
         {/* Right Panel (Login Card) */}
         <div className="flex flex-col items-center justify-center min-w-[380px] max-w-md w-full px-4 py-12 sm:px-6 lg:px-0">
-          <div className="w-full bg-white rounded-2xl shadow-xl p-10 md:p-10 space-y-5">
-            <div className="text-center">
+          {/* Single Card: Welcome, subtitle, LoginForm, and assistance text all in one */}
+          <div className="w-full bg-white rounded-2xl shadow-xl p-10 md:p-10 flex flex-col space-y-8">
+            <div className="text-center mb-2">
               <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">
                 Welcome, Partner in Governance
               </h2>
@@ -55,8 +56,10 @@ export default function LoginPage() {
                 Sign in to the VANTAGE Platform.
               </p>
             </div>
-            <LoginForm />
-            <p className="text-sm text-gray-500 text-center mt-6">
+            <div className="flex-1 flex flex-col justify-center">
+              <LoginForm />
+            </div>
+            <p className="text-sm text-gray-500 text-center mt-8">
               For account assistance, please contact your DILG Administrator.
             </p>
           </div>
