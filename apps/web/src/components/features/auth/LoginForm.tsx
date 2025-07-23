@@ -146,7 +146,8 @@ export default function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             required
             disabled={loginMutation.isPending}
-            className="pl-10 block w-full py-3 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed"
+            className="pl-10 py-3"
+            shape="boxy"
             placeholder="Enter your email address"
             autoComplete="username"
           />
@@ -170,7 +171,8 @@ export default function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             disabled={loginMutation.isPending}
-            className="pl-10 block w-full py-3 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed"
+            className="pl-10 py-3"
+            shape="boxy"
             placeholder="Enter your password"
             autoComplete="current-password"
           />

@@ -55,6 +55,12 @@ Establish a professional, consistent, and accessible styling system for the Vant
 
 > **Usage:** These blobs are used as blurred, animated background elements on the login/hero page for visual interest. See the login page implementation for example placement and animation.
 
+### Input & Form Fields
+- **Border:** Use `--border` for default, `--focus` for focus, `--destructive` for error.
+- **Placeholder:** Use `--text-muted`.
+- **Icon:** Use `--icon-default` for input icons.
+- **No blue:** Never use browser default blue for focus or border; always use theme tokens.
+
 ---
 
 ## 2. Typography & Spacing
@@ -132,6 +138,10 @@ const buttonVariants = cva(
   - Absolutely positioned, blurred, and animated using the theme blob colors.
   - Use the CSS classes: `bg-[#fecaca]`, `bg-[#fed7aa]`, `bg-[#e2e8f0]`, `blur-xl`, `mix-blend-multiply`, and custom keyframes for fade-in and blob movement.
   - See the login page for a full example.
+- All input and form fields must:
+  - Use theme tokens for border, focus, placeholder, and icon color (see globals.css).
+  - Never use browser default blue for focus or border.
+  - Reference the utility classes and CSS in globals.css for placeholder and icon color.
 
 ---
 

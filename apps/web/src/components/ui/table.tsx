@@ -1,10 +1,41 @@
 "use client"
 
 import * as React from "react"
-
+import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+const tableVariants = cva(
+  "w-full caption-bottom text-sm",
+  {
+    variants: {
+      size: {
+        sm: "text-xs",
+        md: "text-sm",
+        lg: "text-base",
+      },
+    },
+    defaultVariants: {
+      size: "md",
+    },
+  }
+)
+
+const tableRowVariants = cva(
+  "border-b transition-colors",
+  {
+    variants: {
+      shape: {
+        boxy: "rounded-none",
+        rounded: "rounded-md",
+      },
+    },
+    defaultVariants: {
+      shape: "boxy",
+    },
+  }
+)
+
+function Table({ className, size, ...props }: React.ComponentProps<"table"> & VariantProps<typeof tableVariants>) {
   return (
     <div
       data-slot="table-container"
@@ -12,7 +43,7 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
     >
       <table
         data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
+        className={cn(tableVariants({ size }), className)}
         {...props}
       />
     </div>
@@ -52,12 +83,13 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
   )
 }
 
-function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+function TableRow({ className, shape, ...props }: React.ComponentProps<"tr"> & VariantProps<typeof tableRowVariants>) {
   return (
     <tr
       data-slot="table-row"
       className={cn(
-        "hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors",
+        tableRowVariants({ shape }),
+        "hover:bg-muted/50 data-[state=selected]:bg-muted",
         className
       )}
       {...props}
@@ -113,4 +145,6 @@ export {
   TableRow,
   TableCell,
   TableCaption,
+  tableVariants,
+  tableRowVariants,
 }

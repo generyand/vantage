@@ -13,7 +13,7 @@ export default function LoginPage() {
         {/* bottom left */}
         <div className="absolute -bottom-40 -left-40 w-48 h-48 lg:w-60 lg:h-60 xl:w-80 xl:h-80 bg-[#fed7aa] rounded-full mix-blend-multiply filter blur-xl animate-fade-in-blob animation-delay-2000 animate-blob"></div>
         {/* top left */}
-        <div className="absolute top-40 left-40 w-48 h-48 lg:w-60 lg:h-60 xl:w-80 xl:h-80 bg-[#e2e8f0] rounded-full mix-blend-multiply filter blur-xl animate-fade-in-blob-light animation-delay-4000 animate-blob"></div>
+        <div className="absolute top-40 left-40 w-48 h-48 lg:w-60 lg:h-60 xl:w-80 xl:h-80 bg-[#e2e8f0] rounded-full mix-blend-multiply filter blur-xl   animate-fade-in-blob-light animation-delay-4000 animate-blob"></div>
       </div>
       {/* Main content */}
       <div className="relative z-10 w-full max-w-6xl mx-auto flex items-center justify-center gap-x-24 flex-1">

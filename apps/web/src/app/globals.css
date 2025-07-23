@@ -188,6 +188,14 @@
     background: var(--input);
     color: var(--foreground);
     transition: border-color 0.2s, box-shadow 0.2s;
+    /* Use theme for placeholder and icon color */
+  }
+  input::placeholder, textarea::placeholder {
+    color: var(--text-muted);
+    opacity: 1;
+  }
+  input svg, .input-icon {
+    color: var(--icon-default);
   }
   input:focus, textarea:focus, select:focus {
     border-color: var(--focus);
