@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 interface PeaceAndOrderFormProps {
-  onSubmit?: (data: any) => void;
-  initialData?: any;
+  onSubmit?: (data: FormData) => void;
+  initialData?: FormData;
   isLoading?: boolean;
 }
 
@@ -53,9 +55,9 @@ export default function PeaceAndOrderForm({
   }) => (
     <div className="space-y-2">
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <Label className="block text-sm font-medium text-gray-700">
           {label}
-        </label>
+        </Label>
         <p className="text-xs text-gray-500">{description}</p>
       </div>
       <div className="flex items-center space-x-2">
@@ -129,20 +131,17 @@ export default function PeaceAndOrderForm({
         </div>
 
         <div>
-          <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
+          <Label htmlFor="notes" className="block text-sm font-medium text-gray-700">
             Additional Notes
-          </label>
-          <div className="mt-1">
-            <textarea
-              id="notes"
-              name="notes"
-              rows={4}
-              value={formData.notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-              className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              placeholder="Any additional observations or comments about the assessment..."
-            />
-          </div>
+          </Label>
+          <Textarea
+            id="notes"
+            value={formData.notes}
+            onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+            rows={4}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed"
+            placeholder="Add any additional comments or observations here."
+          />
         </div>
 
         <div className="flex items-center justify-between pt-6 border-t border-gray-200">
