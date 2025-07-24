@@ -373,48 +373,36 @@ try {
   // Group related schemas by FastAPI tags
   await groupSchemas();
   
-  // Create main barrel export file for tag-split organized code
-  const indexContent = `// 🚀 Auto-generated API types and hooks by Orval (Tag-Split Mode)
+  // --- DYNAMIC INDEX FILE GENERATION ---
+  console.log('📦 Generating dynamic main index.ts file...');
+  
+  // 1. Discover endpoint directories (tags)
+  const endpointsDir = path.join(OUTPUT_DIR, 'endpoints');
+  const endpointTags = fs.readdirSync(endpointsDir, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+
+  // 2. Generate dynamic endpoint exports
+  const endpointExports = endpointTags
+    .map(tag => `export * from './endpoints/${tag}/${tag}';`)
+    .join('\n');
+  
+  // 3. Create the dynamic index file content
+  const indexContent = `// 🚀 Auto-generated API types and hooks by Orval
 // 🔄 Do not edit manually - regenerate with: pnpm generate-types
 // 📁 Organized by FastAPI tags for maximum maintainability
-// 
-// 🎯 Professional API client structure:
-// - endpoints/{tag}/     → Hooks organized by FastAPI tags
-// - schemas/            → Types grouped by FastAPI tags
 
 // 📦 Export all endpoint hooks organized by FastAPI tags
-export * from './endpoints/auth/auth';
-export * from './endpoints/system/system';
-export * from './endpoints/users/users';
+${endpointExports}
 
 // 📝 Export all TypeScript types (grouped by FastAPI tags)
 export * from './schemas';
-
-// 🔄 Common re-exports for convenience  
-export type {
-  // User & Auth types
-  User,
-  AuthToken,
-  LoginRequest,
-  
-  // System types
-  ApiResponse,
-  HealthCheck,
-  
-  // Error types
-  HTTPValidationError,
-} from './schemas';
 `;
-
+ 
   fs.writeFileSync(path.join(OUTPUT_DIR, 'index.ts'), indexContent);
   
   console.log('✅ Types and React Query hooks generated successfully!');
   console.log(`📁 Generated files saved to: ${OUTPUT_DIR}`);
-  console.log('📋 New features:');
-  console.log('  - 🪝 Auto-generated React Query hooks');
-  console.log('  - 🏷️  Schema grouping based on FastAPI tags');
-  console.log('  - 🎯 Type-safe API calls with automatic caching');
-  console.log('  - 🔧 Zero manual configuration - follows your API structure');
   
 } catch (error) {
   console.error('❌ Error generating types:');
