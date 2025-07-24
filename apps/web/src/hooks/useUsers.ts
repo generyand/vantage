@@ -1,4 +1,4 @@
-import { useGetUsers } from '@vantage/shared/src/generated/endpoints/users/users';
+import { useGetUsers } from '@vantage/shared/src/generated/endpoints/users';
 
 /**
  * Custom hook to fetch all users for the admin user management interface.

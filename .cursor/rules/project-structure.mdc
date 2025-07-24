@@ -15,127 +15,190 @@ alwaysApply: true
 - Documentation is in `docs/` folder
 
 ```tree
-vantage/
-├── apps/
-│   ├── api/                    # Python FastAPI backend
-│   │   ├── alembic/           # Database migrations
-│   │   │   ├── versions/      # Migration files
-│   │   │   ├── env.py         # Alembic configuration
-│   │   │   └── script.py.mako # Migration template
-│   │   ├── app/               # Main application code
-│   │   │   ├── api/           # API route handlers
-│   │   │   │   ├── v1/        # API v1 endpoints
-│   │   │   │   │   ├── assessments.py  # Assessment endpoints
-│   │   │   │   │   ├── auth.py         # Authentication endpoints
-│   │   │   │   │   ├── projects.py     # Project endpoints
-│   │   │   │   │   ├── reports.py      # Report endpoints
-│   │   │   │   │   ├── system.py       # System endpoints
-│   │   │   │   │   └── users.py        # User endpoints
-│   │   │   │   └── deps.py    # API dependencies
-│   │   │   ├── core/          # Core configuration
-│   │   │   │   ├── config.py  # App configuration
-│   │   │   │   └── security.py # Security utilities
-│   │   │   ├── db/            # Database layer
-│   │   │   │   ├── models/    # SQLAlchemy models
-│   │   │   │   │   ├── assessment.py   # Assessment models
-│   │   │   │   │   ├── auth.py         # Auth models
-│   │   │   │   │   ├── base.py         # Base model class
-│   │   │   │   │   ├── project.py      # Project models
-│   │   │   │   │   ├── system.py       # System models
-│   │   │   │   │   └── user.py         # User models
-│   │   │   │   └── base.py    # Database session management
-│   │   │   ├── schemas/       # Pydantic schemas
-│   │   │   │   ├── project.py # Project schemas
-│   │   │   │   ├── system.py  # System schemas
-│   │   │   │   ├── token.py   # Token schemas
-│   │   │   │   └── user.py    # User schemas
-│   │   │   ├── services/      # Business logic services
-│   │   │   └── workers/       # Background task workers
-│   │   │       └── sglgb_classifier.py # Classification worker
-│   │   ├── tests/             # Test files
-│   │   ├── main.py            # FastAPI application entry point
-│   │   ├── pyproject.toml     # Python dependencies
-│   │   ├── uv.lock           # UV lock file
-│   │   └── alembic.ini       # Alembic configuration
-│   └── web/                   # Next.js frontend
-│       ├── src/
-│       │   ├── app/           # Next.js App Router
-│       │   │   ├── (app)/     # Main application routes
-│       │   │   │   ├── assessments/    # Assessment pages
-│       │   │   │   │   ├── [id]/       # Dynamic assessment page
+vantage
+├── apps
+│   ├── api
+│   │   ├── alembic
+│   │   │   ├── versions
+│   │   │   │   ├── 10d9f89f28ac_add_relationship_between_users_and_.py
+│   │   │   │   ├── 52cc77e65cc7_refactor_role_and_area_type_to_string_.py
+│   │   │   │   ├── 5f9b4e3b7a2d_add_user_fields_and_barangay_table.py
+│   │   │   │   ├── aa3c5f2149a5_add_check_constraints_for_enum_values.py
+│   │   │   │   └── f73bc5ceb696_alter_user_table_and_add_governance_.py
+│   │   │   ├── README
+│   │   │   ├── env.py
+│   │   │   └── script.py.mako
+│   │   ├── app
+│   │   │   ├── api
+│   │   │   │   ├── v1
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── auth.py
+│   │   │   │   │   ├── reports.py
+│   │   │   │   │   ├── system.py
+│   │   │   │   │   └── users.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── deps.py
+│   │   │   ├── core
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── config.py
+│   │   │   │   └── security.py
+│   │   │   ├── db
+│   │   │   │   ├── models
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── auth.py
+│   │   │   │   │   ├── barangay.py
+│   │   │   │   │   ├── base.py
+│   │   │   │   │   ├── governance_area.py
+│   │   │   │   │   ├── system.py
+│   │   │   │   │   └── user.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── base.py
+│   │   │   │   └── enums.py
+│   │   │   ├── schemas
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── system.py
+│   │   │   │   ├── token.py
+│   │   │   │   └── user.py
+│   │   │   ├── services
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── governance_area_service.py
+│   │   │   │   ├── startup_service.py
+│   │   │   │   └── user_service.py
+│   │   │   └── workers
+│   │   │       ├── __init__.py
+│   │   │       └── sglgb_classifier.py
+│   │   ├── tests
+│   │   │   ├── conftest.py
+│   │   │   └── test_health.py
+│   │   ├── README.md
+│   │   ├── alembic.ini
+│   │   ├── main.py
+│   │   ├── package.json
+│   │   ├── pyproject.toml
+│   │   ├── pytest.ini
+│   │   ├── test.db
+│   │   └── uv.lock
+│   └── web
+│       ├── public
+│       │   ├── file.svg
+│       │   ├── globe.svg
+│       │   ├── vercel.svg
+│       │   └── window.svg
+│       ├── src
+│       │   ├── app
+│       │   │   ├── (app)
+│       │   │   │   ├── assessments
+│       │   │   │   │   ├── [id]
 │       │   │   │   │   │   └── page.tsx
-│       │   │   │   │   └── page.tsx    # Assessment list page
-│       │   │   │   ├── dashboard/      # Dashboard page
 │       │   │   │   │   └── page.tsx
-│       │   │   │   ├── reports/        # Reports page
+│       │   │   │   ├── dashboard
 │       │   │   │   │   └── page.tsx
-│       │   │   │   └── layout.tsx      # App layout
-│       │   │   ├── (auth)/    # Authentication routes
-│       │   │   │   ├── login/          # Login page
+│       │   │   │   ├── reports
 │       │   │   │   │   └── page.tsx
-│       │   │   │   └── layout.tsx      # Auth layout
-│       │   │   ├── globals.css         # Global styles
-│       │   │   ├── layout.tsx          # Root layout
-│       │   │   └── page.tsx            # Home page
-│       │   ├── components/    # React components
-│       │   │   ├── features/  # Feature-specific components
-│       │   │   │   ├── assessments/    # Assessment components
+│       │   │   │   ├── user-management
+│       │   │   │   │   └── page.tsx
+│       │   │   │   └── layout.tsx
+│       │   │   ├── (auth)
+│       │   │   │   ├── login
+│       │   │   │   │   └── page.tsx
+│       │   │   │   └── layout.tsx
+│       │   │   ├── favicon.ico
+│       │   │   ├── globals.css
+│       │   │   ├── layout.tsx
+│       │   │   └── page.tsx
+│       │   ├── components
+│       │   │   ├── features
+│       │   │   │   ├── assessments
 │       │   │   │   │   ├── PeaceAndOrderForm.tsx
 │       │   │   │   │   └── index.ts
-│       │   │   │   ├── auth/           # Auth components
+│       │   │   │   ├── auth
 │       │   │   │   │   ├── LoginForm.tsx
 │       │   │   │   │   └── index.ts
+│       │   │   │   ├── users
+│       │   │   │   │   ├── UserForm.tsx
+│       │   │   │   │   ├── UserListSection.tsx
+│       │   │   │   │   ├── UserManagementTable.tsx
+│       │   │   │   │   └── index.ts
 │       │   │   │   └── index.ts
-│       │   │   ├── shared/    # Shared/reusable components
+│       │   │   ├── shared
 │       │   │   │   ├── DataTable.tsx
 │       │   │   │   ├── FileUploader.tsx
 │       │   │   │   ├── PageHeader.tsx
 │       │   │   │   ├── UserNav.tsx
 │       │   │   │   └── index.ts
-│       │   │   └── ui/        # Shadcn UI components
-│       │   │       └── button.tsx
-│       │   ├── lib/           # Utility libraries
-│       │   │   ├── api.ts     # API client utilities
-│       │   │   └── utils.ts   # General utilities
-│       │   ├── constants/     # Application constants
-│       │   ├── hooks/         # Custom React hooks
-│       │   ├── providers/     # React context providers
-│       │   ├── store/         # State management
-│       │   └── types/         # TypeScript type definitions
-│       ├── public/            # Static assets
-│       ├── components.json    # Shadcn UI configuration
-│       ├── next.config.ts     # Next.js configuration
-│       ├── package.json       # Frontend dependencies
-│       └── tsconfig.json      # TypeScript configuration
-├── packages/
-│   └── shared/                # Shared code between apps
-│       ├── src/
-│       │   └── generated/     # Auto-generated API client
-│       │       ├── endpoints/ # API endpoint functions
-│       │       │   ├── auth/
-│       │       │   ├── projects/
-│       │       │   ├── system/
-│       │       │   └── users/
-│       │       ├── schemas/   # TypeScript schemas
-│       │       │   ├── auth.ts
-│       │       │   ├── error.ts
-│       │       │   ├── projects.ts
-│       │       │   ├── system.ts
-│       │       │   └── users.ts
-│       │       └── index.ts   # Main export
-│       ├── package.json       # Shared package dependencies
-│       └── tsconfig.json      # TypeScript configuration
-├── docs/                      # Project documentation
-│   ├── architecture.md        # Architecture documentation
-│   └── decisions.md          # Architecture decision records
-├── scripts/                   # Build and utility scripts
-│   ├── generate-types.js      # Type generation script
-│   └── watch-generate.js      # Watch mode for type generation
-├── orval.config.ts           # Orval configuration for API client generation
-├── package.json              # Root package.json for workspace
-├── pnpm-workspace.yaml       # pnpm workspace configuration
-├── turbo.json               # Turborepo configuration
-└── README.md                # Project readme
+│       │   │   └── ui
+│       │   │       ├── button.tsx
+│       │   │       ├── dialog.tsx
+│       │   │       ├── input.tsx
+│       │   │       ├── label.tsx
+│       │   │       ├── table.tsx
+│       │   │       └── textarea.tsx
+│       │   ├── constants
+│       │   │   └── placeholder.ts
+│       │   ├── hooks
+│       │   │   └── useUsers.ts
+│       │   ├── lib
+│       │   │   ├── api.ts
+│       │   │   └── utils.ts
+│       │   ├── providers
+│       │   │   └── index.tsx
+│       │   ├── store
+│       │   │   └── useAuthStore.ts
+│       │   └── types
+│       │       └── placeholder.ts
+│       ├── README.md
+│       ├── components.json
+│       ├── eslint.config.mjs
+│       ├── middleware.ts
+│       ├── package.json
+│       ├── postcss.config.mjs
+│       └── tsconfig.json
+├── docs
+│   ├── prds
+│   │   └── prd-core-user-authentication-and-management.md
+│   ├── architecture.md
+│   ├── decisions.md
+│   └── project-roadmap.md
+├── packages
+│   └── shared
+│       ├── src
+│       │   └── generated
+│       │       ├── endpoints
+│       │       │   ├── auth
+│       │       │   │   └── index.ts
+│       │       │   ├── default
+│       │       │   │   └── index.ts
+│       │       │   ├── system
+│       │       │   │   └── index.ts
+│       │       │   ├── users
+│       │       │   │   └── index.ts
+│       │       │   └── index.ts
+│       │       ├── schemas
+│       │       │   ├── auth
+│       │       │   │   └── index.ts
+│       │       │   ├── common
+│       │       │   │   └── index.ts
+│       │       │   ├── error
+│       │       │   │   └── index.ts
+│       │       │   ├── system
+│       │       │   │   └── index.ts
+│       │       │   ├── users
+│       │       │   │   └── index.ts
+│       │       │   └── index.ts
+│       │       └── index.ts
+│       ├── package.json
+│       └── tsconfig.json
+├── scripts
+│   ├── generate-types.js
+│   └── watch-generate.js
+├── tasks
+│   └── tasks-prd-core-user-authentication-and-management.md
+├── README.md
+├── orval.config.ts
+├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+└── turbo.json
 ```
 
 ## Backend (Python FastAPI)
@@ -228,16 +291,6 @@ vantage/
 2. **Type Safety**: Leverage generated types from shared package
 3. **API Integration**: Use generated API client functions
 4. **Component Structure**: Organize by feature, then by type
-5. **Database**: Use migrations for all schema changes
-6. **Environment**: Separate configs for dev/staging/production
-
-
-
-5. **Database**: Use migrations for all schema changes
-6. **Environment**: Separate configs for dev/staging/production
-
-
-
 5. **Database**: Use migrations for all schema changes
 6. **Environment**: Separate configs for dev/staging/production
 
