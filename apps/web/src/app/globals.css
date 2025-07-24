@@ -34,7 +34,7 @@
   --icon-muted: #adb5bd;
 
   /* Palette: interactive */
-  --focus: #dc2626;
+  --focus: #b91c1c;
   --hover: #f8f9fa;
 
   /* Palette: gradients */
@@ -48,7 +48,7 @@
   --blob-3: #e2e8f0;
 
   /* System colors */
-  --primary: #dc2626;
+  --primary: #b91c1c;
   --primary-foreground: #ffffff;
   --secondary: #d97706;
   --secondary-foreground: #ffffff;
@@ -58,7 +58,7 @@
 
   /* Form and system */
   --input: #f8f9fa;
-  --ring: #dc2626;
+  --ring: #b91c1c;
 
   /* Radius (see @styling.mdc spacing) */
   --radius-xs: 0.25rem;

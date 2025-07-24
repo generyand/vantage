@@ -21,14 +21,13 @@ export default function LoginPage() {
         <div className="hidden lg:flex flex-col items-center justify-center">
           {/* Floating Logo */}
           <div className="relative z-10 flex flex-col items-center">
-            <div className="rounded-full shadow-xl bg-gradient-to-br from-orange-100 via-white to-yellow-100 p-6 mb-6 animate-float">
+            <div className="mb-6 animate-float">
               <Image
                 src="/DILG.png"
                 alt="DILG Logo"
                 width={180}
                 height={180}
                 priority
-                className="rounded-full border-4 border-white shadow-lg"
               />
             </div>
             <h1 className="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight text-center">
@@ -99,8 +98,12 @@ export default function LoginPage() {
           animation: float 3s ease-in-out infinite;
         }
         @keyframes fade-in-blob {
-          0% { opacity: 0; }
-          100% { opacity: 0.6; }
+          0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 0.6;
+          }
         }
         .animate-fade-in-blob {
           animation: fade-in-blob 1.2s ease-in forwards;

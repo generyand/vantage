@@ -40,11 +40,13 @@ Establish a professional, consistent, and accessible styling system for the Vant
 - `#fecaca`, `#fed7aa`, `#e2e8f0`
 
 ### System Colors
-- **Primary:** `#dc2626` (fg: `#ffffff`)
+- **Primary:** `#b91c1c` (fg: `#ffffff`)
 - **Secondary:** `#d97706` (fg: `#ffffff`)
 - **Success:** `#28a745`
 - **Warning:** `#fd7e14`
 - **Destructive:** `#dc3545`
+
+> **Note:** The primary color (`#b91c1c`) is used for all main actions, buttons, and focus states. Update `globals.css` and all component variants to use this theme token for consistency.
 
 > **Note:** These colors are mapped to CSS variables in `globals.css` and used via Tailwind utility classes or custom properties.
 
