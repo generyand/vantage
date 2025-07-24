@@ -68,7 +68,7 @@
   --radius-xl: 2rem;
 
   /* Font families */
-  --font-sans: var(--font-geist-sans, 'Inter', sans-serif);
+  --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: var(--font-geist-mono, 'Fira Mono', monospace);
 }
 
@@ -106,6 +106,9 @@
 
 /* TYPOGRAPHY (see @styling.mdc) */
 @layer base {
+  * {
+    font-family: 'Inter', system-ui, sans-serif !important;
+  }
   html {
     font-family: var(--font-sans);
     font-size: 16px;

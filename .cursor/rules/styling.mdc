@@ -67,6 +67,8 @@ Establish a professional, consistent, and accessible styling system for the Vant
 
 ## 2. Typography & Spacing
 
+- The default font for all body and UI text is **Inter** for a modern, professional look.
+
 ### Headings
 | Level   | Size    | Weight   |
 |---------|---------|----------|
