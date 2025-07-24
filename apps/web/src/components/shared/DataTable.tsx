@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Skeleton } from "@/components/ui/Skeleton";
 
 interface Column<T> {
   key: keyof T;
@@ -55,10 +56,20 @@ export default function DataTable<T extends Record<string, unknown>>({
   if (loading) {
     return (
       <div className="bg-white shadow rounded-lg">
-        <div className="animate-pulse">
-          <div className="h-12 bg-gray-200 rounded-t-lg mb-2"></div>
-          {[...Array(5)].map((_, index) => (
-            <div key={index} className="h-16 bg-gray-100 mb-2 mx-4 rounded"></div>
+        <div>
+          {/* Skeleton header */}
+          <div className="flex">
+            {columns.map((col, idx) => (
+              <Skeleton key={idx} shape="rounded" size="md" width="md" className="m-2 flex-1" />
+            ))}
+          </div>
+          {/* Skeleton rows */}
+          {[...Array(5)].map((_, rowIdx) => (
+            <div key={rowIdx} className="flex">
+              {columns.map((col, colIdx) => (
+                <Skeleton key={colIdx} shape="rounded" size="md" width="md" className="m-2 flex-1" />
+              ))}
+            </div>
           ))}
         </div>
       </div>
