@@ -242,3 +242,30 @@
     /* Used to scope shadcn/ui overrides if needed */
   }
 }
+
+/* LANDING PAGE ANIMATIONS (moved from page.tsx) */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-16px); }
+  100% { transform: translateY(0px); }
+}
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+@keyframes fade-in-blob {
+  0% { opacity: 0; }
+  100% { opacity: 0.6; }
+}
+.animate-fade-in-blob { animation: fade-in-blob 1.2s ease-in forwards; }
+.animate-fade-in-blob-light { animation: fade-in-blob 1.2s 0.5s ease-in forwards; }
+
+@keyframes blob {
+  0% { transform: scale(1) translate(0px, 0px); }
+  33% { transform: scale(1.1, 0.9) translate(30px, -20px); }
+  66% { transform: scale(0.9, 1.1) translate(-20px, 30px); }
+  100% { transform: scale(1) translate(0px, 0px); }
+}
+.animate-blob { animation: blob 8s infinite linear alternate; }
+
+.animation-delay-800 { animation-delay: 0.8s; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
