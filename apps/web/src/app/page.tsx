@@ -43,7 +43,7 @@ export default function Home() {
               <span className="text-[#b91c1c]">Streamlining SGLGB Success.</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-700 mb-8">
-              The official pre-assessment and analytics web application for the Municipality of Sulop's Seal of Good Local Governance for Barangays program.
+              The official pre-assessment and analytics web application for the Municipality of Sulop&apos;s Seal of Good Local Governance for Barangays program.
             </p>
             <div className="flex gap-4">
               <Link href="/login">
@@ -141,7 +141,7 @@ export default function Home() {
               <span className="flex-shrink-0 w-12 h-12 rounded-full bg-[#28a745] text-white flex items-center justify-center text-2xl font-bold">3</span>
               <div className="flex-1 text-center md:text-left">
                 <h4 className="font-semibold text-lg mb-1">Analyze & Improve</h4>
-                <p className="text-gray-600 text-sm">The MLGOO-DILG records the final, official result and uses the system's analytics and AI-powered insights to drive strategic improvements in local governance.</p>
+                <p className="text-gray-600 text-sm">The MLGOO-DILG records the final, official result and uses the system&apos;s analytics and AI-powered insights to drive strategic improvements in local governance.</p>
               </div>
             </li>
           </ol>
