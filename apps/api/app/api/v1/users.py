@@ -53,7 +53,7 @@ async def update_current_user(
     return updated_user
 
 
-@router.get("/", response_model=UserListResponse, tags=["admin"])
+@router.get("/", response_model=UserListResponse, tags=["users"])
 async def get_users(
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_admin_user),
@@ -89,7 +89,7 @@ async def get_users(
     )
 
 
-@router.post("/", response_model=UserSchema, tags=["admin"])
+@router.post("/", response_model=UserSchema, tags=["users"])
 async def create_user(
     user_create: UserAdminCreate,
     db: Session = Depends(deps.get_db),
@@ -103,7 +103,7 @@ async def create_user(
     return user_service.create_user_admin(db, user_create)
 
 
-@router.get("/{user_id}", response_model=UserSchema, tags=["admin"])
+@router.get("/{user_id}", response_model=UserSchema, tags=["users"])
 async def get_user(
     user_id: int,
     db: Session = Depends(deps.get_db),
@@ -123,7 +123,7 @@ async def get_user(
     return user
 
 
-@router.put("/{user_id}", response_model=UserSchema, tags=["admin"])
+@router.put("/{user_id}", response_model=UserSchema, tags=["users"])
 async def update_user(
     user_id: int,
     user_update: UserAdminUpdate,
@@ -144,7 +144,7 @@ async def update_user(
     return updated_user
 
 
-@router.delete("/{user_id}", response_model=UserSchema, tags=["admin"])
+@router.delete("/{user_id}", response_model=UserSchema, tags=["users"])
 async def deactivate_user(
     user_id: int,
     db: Session = Depends(deps.get_db),
@@ -170,7 +170,7 @@ async def deactivate_user(
     return deactivated_user
 
 
-@router.post("/{user_id}/activate", response_model=UserSchema, tags=["admin"])
+@router.post("/{user_id}/activate", response_model=UserSchema, tags=["users"])
 async def activate_user(
     user_id: int,
     db: Session = Depends(deps.get_db),
@@ -190,7 +190,7 @@ async def activate_user(
     return activated_user
 
 
-@router.post("/{user_id}/reset-password", response_model=dict, tags=["admin"])
+@router.post("/{user_id}/reset-password", response_model=dict, tags=["users"])
 async def reset_user_password(
     user_id: int,
     new_password: str,
@@ -212,7 +212,7 @@ async def reset_user_password(
     return {"message": "Password reset successfully"}
 
 
-@router.get("/stats/dashboard", response_model=dict, tags=["admin"])
+@router.get("/stats/dashboard", response_model=dict, tags=["users"])
 async def get_user_stats(
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_admin_user)
