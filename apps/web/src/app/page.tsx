@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect, useRef } from "react";
 
 export default function Home() {
   return (
@@ -74,7 +77,11 @@ export default function Home() {
           {/* Right: Image/Card Placeholder */}
           <div className="flex-1 flex items-center justify-center min-h-[320px]">
             <div className="w-full max-w-xl md:max-w-2xl rounded-2xl shadow-lg overflow-hidden">
-              <img src="/Sulop_Hall.png" alt="Sulop Municipal Hall" className="w-full h-full object-cover" />
+              <img
+                src="/Sulop_Hall.png"
+                alt="Sulop Municipal Hall"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         </section>
@@ -161,89 +168,202 @@ export default function Home() {
 
         {/* Key Features Section */}
         <section className="w-full max-w-7xl mx-auto px-8 py-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 text-center">A Modern Toolkit for Data-Driven Governance</h2>
-          <p className="text-lg text-gray-500 text-center mb-8">Everything you need for SGLGB success, in one platform.</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 text-center">
+            A Modern Toolkit for Data-Driven Governance
+          </h2>
+          <p className="text-lg text-gray-500 text-center mb-8">
+            Everything you need for SGLGB success, in one platform.
+          </p>
           <div className="flex flex-col md:flex-row md:items-center gap-8">
             {/* Left: Image */}
             <div className="flex-1 flex justify-center">
-              <img src="/Day_Care_Center.jpg" alt="Day Care Center" className="w-full max-w-xl md:max-w-2xl rounded-2xl shadow-lg object-cover" />
+              <img
+                src="/Day_Care_Center.jpg"
+                alt="Day Care Center"
+                className="w-full max-w-xl md:max-w-2xl rounded-2xl shadow-lg object-cover"
+              />
             </div>
             {/* Right: Feature Boxes */}
             <div className="flex-1 flex flex-col gap-6 justify-center">
               <div className="bg-white shadow-lg flex items-center gap-6 pr-6 pb-3 border-l-8 border-primary pl-6 transition-all duration-200 hover:shadow-xl hover:-translate-y-1 rounded-t-xl">
-                <img src="/Toolkit/assessment.jpg" alt="Guided Self-Assessment" className="w-24 h-24 md:w-28 md:h-28 rounded-xl object-cover transition-transform duration-200 hover:scale-105 hover:rotate-3" />
+                <img
+                  src="/Toolkit/assessment.jpg"
+                  alt="Guided Self-Assessment"
+                  className="w-24 h-24 md:w-28 md:h-28 rounded-xl object-cover transition-transform duration-200 hover:scale-105 hover:rotate-3"
+                />
                 <div>
-                  <h3 className="font-bold text-lg mb-1">Guided Self-Assessment</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">A step-by-step workflow for BLGUs to complete their Self-Evaluation Document (SED) and upload all required Means of Verification (MOVs) with confidence.</p>
+                  <h3 className="font-bold text-lg mb-1">
+                    Guided Self-Assessment
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    A step-by-step workflow for BLGUs to complete their
+                    Self-Evaluation Document (SED) and upload all required Means
+                    of Verification (MOVs) with confidence.
+                  </p>
                 </div>
               </div>
               <div className="bg-white shadow-lg flex items-center gap-6 pr-6 pb-3 pt-3 border-l-8 border-primary pl-6 transition-all duration-200 hover:shadow-xl hover:-translate-y-1">
-                <img src="/Toolkit/rework.jpg" alt="Structured Validation & Rework" className="w-24 h-24 md:w-28 md:h-28 rounded-xl object-cover transition-transform duration-200 hover:scale-105 hover:rotate-3" />
+                <img
+                  src="/Toolkit/rework.jpg"
+                  alt="Structured Validation & Rework"
+                  className="w-24 h-24 md:w-28 md:h-28 rounded-xl object-cover transition-transform duration-200 hover:scale-105 hover:rotate-3"
+                />
                 <div>
-                  <h3 className="font-bold text-lg mb-1">Structured Validation & Rework</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">An efficient interface for DILG Area Assessors to review submissions, provide consolidated feedback, and manage a single, streamlined rework cycle.</p>
+                  <h3 className="font-bold text-lg mb-1">
+                    Structured Validation & Rework
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    An efficient interface for DILG Area Assessors to review
+                    submissions, provide consolidated feedback, and manage a
+                    single, streamlined rework cycle.
+                  </p>
                 </div>
               </div>
               <div className="bg-white shadow-lg flex items-center gap-6 pr-6 pb-3 border-l-8 border-primary pl-6 transition-all duration-200 hover:shadow-xl hover:-translate-y-1 rounded-b-xl">
-                <img src="/Toolkit/analytics.jpg" alt="Powerful Analytics & AI Insights" className="w-24 h-24 md:w-28 md:h-28 rounded-xl object-cover transition-transform duration-200 hover:scale-105 hover:rotate-3" />
+                <img
+                  src="/Toolkit/analytics.jpg"
+                  alt="Powerful Analytics & AI Insights"
+                  className="w-24 h-24 md:w-28 md:h-28 rounded-xl object-cover transition-transform duration-200 hover:scale-105 hover:rotate-3"
+                />
                 <div>
-                  <h3 className="font-bold text-lg mb-1">Powerful Analytics & AI Insights</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">A high-level dashboard with cross-matching analysis and AI-generated CapDev recommendations to support strategic decision-making.</p>
+                  <h3 className="font-bold text-lg mb-1">
+                    Powerful Analytics & AI Insights
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    A high-level dashboard with cross-matching analysis and
+                    AI-generated CapDev recommendations to support strategic
+                    decision-making.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* How It Works Section */}
+        {/* How It Works Section (Interactive Stepper) */}
         <section className="w-full max-w-7xl mx-auto px-8 py-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 text-center">
-            A Simple, Three-Step Process
-          </h2>
-          <ol className="space-y-8">
-            <li className="flex flex-col md:flex-row items-center gap-6">
-              <span className="flex-shrink-0 w-12 h-12 rounded-full bg-[#b91c1c] text-white flex items-center justify-center text-2xl font-bold">
-                1
-              </span>
-              <div className="flex-1 text-center md:text-left">
-                <h4 className="font-semibold text-lg mb-1">Prepare & Submit</h4>
-                <p className="text-gray-600 text-sm">
-                  BLGU Users complete their pre-assessment and upload all
-                  required documents through the guided digital workflow.
-                </p>
+          {(() => {
+            const steps = [
+              {
+                label: "Prepare & Submit",
+                color: "bg-[#dc2626]",
+                text: "BLGU Users complete their pre-assessment and upload all required documents through the guided digital workflow.",
+                image: (
+                  <img
+                    src="/Toolkit/assessment.jpg"
+                    alt="Prepare & Submit"
+                    className="w-40 h-40 object-cover rounded-xl border-2 border-gray-200 bg-white"
+                  />
+                ),
+              },
+              {
+                label: "Validate & Calibrate",
+                color: "bg-[#f59e42]",
+                text: "DILG Area Assessors review the submissions for quality and provide a single, consolidated list of feedback for a one-time rework cycle.",
+                image: (
+                  <img
+                    src="/Toolkit/rework.jpg"
+                    alt="Validate & Calibrate"
+                    className="w-40 h-40 object-cover rounded-xl border-2 border-gray-200 bg-white"
+                  />
+                ),
+              },
+              {
+                label: "Analyze & Improve",
+                color: "bg-[#22c55e]",
+                text: "The MLGOO-DILG records the final, official result and uses the system's analytics and AI-powered insights to drive strategic improvements in local governance.",
+                image: (
+                  <img
+                    src="/Toolkit/analytics.jpg"
+                    alt="Analyze & Improve"
+                    className="w-40 h-40 object-cover rounded-xl border-2 border-gray-200 bg-white"
+                  />
+                ),
+              },
+            ];
+            const [activeStep, setActiveStep] = useState(0);
+            const [fade, setFade] = useState(false);
+            const stepsLength = steps.length;
+            const timerRef = useRef<NodeJS.Timeout | null>(null);
+            useEffect(() => {
+              setFade(true);
+              const fadeTimeout = setTimeout(() => setFade(false), 500); // match duration-500
+              if (timerRef.current) clearInterval(timerRef.current);
+              timerRef.current = setInterval(() => {
+                setActiveStep((prev) => (prev + 1) % stepsLength);
+              }, 5000);
+              return () => {
+                clearTimeout(fadeTimeout);
+                if (timerRef.current) clearInterval(timerRef.current);
+              };
+            }, [activeStep, stepsLength]);
+            return (
+              <div className="flex flex-col md:flex-row items-stretch gap-8">
+                {/* Left: Stepper */}
+                <div className="flex flex-col justify-center items-end md:w-1/4 mb-6 md:mb-0">
+                  <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight text-right mb-8">
+                    Three
+                    <br /> 
+                    Step
+                    <br />
+                    Process
+                  </h2>
+                  <div className="flex flex-col gap-0 w-full bg-white shadow rounded-l-xl border border-gray-200">
+                    {steps.map((step, idx) => (
+                      <button
+                        key={idx}
+                        className={`flex items-center w-full px-6 py-4 text-left transition-all duration-150 focus:outline-none border-b border-gray-100 last:border-b-0 ${
+                          activeStep === idx
+                            ? `bg-gray-50 cursor-default z-10`
+                            : "bg-white hover:bg-gray-50 cursor-pointer"
+                        } ${idx === 0 ? "rounded-tl-xl" : ""} ${
+                          idx === steps.length - 1 ? "rounded-bl-xl" : ""
+                        }`}
+                        onClick={() => {
+                          setActiveStep(idx);
+                          if (timerRef.current) clearInterval(timerRef.current);
+                        }}
+                        disabled={activeStep === idx}
+                        style={{
+                          borderRight: activeStep === idx ? "none" : undefined,
+                        }}
+                      >
+                        <span
+                          className={`flex items-center justify-center w-10 h-10 rounded-full text-white font-bold text-xl mr-4 ${step.color}`}
+                        >
+                          {idx + 1}
+                        </span>
+                        <span className="font-semibold text-gray-800 text-lg">
+                          {step.label}
+                        </span>
+                      </button>
+                    ))} 
+                  </div>
+                </div>
+                {/* Right: Active Step Content */}
+                <div
+                  key={activeStep}
+                  className={`flex-1 bg-white shadow rounded-r-xl border border-gray-200 flex flex-col md:flex-row items-center px-8 py-8 transition-opacity duration-500 ${
+                    fade ? "opacity-0" : "opacity-100"
+                  } ${
+                    activeStep === 0
+                      ? "bg-[#fff5f5]"
+                      : activeStep === 1
+                      ? "bg-[#fffbea]"
+                      : "bg-[#e6fff3]"
+                  }`}
+                  style={{ minHeight: 280 }}
+                >
+                  <div className="flex-1 text-gray-800 text-lg font-normal leading-relaxed md:pr-8 mb-8 md:mb-0">
+                    {steps[activeStep].text}
+                  </div>
+                  <div className="flex-shrink-0 flex items-center justify-center">
+                    {steps[activeStep].image}
+                  </div>
+                </div>
               </div>
-            </li>
-            <li className="flex flex-col md:flex-row items-center gap-6">
-              <span className="flex-shrink-0 w-12 h-12 rounded-full bg-[#d97706] text-white flex items-center justify-center text-2xl font-bold">
-                2
-              </span>
-              <div className="flex-1 text-center md:text-left">
-                <h4 className="font-semibold text-lg mb-1">
-                  Validate & Calibrate
-                </h4>
-                <p className="text-gray-600 text-sm">
-                  DILG Area Assessors review the submissions for quality and
-                  provide a single, consolidated list of feedback for a one-time
-                  rework cycle.
-                </p>
-              </div>
-            </li>
-            <li className="flex flex-col md:flex-row items-center gap-6">
-              <span className="flex-shrink-0 w-12 h-12 rounded-full bg-[#28a745] text-white flex items-center justify-center text-2xl font-bold">
-                3
-              </span>
-              <div className="flex-1 text-center md:text-left">
-                <h4 className="font-semibold text-lg mb-1">
-                  Analyze & Improve
-                </h4>
-                <p className="text-gray-600 text-sm">
-                  The MLGOO-DILG records the final, official result and uses the
-                  system&apos;s analytics and AI-powered insights to drive
-                  strategic improvements in local governance.
-                </p>
-              </div>
-            </li>
-          </ol>
+            );
+          })()}
         </section>
       </main>
 
