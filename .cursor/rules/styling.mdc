@@ -1,0 +1,182 @@
+# Styling System & Theme Guide
+
+## Purpose
+
+Establish a professional, consistent, and accessible styling system for the Vantage project. This rule defines the theme palette, typography, spacing, and best practices for applying styles to Shadcn UI components using `class-variance-authority (cva)`. All contributions must follow these guidelines to ensure a cohesive user experience.
+
+---
+
+## 1. Theme Overview
+
+### Backgrounds
+- **Main:** `#f8f9fa`
+- **Card:** `#ffffff`
+- **Overlay:** `rgba(0,0,0,0.5)`
+
+### Text
+- **Primary:** `#212529`
+- **Secondary:** `#495057`
+- **Muted:** `#6c757d`
+- **Inverse:** `#ffffff`
+
+### Borders
+- **Default:** `#dee2e6`
+- **Light:** `#f8f9fa`
+
+### Icons
+- **Default:** `#6c757d`
+- **Muted:** `#adb5bd`
+
+### Interactive States
+- **Focus:** `#dc2626`
+- **Hover:** `#f8f9fa`
+
+### Gradients
+- **Start:** `#f8f9fa`
+- **Mid:** `#fff5f5`
+- **End:** `#fff7ed`
+
+### Blobs
+- `#fecaca`, `#fed7aa`, `#e2e8f0`
+
+### System Colors
+- **Primary:** `#b91c1c` (fg: `#ffffff`)
+- **Secondary:** `#d97706` (fg: `#ffffff`)
+- **Success:** `#28a745`
+- **Warning:** `#fd7e14`
+- **Destructive:** `#dc3545`
+
+> **Note:** The primary color (`#b91c1c`) is used for all main actions, buttons, and focus states. Update `globals.css` and all component variants to use this theme token for consistency.
+
+> **Note:** These colors are mapped to CSS variables in `globals.css` and used via Tailwind utility classes or custom properties.
+
+### Decorative Blobs
+- **Blob 1:** `#fecaca` (top right)
+- **Blob 2:** `#fed7aa` (bottom left)
+- **Blob 3:** `#e2e8f0` (top left)
+
+> **Usage:** These blobs are used as blurred, animated background elements on the login/hero page for visual interest. See the login page implementation for example placement and animation.
+
+### Input & Form Fields
+- **Border:** Use `--border` for default, `--focus` for focus, `--destructive` for error.
+- **Placeholder:** Use `--text-muted`.
+- **Icon:** Use `--icon-default` for input icons.
+- **No blue:** Never use browser default blue for focus or border; always use theme tokens.
+
+---
+
+## 2. Typography & Spacing
+
+- The default font for all body and UI text is **Inter** for a modern, professional look.
+
+### Headings
+| Level   | Size    | Weight   |
+|---------|---------|----------|
+| h1      | 2.25rem | Bold     |
+| h2      | 1.875rem| Bold     |
+| h3      | 1.5rem  | Semibold |
+| h4      | 1.25rem | Semibold |
+| h5      | 1.125rem| Medium   |
+| h6      | 1rem    | Medium   |
+
+### Body Text
+- **Base:** 1rem (16px), regular weight
+- **Muted:** Use `text-muted` or `text-muted-foreground`
+
+### Spacing Scale
+- **xs:** 0.25rem (4px)
+- **sm:** 0.5rem (8px)
+- **md:** 1rem (16px)
+- **lg:** 1.5rem (24px)
+- **xl:** 2rem (32px)
+- Use Tailwind spacing utilities for margin/padding (e.g., `p-4`, `mt-2`)
+
+---
+
+## 3. Component Guidelines (Shadcn + cva)
+
+- All UI components in `apps/web/src/components/ui/` must use the theme colors and spacing.
+- Use `class-variance-authority (cva)` for variant-based styling (see `button.tsx`).
+- **Default variants:** `primary` (default), `secondary`, `destructive`, `outline`, `ghost`, `link`.
+- **Size variants:** `sm`, `md` (default), `lg`, `icon`.
+
+### Example: Button Variants
+```typescript
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        primary: "bg-primary text-primary-foreground hover:bg-primary/90",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        destructive: "bg-destructive text-white hover:bg-destructive/90",
+        outline: "border bg-background hover:bg-accent hover:text-accent-foreground",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        sm: "h-8 px-3",
+        md: "h-9 px-4 py-2",
+        lg: "h-10 px-6",
+        icon: "size-9",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+      size: "md",
+    },
+  }
+)
+```
+
+### Usage Example
+```tsx
+<Button variant="destructive" size="lg">Delete</Button>
+<Button variant="secondary">Cancel</Button>
+```
+
+- **Always use the `cn` utility** for merging classes.
+- **Do not hardcode colors**; use theme variables or Tailwind classes.
+- For new components, follow the same variant/size pattern.
+- For hero/login backgrounds, you may use decorative blobs with the following pattern:
+  - Absolutely positioned, blurred, and animated using the theme blob colors.
+  - Use the CSS classes: `bg-[#fecaca]`, `bg-[#fed7aa]`, `bg-[#e2e8f0]`, `blur-xl`, `mix-blend-multiply`, and custom keyframes for fade-in and blob movement.
+  - See the login page for a full example.
+- All input and form fields must:
+  - Use theme tokens for border, focus, placeholder, and icon color (see globals.css).
+  - Never use browser default blue for focus or border.
+  - Reference the utility classes and CSS in globals.css for placeholder and icon color.
+
+---
+
+## 4. Accessibility & Responsiveness
+
+- **Color contrast:** All text and interactive elements must meet WCAG AA contrast ratios.
+- **Focus states:** Use visible focus rings (`focus-visible:ring-*`).
+- **Scaling:** Components must be usable on mobile and desktop (min touch target: 44x44px).
+- **Font scaling:** Use `rem` units and responsive Tailwind classes (e.g., `text-lg md:text-xl`).
+
+---
+
+## 5. Contribution Rules
+
+- **To update the theme:**
+  - Edit color variables in `globals.css`.
+  - Update this rule file with any new color/spacing tokens.
+- **To add a new variant:**
+  - Extend the `variants` object in the component’s cva config.
+  - Document the new variant in this file with an example.
+- **Review:**
+  - All changes must be reviewed for consistency and accessibility.
+  - Reference this rule in PRs that affect styling.
+
+---
+
+## References
+- See `.cursor/rules/cursor-rules.mdc` for rule structure and meta-guidelines.
+- See `apps/web/src/app/globals.css` for theme variable definitions.
+- See Shadcn UI and [class-variance-authority](https://cva.style/docs) for advanced usage.
+description:
+globs:
+alwaysApply: false
+---
