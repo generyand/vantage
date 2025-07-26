@@ -9,10 +9,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 /* THEME COLOR VARIABLES (see @styling.mdc) */
 :root {
+  --radius: 0.625rem;
+  
   /* Palette: backgrounds */
   --background: #f8f9fa;
   --card: #ffffff;
@@ -70,6 +70,28 @@
   /* Font families */
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: var(--font-geist-mono, 'Fira Mono', monospace);
+
+  /* shadcn/ui oklch variables (for compatibility) */
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
@@ -102,6 +124,28 @@
   --destructive: #dc3545;
   --input: #23272b;
   --ring: #dc2626;
+  
+  /* shadcn/ui oklch variables (for compatibility) */
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
 }
 
 /* TYPOGRAPHY (see @styling.mdc) */
@@ -193,9 +237,12 @@
     transition: border-color 0.2s, box-shadow 0.2s;
     /* Use theme for placeholder and icon color */
   }
-  input::placeholder, textarea::placeholder {
-    color: var(--text-muted);
-    opacity: 1;
+  input::placeholder,
+  textarea::placeholder,
+  input:disabled::placeholder,
+  textarea:disabled::placeholder {
+    color: var(--text-secondary) !important;
+    opacity: 1 !important;
   }
   input svg, .input-icon {
     color: var(--icon-default);
@@ -242,3 +289,30 @@
     /* Used to scope shadcn/ui overrides if needed */
   }
 }
+
+/* LANDING PAGE ANIMATIONS (moved from page.tsx) */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-16px); }
+  100% { transform: translateY(0px); }
+}
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+@keyframes fade-in-blob {
+  0% { opacity: 0; }
+  100% { opacity: 0.6; }
+}
+.animate-fade-in-blob { animation: fade-in-blob 1.2s ease-in forwards; }
+.animate-fade-in-blob-light { animation: fade-in-blob 1.2s 0.5s ease-in forwards; }
+
+@keyframes blob {
+  0% { transform: scale(1) translate(0px, 0px); }
+  33% { transform: scale(1.1, 0.9) translate(30px, -20px); }
+  66% { transform: scale(0.9, 1.1) translate(-20px, 30px); }
+  100% { transform: scale(1) translate(0px, 0px); }
+}
+.animate-blob { animation: blob 8s infinite linear alternate; }
+
+.animation-delay-800 { animation-delay: 0.8s; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
