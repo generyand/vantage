@@ -4,11 +4,51 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 
+// Custom hook for scroll animations
+function useScrollAnimation() {
+  const [isVisible, setIsVisible] = useState(false);
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      }
+    );
+
+    const currentElement = elementRef.current;
+    if (currentElement) {
+      observer.observe(currentElement);
+    }
+
+    return () => {
+      if (currentElement) {
+        observer.unobserve(currentElement);
+      }
+    };
+  }, []);
+
+  return { elementRef, isVisible };
+}
+
 export default function Home() {
   // Move hooks to the top level of the component
   const [activeStep, setActiveStep] = useState(0);
   const [fade, setFade] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Scroll animation hooks for each section
+  const heroAnimation = useScrollAnimation();
+  const challengeAnimation = useScrollAnimation();
+  const featuresAnimation = useScrollAnimation();
+  const processAnimation = useScrollAnimation();
+  const footerAnimation = useScrollAnimation();
 
   // Define steps data at the top level
   const steps = [
@@ -49,7 +89,7 @@ export default function Home() {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % stepsLength);
-    }, 5000);
+    }, 7000);
     return () => {
       clearTimeout(fadeTimeout);
       if (timerRef.current) clearInterval(timerRef.current);
@@ -88,8 +128,16 @@ export default function Home() {
           </div>
         </div>
         <Link href="/login">
-          <button className="bg-[#b91c1c] text-white font-semibold px-6 py-2 rounded-md shadow hover:bg-[#a31b1b] transition-all text-base focus-visible:ring-2 focus-visible:ring-[#b91c1c] focus:outline-none">
-            Secure Login
+          <button className="group bg-gradient-to-r from-[#b91c1c] to-[#dc2626] text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 text-base focus-visible:ring-2 focus-visible:ring-[#b91c1c] focus:outline-none transform hover:scale-105 active:scale-95 border border-[#b91c1c]/20 hover:border-[#b91c1c]/40">
+            <span className="flex items-center gap-2">
+              <svg className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Secure Login
+              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </span>
           </button>
         </Link>
       </nav>
@@ -97,9 +145,20 @@ export default function Home() {
       {/* Main Content */}
       <main className="relative z-10 flex-1 flex flex-col items-center w-full">
         {/* Hero Section */}
-        <section className="w-full max-w-7xl mx-auto px-8 pt-24 pb-20 flex flex-col md:flex-row items-center gap-12">
+        <section 
+          ref={heroAnimation.elementRef}
+          className={`w-full max-w-7xl mx-auto px-8 pt-24 pb-20 flex flex-col md:flex-row items-center gap-12 transition-all duration-1000 ${
+            heroAnimation.isVisible 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-8"
+          }`}
+        >
           {/* Left: Text */}
-          <div className="flex-1 flex flex-col items-start justify-center max-w-xl text-left">
+          <div className={`flex-1 flex flex-col items-start justify-center max-w-xl text-left transition-all duration-1000 delay-200 ${
+            heroAnimation.isVisible 
+              ? "opacity-100 translate-x-0" 
+              : "opacity-0 -translate-x-8"
+          }`}>
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#b91c1c]/10 to-[#dc2626]/10 border border-[#b91c1c]/20 rounded-full text-[#b91c1c] text-sm font-semibold mb-6">
               <svg
@@ -171,7 +230,7 @@ export default function Home() {
                   </span>
                 </button>
               </a>
-            </div>
+        </div>
 
             {/* Stats */}
             <div className="flex items-center gap-8 text-sm text-gray-500">
@@ -211,7 +270,11 @@ export default function Home() {
           </div>
 
           {/* Right: Image with enhanced styling */}
-          <div className="flex-1 flex items-center justify-center min-h-[400px]">
+          <div className={`flex-1 flex items-center justify-center min-h-[400px] transition-all duration-1000 delay-400 ${
+            heroAnimation.isVisible 
+              ? "opacity-100 translate-x-0" 
+              : "opacity-0 translate-x-8"
+          }`}>
             <div className="relative group">
               {/* Background glow */}
               <div className="absolute -inset-4 bg-gradient-to-r from-[#b91c1c]/20 to-[#dc2626]/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
@@ -242,8 +305,19 @@ export default function Home() {
         </section>
 
         {/* Challenge Section */}
-        <section className="w-full max-w-7xl mx-auto px-8 py-16">
-          <div className="text-center mb-12">
+        <section 
+          ref={challengeAnimation.elementRef}
+          className={`w-full max-w-7xl mx-auto px-8 py-16 transition-all duration-1000 ${
+            challengeAnimation.isVisible 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-8"
+          }`}
+        >
+          <div className={`text-center mb-12 transition-all duration-1000 delay-200 ${
+            challengeAnimation.isVisible 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-4"
+          }`}>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Bridging the Gap Between Preparation and National Validation
             </h2>
@@ -252,7 +326,11 @@ export default function Home() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="group bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-100 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-[#b91c1c]/20 relative overflow-hidden">
+            <div className={`group bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-100 transition-all duration-1000 delay-300 hover:shadow-2xl hover:-translate-y-2 hover:border-[#b91c1c]/20 relative overflow-hidden ${
+              challengeAnimation.isVisible 
+                ? "opacity-100 translate-y-0" 
+                : "opacity-0 translate-y-8"
+            }`}>
               {/* Background accent */}
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#b91c1c] to-[#dc2626] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
               {/* Icon: Paper files */}
@@ -282,7 +360,11 @@ export default function Home() {
                 submissions to a secure, centralized digital workflow.
               </p>
             </div>
-            <div className="group bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-100 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-[#f59e42]/20 relative overflow-hidden">
+            <div className={`group bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-100 transition-all duration-1000 delay-400 hover:shadow-2xl hover:-translate-y-2 hover:border-[#f59e42]/20 relative overflow-hidden ${
+              challengeAnimation.isVisible 
+                ? "opacity-100 translate-y-0" 
+                : "opacity-0 translate-y-8"
+            }`}>
               {/* Background accent */}
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#f59e42] to-[#ea580c] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
               {/* Icon: Magnifying glass with a red X */}
@@ -312,7 +394,11 @@ export default function Home() {
                 identify and rectify weaknesses before the official audit.
               </p>
             </div>
-            <div className="group bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-100 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-[#22c55e]/20 relative overflow-hidden">
+            <div className={`group bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-100 transition-all duration-1000 delay-500 hover:shadow-2xl hover:-translate-y-2 hover:border-[#22c55e]/20 relative overflow-hidden ${
+              challengeAnimation.isVisible 
+                ? "opacity-100 translate-y-0" 
+                : "opacity-0 translate-y-8"
+            }`}>
               {/* Background accent */}
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#22c55e] to-[#16a34a] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
               {/* Icon: Chart with a gap */}
@@ -342,18 +428,33 @@ export default function Home() {
                 results by ensuring submissions meet the highest standards of
                 quality and completeness.
               </p>
-            </div>
           </div>
+        </div>
         </section>
 
         {/* Key Features Section */}
-        <section className="w-full max-w-7xl mx-auto px-8 py-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 text-center">
+        <section 
+          ref={featuresAnimation.elementRef}
+          className={`w-full max-w-7xl mx-auto px-8 py-12 transition-all duration-1000 ${
+            featuresAnimation.isVisible 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-8"
+          }`}
+        >
+          <h2 className={`text-2xl md:text-3xl font-bold text-gray-900 mb-8 text-center transition-all duration-1000 delay-200 ${
+            featuresAnimation.isVisible 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-4"
+          }`}>
             A Modern Toolkit for Data-Driven Governance
           </h2>
           <div className="flex flex-col md:flex-row md:items-center gap-8">
             {/* Left: Image */}
-            <div className="flex-1 flex items-center justify-center">
+            <div className={`flex-1 flex items-center justify-center transition-all duration-1000 delay-300 ${
+              featuresAnimation.isVisible 
+                ? "opacity-100 translate-x-0" 
+                : "opacity-0 -translate-x-8"
+            }`}>
               <div className="w-full max-w-xl md:max-w-2xl rounded-2xl shadow-lg overflow-hidden">
                 <img
                   src="/Day_Care_Center.jpg"
@@ -363,7 +464,11 @@ export default function Home() {
               </div>
             </div>
             {/* Right: Feature Cards */}
-            <div className="flex-1 flex flex-col gap-6">
+            <div className={`flex-1 flex flex-col gap-6 transition-all duration-1000 delay-400 ${
+              featuresAnimation.isVisible 
+                ? "opacity-100 translate-x-0" 
+                : "opacity-0 translate-x-8"
+            }`}>
               <div className="bg-white shadow-lg rounded-t-xl flex items-center gap-6 pr-6 pb-3 pt-3 border-l-8 border-primary pl-6 transition-all duration-200 hover:shadow-xl hover:-translate-y-1">
                 <img
                   src="/Toolkit/assessment.jpg"
@@ -420,7 +525,14 @@ export default function Home() {
         </section>
 
         {/* How It Works Section */}
-        <section className="w-full max-w-7xl mx-auto px-8 py-12">
+        <section 
+          ref={processAnimation.elementRef}
+          className={`w-full max-w-7xl mx-auto px-8 py-12 transition-all duration-1000 ${
+            processAnimation.isVisible 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-8"
+          }`}
+        >
           <div className="flex flex-col md:flex-row items-stretch gap-8">
             {/* Left: Stepper */}
             <div className="flex flex-col justify-center items-end md:w-1/4 mb-6 md:mb-0">
@@ -520,16 +632,23 @@ export default function Home() {
                 <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/50 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl">
                   <p className="text-xl font-semibold leading-relaxed text-gray-900">
                     {steps[activeStep].text}
-                  </p>
-                </div>
-              </div>
+          </p>
+        </div>
+      </div>
             </div>
           </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="relative z-20 w-full bg-gradient-to-r from-gray-50 to-white border-t border-gray-200 py-12 px-8 mt-16">
+      <footer 
+        ref={footerAnimation.elementRef}
+        className={`relative z-20 w-full bg-gradient-to-r from-gray-50 to-white border-t border-gray-200 py-12 px-8 mt-16 transition-all duration-1000 ${
+          footerAnimation.isVisible 
+            ? "opacity-100 translate-y-0" 
+            : "opacity-0 translate-y-8"
+        }`}
+      >
         <div className="max-w-7xl mx-auto">
           {/* Main Footer Content */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
