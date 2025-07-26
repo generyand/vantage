@@ -69,9 +69,9 @@
 
 - [x] 3.0 **Implement Backend User Management API (Admin) (Revision 1)**
 
-  - [x] 3.1 In `apps/api/app/schemas/user.py`, update all user schemas to use `int` for `id` and include the optional `assessor_area` field.
-  - [x] 3.2 In `apps/api/app/services/user_service.py`, refactor methods to handle the `assessor_area` field, ensuring it's only set for users with the "Area Assessor" role.
-  - [x] 3.3 In `apps/api/app/api/v1/users.py`, update the create and update endpoints to accept and process the `assessor_area`.
+  - [x] 3.1 In `apps/api/app/schemas/user.py`, update all user schemas to use `int` for `id` and include the optional `governance_area_id` field. **FIXED**: Updated field name from `assessor_area` to `governance_area_id` to match database model.
+  - [x] 3.2 In `apps/api/app/services/user_service.py`, refactor methods to handle the `governance_area_id` field, ensuring it's only set for users with the "Area Assessor" role. **FIXED**: Updated service logic to use correct field names.
+  - [x] 3.3 In `apps/api/app/api/v1/users.py`, update the create and update endpoints to accept and process the `governance_area_id`. **FIXED**: API endpoints now use correct field names.
   - [x] 3.4 ~~In `apps/api/app/api/deps.py`, update `get_current_admin_user` to check for `role == 1` (MLGOO-DILG).~~ (Superseded by Task 1.12.5)
 
 - [x] 4.0 **Frontend Foundation & Login Flow**

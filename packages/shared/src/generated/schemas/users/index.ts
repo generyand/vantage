@@ -62,11 +62,13 @@ export interface User {
   name: string;
   role: UserRole;
   phone_number?: UserPhoneNumber;
-  assessor_area?: UserAssessorArea;
+  governance_area_id?: UserGovernanceAreaId;
   barangay_id?: UserBarangayId;
   is_active: boolean;
+  is_superuser: boolean;
   must_change_password: boolean;
   created_at: string;
+  updated_at?: UserUpdatedAt;
 }
 
 
@@ -79,7 +81,7 @@ export interface UserAdminCreate {
   password: string;
   role?: UserRole;
   phone_number?: UserAdminCreatePhoneNumber;
-  assessor_area?: UserAdminCreateAssessorArea;
+  governance_area_id?: UserAdminCreateGovernanceAreaId;
   barangay_id?: UserAdminCreateBarangayId;
   is_active?: boolean;
   is_superuser?: boolean;
@@ -88,15 +90,15 @@ export interface UserAdminCreate {
 
 
 /**
- * UserAdminCreateAssessorArea
- */
-export type UserAdminCreateAssessorArea = number | null;
-
-
-/**
  * UserAdminCreateBarangayId
  */
 export type UserAdminCreateBarangayId = number | null;
+
+
+/**
+ * UserAdminCreateGovernanceAreaId
+ */
+export type UserAdminCreateGovernanceAreaId = number | null;
 
 
 /**
@@ -113,18 +115,12 @@ export interface UserAdminUpdate {
   name?: UserAdminUpdateName;
   role?: UserAdminUpdateRole;
   phone_number?: UserAdminUpdatePhoneNumber;
-  assessor_area?: UserAdminUpdateAssessorArea;
+  governance_area_id?: UserAdminUpdateGovernanceAreaId;
   barangay_id?: UserAdminUpdateBarangayId;
   is_active?: UserAdminUpdateIsActive;
   is_superuser?: UserAdminUpdateIsSuperuser;
   must_change_password?: UserAdminUpdateMustChangePassword;
 }
-
-
-/**
- * UserAdminUpdateAssessorArea
- */
-export type UserAdminUpdateAssessorArea = number | null;
 
 
 /**
@@ -137,6 +133,12 @@ export type UserAdminUpdateBarangayId = number | null;
  * UserAdminUpdateEmail
  */
 export type UserAdminUpdateEmail = string | null;
+
+
+/**
+ * UserAdminUpdateGovernanceAreaId
+ */
+export type UserAdminUpdateGovernanceAreaId = number | null;
 
 
 /**
@@ -176,15 +178,15 @@ export type UserAdminUpdateRole = UserRole | null;
 
 
 /**
- * UserAssessorArea
- */
-export type UserAssessorArea = number | null;
-
-
-/**
  * UserBarangayId
  */
 export type UserBarangayId = number | null;
+
+
+/**
+ * UserGovernanceAreaId
+ */
+export type UserGovernanceAreaId = number | null;
 
 
 /**
@@ -228,16 +230,10 @@ export interface UserUpdate {
   name?: UserUpdateName;
   role?: UserUpdateRole;
   phone_number?: UserUpdatePhoneNumber;
-  assessor_area?: UserUpdateAssessorArea;
+  governance_area_id?: UserUpdateGovernanceAreaId;
   barangay_id?: UserUpdateBarangayId;
   is_active?: UserUpdateIsActive;
 }
-
-
-/**
- * UserUpdateAssessorArea
- */
-export type UserUpdateAssessorArea = number | null;
 
 
 /**
@@ -250,6 +246,12 @@ export type UserUpdateBarangayId = number | null;
  * UserUpdateEmail
  */
 export type UserUpdateEmail = string | null;
+
+
+/**
+ * UserUpdateGovernanceAreaId
+ */
+export type UserUpdateGovernanceAreaId = number | null;
 
 
 /**
@@ -274,3 +276,9 @@ export type UserUpdatePhoneNumber = string | null;
  * UserUpdateRole
  */
 export type UserUpdateRole = UserRole | null;
+
+
+/**
+ * UserUpdatedAt
+ */
+export type UserUpdatedAt = string | null;

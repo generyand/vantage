@@ -17,11 +17,13 @@ class User(BaseModel):
     name: str
     role: UserRole
     phone_number: Optional[str] = None
-    assessor_area: Optional[int] = None
+    governance_area_id: Optional[int] = None
     barangay_id: Optional[int] = None
     is_active: bool
+    is_superuser: bool
     must_change_password: bool
     created_at: datetime
+    updated_at: Optional[datetime] = None
 
 
 class UserCreate(BaseModel):
@@ -42,7 +44,7 @@ class UserUpdate(BaseModel):
     name: Optional[str] = None
     role: Optional[UserRole] = None
     phone_number: Optional[str] = None
-    assessor_area: Optional[int] = None
+    governance_area_id: Optional[int] = None
     barangay_id: Optional[int] = None
     is_active: Optional[bool] = None
 
@@ -54,7 +56,7 @@ class UserAdminCreate(BaseModel):
     password: str
     role: UserRole = UserRole.BLGU_USER
     phone_number: Optional[str] = None
-    assessor_area: Optional[int] = None
+    governance_area_id: Optional[int] = None
     barangay_id: Optional[int] = None
     is_active: bool = True
     is_superuser: bool = False
@@ -67,7 +69,7 @@ class UserAdminUpdate(BaseModel):
     name: Optional[str] = None
     role: Optional[UserRole] = None
     phone_number: Optional[str] = None
-    assessor_area: Optional[int] = None
+    governance_area_id: Optional[int] = None
     barangay_id: Optional[int] = None
     is_active: Optional[bool] = None
     is_superuser: Optional[bool] = None
