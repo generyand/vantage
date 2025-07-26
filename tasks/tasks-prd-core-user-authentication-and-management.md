@@ -4,8 +4,8 @@
 - `apps/api/app/db/models/user.py` - **Modify** the `User` model to use a string-based enum for the `role` field.
 - `apps/api/app/db/models/governance_area.py` - **Modify** the `GovernanceArea` model to use a string-based enum for the `area_type` field.
 - `apps/api/alembic/versions/` - A **new** Alembic migration file will be generated for all schema alterations.
-- `apps/api/app/schemas/user.py` - **Update** Pydantic schemas to reflect the new `Integer` `id` and `assessor_area` field.
-- `apps/api/app/api/v1/users.py` - **Update** endpoints to handle `assessor_area` logic.
+- `apps/api/app/schemas/user.py` - **Update** Pydantic schemas to reflect the new `Integer` `id` and `governance_area_id` field.
+- `apps/api/app/api/v1/users.py` - **Update** endpoints to handle `governance_area_id` logic.
 - `apps/api/app/services/user_service.py` - **Update** service logic to use string-based enums for roles.
 - `apps/api/app/services/governance_area_service.py` - **Update** seeding service to use enum values.
 - `apps/api/app/services/startup_service.py` - **Update** to use enum-based roles for first superuser creation.
@@ -69,17 +69,17 @@
 
 - [x] 3.0 **Implement Backend User Management API (Admin) (Revision 1)**
 
-  - [x] 3.1 In `apps/api/app/schemas/user.py`, update all user schemas to use `int` for `id` and include the optional `assessor_area` field.
-  - [x] 3.2 In `apps/api/app/services/user_service.py`, refactor methods to handle the `assessor_area` field, ensuring it's only set for users with the "Area Assessor" role.
-  - [x] 3.3 In `apps/api/app/api/v1/users.py`, update the create and update endpoints to accept and process the `assessor_area`.
+  - [x] 3.1 In `apps/api/app/schemas/user.py`, update all user schemas to use `int` for `id` and include the optional `governance_area_id` field. **FIXED**: Updated field name from `assessor_area` to `governance_area_id` to match database model.
+  - [x] 3.2 In `apps/api/app/services/user_service.py`, refactor methods to handle the `governance_area_id` field, ensuring it's only set for users with the "Area Assessor" role. **FIXED**: Updated service logic to use correct field names.
+  - [x] 3.3 In `apps/api/app/api/v1/users.py`, update the create and update endpoints to accept and process the `governance_area_id`. **FIXED**: API endpoints now use correct field names.
   - [x] 3.4 ~~In `apps/api/app/api/deps.py`, update `get_current_admin_user` to check for `role == 1` (MLGOO-DILG).~~ (Superseded by Task 1.12.5)
 
 - [x] 4.0 **Frontend Foundation & Login Flow**
 
   - [x] 4.1 Create `apps/web/src/store/useAuthStore.ts` using Zustand to hold `user`, `token`, and `isAuthenticated` state.
-  - [x] 4.2 In the `LoginForm` component, use the auto-generated `usePostLogin` mutation hook from `@vantage/shared`. On success, save the returned token and user state to the Zustand store and redirect to the dashboard.
+  - [x] 4.2 In the `LoginForm` component, use the auto-generated `usePostAuthLogin` mutation hook from `@vantage/shared`. On success, save the returned token and user state to the Zustand store and redirect to the dashboard.
   - [x] 4.3 Create `apps/web/middleware.ts` to protect all routes inside the `(app)` group. Unauthenticated users should be redirected to `/login`.
-  - [x] 4.4 In the `UserNav` component, use the auto-generated `usePostLogout` mutation hook. On success, clear the auth store and redirect to the login page.
+  - [x] 4.4 In the `UserNav` component, use the auto-generated `usePostAuthLogout` mutation hook. On success, clear the auth store and redirect to the login page.
 
 - [ ] 5.0 **Build Frontend User Management Interface (Admin)**
 
@@ -88,14 +88,14 @@
   - [x] 5.3 Build the `UserManagementTable.tsx` component to display the "Assigned Barangay/Area" column, showing the barangay for BLGU users and the governance area for Assessors.
   - [x] 5.4 Create a `UserForm.tsx` component for the user creation/editing modal/dialog.
   - [ ] 5.5 In the `UserForm`, conditionally display EITHER the "Assigned Barangay" dropdown (for "BLGU User" role) OR the "Assigned Governance Area" dropdown (for "Area Assessor" role).
-  - [ ] 5.6 The `UserForm` should use the auto-generated `usePostUser` and `usePutUser` mutation hooks, ensuring `assessor_area` is passed when required. On success, invalidate the `useGetUsers` query.
+  - [ ] 5.6 The `UserForm` should use the auto-generated `usePostUsers` and `usePutUsersUserId` mutation hooks, ensuring `governance_area_id` is passed when required. On success, invalidate the `useGetUsers` query.
 
 - [ ] 6.0 **Implement Forced Password Change Flow**
 
   - [ ] 6.1 In the main application layout (`apps/web/src/app/(app)/layout.tsx`), add a check that reads `must_change_password` from the `useAuthStore`.
   - [ ] 6.2 If `must_change_password` is `true`, redirect the user to the `/change-password` page.
   - [ ] 6.3 Create the `apps/web/src/app/(app)/change-password/page.tsx` page with a form for changing the password.
-  - [ ] 6.4 The password change form should use the auto-generated `usePostChangePassword` mutation hook. On success, update the auth store and redirect the user to their dashboard.
+  - [ ] 6.4 The password change form should use the auto-generated `usePostAuthChangePassword` mutation hook. On success, update the auth store and redirect the user to their dashboard.
 
 - [ ] 7.0 **End-to-End Testing and Refinement**
   - [ ] 7.1 Write `pytest` tests for the auth and user management endpoints, including permission checks.

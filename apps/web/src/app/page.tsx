@@ -97,13 +97,13 @@ export default function Home() {
   }, [activeStep, stepsLength]);
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-gradient-to-br from-[#f8f9fa] via-[#fff5f5] to-[#fff7ed] overflow-x-hidden">
+    <div className="relative min-h-screen flex flex-col bg-gradient-to-br from-[#f8f9fa] via-[#fff5f5] to-[#fff7ed]">
       {/* Decorative Blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         {/* top right */}
-        <div className="absolute -top-40 -right-40 w-60 h-60 bg-[#fecaca] rounded-full mix-blend-multiply filter blur-xl animate-fade-in-blob animation-delay-800 animate-blob"></div>
+        <div className="absolute top-0 right-0 w-60 h-60 bg-[#fecaca] rounded-full mix-blend-multiply filter blur-xl animate-fade-in-blob animation-delay-800 animate-blob transform translate-x-1/2 -translate-y-1/2"></div>
         {/* bottom left */}
-        <div className="absolute -bottom-40 -left-40 w-60 h-60 bg-[#fed7aa] rounded-full mix-blend-multiply filter blur-xl animate-fade-in-blob animation-delay-2000 animate-blob"></div>
+        <div className="absolute bottom-0 left-0 w-60 h-60 bg-[#fed7aa] rounded-full mix-blend-multiply filter blur-xl animate-fade-in-blob animation-delay-2000 animate-blob transform -translate-x-1/2 translate-y-1/2"></div>
         {/* top left */}
         <div className="absolute top-40 left-40 w-60 h-60 bg-[#e2e8f0] rounded-full mix-blend-multiply filter blur-xl animate-fade-in-blob-light animation-delay-4000 animate-blob"></div>
       </div>

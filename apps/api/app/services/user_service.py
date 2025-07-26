@@ -89,16 +89,16 @@ class UserService:
 
         # Business logic for role-specific fields
         if user_create.role == UserRole.AREA_ASSESSOR:
-            if not user_create.assessor_area:
+            if not user_create.governance_area_id:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Assessor area is required for Area Assessor role."
+                    detail="Governance area is required for Area Assessor role."
                 )
             # Ensure barangay_id is null for assessors
             user_create.barangay_id = None
         else:
-            # Ensure assessor_area is null for non-assessor roles
-            user_create.assessor_area = None
+            # Ensure governance_area_id is null for non-assessor roles
+            user_create.governance_area_id = None
 
         db_user = User(
             **user_create.model_dump(exclude={"password"}),
@@ -144,16 +144,16 @@ class UserService:
         # Business logic for role-specific fields
         role = update_data.get("role", db_user.role)
         if role == UserRole.AREA_ASSESSOR:
-            if "assessor_area" not in update_data and not db_user.assessor_area:
+            if "governance_area_id" not in update_data and not db_user.governance_area_id:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Assessor area is required for Area Assessor role."
+                    detail="Governance area is required for Area Assessor role."
                 )
             # Ensure barangay_id is set to null if role is changed to Assessor
             update_data["barangay_id"] = None
         else:
-            # Ensure assessor_area is set to null for non-assessor roles
-            update_data["assessor_area"] = None
+            # Ensure governance_area_id is set to null for non-assessor roles
+            update_data["governance_area_id"] = None
 
         # Check email uniqueness if email is being updated
         if "email" in update_data and update_data["email"] != db_user.email:
