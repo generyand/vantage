@@ -92,7 +92,7 @@
   - [x] 5.3 Build the `UserManagementTable.tsx` component to display the "Assigned Barangay/Area" column, showing the barangay for BLGU users and the governance area for Assessors.
   - [x] 5.4 Create a `UserForm.tsx` component for the user creation/editing modal/dialog.
   - [x] 5.5 In the `UserForm`, conditionally display EITHER the "Assigned Barangay" dropdown (for "BLGU User" role) OR the "Assigned Governance Area" dropdown (for "Area Assessor" role).
-    - [ ] 5.5.1 Create missing API endpoints for fetching governance areas and barangays in the backend.
+    - [x] 5.5.1 Create missing API endpoints for fetching governance areas and barangays in the backend.
     - [x] 5.5.2 Create hooks for fetching governance areas and barangays data.
     - [x] 5.5.3 Update UserForm to conditionally display the appropriate dropdown based on selected role.
   - [x] 5.6 The `UserForm` should use the auto-generated `usePostUsers` and `usePutUsersUserId` mutation hooks, ensuring `governance_area_id` is passed when required. On success, invalidate the `useGetUsers` query.
