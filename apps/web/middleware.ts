@@ -14,12 +14,11 @@ export function middleware(request: NextRequest) {
   // Get the pathname from the request
   const { pathname } = request.nextUrl;
   
-  // Define protected routes (all routes that start with /dashboard, /assessments, /reports, etc.)
+  // Define protected routes (all routes that start with /admin, /blgu, etc.)
   // These correspond to the (app) route group
   const protectedRoutes = [
-    '/dashboard',
-    '/assessments',
-    '/reports',
+    '/admin',
+    '/blgu',
     '/user-management',
     '/change-password',
   ];
@@ -41,10 +40,28 @@ export function middleware(request: NextRequest) {
   const authToken = request.cookies.get('auth-token')?.value;
   const isAuthenticated = !!authToken;
   
-  // If user is authenticated and trying to access auth routes, redirect to dashboard
+  // If user is authenticated and trying to access auth routes, redirect to appropriate dashboard
   if (isAuthenticated && isAuthRoute) {
-    const dashboardUrl = new URL('/dashboard', request.url);
-    return NextResponse.redirect(dashboardUrl);
+    // Try to get user role from the token
+    try {
+      const token = authToken;
+      // Decode the JWT token to get user role
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const userRole = payload.role;
+      
+      // Redirect based on user role
+      let dashboardUrl;
+      if (userRole === 'SUPERADMIN' || userRole === 'MLGOO_DILG') {
+        dashboardUrl = new URL('/admin/dashboard', request.url);
+      } else {
+        dashboardUrl = new URL('/blgu/dashboard', request.url);
+      }
+      return NextResponse.redirect(dashboardUrl);
+    } catch (error) {
+      // If token decoding fails, redirect to BLGU dashboard as default
+      const dashboardUrl = new URL('/blgu/dashboard', request.url);
+      return NextResponse.redirect(dashboardUrl);
+    }
   }
   
   // If user is not authenticated and trying to access protected routes, redirect to login
@@ -53,6 +70,43 @@ export function middleware(request: NextRequest) {
     // Preserve the original URL as a redirect parameter
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // If user is authenticated, check role-based access for protected routes
+  if (isAuthenticated && isProtectedRoute) {
+    try {
+      const token = authToken;
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const userRole = payload.role;
+      
+      console.log(`Middleware: User role: ${userRole}, Path: ${pathname}`);
+      
+      // Check if user is trying to access admin routes
+      const isAdminRoute = pathname.startsWith('/admin');
+      const isUserManagementRoute = pathname.startsWith('/user-management');
+      
+      // Only allow admin users to access admin routes and user management
+      if ((isAdminRoute || isUserManagementRoute) && userRole !== 'SUPERADMIN' && userRole !== 'MLGOO_DILG') {
+        console.log(`Middleware: Redirecting non-admin user (${userRole}) from ${pathname} to /blgu/dashboard`);
+        // Redirect non-admin users to their appropriate dashboard
+        const dashboardUrl = new URL('/blgu/dashboard', request.url);
+        return NextResponse.redirect(dashboardUrl);
+      }
+      
+      // Check if user is trying to access BLGU routes
+      const isBLGURoute = pathname.startsWith('/blgu');
+      
+      // Only allow BLGU users to access BLGU routes
+      if (isBLGURoute && (userRole === 'SUPERADMIN' || userRole === 'MLGOO_DILG')) {
+        console.log(`Middleware: Redirecting admin user (${userRole}) from ${pathname} to /admin/dashboard`);
+        // Redirect admin users to their appropriate dashboard
+        const dashboardUrl = new URL('/admin/dashboard', request.url);
+        return NextResponse.redirect(dashboardUrl);
+      }
+    } catch (error) {
+      // If token decoding fails, allow access (fallback)
+      console.error('Error decoding token in middleware:', error);
+    }
   }
   
   // Allow access for all other cases

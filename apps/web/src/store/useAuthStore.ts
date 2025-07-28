@@ -24,6 +24,8 @@ interface AuthState {
   logout: () => void;
   /** Initialize auth state from stored data (for persistence) */
   initialize: (user: User | null, token: string | null) => void;
+  /** Force clear all persisted data */
+  clearPersistedData: () => void;
 }
 
 /**
@@ -49,7 +51,7 @@ const setAuthCookie = (token: string | null) => {
  */
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       token: null,
       isAuthenticated: false,
@@ -72,6 +74,17 @@ export const useAuthStore = create<AuthState>()(
       logout: () => {
         // Clear cookie
         setAuthCookie(null);
+        // Clear localStorage manually to ensure complete cleanup
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('auth-storage');
+          sessionStorage.clear();
+          // Force clear any other potential storage
+          Object.keys(localStorage).forEach(key => {
+            if (key.toLowerCase().includes('auth') || key.toLowerCase().includes('user') || key.toLowerCase().includes('token')) {
+              localStorage.removeItem(key);
+            }
+          });
+        }
         set({ 
           user: null, 
           token: null, 
@@ -90,6 +103,27 @@ export const useAuthStore = create<AuthState>()(
           mustChangePassword: user?.must_change_password || false
         });
       },
+
+      // Force clear all persisted data
+      clearPersistedData: () => {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('auth-storage');
+          sessionStorage.clear();
+          // Force clear any other potential storage
+          Object.keys(localStorage).forEach(key => {
+            if (key.toLowerCase().includes('auth') || key.toLowerCase().includes('user') || key.toLowerCase().includes('token')) {
+              localStorage.removeItem(key);
+            }
+          });
+        }
+        setAuthCookie(null);
+        set({ 
+          user: null, 
+          token: null, 
+          isAuthenticated: false,
+          mustChangePassword: false 
+        });
+      },
     }),
     {
       name: 'auth-storage', // This matches what the API client expects
@@ -99,6 +133,8 @@ export const useAuthStore = create<AuthState>()(
         isAuthenticated: state.isAuthenticated,
         mustChangePassword: state.mustChangePassword,
       }),
+              // Add version to force reset when needed
+        version: 2, // Increment version to force reset
     }
   )
 ); 

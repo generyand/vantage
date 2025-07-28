@@ -6,10 +6,18 @@ import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import UserNav from '@/components/shared/UserNav';
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: 'home' },
-  { name: 'Assessments', href: '/assessments', icon: 'clipboard' },
-  { name: 'Reports', href: '/reports', icon: 'chart' },
+// Navigation items for different user roles
+const adminNavigation = [
+  { name: 'Admin Dashboard', href: '/admin/dashboard', icon: 'home' },
+  { name: 'User Management', href: '/user-management', icon: 'users' },
+  { name: 'Assessments', href: '/admin/assessments', icon: 'clipboard' },
+  { name: 'Reports', href: '/admin/reports', icon: 'chart' },
+];
+
+const blguNavigation = [
+  { name: 'BLGU Dashboard', href: '/blgu/dashboard', icon: 'home' },
+  { name: 'My Assessments', href: '/blgu/assessments', icon: 'clipboard' },
+  { name: 'My Reports', href: '/blgu/reports', icon: 'chart' },
 ];
 
 const getIcon = (name: string) => {
@@ -32,6 +40,12 @@ const getIcon = (name: string) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
       );
+    case 'users':
+      return (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+        </svg>
+      );
     default:
       return null;
   }
@@ -44,9 +58,13 @@ export default function AppLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+
+  // Determine navigation based on user role
+  const isAdmin = user?.role === 'SUPERADMIN' || user?.role === 'MLGOO_DILG';
+  const navigation = isAdmin ? adminNavigation : blguNavigation;
 
   // Redirect unauthenticated users to login
   useEffect(() => {
@@ -54,6 +72,38 @@ export default function AppLayout({
       router.replace('/login');
     }
   }, [isAuthenticated, router]);
+
+  // Redirect users to appropriate dashboard based on role
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const isAdmin = user.role === 'SUPERADMIN' || user.role === 'MLGOO_DILG';
+      const currentPath = pathname;
+      
+      // If user is on root path, redirect to appropriate dashboard
+      if (currentPath === '/') {
+        const dashboardPath = isAdmin ? '/admin/dashboard' : '/blgu/dashboard';
+        router.replace(dashboardPath);
+        return;
+      }
+      
+      // Check if user is accessing wrong role routes
+      const isAdminRoute = currentPath.startsWith('/admin');
+      const isBLGURoute = currentPath.startsWith('/blgu');
+      const isUserManagementRoute = currentPath.startsWith('/user-management');
+      
+      if (isAdmin) {
+        // Admin users should not access BLGU routes
+        if (isBLGURoute) {
+          router.replace('/admin/dashboard');
+        }
+      } else {
+        // BLGU users should not access admin routes or user management
+        if (isAdminRoute || isUserManagementRoute) {
+          router.replace('/blgu/dashboard');
+        }
+      }
+    }
+  }, [isAuthenticated, user, pathname, router]);
 
   // Show loading if not authenticated
   if (!isAuthenticated) {
@@ -153,7 +203,7 @@ export default function AppLayout({
             <div className="flex justify-between items-center py-6">
               <div className="flex items-center">
                 <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate">
-                  {navigation.find(item => pathname === item.href)?.name || 'Dashboard'}
+                  {navigation.find(item => pathname === item.href)?.name || (isAdmin ? 'Admin Dashboard' : 'BLGU Dashboard')}
                 </h2>
               </div>
               <div className="flex items-center space-x-4">

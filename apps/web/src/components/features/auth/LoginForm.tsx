@@ -66,12 +66,15 @@ export default function LoginForm() {
           console.log("User data fetched:", result.data);
           // Store user in auth store
           setUser(result.data);
-          // Redirect to dashboard
-          router.push("/dashboard");
+          
+          // Redirect to appropriate dashboard based on user role
+          const isAdmin = result.data.role === 'SUPERADMIN' || result.data.role === 'MLGOO_DILG';
+          const dashboardPath = isAdmin ? '/admin/dashboard' : '/blgu/dashboard';
+          router.replace(dashboardPath);
         } else if (result.error) {
           console.error("Failed to fetch user data:", result.error);
           // Even if user fetch fails, we can still redirect to dashboard
-          router.push("/dashboard");
+          router.replace("/blgu/dashboard");
         }
         // Reset the flag
         setShouldFetchUser(false);
