@@ -19,6 +19,8 @@ import {
 import { useGovernanceAreas } from '@/hooks/useGovernanceAreas';
 import { useBarangays } from '@/hooks/useBarangays';
 import { UserRole, UserAdminCreate, UserAdminUpdate } from '@vantage/shared';
+import { usePostUsers, usePutUsersUserId } from '@vantage/shared/src/generated/endpoints/users';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface UserFormProps {
   open: boolean;
@@ -36,22 +38,21 @@ interface UserFormProps {
     is_superuser?: boolean;
     must_change_password?: boolean;
   };
-  onSubmit?: (values: UserAdminCreate | UserAdminUpdate) => void;
   isEditing?: boolean;
 }
 
-export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditing = false }: UserFormProps) {
+export function UserForm({ open, onOpenChange, initialValues, isEditing = false }: UserFormProps) {
   const [form, setForm] = React.useState({
-    name: initialValues?.name || '',
-    email: initialValues?.email || '',
-    password: initialValues?.password || '',
-    role: initialValues?.role || UserRole.BLGU_USER,
-    phone_number: initialValues?.phone_number || '',
-    governance_area_id: initialValues?.governance_area_id || null,
-    barangay_id: initialValues?.barangay_id || null,
-    is_active: initialValues?.is_active ?? true,
-    is_superuser: initialValues?.is_superuser ?? false,
-    must_change_password: initialValues?.must_change_password ?? true,
+    name: '',
+    email: '',
+    password: '',
+    role: UserRole.BLGU_USER as UserRole,
+    phone_number: '',
+    governance_area_id: null as number | null,
+    barangay_id: null as number | null,
+    is_active: true,
+    is_superuser: false,
+    must_change_password: true,
   });
 
   const [errors, setErrors] = React.useState<Record<string, string>>({});
@@ -60,21 +61,63 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
   const { data: governanceAreas, isLoading: isLoadingGovernanceAreas } = useGovernanceAreas();
   const { data: barangays, isLoading: isLoadingBarangays } = useBarangays();
 
+  // Auto-generated mutation hooks
+  const queryClient = useQueryClient();
+  const createUserMutation = usePostUsers();
+  const updateUserMutation = usePutUsersUserId();
+
   React.useEffect(() => {
-    setForm({
-      name: initialValues?.name || '',
-      email: initialValues?.email || '',
-      password: initialValues?.password || '',
-      role: initialValues?.role || UserRole.BLGU_USER,
-      phone_number: initialValues?.phone_number || '',
-      governance_area_id: initialValues?.governance_area_id || null,
-      barangay_id: initialValues?.barangay_id || null,
-      is_active: initialValues?.is_active ?? true,
-      is_superuser: initialValues?.is_superuser ?? false,
-      must_change_password: initialValues?.must_change_password ?? true,
-    });
+    if (initialValues) {
+      // For editing, populate form with existing values
+      setForm({
+        name: initialValues.name || '',
+        email: initialValues.email || '',
+        password: initialValues.password || '',
+        role: initialValues.role || UserRole.BLGU_USER,
+        phone_number: initialValues.phone_number || '',
+        governance_area_id: initialValues.governance_area_id || null,
+        barangay_id: initialValues.barangay_id || null,
+        is_active: initialValues.is_active ?? true,
+        is_superuser: initialValues.is_superuser ?? false,
+        must_change_password: initialValues.must_change_password ?? true,
+      });
+    } else {
+      // For creating new user, reset to empty form
+      setForm({
+        name: '',
+        email: '',
+        password: '',
+        role: UserRole.BLGU_USER,
+        phone_number: '',
+        governance_area_id: null,
+        barangay_id: null,
+        is_active: true,
+        is_superuser: false,
+        must_change_password: true,
+      });
+    }
     setErrors({}); // Clear errors when form is reset
   }, [initialValues, open]);
+
+  // Additional effect to ensure form is reset when dialog opens for new user
+  React.useEffect(() => {
+    if (open && !initialValues && !isEditing) {
+      // Force reset form when opening for new user
+      setForm({
+        name: '',
+        email: '',
+        password: '',
+        role: UserRole.BLGU_USER,
+        phone_number: '',
+        governance_area_id: null,
+        barangay_id: null,
+        is_active: true,
+        is_superuser: false,
+        must_change_password: true,
+      });
+      setErrors({});
+    }
+  }, [open, initialValues, isEditing]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -129,7 +172,7 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
       return;
     }
     
-    if (isEditing) {
+    if (isEditing && initialValues?.id) {
       // For editing, exclude password if not provided
       const updateData: UserAdminUpdate = {
         name: form.name || null,
@@ -142,7 +185,21 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
         is_superuser: form.is_superuser,
         must_change_password: form.must_change_password,
       };
-      onSubmit?.(updateData);
+      
+      updateUserMutation.mutate(
+        { userId: initialValues.id, data: updateData },
+        {
+          onSuccess: () => {
+            // Invalidate the users query to refetch the data
+            queryClient.invalidateQueries({ queryKey: ['users'] });
+            onOpenChange(false);
+          },
+          onError: (error) => {
+            console.error('Failed to update user:', error);
+            // TODO: Add proper error handling/toast notification
+          },
+        }
+      );
     } else {
       // For creating, include password
       const createData: UserAdminCreate = {
@@ -157,13 +214,29 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
         is_superuser: form.is_superuser,
         must_change_password: form.must_change_password,
       };
-      onSubmit?.(createData);
+      
+      createUserMutation.mutate(
+        { data: createData },
+        {
+          onSuccess: () => {
+            // Invalidate the users query to refetch the data
+            queryClient.invalidateQueries({ queryKey: ['users'] });
+            onOpenChange(false);
+          },
+          onError: (error) => {
+            console.error('Failed to create user:', error);
+            // TODO: Add proper error handling/toast notification
+          },
+        }
+      );
     }
   };
 
+  const isLoading = createUserMutation.isPending || updateUserMutation.isPending;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl bg-white">
+      <DialogContent className="max-w-2xl bg-white" key={isEditing ? 'edit' : 'create'}>
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
             {isEditing ? 'Edit User' : 'Add User'}
@@ -179,6 +252,7 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
                 value={form.name} 
                 onChange={handleInputChange} 
                 required 
+                disabled={isLoading}
                 className={`mt-1 ${errors.name ? 'border-red-500 focus:border-red-500' : ''}`}
               />
               {errors.name && (
@@ -195,6 +269,8 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
                 value={form.email} 
                 onChange={handleInputChange} 
                 required 
+                disabled={isLoading}
+                autoComplete="off"
                 className={`mt-1 ${errors.email ? 'border-red-500 focus:border-red-500' : ''}`}
               />
               {errors.email && (
@@ -214,6 +290,8 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
                   value={form.password} 
                   onChange={handleInputChange} 
                   required 
+                  disabled={isLoading}
+                  autoComplete="new-password"
                   className={`mt-1 ${errors.password ? 'border-red-500 focus:border-red-500' : ''}`}
                 />
                 {errors.password && (
@@ -224,7 +302,7 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
             
             <div>
               <Label htmlFor="role" className="text-sm font-medium">Role</Label>
-              <Select value={form.role} onValueChange={handleRoleChange}>
+              <Select value={form.role} onValueChange={handleRoleChange} disabled={isLoading}>
                 <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
@@ -246,6 +324,7 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
                 name="phone_number" 
                 value={form.phone_number} 
                 onChange={handleInputChange} 
+                disabled={isLoading}
                 className="mt-1"
               />
             </div>
@@ -257,6 +336,7 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
                 <Select 
                   value={form.barangay_id?.toString() || ''} 
                   onValueChange={(value) => handleSelectChange('barangay_id', value)}
+                  disabled={isLoading}
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Select a barangay" />
@@ -285,6 +365,7 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
                 <Select 
                   value={form.governance_area_id?.toString() || ''} 
                   onValueChange={(value) => handleSelectChange('governance_area_id', value)}
+                  disabled={isLoading}
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Select a governance area" />
@@ -317,6 +398,7 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
                   name="is_active"
                   checked={form.is_active}
                   onChange={handleInputChange}
+                  disabled={isLoading}
                   className="rounded border-gray-300 h-4 w-4 text-primary focus:ring-primary"
                 />
                 <Label htmlFor="is_active" className="text-sm">Active</Label>
@@ -329,6 +411,7 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
                   name="is_superuser"
                   checked={form.is_superuser}
                   onChange={handleInputChange}
+                  disabled={isLoading}
                   className="rounded border-gray-300 h-4 w-4 text-primary focus:ring-primary"
                 />
                 <Label htmlFor="is_superuser" className="text-sm">Super User</Label>
@@ -341,6 +424,7 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
                   name="must_change_password"
                   checked={form.must_change_password}
                   onChange={handleInputChange}
+                  disabled={isLoading}
                   className="rounded border-gray-300 h-4 w-4 text-primary focus:ring-primary"
                 />
                 <Label htmlFor="must_change_password" className="text-sm">Must Change Password</Label>
@@ -353,15 +437,17 @@ export function UserForm({ open, onOpenChange, initialValues, onSubmit, isEditin
               type="button" 
               variant="outline" 
               onClick={() => onOpenChange(false)}
+              disabled={isLoading}
               className="flex-1"
             >
               Cancel
             </Button>
             <Button 
               type="submit"
+              disabled={isLoading}
               className="flex-1"
             >
-              {isEditing ? 'Update User' : 'Create User'}
+              {isLoading ? 'Saving...' : (isEditing ? 'Update User' : 'Create User')}
             </Button>
           </DialogFooter>
         </form>

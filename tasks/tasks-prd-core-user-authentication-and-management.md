@@ -85,7 +85,7 @@
   - [x] 4.3 Create `apps/web/middleware.ts` to protect all routes inside the `(app)` group. Unauthenticated users should be redirected to `/login`.
   - [x] 4.4 In the `UserNav` component, use the auto-generated `usePostAuthLogout` mutation hook. On success, clear the auth store and redirect to the login page.
 
-- [ ] 5.0 **Build Frontend User Management Interface (Admin)**
+- [x] 5.0 **Build Frontend User Management Interface (Admin)**
 
   - [x] 5.1 Create the page `apps/web/src/app/(app)/user-management/page.tsx`. This page should be accessible only to the admin role.
   - [x] 5.2 On this page, use the auto-generated `useGetUsers` query hook to fetch the list of all users.
@@ -95,7 +95,7 @@
     - [ ] 5.5.1 Create missing API endpoints for fetching governance areas and barangays in the backend.
     - [x] 5.5.2 Create hooks for fetching governance areas and barangays data.
     - [x] 5.5.3 Update UserForm to conditionally display the appropriate dropdown based on selected role.
-  - [ ] 5.6 The `UserForm` should use the auto-generated `usePostUsers` and `usePutUsersUserId` mutation hooks, ensuring `governance_area_id` is passed when required. On success, invalidate the `useGetUsers` query.
+  - [x] 5.6 The `UserForm` should use the auto-generated `usePostUsers` and `usePutUsersUserId` mutation hooks, ensuring `governance_area_id` is passed when required. On success, invalidate the `useGetUsers` query.
 
 - [ ] 6.0 **Implement Forced Password Change Flow**
 

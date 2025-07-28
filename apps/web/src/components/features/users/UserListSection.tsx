@@ -2,57 +2,16 @@
 
 import React from 'react';
 import { useUsers } from '@/hooks/useUsers';
-import type { UserListResponse, User, UserAdminCreate, UserAdminUpdate } from '@vantage/shared/src/generated/schemas/users';
+import type { UserListResponse, User } from '@vantage/shared/src/generated/schemas/users';
 import UserManagementTable from './UserManagementTable';
 import { UserForm } from './UserForm';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { usePostUsers, usePutUsersUserId } from '@vantage/shared/src/generated/endpoints/users';
-import { useQueryClient } from '@tanstack/react-query';
 
 export default function UserListSection() {
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [editingUser, setEditingUser] = React.useState<User | null>(null);
   const { data, isLoading, error } = useUsers() as { data?: UserListResponse, isLoading: boolean, error: unknown };
-  
-  const queryClient = useQueryClient();
-  const createUserMutation = usePostUsers();
-  const updateUserMutation = usePutUsersUserId();
-
-  const handleCreateUser = (userData: UserAdminCreate) => {
-    createUserMutation.mutate(
-      { data: userData },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['users'] });
-          setIsFormOpen(false);
-        },
-        onError: (error) => {
-          console.error('Failed to create user:', error);
-          // TODO: Add proper error handling/toast notification
-        },
-      }
-    );
-  };
-
-  const handleUpdateUser = (userData: UserAdminUpdate) => {
-    if (!editingUser) return;
-    
-    updateUserMutation.mutate(
-      { userId: editingUser.id, data: userData },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['users'] });
-          setIsFormOpen(false);
-          setEditingUser(null);
-        },
-        onError: (error) => {
-          console.error('Failed to update user:', error);
-          // TODO: Add proper error handling/toast notification
-        },
-      }
-    );
-  };
 
   const handleEditUser = (user: User) => {
     setEditingUser(user);
@@ -113,13 +72,6 @@ export default function UserListSection() {
           is_superuser: editingUser.is_superuser,
           must_change_password: editingUser.must_change_password,
         } : undefined}
-        onSubmit={(values) => {
-          if (editingUser) {
-            handleUpdateUser(values as UserAdminUpdate);
-          } else {
-            handleCreateUser(values as UserAdminCreate);
-          }
-        }}
         isEditing={!!editingUser}
       />
     </div>
