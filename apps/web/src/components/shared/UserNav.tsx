@@ -1,10 +1,8 @@
 // 🚀 Modern component using auto-generated React Query hooks
 "use client";
 
-import { useRouter } from "next/navigation";
 import { usePostAuthLogout } from "@vantage/shared";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Button } from "@/components/ui/button";
 
 /**
  * User navigation component with logout functionality
@@ -14,8 +12,6 @@ import { Button } from "@/components/ui/button";
  * usePostAuthLogout hook for logout operations.
  */
 export default function UserNav() {
-  const router = useRouter();
-
   // Get user data and logout function from auth store
   const { user, logout } = useAuthStore();
 

@@ -51,7 +51,7 @@ const setAuthCookie = (token: string | null) => {
  */
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
       token: null,
       isAuthenticated: false,

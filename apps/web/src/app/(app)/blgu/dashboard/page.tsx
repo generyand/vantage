@@ -1,13 +1,22 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useGetUsersMe } from '@vantage/shared';
 
 export default function BLGUDashboardPage() {
-  const router = useRouter();
   const { user, setUser, isAuthenticated } = useAuthStore();
+
+  // Auto-generated hook to fetch current user data
+  const userQuery = useGetUsersMe();
+
+  // Handle user data fetch success
+  useEffect(() => {
+    if (userQuery.data && !user) {
+      console.log('User data fetched in BLGU dashboard:', userQuery.data);
+      setUser(userQuery.data);
+    }
+  }, [userQuery.data, user, setUser]);
 
   // Show loading if not authenticated
   if (!isAuthenticated) {
@@ -20,17 +29,6 @@ export default function BLGUDashboardPage() {
       </div>
     );
   }
-
-  // Auto-generated hook to fetch current user data
-  const userQuery = useGetUsersMe();
-
-  // Handle user data fetch success
-  useEffect(() => {
-    if (userQuery.data && !user) {
-      console.log('User data fetched in BLGU dashboard:', userQuery.data);
-      setUser(userQuery.data);
-    }
-  }, [userQuery.data, user, setUser]);
 
   return (
     <div className="space-y-6">

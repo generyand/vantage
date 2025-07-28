@@ -1,11 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export default function BLGUAssessmentsPage() {
-  const router = useRouter();
   const { isAuthenticated } = useAuthStore();
 
   // Show loading if not authenticated
