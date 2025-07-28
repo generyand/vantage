@@ -1,14 +1,23 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useGetUsersMe } from '@vantage/shared';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const { user, setUser, isAuthenticated } = useAuthStore();
 
   // Auto-generated hook to fetch current user data
   const userQuery = useGetUsersMe();
+
+  // Redirect unauthenticated users to login
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.replace('/login');
+    }
+  }, [isAuthenticated, router]);
 
   // Handle user data fetch success
   useEffect(() => {
@@ -17,6 +26,18 @@ export default function DashboardPage() {
       setUser(userQuery.data);
     }
   }, [userQuery.data, user, setUser]);
+
+  // Show loading if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecting to login...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Show loading if not authenticated
   if (!isAuthenticated) {

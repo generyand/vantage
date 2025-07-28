@@ -65,7 +65,6 @@ export default function AppLayout({
   // Determine navigation based on user role
   const isAdmin = user?.role === 'SUPERADMIN' || user?.role === 'MLGOO_DILG';
   const navigation = isAdmin ? adminNavigation : blguNavigation;
-
   // Redirect unauthenticated users to login
   useEffect(() => {
     if (!isAuthenticated) {
@@ -104,7 +103,6 @@ export default function AppLayout({
       }
     }
   }, [isAuthenticated, user, pathname, router]);
-
   // Show loading if not authenticated
   if (!isAuthenticated) {
     return (
