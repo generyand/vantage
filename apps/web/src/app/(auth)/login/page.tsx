@@ -1,9 +1,33 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/useAuthStore";
 import LoginForm from "@/components/features/auth/LoginForm";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
+
+  // Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/dashboard');
+    }
+  }, [isAuthenticated, router]);
+
+  // Show loading or redirect if user is authenticated
+  if (isAuthenticated) {
+    return (
+      <div className="relative h-screen bg-gradient-to-br from-slate-50 via-red-50 to-orange-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecting to dashboard...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="relative h-screen bg-gradient-to-br from-slate-50 via-red-50 to-orange-50 flex flex-col overflow-hidden">
       {/* Background decorative elements */}

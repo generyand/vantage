@@ -230,7 +230,7 @@ export default function Home() {
                   </span>
                 </button>
               </a>
-        </div>
+            </div>
 
             {/* Stats */}
             <div className="flex items-center gap-8 text-sm text-gray-500">
@@ -428,8 +428,8 @@ export default function Home() {
                 results by ensuring submissions meet the highest standards of
                 quality and completeness.
               </p>
+            </div>
           </div>
-        </div>
         </section>
 
         {/* Key Features Section */}
@@ -632,9 +632,9 @@ export default function Home() {
                 <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/50 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl">
                   <p className="text-xl font-semibold leading-relaxed text-gray-900">
                     {steps[activeStep].text}
-          </p>
-        </div>
-      </div>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>

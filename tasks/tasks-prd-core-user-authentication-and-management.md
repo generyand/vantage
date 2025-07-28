@@ -18,7 +18,11 @@
 - `apps/web/src/hooks/useUsers.ts` - Create hooks for fetching and managing user data for the admin interface.
 - `apps/web/src/app/(app)/user-management/page.tsx` - The main page for the User Management feature.
 - `apps/web/src/components/features/users/UserManagementTable.tsx` - A component to display users in a data table.
-- `apps/web/src/components/features/users/UserForm.tsx` - A form component for creating and editing users.
+- `apps/web/src/components/features/users/UserForm.tsx` - A form component for creating and editing users with conditional dropdowns for role-specific assignments.
+- `apps/web/src/hooks/useGovernanceAreas.ts` - Hook for fetching governance areas data (placeholder with mock data).
+- `apps/web/src/hooks/useBarangays.ts` - Hook for fetching barangays data (placeholder with mock data).
+- `apps/web/src/components/features/users/UserListSection.tsx` - Enhanced with Add User button and UserForm integration.
+- `apps/web/src/components/features/users/UserManagementTable.tsx` - Enhanced with Edit buttons for each user row.
 - `apps/web/src/app/(app)/change-password/page.tsx` - A dedicated page for the mandatory password change flow.
 
 ### Notes on Testing
@@ -81,14 +85,17 @@
   - [x] 4.3 Create `apps/web/middleware.ts` to protect all routes inside the `(app)` group. Unauthenticated users should be redirected to `/login`.
   - [x] 4.4 In the `UserNav` component, use the auto-generated `usePostAuthLogout` mutation hook. On success, clear the auth store and redirect to the login page.
 
-- [ ] 5.0 **Build Frontend User Management Interface (Admin)**
+- [x] 5.0 **Build Frontend User Management Interface (Admin)**
 
   - [x] 5.1 Create the page `apps/web/src/app/(app)/user-management/page.tsx`. This page should be accessible only to the admin role.
   - [x] 5.2 On this page, use the auto-generated `useGetUsers` query hook to fetch the list of all users.
   - [x] 5.3 Build the `UserManagementTable.tsx` component to display the "Assigned Barangay/Area" column, showing the barangay for BLGU users and the governance area for Assessors.
   - [x] 5.4 Create a `UserForm.tsx` component for the user creation/editing modal/dialog.
-  - [ ] 5.5 In the `UserForm`, conditionally display EITHER the "Assigned Barangay" dropdown (for "BLGU User" role) OR the "Assigned Governance Area" dropdown (for "Area Assessor" role).
-  - [ ] 5.6 The `UserForm` should use the auto-generated `usePostUsers` and `usePutUsersUserId` mutation hooks, ensuring `governance_area_id` is passed when required. On success, invalidate the `useGetUsers` query.
+  - [x] 5.5 In the `UserForm`, conditionally display EITHER the "Assigned Barangay" dropdown (for "BLGU User" role) OR the "Assigned Governance Area" dropdown (for "Area Assessor" role).
+    - [ ] 5.5.1 Create missing API endpoints for fetching governance areas and barangays in the backend.
+    - [x] 5.5.2 Create hooks for fetching governance areas and barangays data.
+    - [x] 5.5.3 Update UserForm to conditionally display the appropriate dropdown based on selected role.
+  - [x] 5.6 The `UserForm` should use the auto-generated `usePostUsers` and `usePutUsersUserId` mutation hooks, ensuring `governance_area_id` is passed when required. On success, invalidate the `useGetUsers` query.
 
 - [ ] 6.0 **Implement Forced Password Change Flow**
 
