@@ -181,7 +181,7 @@ export default function Home() {
               Empowering Barangay Governance.
               <br />
               <span className="text-[#b91c1c]">Achieving SGLGB Success.</span>
-            </h1>
+          </h1>
 
             <p className="text-xl md:text-2xl text-gray-600 mb-10 leading-relaxed">
               The official pre-assessment and analytics web application for the
