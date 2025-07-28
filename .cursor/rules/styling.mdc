@@ -1,3 +1,8 @@
+---
+description:
+globs:
+alwaysApply: false
+---
 # Styling System & Theme Guide
 
 ## Purpose
@@ -176,7 +181,3 @@ const buttonVariants = cva(
 - See `.cursor/rules/cursor-rules.mdc` for rule structure and meta-guidelines.
 - See `apps/web/src/app/globals.css` for theme variable definitions.
 - See Shadcn UI and [class-variance-authority](https://cva.style/docs) for advanced usage.
-description:
-globs:
-alwaysApply: false
----
