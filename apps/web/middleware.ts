@@ -24,29 +24,38 @@ export function middleware(request: NextRequest) {
     '/change-password',
   ];
   
+  // Define auth routes (login, register, etc.)
+  const authRoutes = ['/login'];
+  
   // Check if the current path is a protected route
   const isProtectedRoute = protectedRoutes.some(route => 
     pathname.startsWith(route)
   );
   
-  // If it's not a protected route, allow access
-  if (!isProtectedRoute) {
-    return NextResponse.next();
-  }
+  // Check if the current path is an auth route
+  const isAuthRoute = authRoutes.some(route => 
+    pathname.startsWith(route)
+  );
   
-  // For protected routes, check authentication
   // Check for the auth token in cookies
   const authToken = request.cookies.get('auth-token')?.value;
+  const isAuthenticated = !!authToken;
   
-  // If no auth token is found, redirect to login
-  if (!authToken) {
+  // If user is authenticated and trying to access auth routes, redirect to dashboard
+  if (isAuthenticated && isAuthRoute) {
+    const dashboardUrl = new URL('/dashboard', request.url);
+    return NextResponse.redirect(dashboardUrl);
+  }
+  
+  // If user is not authenticated and trying to access protected routes, redirect to login
+  if (!isAuthenticated && isProtectedRoute) {
     const loginUrl = new URL('/login', request.url);
     // Preserve the original URL as a redirect parameter
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
   
-  // If auth token exists, allow access to the protected route
+  // Allow access for all other cases
   return NextResponse.next();
 }
 
