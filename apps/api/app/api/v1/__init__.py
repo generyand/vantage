@@ -15,5 +15,5 @@ api_router = APIRouter()
 # Include all individual routers with their prefixes
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])
-api_router.include_router(system.router, prefix="/system", tags=["system"])
+api_router.include_router(system.router, prefix="/system", tags=["system"]) 
 api_router.include_router(lookups.router, prefix="/lookups", tags=["lookups"]) 
