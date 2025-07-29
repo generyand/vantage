@@ -19,8 +19,8 @@
 - `apps/web/src/app/(app)/user-management/page.tsx` - The main page for the User Management feature.
 - `apps/web/src/components/features/users/UserManagementTable.tsx` - A component to display users in a data table.
 - `apps/web/src/components/features/users/UserForm.tsx` - A form component for creating and editing users with conditional dropdowns for role-specific assignments.
-- `apps/web/src/hooks/useGovernanceAreas.ts` - Hook for fetching governance areas data from real API endpoints.
-- `apps/web/src/hooks/useBarangays.ts` - Hook for fetching barangays data from real API endpoints.
+- `apps/web/src/hooks/useGovernanceAreas.ts` - Hook for fetching governance areas data from the backend API.
+- `apps/web/src/hooks/useBarangays.ts` - Hook for fetching barangays data from the backend API.
 - `apps/web/src/components/features/users/UserListSection.tsx` - Enhanced with Add User button and UserForm integration.
 - `apps/web/src/components/features/users/UserManagementTable.tsx` - Enhanced with Edit buttons for each user row.
 - `apps/web/src/app/(app)/change-password/page.tsx` - A dedicated page for the mandatory password change flow.

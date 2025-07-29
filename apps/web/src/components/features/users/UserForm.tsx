@@ -16,8 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useGovernanceAreas } from '@/hooks/useGovernanceAreas';
-import { useBarangays } from '@/hooks/useBarangays';
+import { useGovernanceAreas, GovernanceArea } from '@/hooks/useGovernanceAreas';
+import { useBarangays, Barangay } from '@/hooks/useBarangays';
 import { UserRole, UserAdminCreate, UserAdminUpdate } from '@vantage/shared';
 import { usePostUsers, usePutUsersUserId } from '@vantage/shared/src/generated/endpoints/users';
 import { useQueryClient } from '@tanstack/react-query';
@@ -60,6 +60,10 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
   // Fetch governance areas and barangays data
   const { data: governanceAreas, isLoading: isLoadingGovernanceAreas } = useGovernanceAreas();
   const { data: barangays, isLoading: isLoadingBarangays } = useBarangays();
+
+  // Type assertions for the data
+  const typedGovernanceAreas = governanceAreas as GovernanceArea[] | undefined;
+  const typedBarangays = barangays as Barangay[] | undefined;
 
   // Auto-generated mutation hooks
   const queryClient = useQueryClient();
@@ -343,15 +347,15 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
                   </SelectTrigger>
                   <SelectContent className="bg-white border border-gray-200">
                     {isLoadingBarangays ? (
-                      <SelectItem value="" disabled>Loading...</SelectItem>
-                    ) : barangays ? (
-                      barangays.map((barangay) => (
+                      <SelectItem value="loading" disabled>Loading...</SelectItem>
+                    ) : typedBarangays ? (
+                      typedBarangays.map((barangay: Barangay) => (
                         <SelectItem key={barangay.id} value={barangay.id.toString()}>
                           {barangay.name}
                         </SelectItem>
                       ))
                     ) : (
-                      <SelectItem value="" disabled>No barangays available</SelectItem>
+                      <SelectItem value="no-data" disabled>No barangays available</SelectItem>
                     )}
                   </SelectContent>
                 </Select>
@@ -372,15 +376,15 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
                   </SelectTrigger>
                   <SelectContent className="bg-white border border-gray-200">
                     {isLoadingGovernanceAreas ? (
-                      <SelectItem value="" disabled>Loading...</SelectItem>
-                    ) : governanceAreas ? (
-                      governanceAreas.map((area) => (
+                      <SelectItem value="loading" disabled>Loading...</SelectItem>
+                    ) : typedGovernanceAreas ? (
+                      typedGovernanceAreas.map((area: GovernanceArea) => (
                         <SelectItem key={area.id} value={area.id.toString()}>
                           {area.name} ({area.area_type})
                         </SelectItem>
                       ))
                     ) : (
-                      <SelectItem value="" disabled>No governance areas available</SelectItem>
+                      <SelectItem value="no-data" disabled>No governance areas available</SelectItem>
                     )}
                   </SelectContent>
                 </Select>
