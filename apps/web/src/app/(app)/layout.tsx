@@ -277,9 +277,35 @@ export default function AppLayout({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div className="flex items-center">
-                <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate">
-                  {navigation.find(item => pathname === item.href)?.name || (isAdmin ? 'Admin Dashboard' : 'BLGU Dashboard')}
-                </h2>
+                <div>
+                  <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate">
+                    {isAdmin ? (
+                      // Admin-specific titles
+                      pathname === '/admin/reports' ? 'Analytics & Reports' :
+                      pathname === '/admin/assessments' ? 'SGLGB Assessments' :
+                      navigation.find(item => pathname === item.href)?.name || 'Admin Dashboard'
+                    ) : (
+                      // BLGU titles
+                      navigation.find(item => pathname === item.href)?.name || 'BLGU Dashboard'
+                    )}
+                  </h2>
+                  {/* Show context-specific subtitle for all users */}
+                  {!isAdmin && pathname.startsWith('/blgu') && (
+                    <p className="mt-1 text-sm text-gray-500">
+                      {pathname === '/blgu/dashboard' && 'Welcome to your Barangay Local Government Unit dashboard'}
+                      {pathname === '/blgu/assessments' && 'Manage and complete your SGLGB assessments'}
+                      {pathname === '/blgu/reports' && 'View and download your assessment reports'}
+                    </p>
+                  )}
+                  {isAdmin && (
+                    <p className="mt-1 text-sm text-gray-500">
+                      {pathname === '/admin/dashboard' && 'Welcome to your Vantage dashboard'}
+                      {pathname === '/admin/assessments' && 'Manage and track your leadership assessments'}
+                      {pathname === '/admin/reports' && 'Track your leadership development progress over time'}
+                      {pathname === '/user-management' && 'Manage user accounts and permissions'}
+                    </p>
+                  )}
+                </div>
               </div>
               <div className="flex items-center space-x-4">
                 {/* Notifications */}
