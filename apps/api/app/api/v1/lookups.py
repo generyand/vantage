@@ -17,7 +17,6 @@ router = APIRouter()
 @router.get(
     "/governance-areas",
     response_model=List[lookup_schema.GovernanceArea],
-    tags=["Lookups"],
 )
 def get_all_governance_areas(
     db: Session = Depends(deps.get_db),
@@ -32,7 +31,6 @@ def get_all_governance_areas(
 @router.get(
     "/barangays",
     response_model=List[lookup_schema.Barangay],
-    tags=["Lookups"],
 )
 def get_all_barangays(
     db: Session = Depends(deps.get_db),

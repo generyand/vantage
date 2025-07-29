@@ -17,6 +17,7 @@ from app.db.base import Base
 # Import all models to ensure they're registered with SQLAlchemy
 from app.db.models.user import User
 from app.db.models.barangay import Barangay
+from app.db.models.governance_area import GovernanceArea
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
