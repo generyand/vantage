@@ -4,9 +4,41 @@
 // 🏷️  Based on FastAPI tag: "common"
 
 /**
+ * AreaType
+ */
+export type AreaType = typeof AreaType[keyof typeof AreaType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const AreaType = {
+  Core: 'Core',
+  Essential: 'Essential',
+} as const;
+
+
+/**
+ * Barangay
+ */
+export interface Barangay {
+  name: string;
+  id: number;
+}
+
+
+/**
  * ChangePasswordRequest
  */
 export interface ChangePasswordRequest {
   current_password: string;
   new_password: string;
+}
+
+
+/**
+ * GovernanceArea
+ */
+export interface GovernanceArea {
+  name: string;
+  area_type: AreaType;
+  id: number;
 }

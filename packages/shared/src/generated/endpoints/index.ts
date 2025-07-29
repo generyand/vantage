@@ -4,5 +4,6 @@
 
 export * from './auth';
 export * from './default';
+export * from './lookups';
 export * from './system';
 export * from './users';
