@@ -60,7 +60,9 @@ export default function AppLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+
   const { isAuthenticated, user, mustChangePassword } = useAuthStore();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
