@@ -1,10 +1,9 @@
 // 🚀 Modern component using auto-generated React Query hooks
 "use client";
 
-import { useRouter } from "next/navigation";
 import { usePostAuthLogout } from "@vantage/shared";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Button } from "@/components/ui/button";
+import { User, LogOut, Loader2 } from "lucide-react";
 
 /**
  * User navigation component with logout functionality
@@ -14,8 +13,6 @@ import { Button } from "@/components/ui/button";
  * usePostAuthLogout hook for logout operations.
  */
 export default function UserNav() {
-  const router = useRouter();
-
   // Get user data and logout function from auth store
   const { user, logout } = useAuthStore();
 
@@ -27,16 +24,17 @@ export default function UserNav() {
     mutation: {
       onSuccess: () => {
         console.log("Logout successful");
-        // Clear auth store (this will also clear cookies)
+        // Clear auth store and force page reload to clear all state
         logout();
-        // Redirect to login page
-        router.push("/login");
+        // Force a page reload to clear any in-memory state
+        window.location.href = '/login';
       },
       onError: (error) => {
         console.error("Logout failed:", error);
         // Even if logout fails on server, clear local auth state
         logout();
-        router.push("/login");
+        // Force a page reload to clear any in-memory state
+        window.location.href = '/login';
       },
     },
   });
@@ -48,102 +46,60 @@ export default function UserNav() {
 
   if (!user) {
     return (
-      <div className="py-2">
-        <div className="px-4 py-3 border-b border-gray-100">
-          <div className="flex items-center space-x-3">
-            <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">
-              <svg
-                className="w-4 h-4 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900">No user data</p>
-              <p className="text-xs text-gray-500">Please log in</p>
-            </div>
+      <div className="px-4 py-4 border-b border-gray-100">
+        <div className="flex items-center space-x-3">
+          <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+            <User className="w-5 h-5 text-gray-400" />
           </div>
-        </div>
-
-        {/* Logout Button */}
-        <div className="px-2 py-1">
-          <button
-            onClick={handleLogout}
-            disabled={logoutMutation.isPending}
-            className="w-full flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-md transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <svg
-              className="w-4 h-4 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-            Logout
-          </button>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-gray-900">No user data</p>
+            <p className="text-xs text-gray-500">Please log in</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white shadow rounded-lg p-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="bg-blue-100 rounded-full p-3">
-            <svg
-              className="w-8 h-8 text-blue-600"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
-            </svg>
+    <>
+      {/* User Info Section */}
+      <div className="px-4 py-4 border-b border-gray-100">
+        <div className="flex items-center space-x-3">
+          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#b91c1c] to-[#dc2626] flex items-center justify-center text-white font-semibold text-sm shadow-sm">
+            {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
           </div>
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
-            <p className="text-gray-600">{user.email}</p>
-            <p className="text-sm text-gray-500">Role: {user.role}</p>
-
-            <p className="text-sm text-gray-500">
-              Member since {new Date(user.created_at).toLocaleDateString()}
-            </p>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-gray-900 truncate leading-tight">{user.name}</p>
+            <p className="text-xs text-gray-500 truncate mt-0.5">{user.email}</p>
+            <div className="mt-1.5">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                {user.role}
+              </span>
+            </div>
           </div>
-        </div>
-
-        {/* Logout Button */}
-        <div className="flex flex-col items-end space-y-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleLogout}
-            disabled={logoutMutation.isPending}
-            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-          >
-            {logoutMutation.isPending ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600 mr-2"></div>
-                Logging out...
-              </>
-            ) : (
-              "Logout"
-            )}
-          </Button>
         </div>
       </div>
-    </div>
+
+      {/* Logout Button */}
+      <div className="px-2 py-2">
+        <button
+          onClick={handleLogout}
+          disabled={logoutMutation.isPending}
+          className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#b91c1c] hover:bg-red-50 rounded-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group border border-gray-100 hover:border-red-100"
+        >
+          {logoutMutation.isPending ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin text-[#b91c1c]" />
+              Signing out...
+            </>
+          ) : (
+            <>
+              <LogOut className="w-4 h-4 mr-2 text-gray-500 group-hover:text-[#b91c1c] transition-colors duration-200" />
+              Sign out
+            </>
+          )}
+        </button>
+      </div>
+    </>
   );
 }

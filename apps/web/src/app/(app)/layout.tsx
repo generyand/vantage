@@ -1,15 +1,25 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import UserNav from '@/components/shared/UserNav';
+import { X, Bell } from 'lucide-react';
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: 'home' },
-  { name: 'Assessments', href: '/assessments', icon: 'clipboard' },
-  { name: 'Reports', href: '/reports', icon: 'chart' },
+// Navigation items for different user roles
+const adminNavigation = [
+  { name: 'Admin Dashboard', href: '/admin/dashboard', icon: 'home' },
+  { name: 'User Management', href: '/user-management', icon: 'users' },
+  { name: 'Assessments', href: '/admin/assessments', icon: 'clipboard' },
+  { name: 'Reports', href: '/admin/reports', icon: 'chart' },
+];
+
+const blguNavigation = [
+  { name: 'BLGU Dashboard', href: '/blgu/dashboard', icon: 'home' },
+  { name: 'My Assessments', href: '/blgu/assessments', icon: 'clipboard' },
+  { name: 'My Reports', href: '/blgu/reports', icon: 'chart' },
 ];
 
 const getIcon = (name: string) => {
@@ -32,6 +42,12 @@ const getIcon = (name: string) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
       );
+    case 'users':
+      return (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+        </svg>
+      );
     default:
       return null;
   }
@@ -44,9 +60,13 @@ export default function AppLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+
+  // Determine navigation based on user role
+  const isAdmin = user?.role === 'SUPERADMIN' || user?.role === 'MLGOO_DILG';
+  const navigation = isAdmin ? adminNavigation : blguNavigation;
 
   // Redirect unauthenticated users to login
   useEffect(() => {
@@ -54,6 +74,38 @@ export default function AppLayout({
       router.replace('/login');
     }
   }, [isAuthenticated, router]);
+
+  // Redirect users to appropriate dashboard based on role
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const isAdmin = user.role === 'SUPERADMIN' || user.role === 'MLGOO_DILG';
+      const currentPath = pathname;
+      
+      // If user is on root path, redirect to appropriate dashboard
+      if (currentPath === '/') {
+        const dashboardPath = isAdmin ? '/admin/dashboard' : '/blgu/dashboard';
+        router.replace(dashboardPath);
+        return;
+      }
+      
+      // Check if user is accessing wrong role routes
+      const isAdminRoute = currentPath.startsWith('/admin');
+      const isBLGURoute = currentPath.startsWith('/blgu');
+      const isUserManagementRoute = currentPath.startsWith('/user-management');
+      
+      if (isAdmin) {
+        // Admin users should not access BLGU routes
+        if (isBLGURoute) {
+          router.replace('/admin/dashboard');
+        }
+      } else {
+        // BLGU users should not access admin routes or user management
+        if (isAdminRoute || isUserManagementRoute) {
+          router.replace('/blgu/dashboard');
+        }
+      }
+    }
+  }, [isAuthenticated, user, pathname, router]);
 
   // Show loading if not authenticated
   if (!isAuthenticated) {
@@ -69,37 +121,59 @@ export default function AppLayout({
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Mobile backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Mobile sidebar */}
-      <div className={`fixed inset-0 flex z-40 md:hidden ${sidebarOpen ? '' : 'hidden'}`}>
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
-        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
+      <div className={`fixed inset-0 flex z-50 md:hidden ${sidebarOpen ? '' : 'hidden'}`}>
+        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white/95 backdrop-blur-sm shadow-xl border-r border-red-100">
           <div className="absolute top-0 right-0 -mr-12 pt-2">
             <button
               className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               onClick={() => setSidebarOpen(false)}
             >
-              <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="h-6 w-6 text-white" />
             </button>
           </div>
           <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-            <div className="flex-shrink-0 flex items-center px-4">
-              <h1 className="text-xl font-bold text-gray-900">Vantage</h1>
+            <div className="flex-shrink-0 flex items-center px-6 mb-8">
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                  <Image
+                    src="/DILG.png"
+                    alt="DILG Logo"
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="ml-3">
+                  <h1 className="text-lg font-bold text-gray-900">VANTAGE</h1>
+                  <p className="text-sm text-gray-600">
+                    {isAdmin ? 'Admin Portal' : 'Barangay Submission Portal'}
+                  </p>
+                </div>
+              </div>
             </div>
-            <nav className="mt-5 px-2 space-y-1">
+            <nav className="px-4 space-y-2">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-2 py-2 text-base font-medium rounded-md ${
+                  className={`group flex items-center px-4 py-3 text-left rounded-sm transition-all duration-200 ${
                     pathname === item.href
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? "bg-[#b91c1c] text-white shadow-lg"
+                      : "text-gray-700 hover:bg-red-50 hover:text-red-600"
                   }`}
+                  onClick={() => setSidebarOpen(false)}
                 >
                   {getIcon(item.icon)}
-                  {item.name}
+                  <span className="ml-3 font-medium">{item.name}</span>
                 </Link>
               ))}
             </nav>
@@ -109,24 +183,40 @@ export default function AppLayout({
 
       {/* Desktop sidebar */}
       <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
-        <div className="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white">
+        <div className="flex-1 flex flex-col min-h-0 bg-white/95 backdrop-blur-sm shadow-xl border-r border-red-100">
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-            <div className="flex items-center flex-shrink-0 px-4">
-              <h1 className="text-xl font-bold text-gray-900">Vantage</h1>
+            <div className="flex items-center flex-shrink-0 px-6 mb-8">
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                  <Image
+                    src="/DILG.png"
+                    alt="DILG Logo"
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="ml-3">
+                  <h1 className="text-lg font-bold text-gray-900">VANTAGE</h1>
+                  <p className="text-sm text-gray-600">
+                    {isAdmin ? 'Admin Portal' : 'Barangay Submission Portal'}
+                  </p>
+                </div>
+              </div>
             </div>
-            <nav className="mt-5 flex-1 px-2 space-y-1">
+            <nav className="flex-1 px-4 space-y-2">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+                  className={`group flex items-center px-4 py-3 text-left rounded-sm transition-all duration-200 ${
                     pathname === item.href
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? "bg-[#b91c1c] text-white shadow-lg"
+                      : "text-gray-700 hover:bg-red-50 hover:text-red-600"
                   }`}
                 >
                   {getIcon(item.icon)}
-                  <span className="ml-3">{item.name}</span>
+                  <span className="ml-3 font-medium">{item.name}</span>
                 </Link>
               ))}
             </nav>
@@ -153,33 +243,32 @@ export default function AppLayout({
             <div className="flex justify-between items-center py-6">
               <div className="flex items-center">
                 <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate">
-                  {navigation.find(item => pathname === item.href)?.name || 'Dashboard'}
+                  {navigation.find(item => pathname === item.href)?.name || (isAdmin ? 'Admin Dashboard' : 'BLGU Dashboard')}
                 </h2>
               </div>
               <div className="flex items-center space-x-4">
                 {/* Notifications */}
-                <button className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5-5V9a6 6 0 10-12 0v3l-5 5h5m5 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
+                <button className="p-2 rounded-full text-gray-500 hover:text-[#b91c1c] hover:bg-red-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#b91c1c] focus:ring-offset-2">
+                  <Bell className="h-5 w-5" />
                 </button>
                 
                 {/* Profile dropdown */}
                 <div className="relative">
                   <button 
-                    className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="flex items-center space-x-2 p-2 rounded-full text-gray-500 hover:text-[#b91c1c] hover:bg-red-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#b91c1c] focus:ring-offset-2"
                     onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                   >
-                    <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                      <svg className="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#b91c1c] to-[#dc2626] flex items-center justify-center text-white font-semibold text-sm">
+                      {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                     </div>
+                    <span className="hidden sm:block text-sm font-medium text-gray-700">
+                      {user?.name || 'User'}
+                    </span>
                   </button>
                   
                   {/* Profile dropdown menu */}
                   {profileDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-sm shadow-xl border border-gray-200 z-50">
                       <div className="py-1">
                         <UserNav />
                       </div>

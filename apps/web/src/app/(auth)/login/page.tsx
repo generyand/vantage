@@ -8,14 +8,16 @@ import LoginForm from "@/components/features/auth/LoginForm";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
 
-  // Redirect authenticated users to dashboard
+  // Redirect authenticated users to appropriate dashboard
   useEffect(() => {
-    if (isAuthenticated) {
-      router.replace('/dashboard');
+    if (isAuthenticated && user) {
+      const isAdmin = user.role === 'SUPERADMIN' || user.role === 'MLGOO_DILG';
+      const dashboardPath = isAdmin ? '/admin/dashboard' : '/blgu/dashboard';
+      router.replace(dashboardPath);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, user, router]);
 
   // Show loading or redirect if user is authenticated
   if (isAuthenticated) {
