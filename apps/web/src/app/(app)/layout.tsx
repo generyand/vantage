@@ -1,10 +1,13 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import UserNav from '@/components/shared/UserNav';
+import { Button } from '@/components/ui/button';
+import { X, LogOut, Bell } from 'lucide-react';
 
 // Navigation items for different user roles
 const adminNavigation = [
@@ -58,13 +61,19 @@ export default function AppLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, logout } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   // Determine navigation based on user role
   const isAdmin = user?.role === 'SUPERADMIN' || user?.role === 'MLGOO_DILG';
   const navigation = isAdmin ? adminNavigation : blguNavigation;
+
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
+
   // Redirect unauthenticated users to login
   useEffect(() => {
     if (!isAuthenticated) {
@@ -103,6 +112,7 @@ export default function AppLayout({
       }
     }
   }, [isAuthenticated, user, pathname, router]);
+
   // Show loading if not authenticated
   if (!isAuthenticated) {
     return (
@@ -117,37 +127,59 @@ export default function AppLayout({
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Mobile backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Mobile sidebar */}
-      <div className={`fixed inset-0 flex z-40 md:hidden ${sidebarOpen ? '' : 'hidden'}`}>
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
-        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
+      <div className={`fixed inset-0 flex z-50 md:hidden ${sidebarOpen ? '' : 'hidden'}`}>
+        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white/95 backdrop-blur-sm shadow-xl border-r border-red-100">
           <div className="absolute top-0 right-0 -mr-12 pt-2">
             <button
               className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               onClick={() => setSidebarOpen(false)}
             >
-              <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="h-6 w-6 text-white" />
             </button>
           </div>
           <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-            <div className="flex-shrink-0 flex items-center px-4">
-              <h1 className="text-xl font-bold text-gray-900">Vantage</h1>
+            <div className="flex-shrink-0 flex items-center px-6 mb-8">
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                  <Image
+                    src="/DILG.png"
+                    alt="DILG Logo"
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="ml-3">
+                  <h1 className="text-lg font-bold text-gray-900">VANTAGE</h1>
+                  <p className="text-sm text-gray-600">
+                    {isAdmin ? 'Admin Portal' : 'Barangay Submission Portal'}
+                  </p>
+                </div>
+              </div>
             </div>
-            <nav className="mt-5 px-2 space-y-1">
+            <nav className="px-4 space-y-2">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-2 py-2 text-base font-medium rounded-md ${
+                  className={`group flex items-center px-4 py-3 text-left rounded-sm transition-all duration-200 ${
                     pathname === item.href
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? "bg-[#b91c1c] text-white shadow-lg"
+                      : "text-gray-700 hover:bg-red-50 hover:text-red-600"
                   }`}
+                  onClick={() => setSidebarOpen(false)}
                 >
                   {getIcon(item.icon)}
-                  {item.name}
+                  <span className="ml-3 font-medium">{item.name}</span>
                 </Link>
               ))}
             </nav>
@@ -157,24 +189,40 @@ export default function AppLayout({
 
       {/* Desktop sidebar */}
       <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
-        <div className="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white">
+        <div className="flex-1 flex flex-col min-h-0 bg-white/95 backdrop-blur-sm shadow-xl border-r border-red-100">
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-            <div className="flex items-center flex-shrink-0 px-4">
-              <h1 className="text-xl font-bold text-gray-900">Vantage</h1>
+            <div className="flex items-center flex-shrink-0 px-6 mb-8">
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                  <Image
+                    src="/DILG.png"
+                    alt="DILG Logo"
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="ml-3">
+                  <h1 className="text-lg font-bold text-gray-900">VANTAGE</h1>
+                  <p className="text-sm text-gray-600">
+                    {isAdmin ? 'Admin Portal' : 'Barangay Submission Portal'}
+                  </p>
+                </div>
+              </div>
             </div>
-            <nav className="mt-5 flex-1 px-2 space-y-1">
+            <nav className="flex-1 px-4 space-y-2">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+                  className={`group flex items-center px-4 py-3 text-left rounded-sm transition-all duration-200 ${
                     pathname === item.href
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? "bg-[#b91c1c] text-white shadow-lg"
+                      : "text-gray-700 hover:bg-red-50 hover:text-red-600"
                   }`}
                 >
                   {getIcon(item.icon)}
-                  <span className="ml-3">{item.name}</span>
+                  <span className="ml-3 font-medium">{item.name}</span>
                 </Link>
               ))}
             </nav>
@@ -206,28 +254,27 @@ export default function AppLayout({
               </div>
               <div className="flex items-center space-x-4">
                 {/* Notifications */}
-                <button className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5-5V9a6 6 0 10-12 0v3l-5 5h5m5 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
+                <button className="p-2 rounded-full text-gray-500 hover:text-[#b91c1c] hover:bg-red-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#b91c1c] focus:ring-offset-2">
+                  <Bell className="h-5 w-5" />
                 </button>
                 
                 {/* Profile dropdown */}
                 <div className="relative">
                   <button 
-                    className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="flex items-center space-x-2 p-2 rounded-full text-gray-500 hover:text-[#b91c1c] hover:bg-red-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#b91c1c] focus:ring-offset-2"
                     onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                   >
-                    <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                      <svg className="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#b91c1c] to-[#dc2626] flex items-center justify-center text-white font-semibold text-sm">
+                      {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                     </div>
+                    <span className="hidden sm:block text-sm font-medium text-gray-700">
+                      {user?.name || 'User'}
+                    </span>
                   </button>
                   
                   {/* Profile dropdown menu */}
                   {profileDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-sm shadow-xl border border-gray-200 z-50">
                       <div className="py-1">
                         <UserNav />
                       </div>
