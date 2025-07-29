@@ -97,12 +97,12 @@
     - [x] 5.5.3 Update UserForm to conditionally display the appropriate dropdown based on selected role.
   - [x] 5.6 The `UserForm` should use the auto-generated `usePostUsers` and `usePutUsersUserId` mutation hooks, ensuring `governance_area_id` is passed when required. On success, invalidate the `useGetUsers` query.
 
-- [ ] 6.0 **Implement Forced Password Change Flow**
+- [x] 6.0 **Implement Forced Password Change Flow**
 
-  - [ ] 6.1 In the main application layout (`apps/web/src/app/(app)/layout.tsx`), add a check that reads `must_change_password` from the `useAuthStore`.
-  - [ ] 6.2 If `must_change_password` is `true`, redirect the user to the `/change-password` page.
-  - [ ] 6.3 Create the `apps/web/src/app/(app)/change-password/page.tsx` page with a form for changing the password.
-  - [ ] 6.4 The password change form should use the auto-generated `usePostAuthChangePassword` mutation hook. On success, update the auth store and redirect the user to their dashboard.
+  - [x] 6.1 In the main application layout (`apps/web/src/app/(app)/layout.tsx`), add a check that reads `must_change_password` from the `useAuthStore`.
+  - [x] 6.2 If `must_change_password` is `true`, redirect the user to the `/change-password` page.
+  - [x] 6.3 Create the `apps/web/src/app/(app)/change-password/page.tsx` page with a form for changing the password.
+  - [x] 6.4 The password change form should use the auto-generated `usePostAuthChangePassword` mutation hook. On success, update the auth store and redirect the user to their dashboard.
 
 - [ ] 7.0 **End-to-End Testing and Refinement**
   - [ ] 7.1 Write `pytest` tests for the auth and user management endpoints, including permission checks.

@@ -60,7 +60,7 @@ export default function AppLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, mustChangePassword } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
@@ -75,9 +75,17 @@ export default function AppLayout({
     }
   }, [isAuthenticated, router]);
 
+  // Redirect users to change password if required
+  useEffect(() => {
+    if (isAuthenticated && user && mustChangePassword && pathname !== '/change-password') {
+      router.replace('/change-password');
+      return;
+    }
+  }, [isAuthenticated, user, mustChangePassword, pathname, router]);
+
   // Redirect users to appropriate dashboard based on role
   useEffect(() => {
-    if (isAuthenticated && user) {
+    if (isAuthenticated && user && !mustChangePassword) {
       const isAdmin = user.role === 'SUPERADMIN' || user.role === 'MLGOO_DILG';
       const currentPath = pathname;
       
@@ -105,7 +113,7 @@ export default function AppLayout({
         }
       }
     }
-  }, [isAuthenticated, user, pathname, router]);
+  }, [isAuthenticated, user, mustChangePassword, pathname, router]);
 
   // Show loading if not authenticated
   if (!isAuthenticated) {
@@ -115,6 +123,33 @@ export default function AppLayout({
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Redirecting to login...</p>
         </div>
+      </div>
+    );
+  }
+
+  // If user must change password and is not on the change-password page, show loading
+  if (mustChangePassword && pathname !== '/change-password') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecting to password change...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If user must change password, show only the change password page without navigation
+  if (mustChangePassword && pathname === '/change-password') {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <main className="flex-1 relative overflow-y-auto focus:outline-none">
+          <div className="py-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              {children}
+            </div>
+          </div>
+        </main>
       </div>
     );
   }
