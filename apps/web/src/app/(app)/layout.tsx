@@ -6,8 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import UserNav from '@/components/shared/UserNav';
-import { Button } from '@/components/ui/button';
-import { X, LogOut, Bell } from 'lucide-react';
+import { X, Bell } from 'lucide-react';
 
 // Navigation items for different user roles
 const adminNavigation = [
@@ -61,18 +60,13 @@ export default function AppLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, user, logout } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   // Determine navigation based on user role
   const isAdmin = user?.role === 'SUPERADMIN' || user?.role === 'MLGOO_DILG';
   const navigation = isAdmin ? adminNavigation : blguNavigation;
-
-  const handleLogout = () => {
-    logout();
-    router.push("/login");
-  };
 
   // Redirect unauthenticated users to login
   useEffect(() => {
