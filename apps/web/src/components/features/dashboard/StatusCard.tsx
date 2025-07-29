@@ -8,7 +8,6 @@ import {
   AlertTriangle,
   TrendingUp,
   CheckCircle2,
-  BarChart3,
   Activity,
 } from "lucide-react";
 

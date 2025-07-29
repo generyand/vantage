@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DashboardData, AssessmentStatus, GovernanceAreaProgress, AssessorFeedback } from '@/types/dashboard';
+import { DashboardData } from '@/types/dashboard';
 
 // TODO: Replace with real API endpoint when available
 // Expected endpoint: GET /api/v1/assessments/dashboard/{barangay_id}
@@ -106,7 +106,7 @@ export function useDashboard(barangayName?: string) {
         const mockData = createMockDashboardData(barangayName || 'San Roque');
         setData(mockData);
         setError(null);
-      } catch (err) {
+      } catch {
         setError('Failed to load dashboard data');
       } finally {
         setLoading(false);

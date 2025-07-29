@@ -25,7 +25,7 @@ export function FeedbackSection({ feedback }: FeedbackSectionProps) {
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-amber-800">
           <AlertTriangle className="h-5 w-5" />
-          Action Required: Address Assessor's Feedback
+          Action Required: Address Assessor&apos;s Feedback
         </CardTitle>
         <p className="text-sm text-amber-700 leading-relaxed">
           Review and address the following items to proceed with your assessment.

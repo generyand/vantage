@@ -38,7 +38,3 @@ export interface DashboardData {
   governanceAreas: GovernanceAreaProgress[];
   feedback: AssessorFeedback[];
 }
-
-export interface MockDashboardData extends DashboardData {
-  // Mock data for development
-}

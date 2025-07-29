@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { usePostAuthChangePassword } from "@vantage/shared";
+import { usePostAuthChangePassword, ValidationError } from "@vantage/shared";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -72,11 +72,11 @@ export default function ChangePasswordPage() {
             setErrors({ general: error.detail });
           } else if (Array.isArray(error.detail)) {
             // Handle validation errors
-            const validationErrors: any = {};
-            error.detail.forEach((err: any) => {
+            const validationErrors: Record<string, string> = {};
+            error.detail.forEach((err: ValidationError) => {
               if (err.loc && err.loc.length > 0) {
-                const field = err.loc[err.loc.length - 1];
-                validationErrors[field] = err.msg;
+                const field = String(err.loc[err.loc.length - 1]);
+                validationErrors[field] = err.msg || 'Validation error';
               }
             });
             setErrors(validationErrors);
@@ -91,7 +91,7 @@ export default function ChangePasswordPage() {
   });
 
   const validateForm = () => {
-    const newErrors: any = {};
+    const newErrors: Record<string, string> = {};
 
     if (!formData.current_password) {
       newErrors.current_password = "Current password is required";
@@ -462,7 +462,7 @@ export default function ChangePasswordPage() {
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
                     <p className="text-sm text-gray-700">
-                      Don't reuse passwords from other accounts
+                      Don&apos;t reuse passwords from other accounts
                     </p>
                   </div>
                 </div>

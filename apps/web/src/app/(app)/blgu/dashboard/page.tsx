@@ -91,7 +91,7 @@ export default function BLGUDashboardPage() {
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-sm"></div>
                     <h1 className="text-3xl font-bold text-gray-900">
-                      Barangay <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{data.barangayName}</span>'s SGLGB Dashboard
+                      Barangay <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{data.barangayName}</span>&apos;s SGLGB Dashboard
                     </h1>
                   </div>
                   <div className="flex items-center gap-6 text-sm">
