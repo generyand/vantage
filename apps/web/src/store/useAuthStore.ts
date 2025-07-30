@@ -24,6 +24,8 @@ interface AuthState {
   logout: () => void;
   /** Initialize auth state from stored data (for persistence) */
   initialize: (user: User | null, token: string | null) => void;
+  /** Hydrate auth state from persisted data */
+  hydrate: () => void;
   /** Force clear all persisted data */
   clearPersistedData: () => void;
 }
@@ -51,7 +53,7 @@ const setAuthCookie = (token: string | null) => {
  */
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       token: null,
       isAuthenticated: false,
@@ -67,6 +69,11 @@ export const useAuthStore = create<AuthState>()(
         // Set cookie for middleware access
         setAuthCookie(token);
         set({ token });
+        // Also set isAuthenticated if we have both user and token
+        const currentState = get();
+        if (currentState.user && token) {
+          set({ isAuthenticated: true });
+        }
       },
 
       setMustChangePassword: (mustChange) => set({ mustChangePassword: mustChange }),
@@ -102,6 +109,38 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: !!user && !!token,
           mustChangePassword: user?.must_change_password || false
         });
+      },
+
+      // Hydrate auth state from persisted data
+      hydrate: () => {
+        if (typeof window === 'undefined') return;
+        
+        try {
+          const stored = localStorage.getItem('auth-storage');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            const state = parsed.state;
+            
+            if (state?.user && state?.token) {
+              // Set cookie for middleware access
+              setAuthCookie(state.token);
+              // Update state
+              set({
+                user: state.user,
+                token: state.token,
+                isAuthenticated: true,
+                mustChangePassword: state.mustChangePassword || false
+              });
+              console.log('Auth state hydrated successfully');
+            } else {
+              console.log('No valid auth data found in storage');
+            }
+          } else {
+            console.log('No auth storage found');
+          }
+        } catch (error) {
+          console.error('Error hydrating auth state:', error);
+        }
       },
 
       // Force clear all persisted data
