@@ -117,98 +117,270 @@ export function AssessmentTabs({ assessment, isLocked }: AssessmentTabsProps) {
   return (
     <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 overflow-hidden">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        {/* Enhanced Tab Navigation */}
+        {/* Enhanced Tab Navigation with Core/Essential Separation */}
         <div className="bg-gradient-to-r from-slate-100/50 to-gray-100/30 border-b border-gray-200/60 px-6 py-6">
-          <TabsList className="grid w-full grid-cols-6 h-auto bg-transparent gap-3">
-            {assessment.governanceAreas.map((area) => {
-              const progress = getAreaProgress(area.id);
-              const logoPath = getAreaLogo(area.name);
-              const config = getAreaConfig(area.name);
-              const isActive = activeTab === area.id;
-              
-              return (
-                <TabsTrigger
-                  key={area.id}
-                  value={area.id}
-                  className={`group relative flex flex-col items-center p-5 rounded-sm transition-all duration-300 hover:shadow-lg hover:scale-[1.03] min-h-[180px] overflow-hidden ${
-                    isActive 
-                      ? `bg-gradient-to-br ${config.bgGradient} shadow-xl scale-[1.05] border-2 ${config.borderColor}` 
-                      : 'bg-white/90 backdrop-blur-sm border border-gray-200/60 hover:border-gray-300/80'
-                  }`}
-                >
-                  {/* Decorative background for active state */}
-                  {isActive && (
-                    <>
-                      <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -translate-y-8 translate-x-8"></div>
-                      <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/5 rounded-full translate-y-6 -translate-x-6"></div>
-                    </>
-                  )}
-                  
-                  {/* Content */}
-                  <div className="relative z-10 flex flex-col items-center space-y-3 w-full">
-                    {/* Logo and Status */}
-                    <div className="relative">
-                      <div className={`w-14 h-14 rounded-sm p-3 shadow-md transition-all duration-200 ${
-                        isActive ? 'bg-white/95 shadow-lg' : 'bg-white/90 group-hover:shadow-lg'
-                      }`}>
-                        <Image
-                          src={logoPath}
-                          alt={`${area.name} logo`}
-                          width={32}
-                          height={32}
-                          className="object-contain w-full h-full"
-                        />
-                      </div>
-                      <div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
-                        {getAreaStatusIcon(area.id)}
-                      </div>
-                    </div>
+          <div className="space-y-8">
+            {/* Core Governance Areas Section Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-1 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-sm"></div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">Core Governance Areas</h3>
+                  <p className="text-sm text-gray-600">All 3 areas are required for assessment completion</p>
+                </div>
+              </div>
+              <div className="bg-red-100 text-red-800 px-3 py-1 rounded-sm text-xs font-semibold uppercase tracking-wide">
+                Required: 3/3
+              </div>
+            </div>
+
+            {/* Essential Governance Areas Section Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-blue-600 rounded-sm"></div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">Essential Governance Areas</h3>
+                  <p className="text-sm text-gray-600">Choose and complete at least 1 area from the 3 options below</p>
+                </div>
+              </div>
+              <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-sm text-xs font-semibold uppercase tracking-wide">
+                Required: 1/3
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs List - All tabs must be within this component */}
+          <TabsList className="w-full h-auto bg-transparent mt-6">
+            <div className="w-full space-y-6">
+              {/* Core Areas Grid */}
+              <div className="grid grid-cols-3 gap-4">
+                {assessment.governanceAreas
+                  .filter(area => area.isCore)
+                  .map((area) => {
+                    const progress = getAreaProgress(area.id);
+                    const logoPath = getAreaLogo(area.name);
+                    const config = getAreaConfig(area.name);
+                    const isActive = activeTab === area.id;
                     
-                    {/* Area Code - Main Display */}
-                    <div className={`px-4 py-2 rounded-sm text-lg font-bold transition-colors duration-200 ${
-                      isActive 
-                        ? `${config.accentColor} bg-white/90 shadow-sm` 
-                        : 'text-gray-700 bg-gray-100/80 group-hover:bg-gray-200/80'
-                    }`}>
-                      {area.code}
-                    </div>
-                    
-                    {/* Progress Section */}
-                    <div className="w-full space-y-2 mt-auto">
-                      {/* Progress Percentage */}
-                      <div className={`text-center transition-colors duration-200 ${
-                        isActive ? config.accentColor : 'text-gray-700'
-                      }`}>
-                        <div className="text-lg font-bold">{progress}%</div>
-                        <div className="text-xs opacity-80">complete</div>
-                      </div>
-                      
-                      {/* Progress Bar */}
-                      <div className="w-full bg-gray-200/80 rounded-sm h-2 overflow-hidden shadow-inner">
-                        <div
-                          className={`h-full rounded-sm transition-all duration-500 ${
+                    return (
+                      <TabsTrigger
+                        key={area.id}
+                        value={area.id}
+                        className={`group relative flex flex-col items-center p-5 rounded-sm transition-all duration-300 hover:shadow-lg hover:scale-[1.03] min-h-[200px] overflow-hidden ${
+                          isActive 
+                            ? `bg-gradient-to-br ${config.bgGradient} shadow-xl scale-[1.05] border-2 ${config.borderColor}` 
+                            : 'bg-white/90 backdrop-blur-sm border-2 border-red-200/60 hover:border-red-300/80'
+                        }`}
+                      >
+                        {/* Required Badge */}
+                        <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-sm font-bold shadow-sm">
+                          REQUIRED
+                        </div>
+                        
+                        {/* Decorative background for active state */}
+                        {isActive && (
+                          <>
+                            <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -translate-y-8 translate-x-8"></div>
+                            <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/5 rounded-full translate-y-6 -translate-x-6"></div>
+                          </>
+                        )}
+                        
+                        {/* Content */}
+                        <div className="relative z-10 flex flex-col items-center space-y-3 w-full pt-4">
+                          {/* Logo and Status */}
+                          <div className="relative">
+                            <div className={`w-16 h-16 rounded-sm p-3 shadow-md transition-all duration-200 ${
+                              isActive ? 'bg-white/95 shadow-lg' : 'bg-white/90 group-hover:shadow-lg'
+                            }`}>
+                              <Image
+                                src={logoPath}
+                                alt={`${area.name} logo`}
+                                width={40}
+                                height={40}
+                                className="object-contain w-full h-full"
+                              />
+                            </div>
+                            <div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+                              {getAreaStatusIcon(area.id)}
+                            </div>
+                          </div>
+                          
+                          {/* Area Code - Main Display */}
+                          <div className={`px-4 py-2 rounded-sm text-xl font-bold transition-colors duration-200 ${
                             isActive 
-                              ? 'bg-gradient-to-r from-blue-500 to-indigo-600' 
-                              : 'bg-gradient-to-r from-gray-400 to-gray-500'
-                          }`}
-                          style={{ width: `${progress}%` }}
-                        />
-                      </div>
-                      
-                      {/* Progress Text */}
-                      <div className="text-xs text-center text-gray-600">
-                        {area.indicators.filter(i => i.status === 'completed').length} of {area.indicators.length} indicators
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Hover Effect Overlay */}
-                  <div className={`absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-sm ${
-                    isActive ? 'hidden' : ''
-                  }`} />
-                </TabsTrigger>
-              );
-            })}
+                              ? `${config.accentColor} bg-white/90 shadow-sm` 
+                              : 'text-gray-700 bg-gray-100/80 group-hover:bg-gray-200/80'
+                          }`}>
+                            {area.code}
+                          </div>
+                          
+                          {/* Area Name */}
+                          <div className="w-full h-12 flex items-center justify-center px-2">
+                            <div className={`text-xs text-center leading-tight font-semibold transition-colors duration-200 ${
+                              isActive ? 'text-gray-800' : 'text-gray-600 group-hover:text-gray-700'
+                            }`}>
+                              <div className="line-clamp-2 break-words">
+                                {area.name}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Progress Section */}
+                          <div className="w-full space-y-2 mt-auto">
+                            {/* Progress Percentage */}
+                            <div className={`text-center transition-colors duration-200 ${
+                              isActive ? config.accentColor : 'text-gray-700'
+                            }`}>
+                              <div className="text-xl font-bold">{progress}%</div>
+                              <div className="text-xs opacity-80">complete</div>
+                            </div>
+                            
+                            {/* Progress Bar */}
+                            <div className="w-full bg-gray-200/80 rounded-sm h-2 overflow-hidden shadow-inner">
+                              <div
+                                className={`h-full rounded-sm transition-all duration-500 ${
+                                  isActive 
+                                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600' 
+                                    : 'bg-gradient-to-r from-red-400 to-red-500'
+                                }`}
+                                style={{ width: `${progress}%` }}
+                              />
+                            </div>
+                            
+                            {/* Progress Text */}
+                            <div className="text-xs text-center text-gray-600">
+                              {area.indicators.filter(i => i.status === 'completed').length} of {area.indicators.length} indicators
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Hover Effect Overlay */}
+                        <div className={`absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-sm ${
+                          isActive ? 'hidden' : ''
+                        }`} />
+                      </TabsTrigger>
+                    );
+                  })}
+              </div>
+
+              {/* Essential Areas Grid */}
+              <div className="grid grid-cols-3 gap-4">
+                {assessment.governanceAreas
+                  .filter(area => !area.isCore)
+                  .map((area) => {
+                    const progress = getAreaProgress(area.id);
+                    const logoPath = getAreaLogo(area.name);
+                    const config = getAreaConfig(area.name);
+                    const isActive = activeTab === area.id;
+                    const isCompleted = progress === 100;
+                    
+                    return (
+                      <TabsTrigger
+                        key={area.id}
+                        value={area.id}
+                        className={`group relative flex flex-col items-center p-5 rounded-sm transition-all duration-300 hover:shadow-lg hover:scale-[1.03] min-h-[200px] overflow-hidden ${
+                          isActive 
+                            ? `bg-gradient-to-br ${config.bgGradient} shadow-xl scale-[1.05] border-2 ${config.borderColor}` 
+                            : 'bg-white/90 backdrop-blur-sm border-2 border-blue-200/60 hover:border-blue-300/80'
+                        }`}
+                      >
+                        {/* Optional/Completed Badge */}
+                        <div className={`absolute top-2 right-2 text-xs px-2 py-1 rounded-sm font-bold shadow-sm ${
+                          isCompleted 
+                            ? 'bg-green-500 text-white' 
+                            : 'bg-blue-500 text-white'
+                        }`}>
+                          {isCompleted ? 'COMPLETED' : 'OPTIONAL'}
+                        </div>
+                        
+                        {/* Decorative background for active state */}
+                        {isActive && (
+                          <>
+                            <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -translate-y-8 translate-x-8"></div>
+                            <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/5 rounded-full translate-y-6 -translate-x-6"></div>
+                          </>
+                        )}
+                        
+                        {/* Content */}
+                        <div className="relative z-10 flex flex-col items-center space-y-3 w-full pt-4">
+                          {/* Logo and Status */}
+                          <div className="relative">
+                            <div className={`w-16 h-16 rounded-sm p-3 shadow-md transition-all duration-200 ${
+                              isActive ? 'bg-white/95 shadow-lg' : 'bg-white/90 group-hover:shadow-lg'
+                            }`}>
+                              <Image
+                                src={logoPath}
+                                alt={`${area.name} logo`}
+                                width={40}
+                                height={40}
+                                className="object-contain w-full h-full"
+                              />
+                            </div>
+                            <div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+                              {getAreaStatusIcon(area.id)}
+                            </div>
+                          </div>
+                          
+                          {/* Area Code - Main Display */}
+                          <div className={`px-4 py-2 rounded-sm text-xl font-bold transition-colors duration-200 ${
+                            isActive 
+                              ? `${config.accentColor} bg-white/90 shadow-sm` 
+                              : 'text-gray-700 bg-gray-100/80 group-hover:bg-gray-200/80'
+                          }`}>
+                            {area.code}
+                          </div>
+                          
+                          {/* Area Name */}
+                          <div className="w-full h-12 flex items-center justify-center px-2">
+                            <div className={`text-xs text-center leading-tight font-semibold transition-colors duration-200 ${
+                              isActive ? 'text-gray-800' : 'text-gray-600 group-hover:text-gray-700'
+                            }`}>
+                              <div className="line-clamp-2 break-words">
+                                {area.name}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Progress Section */}
+                          <div className="w-full space-y-2 mt-auto">
+                            {/* Progress Percentage */}
+                            <div className={`text-center transition-colors duration-200 ${
+                              isActive ? config.accentColor : 'text-gray-700'
+                            }`}>
+                              <div className="text-xl font-bold">{progress}%</div>
+                              <div className="text-xs opacity-80">complete</div>
+                            </div>
+                            
+                            {/* Progress Bar */}
+                            <div className="w-full bg-gray-200/80 rounded-sm h-2 overflow-hidden shadow-inner">
+                              <div
+                                className={`h-full rounded-sm transition-all duration-500 ${
+                                  isActive 
+                                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600' 
+                                    : isCompleted
+                                    ? 'bg-gradient-to-r from-green-400 to-green-500'
+                                    : 'bg-gradient-to-r from-blue-400 to-blue-500'
+                                }`}
+                                style={{ width: `${progress}%` }}
+                              />
+                            </div>
+                            
+                            {/* Progress Text */}
+                            <div className="text-xs text-center text-gray-600">
+                              {area.indicators.filter(i => i.status === 'completed').length} of {area.indicators.length} indicators
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Hover Effect Overlay */}
+                        <div className={`absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-sm ${
+                          isActive ? 'hidden' : ''
+                        }`} />
+                      </TabsTrigger>
+                    );
+                  })}
+              </div>
+            </div>
           </TabsList>
         </div>
 
