@@ -102,7 +102,7 @@ export default function LoginForm() {
         setShouldFetchUser(false);
       });
     }
-  }, [shouldFetchUser, userQuery, setUser, router]);
+  }, [shouldFetchUser, userQuery, setUser, router, searchParams]);
 
   // Show toast on login success
   useEffect(() => {
