@@ -153,11 +153,11 @@ export default function BLGUDashboardPage() {
                     <div className="text-sm text-gray-600 group-hover:text-blue-700">Resume your current progress</div>
                   </button>
                   <button 
-                    onClick={() => router.push('/blgu/reports')}
+                    onClick={() => router.push('/blgu/profile')}
                     className="group w-full text-left p-4 rounded-sm bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 hover:from-green-100 hover:to-emerald-100 hover:border-green-300 transition-all duration-200 hover:shadow-md"
                   >
-                    <div className="font-semibold text-gray-900 group-hover:text-green-900">View Reports</div>
-                    <div className="text-sm text-gray-600 group-hover:text-green-700">Access detailed reports</div>
+                    <div className="font-semibold text-gray-900 group-hover:text-green-900">My Profile</div>
+                    <div className="text-sm text-gray-600 group-hover:text-green-700">Manage your account settings</div>
                   </button>
                 </div>
               </div>
