@@ -126,7 +126,7 @@ export function AssessmentTabs({ assessment, isLocked }: AssessmentTabsProps) {
                 <div className="w-1 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-sm"></div>
                 <div>
                   <h3 className="text-lg font-bold text-gray-900">Core Governance Areas</h3>
-                  <p className="text-sm text-gray-600">All 3 areas are required for assessment completion</p>
+                  <p className="text-sm text-gray-600">All 3 core areas must be completed for assessment completion</p>
                 </div>
               </div>
               <div className="bg-red-100 text-red-800 px-3 py-1 rounded-sm text-xs font-semibold uppercase tracking-wide">
@@ -140,7 +140,7 @@ export function AssessmentTabs({ assessment, isLocked }: AssessmentTabsProps) {
                 <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-blue-600 rounded-sm"></div>
                 <div>
                   <h3 className="text-lg font-bold text-gray-900">Essential Governance Areas</h3>
-                  <p className="text-sm text-gray-600">Choose and complete at least 1 area from the 3 options below</p>
+                  <p className="text-sm text-gray-600">Choose and complete at least 1 essential area from the 3 options below</p>
                 </div>
               </div>
               <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-sm text-xs font-semibold uppercase tracking-wide">
@@ -172,9 +172,9 @@ export function AssessmentTabs({ assessment, isLocked }: AssessmentTabsProps) {
                             : 'bg-white/90 backdrop-blur-sm border-2 border-red-200/60 hover:border-red-300/80'
                         }`}
                       >
-                        {/* Required Badge */}
+                        {/* Core Badge */}
                         <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-sm font-bold shadow-sm">
-                          REQUIRED
+                          CORE
                         </div>
                         
                         {/* Decorative background for active state */}
@@ -284,13 +284,9 @@ export function AssessmentTabs({ assessment, isLocked }: AssessmentTabsProps) {
                             : 'bg-white/90 backdrop-blur-sm border-2 border-blue-200/60 hover:border-blue-300/80'
                         }`}
                       >
-                        {/* Optional/Completed Badge */}
-                        <div className={`absolute top-2 right-2 text-xs px-2 py-1 rounded-sm font-bold shadow-sm ${
-                          isCompleted 
-                            ? 'bg-green-500 text-white' 
-                            : 'bg-blue-500 text-white'
-                        }`}>
-                          {isCompleted ? 'COMPLETED' : 'OPTIONAL'}
+                        {/* Essentials Badge */}
+                        <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-sm font-bold shadow-sm">
+                          ESSENTIALS
                         </div>
                         
                         {/* Decorative background for active state */}
