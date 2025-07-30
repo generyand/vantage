@@ -322,8 +322,8 @@ export default function UserListSection() {
                 No users found
               </h3>
               <p className="text-gray-600 mb-4">
-                No users match your search for &quot;{searchQuery}&quot;. Try adjusting
-                your search terms.
+                No users match your search for &quot;{searchQuery}&quot;. Try
+                adjusting your search terms.
               </p>
               <Button
                 variant="outline"

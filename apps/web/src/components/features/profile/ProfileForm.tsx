@@ -37,7 +37,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { User, Mail, MapPin, Shield, Info, Lock, Key, CheckCircle, Save } from 'lucide-react';
+import { User, Mail, MapPin, Shield, Info, Lock, Key, CheckCircle, Save, Phone } from 'lucide-react';
 import { User as UserType } from '@vantage/shared';
 
 // Password change form schema
@@ -166,14 +166,28 @@ export function ProfileForm({ user }: ProfileFormProps) {
                    </div>
                  </div>
                  
+                 {user?.role !== 'SUPERADMIN' && (
+                   <div className="space-y-3">
+                     <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                       <MapPin className="h-4 w-4 text-purple-600" />
+                       Assigned Barangay
+                     </label>
+                     <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
+                       <div className="text-base font-medium text-gray-600">
+                         {barangayLoading ? 'Loading...' : barangayName || 'N/A'}
+                       </div>
+                     </div>
+                   </div>
+                 )}
+                 
                  <div className="space-y-3">
                    <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                     <MapPin className="h-4 w-4 text-purple-600" />
-                     Assigned Barangay
+                     <Phone className="h-4 w-4 text-orange-600" />
+                     Mobile Number
                    </label>
                    <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
                      <div className="text-base font-medium text-gray-600">
-                       {barangayLoading ? 'Loading...' : barangayName || 'N/A'}
+                       {user?.phone_number || 'N/A'}
                      </div>
                    </div>
                  </div>
@@ -185,7 +199,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                    </label>
                    <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
                      <div className="text-base font-medium text-gray-600">
-                       {user?.role || 'N/A'}
+                       {user?.role ? user.role.replace(/_/g, ' ') : 'N/A'}
                      </div>
                    </div>
                  </div>
