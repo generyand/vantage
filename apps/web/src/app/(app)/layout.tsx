@@ -300,7 +300,7 @@ export default function AppLayout({
                     <p className="mt-1 text-sm text-gray-500">
                       {pathname === '/blgu/dashboard' && 'Welcome to your Barangay Local Government Unit dashboard'}
                       {pathname === '/blgu/assessments' && 'Manage and complete your SGLGB assessments'}
-                      {pathname === '/blgu/reports' && 'View and download your assessment reports'}
+                      {pathname === '/blgu/profile' && 'Manage your account settings, update your password, and view your profile information.'}
                     </p>
                   )}
                   {isAdmin && (

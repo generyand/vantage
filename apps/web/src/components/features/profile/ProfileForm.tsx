@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { usePostAuthChangePassword, usePostAuthLogout } from '@vantage/shared';
+import { useUserBarangay } from '@/hooks/useUserBarangay';
 import { 
   Card, 
   CardContent, 
@@ -36,7 +37,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { User } from '@vantage/shared';
+import { User, Mail, MapPin, Shield, Info, Lock, Key, CheckCircle, Save } from 'lucide-react';
+import { User as UserType } from '@vantage/shared';
 
 // Password change form schema
 const passwordChangeSchema = z.object({
@@ -54,13 +56,14 @@ const passwordChangeSchema = z.object({
 type PasswordChangeForm = z.infer<typeof passwordChangeSchema>;
 
 interface ProfileFormProps {
-  user: User | null;
+  user: UserType | null;
 }
 
 export function ProfileForm({ user }: ProfileFormProps) {
   const router = useRouter();
   const { logout } = useAuthStore();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const { barangayName, isLoading: barangayLoading } = useUserBarangay();
   
   const changePasswordMutation = usePostAuthChangePassword();
   const logoutMutation = usePostAuthLogout();
@@ -120,179 +123,245 @@ export function ProfileForm({ user }: ProfileFormProps) {
   };
 
   const allRequirementsMet = Object.values(passwordRequirements).every(Boolean);
+    return (
+    <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-stretch">
+      {/* User Details Section - Enhanced */}
+      <div className="xl:col-span-2">
+        <Card className="relative overflow-hidden bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-purple-50/40 border-0 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+          
+          <CardHeader className="relative z-10 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-sm"></div>
+              <CardTitle className="text-xl font-semibold text-gray-800">User Details</CardTitle>
+            </div>
+            <CardDescription className="text-gray-600">
+              Your account information and assigned role details
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent className="relative z-10 flex flex-col h-full">
+            <div className="space-y-6 flex-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                 <div className="space-y-3">
+                   <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                     <User className="h-4 w-4 text-blue-600" />
+                     Full Name
+                   </label>
+                   <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
+                     <div className="text-base font-medium text-gray-600">
+                       {user?.name || 'N/A'}
+                     </div>
+                   </div>
+                 </div>
+                 
+                 <div className="space-y-3">
+                   <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                     <Mail className="h-4 w-4 text-green-600" />
+                     Email Address (Login ID)
+                   </label>
+                   <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
+                     <div className="text-base font-medium text-gray-600">
+                       {user?.email || 'N/A'}
+                     </div>
+                   </div>
+                 </div>
+                 
+                 <div className="space-y-3">
+                   <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                     <MapPin className="h-4 w-4 text-purple-600" />
+                     Assigned Barangay
+                   </label>
+                   <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
+                     <div className="text-base font-medium text-gray-600">
+                       {barangayLoading ? 'Loading...' : barangayName || 'N/A'}
+                     </div>
+                   </div>
+                 </div>
+                 
+                 <div className="space-y-3">
+                   <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                     <Shield className="h-4 w-4 text-amber-600" />
+                     Role
+                   </label>
+                   <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
+                     <div className="text-base font-medium text-gray-600">
+                       {user?.role || 'N/A'}
+                     </div>
+                   </div>
+                 </div>
+              </div>
+            </div>
+            
+            <Alert className="bg-amber-50/80 border-amber-200/60 backdrop-blur-sm mt-6">
+              <Info className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-sm text-amber-800">
+                Your user details are managed by the administrator. To request a change, please contact your MLGOO-DILG.
+              </AlertDescription>
+            </Alert>
+          </CardContent>
+        </Card>
+      </div>
 
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {/* User Details Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">User Details</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Full Name</label>
-            <Input
-              value={user?.name || 'N/A'}
-              disabled
-              className="bg-gray-50"
-            />
-          </div>
+      {/* Password Change Section - Enhanced */}
+      <div className="space-y-6">
+                 <Card className="relative overflow-hidden bg-gradient-to-br from-green-50/80 via-emerald-50/60 to-teal-50/40 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
           
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Email Address (Login ID)</label>
-            <Input
-              value={user?.email || 'N/A'}
-              disabled
-              className="bg-gray-50"
-            />
-          </div>
+          <CardHeader className="relative z-10 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-6 bg-gradient-to-b from-green-500 to-emerald-600 rounded-sm"></div>
+              <CardTitle className="text-lg font-semibold text-gray-800">Change Password</CardTitle>
+            </div>
+            <CardDescription className="text-gray-600">
+              Update your password to keep your account secure
+            </CardDescription>
+          </CardHeader>
           
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Assigned Barangay</label>
-            <Input
-              value={user?.barangay_id ? `Barangay ${user.barangay_id}` : 'N/A'}
-              disabled
-              className="bg-gray-50"
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Role</label>
-            <Input
-              value={user?.role || 'N/A'}
-              disabled
-              className="bg-gray-50"
-            />
-          </div>
-          
-          <Alert>
-            <AlertDescription className="text-sm italic">
-              Your user details are managed by the administrator. To request a change, please contact your MLGOO-DILG.
-            </AlertDescription>
-          </Alert>
-        </CardContent>
-      </Card>
+          <CardContent className="relative z-10">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                <FormField
+                  control={form.control}
+                  name="currentPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold text-gray-700">Current Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type="password"
+                            placeholder="Enter your current password"
+                            className="bg-white/70 backdrop-blur-sm border-white/50 rounded-sm"
+                            {...field}
+                          />
+                          <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-      {/* Password Change Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">Change Your Password</CardTitle>
-          <CardDescription>
-            Update your password to keep your account secure
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="currentPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Current Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter your current password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="newPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>New Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter your new password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    
-                    {/* Password Requirements */}
-                    {newPassword && (
-                      <div className="mt-2 space-y-1">
-                        <p className="text-xs font-medium text-gray-600">Password Requirements:</p>
-                        <div className="space-y-1">
-                          <div className={`flex items-center gap-2 text-xs ${passwordRequirements.length ? 'text-green-600' : 'text-red-600'}`}>
-                            <span>{passwordRequirements.length ? '✓' : '✗'}</span>
-                            <span>At least 8 characters</span>
-                          </div>
-                          <div className={`flex items-center gap-2 text-xs ${passwordRequirements.number ? 'text-green-600' : 'text-red-600'}`}>
-                            <span>{passwordRequirements.number ? '✓' : '✗'}</span>
-                            <span>At least one number (0-9)</span>
-                          </div>
-                          <div className={`flex items-center gap-2 text-xs ${passwordRequirements.special ? 'text-green-600' : 'text-red-600'}`}>
-                            <span>{passwordRequirements.special ? '✓' : '✗'}</span>
-                            <span>At least one special character (!, @, #, etc.)</span>
+                <FormField
+                  control={form.control}
+                  name="newPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold text-gray-700">New Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type="password"
+                            placeholder="Enter your new password"
+                            className="bg-white/70 backdrop-blur-sm border-white/50 rounded-sm"
+                            {...field}
+                          />
+                          <Key className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                      
+                      {/* Enhanced Password Requirements */}
+                      {newPassword && (
+                        <div className="mt-3 bg-white/60 backdrop-blur-sm rounded-sm p-3 border border-white/50">
+                          <p className="text-xs font-semibold text-gray-700 mb-2">Password Requirements:</p>
+                          <div className="space-y-2">
+                            <div className={`flex items-center gap-2 text-xs ${passwordRequirements.length ? 'text-green-700' : 'text-red-600'}`}>
+                              <div className={`w-4 h-4 rounded-full flex items-center justify-center text-white text-xs ${passwordRequirements.length ? 'bg-green-500' : 'bg-red-500'}`}>
+                                {passwordRequirements.length ? '✓' : '✗'}
+                              </div>
+                              <span>At least 8 characters</span>
+                            </div>
+                            <div className={`flex items-center gap-2 text-xs ${passwordRequirements.number ? 'text-green-700' : 'text-red-600'}`}>
+                              <div className={`w-4 h-4 rounded-full flex items-center justify-center text-white text-xs ${passwordRequirements.number ? 'bg-green-500' : 'bg-red-500'}`}>
+                                {passwordRequirements.number ? '✓' : '✗'}
+                              </div>
+                              <span>At least one number (0-9)</span>
+                            </div>
+                            <div className={`flex items-center gap-2 text-xs ${passwordRequirements.special ? 'text-green-700' : 'text-red-600'}`}>
+                              <div className={`w-4 h-4 rounded-full flex items-center justify-center text-white text-xs ${passwordRequirements.special ? 'bg-green-500' : 'bg-red-500'}`}>
+                                {passwordRequirements.special ? '✓' : '✗'}
+                              </div>
+                              <span>At least one special character</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm New Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Confirm your new password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="pt-4">
-                <Button
-                  type="submit"
-                  disabled={!allRequirementsMet || changePasswordMutation.isPending}
-                  className="w-full"
-                >
-                  {changePasswordMutation.isPending ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Updating Password...
-                    </>
-                  ) : (
-                    'Save Changes'
+                      )}
+                    </FormItem>
                   )}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+                />
 
-      {/* Logout Dialog */}
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold text-gray-700">Confirm New Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type="password"
+                            placeholder="Confirm your new password"
+                            className="bg-white/70 backdrop-blur-sm border-white/50 rounded-sm"
+                            {...field}
+                          />
+                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="pt-4">
+                  <Button
+                    type="submit"
+                    disabled={!allRequirementsMet || changePasswordMutation.isPending}
+                    className="w-full h-12 text-sm font-semibold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-sm shadow-lg hover:shadow-xl transition-all duration-200"
+                  >
+                    {changePasswordMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Updating Password...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Changes
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+
+        
+      </div>
+
+      {/* Enhanced Logout Dialog */}
       <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-gradient-to-br from-white to-blue-50/30 border-0 shadow-2xl">
           <AlertDialogHeader>
-            <AlertDialogTitle>Password Updated Successfully</AlertDialogTitle>
-            <AlertDialogDescription>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <CheckCircle className="h-6 w-6 text-green-600" />
+              </div>
+              <div>
+                <AlertDialogTitle className="text-xl font-semibold text-gray-900">Password Updated Successfully</AlertDialogTitle>
+              </div>
+            </div>
+            <AlertDialogDescription className="text-gray-600 leading-relaxed">
               For security reasons, you will be logged out and redirected to the login page. 
               Please log in again with your new password.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleLogout}>
+          <AlertDialogFooter className="gap-3">
+            <AlertDialogCancel className="rounded-sm">Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleLogout}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-sm"
+            >
               Continue to Login
             </AlertDialogAction>
           </AlertDialogFooter>
