@@ -6,7 +6,6 @@ import {
   CheckCircle2, 
   Clock, 
   AlertTriangle, 
-  FileCheck,
   TrendingUp 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -31,48 +30,68 @@ const KPICard = ({
   showProgress = false 
 }: KPICardProps) => {
   const variantStyles = {
-    default: 'bg-blue-50 text-blue-600',
-    success: 'bg-green-50 text-green-600',
-    warning: 'bg-orange-50 text-orange-600',
-    danger: 'bg-red-50 text-red-600'
+    default: {
+      bgGradient: 'from-blue-50/80 via-indigo-50/60 to-purple-50/40',
+      iconBg: 'bg-blue-100',
+      iconColor: 'text-blue-600',
+      accentColor: 'text-blue-600'
+    },
+    success: {
+      bgGradient: 'from-emerald-50/80 via-green-50/60 to-teal-50/40',
+      iconBg: 'bg-green-100',
+      iconColor: 'text-green-600',
+      accentColor: 'text-green-600'
+    },
+    warning: {
+      bgGradient: 'from-amber-50/80 via-orange-50/60 to-red-50/40',
+      iconBg: 'bg-orange-100',
+      iconColor: 'text-orange-600',
+      accentColor: 'text-orange-600'
+    },
+    danger: {
+      bgGradient: 'from-red-50/80 via-pink-50/60 to-rose-50/40',
+      iconBg: 'bg-red-100',
+      iconColor: 'text-red-600',
+      accentColor: 'text-red-600'
+    }
   };
 
-  const progressColors = {
-    default: 'bg-blue-600',
-    success: 'bg-green-600',
-    warning: 'bg-orange-600',
-    danger: 'bg-red-600'
-  };
+  const config = variantStyles[variant];
 
   return (
-    <Card className="relative overflow-hidden">
-      <CardHeader className="pb-3">
+    <Card className={`relative overflow-hidden bg-gradient-to-br ${config.bgGradient} border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]`}>
+      {/* Decorative background elements */}
+      <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
+      <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/5 rounded-full translate-y-8 -translate-x-8"></div>
+      
+      <CardHeader className="pb-4 relative z-10">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardTitle className="text-sm font-semibold text-gray-700">
             {title}
           </CardTitle>
-          <div className={cn('p-2 rounded-lg', variantStyles[variant])}>
-            <Icon className="h-4 w-4" />
+          <div className={cn('p-3 rounded-sm shadow-sm', config.iconBg)}>
+            <Icon className={cn('h-5 w-5', config.iconColor)} />
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
-          <div className="text-3xl font-bold text-foreground">
+      <CardContent className="relative z-10">
+        <div className="space-y-3">
+          <div className="text-3xl font-bold text-gray-900">
             {value}
           </div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-600 leading-relaxed">
             {description}
           </p>
           {showProgress && progress !== undefined && (
-            <div className="space-y-1">
+            <div className="space-y-2 bg-white/60 backdrop-blur-sm rounded-sm p-3">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-medium text-gray-700">Progress</span>
+                <span className={cn('text-xs font-bold', config.accentColor)}>{progress}%</span>
+              </div>
               <Progress 
                 value={progress} 
-                className="h-2"
+                className="h-2 bg-gray-200/60"
               />
-              <p className="text-xs text-muted-foreground">
-                {progress}% complete
-              </p>
             </div>
           )}
         </div>

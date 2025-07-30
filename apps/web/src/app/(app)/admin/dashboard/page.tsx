@@ -101,47 +101,100 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
-      {/* Header Section */}
-      <DashboardHeader
-        municipality={dashboardData.municipality}
-        performanceYear={dashboardData.performanceYear}
-        assessmentYear={dashboardData.assessmentYear}
-        onAssessmentYearChange={setAssessmentYear}
-      />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="space-y-8">
+          {/* Enhanced Header Section */}
+          <DashboardHeader
+            municipality={dashboardData.municipality}
+            performanceYear={dashboardData.performanceYear}
+            assessmentYear={dashboardData.assessmentYear}
+            onAssessmentYearChange={setAssessmentYear}
+          />
 
-      {/* Key Performance Indicator (KPI) Row */}
-      <KPICards data={dashboardData.kpiData} />
+          {/* Enhanced KPI Cards */}
+          <KPICards data={dashboardData.kpiData} />
 
-      {/* Municipal Progress Visualization */}
-      <MunicipalProgressChart 
-        data={dashboardData.municipalProgress}
-        totalBarangays={dashboardData.totalBarangays}
-      />
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            {/* Left Column - Municipal Progress (2/3 width) */}
+            <div className="xl:col-span-2">
+              <MunicipalProgressChart 
+                data={dashboardData.municipalProgress}
+                totalBarangays={dashboardData.totalBarangays}
+              />
+            </div>
 
-      {/* Actionable Intelligence Sections */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Assessor Queue */}
-        <AssessorQueue data={dashboardData.assessorQueue} />
-        
-        {/* Failed Indicators */}
-        <FailedIndicators 
-          data={dashboardData.failedIndicators}
-          totalBarangays={dashboardData.totalBarangays}
-        />
-      </div>
+            {/* Right Column - Quick Stats (1/3 width) */}
+            <div className="space-y-6">
+              {/* Real-time Status Card */}
+              <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 p-6 hover:shadow-xl transition-shadow duration-300">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-1 h-6 bg-gradient-to-b from-green-500 to-emerald-600 rounded-sm"></div>
+                  <h3 className="text-lg font-semibold text-gray-900">System Status</h3>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 bg-green-50/50 rounded-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-sm font-medium text-gray-700">Live Data</span>
+                    </div>
+                    <span className="text-xs text-green-600 font-semibold">ACTIVE</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-blue-50/50 rounded-sm">
+                    <span className="text-sm font-medium text-gray-700">Last Updated</span>
+                    <span className="text-xs text-gray-600">{new Date().toLocaleTimeString()}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-purple-50/50 rounded-sm">
+                    <span className="text-sm font-medium text-gray-700">Auto-refresh</span>
+                    <span className="text-xs text-purple-600 font-semibold">30s</span>
+                  </div>
+                </div>
+              </div>
 
-      {/* Real-time Status Footer */}
-      <div className="mt-8 pt-6 border-t border-border">
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <div className="flex items-center space-x-4">
-            <span>Dashboard last updated: {new Date().toLocaleString()}</span>
-            <span>•</span>
-            <span>Auto-refresh every 30 seconds</span>
+              {/* Quick Actions Card */}
+              <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 p-6 hover:shadow-xl transition-shadow duration-300">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-sm"></div>
+                  <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
+                </div>
+                <div className="space-y-3">
+                  <button 
+                    onClick={() => router.push('/admin/submissions')}
+                    className="group w-full text-left p-4 rounded-sm bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/50 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transition-all duration-200 hover:shadow-md"
+                  >
+                    <div className="font-semibold text-gray-900 group-hover:text-blue-900">Review Submissions</div>
+                    <div className="text-sm text-gray-600 group-hover:text-blue-700">Check pending assessments</div>
+                  </button>
+                  <button 
+                    onClick={() => router.push('/admin/reports')}
+                    className="group w-full text-left p-4 rounded-sm bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 hover:from-green-100 hover:to-emerald-100 hover:border-green-300 transition-all duration-200 hover:shadow-md"
+                  >
+                    <div className="font-semibold text-gray-900 group-hover:text-green-900">Generate Reports</div>
+                    <div className="text-sm text-gray-600 group-hover:text-green-700">View analytics & insights</div>
+                  </button>
+                  <button 
+                    onClick={() => router.push('/user-management')}
+                    className="group w-full text-left p-4 rounded-sm bg-gradient-to-r from-purple-50 to-violet-50 border border-purple-200/50 hover:from-purple-100 hover:to-violet-100 hover:border-purple-300 transition-all duration-200 hover:shadow-md"
+                  >
+                    <div className="font-semibold text-gray-900 group-hover:text-purple-900">Manage Users</div>
+                    <div className="text-sm text-gray-600 group-hover:text-purple-700">User accounts & permissions</div>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span>Live data</span>
+
+          {/* Enhanced Actionable Intelligence Sections */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            {/* Assessor Queue */}
+            <AssessorQueue data={dashboardData.assessorQueue} />
+            
+            {/* Failed Indicators */}
+            <FailedIndicators 
+              data={dashboardData.failedIndicators}
+              totalBarangays={dashboardData.totalBarangays}
+            />
           </div>
         </div>
       </div>

@@ -33,14 +33,19 @@ const statusConfig = {
 
 export function MunicipalProgressChart({ data, totalBarangays }: MunicipalProgressChartProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold">
-          Live Status of All Barangays
-        </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Distribution of {totalBarangays} barangays across assessment stages
-        </p>
+    <Card className="bg-gradient-to-br from-white to-gray-50/50 border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <CardHeader className="pb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-sm"></div>
+          <div>
+            <CardTitle className="text-xl font-bold text-gray-900">
+              Live Status of All Barangays
+            </CardTitle>
+            <p className="text-sm text-gray-600 mt-1">
+              Distribution of {totalBarangays} barangays across assessment stages
+            </p>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -52,44 +57,43 @@ export function MunicipalProgressChart({ data, totalBarangays }: MunicipalProgre
               <TooltipProvider key={item.status}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="group cursor-pointer">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-2">
+                    <div className="group cursor-pointer p-4 rounded-sm bg-white/60 backdrop-blur-sm border border-gray-200/50 hover:border-gray-300/80 hover:shadow-md transition-all duration-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-3">
                           <Badge 
                             variant="secondary" 
-                            className={cn('text-xs font-medium', config.bgColor, config.color)}
+                            className={cn('text-xs font-semibold px-3 py-1 rounded-sm', config.bgColor, config.color)}
                           >
                             {item.status}
                           </Badge>
-                          <span className="text-sm font-medium text-foreground">
+                          <span className="text-lg font-bold text-gray-900">
                             {item.count}
                           </span>
+                          <span className="text-sm text-gray-600">barangays</span>
                         </div>
-                        <span className="text-sm text-muted-foreground">
-                          {item.percentage}%
-                        </span>
+                        <div className="text-right">
+                          <span className="text-xl font-bold text-gray-900">
+                            {item.percentage}%
+                          </span>
+                          <div className="text-xs text-gray-500">of total</div>
+                        </div>
                       </div>
                       
-                      <div className="relative w-full h-8 bg-gray-100 rounded-lg overflow-hidden">
+                      <div className="relative w-full h-3 bg-gray-200/80 rounded-sm overflow-hidden shadow-inner">
                         <div
                           className={cn(
-                            'h-full transition-all duration-500 ease-out rounded-lg',
+                            'h-full transition-all duration-1000 ease-out rounded-sm',
                             config.bgColor
                           )}
                           style={{ width: `${item.percentage}%` }}
                         />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-xs font-medium text-foreground">
-                            {item.count} Barangays
-                          </span>
-                        </div>
                       </div>
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent>
-                    <div className="text-center">
-                      <p className="font-medium">{item.status}</p>
-                      <p className="text-sm text-muted-foreground">
+                  <TooltipContent className="bg-white/95 backdrop-blur-sm border-0 shadow-xl">
+                    <div className="text-center p-2">
+                      <p className="font-semibold text-gray-900">{item.status}</p>
+                      <p className="text-sm text-gray-600">
                         {item.count} Barangays ({item.percentage}%)
                       </p>
                     </div>
@@ -100,10 +104,16 @@ export function MunicipalProgressChart({ data, totalBarangays }: MunicipalProgre
           })}
         </div>
         
-        <div className="mt-6 pt-4 border-t border-border">
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span>Total Barangays: {totalBarangays}</span>
-            <span>Last updated: {new Date().toLocaleTimeString()}</span>
+        <div className="mt-6 pt-4 border-t border-gray-200/60">
+          <div className="flex items-center justify-between bg-gray-50/50 rounded-sm p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span className="text-sm font-medium text-gray-700">Total Barangays: {totalBarangays}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm text-gray-600">Last updated: {new Date().toLocaleTimeString()}</span>
+            </div>
           </div>
         </div>
       </CardContent>
