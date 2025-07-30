@@ -40,7 +40,6 @@ export default function BLGUDashboardPage() {
       console.log('User barangay:', barangayName);
     }
   }, [data, barangayName]);
-
   // Show loading if not authenticated
   if (!isAuthenticated) {
     return (
