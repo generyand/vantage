@@ -1,16 +1,29 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useGetUsersMe } from '@vantage/shared';
+import { 
+  DashboardHeader,
+  KPICards,
+  MunicipalProgressChart,
+  AssessorQueue,
+  FailedIndicators,
+  AdminDashboardSkeleton
+} from '@/components/features/dashboard';
+import { useAdminDashboard } from '@/hooks/useAdminDashboard';
 
-export default function DashboardPage() {
+export default function AdminDashboardPage() {
   const router = useRouter();
   const { user, setUser, isAuthenticated } = useAuthStore();
+  const [assessmentYear, setAssessmentYear] = useState('2024');
 
   // Auto-generated hook to fetch current user data
   const userQuery = useGetUsersMe();
+  
+  // Admin dashboard data hook
+  const dashboardQuery = useAdminDashboard(assessmentYear);
 
   // Redirect unauthenticated users to login
   useEffect(() => {
@@ -39,123 +52,97 @@ export default function DashboardPage() {
     );
   }
 
-  // Show loading if not authenticated
-  if (!isAuthenticated) {
+  // Show loading skeleton while dashboard data is loading
+  if (dashboardQuery.isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="container mx-auto px-4 py-8">
+        <AdminDashboardSkeleton />
+      </div>
+    );
+  }
+
+  // Show error state
+  if (dashboardQuery.error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Redirecting to login...</p>
+          <div className="text-red-600 mb-4">
+            <svg className="h-12 w-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Error Loading Dashboard
+          </h2>
+          <p className="text-gray-600 mb-4">
+            Unable to load dashboard data. Please try refreshing the page.
+          </p>
+          <button 
+            onClick={() => dashboardQuery.refetch()}
+            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const dashboardData = dashboardQuery.data;
+
+  if (!dashboardData) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <p className="text-gray-600">No dashboard data available.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Welcome to your Vantage dashboard
-          </p>
-        </div>
+    <div className="container mx-auto px-4 py-8 space-y-8">
+      {/* Header Section */}
+      <DashboardHeader
+        municipality={dashboardData.municipality}
+        performanceYear={dashboardData.performanceYear}
+        assessmentYear={dashboardData.assessmentYear}
+        onAssessmentYearChange={setAssessmentYear}
+      />
+
+      {/* Key Performance Indicator (KPI) Row */}
+      <KPICards data={dashboardData.kpiData} />
+
+      {/* Municipal Progress Visualization */}
+      <MunicipalProgressChart 
+        data={dashboardData.municipalProgress}
+        totalBarangays={dashboardData.totalBarangays}
+      />
+
+      {/* Actionable Intelligence Sections */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Assessor Queue */}
+        <AssessorQueue data={dashboardData.assessorQueue} />
+        
+        {/* Failed Indicators */}
+        <FailedIndicators 
+          data={dashboardData.failedIndicators}
+          totalBarangays={dashboardData.totalBarangays}
+        />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Quick Stats */}
-        <div className="bg-white rounded-sm shadow p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-blue-500 rounded-sm flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Assessments</p>
-              <p className="text-2xl font-semibold text-gray-900">12</p>
-            </div>
+      {/* Real-time Status Footer */}
+      <div className="mt-8 pt-6 border-t border-border">
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <div className="flex items-center space-x-4">
+            <span>Dashboard last updated: {new Date().toLocaleString()}</span>
+            <span>•</span>
+            <span>Auto-refresh every 30 seconds</span>
           </div>
-        </div>
-
-        <div className="bg-white rounded-sm shadow p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-500 rounded-sm flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Completed</p>
-              <p className="text-2xl font-semibold text-gray-900">8</p>
-            </div>
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span>Live data</span>
           </div>
-        </div>
-
-        <div className="bg-white rounded-sm shadow p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-yellow-500 rounded-sm flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">In Progress</p>
-              <p className="text-2xl font-semibold text-gray-900">4</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* User Profile Section */}
-      <div className="bg-white rounded-sm shadow">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">Profile Information</h2>
-        </div>
-        <div className="p-6">
-          {user ? (
-            <div className="flex items-center space-x-4">
-              <div className="bg-blue-100 rounded-full p-3">
-                <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900">{user.name}</h3>
-                <p className="text-gray-600">{user.email}</p>
-                <p className="text-sm text-gray-500">
-                  Role: {user.role}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Member since {new Date(user.created_at).toLocaleDateString()}
-                </p>
-                {user.must_change_password && (
-                  <p className="text-sm text-red-600 mt-2">
-                    ⚠️ You must change your password
-                  </p>
-                )}
-              </div>
-            </div>
-          ) : userQuery.isLoading ? (
-            <div className="flex items-center space-x-2 text-gray-500">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-500"></div>
-              <span>Loading user data...</span>
-            </div>
-          ) : userQuery.error ? (
-            <div className="text-red-500">
-              Error loading user data. Please try refreshing the page.
-            </div>
-          ) : (
-            <div className="text-gray-500">
-              No user data available. Please log out and log back in.
-            </div>
-          )}
         </div>
       </div>
     </div>
