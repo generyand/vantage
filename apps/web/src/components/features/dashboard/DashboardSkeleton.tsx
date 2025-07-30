@@ -1,90 +1,182 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/Skeleton';
 
 export function DashboardSkeleton() {
   return (
-    <div className="space-y-6">
-      {/* Header Skeleton */}
-      <div className="space-y-2">
-        <Skeleton className="h-8 w-96" />
-        <Skeleton className="h-5 w-64" />
-      </div>
-
-      {/* Status Card Skeleton */}
-      <Card className="border-blue-200 bg-blue-50">
-        <CardHeader>
-          <Skeleton className="h-6 w-48" />
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center gap-3">
-            <Skeleton className="h-5 w-5" />
-            <Skeleton className="h-6 w-24" />
-            <Skeleton className="h-6 w-80" />
-          </div>
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-4 w-32" />
-            </div>
-            <Skeleton className="h-3 w-full" />
-            <Skeleton className="h-4 w-20" />
-          </div>
-          <Skeleton className="h-12 w-full" />
-        </CardContent>
-      </Card>
-
-      {/* Feedback Section Skeleton */}
-      <Card className="border-orange-200 bg-orange-50">
-        <CardHeader>
-          <Skeleton className="h-6 w-64" />
-          <Skeleton className="h-4 w-80" />
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-lg p-4 border border-orange-200">
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <Skeleton className="h-4 w-20" />
-                  <Skeleton className="h-4 w-4" />
-                  <Skeleton className="h-4 w-32" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="space-y-8">
+          {/* Enhanced Header Section Skeleton */}
+          <div className="relative overflow-hidden bg-gradient-to-r from-white via-blue-50/50 to-indigo-50/30 rounded-sm shadow-lg border-0 p-8">
+            {/* Decorative background elements */}
+            <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-100/40 to-indigo-100/20 rounded-full -translate-y-20 translate-x-20"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-purple-100/30 to-pink-100/20 rounded-full translate-y-16 -translate-x-16"></div>
+            
+            <div className="relative z-10">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="w-2 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-sm" />
+                    <Skeleton className="h-9 w-96" />
+                  </div>
+                  <div className="flex items-center gap-6">
+                    <Skeleton className="h-8 w-48" />
+                    <Skeleton className="h-8 w-48" />
+                  </div>
                 </div>
-                <Skeleton className="h-4 w-full" />
+                
+                {/* Enhanced Quick Stats Skeleton */}
+                <div className="flex items-center gap-6">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="bg-white/80 backdrop-blur-sm rounded-sm p-4 text-center shadow-sm">
+                      <Skeleton className="h-8 w-16 mx-auto mb-1" />
+                      <Skeleton className="h-3 w-20 mx-auto" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          ))}
-          <div className="flex justify-center">
-            <Skeleton className="h-10 w-48" />
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Governance Areas Grid Skeleton */}
-      <div className="space-y-4">
-        <Skeleton className="h-6 w-32 mx-auto" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Card key={i}>
-              <CardHeader className="pb-3">
-                <div className="flex items-start gap-2">
-                  <Skeleton className="h-5 w-5" />
-                  <Skeleton className="h-4 flex-1" />
+          {/* Main Content Grid with enhanced layout */}
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+            {/* Left Column - Status and Feedback (3/4 width) */}
+            <div className="xl:col-span-3 space-y-8">
+              {/* Primary Status Card Skeleton */}
+              <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Skeleton className="w-1 h-6 bg-gradient-to-b from-green-500 to-emerald-600 rounded-sm" />
+                  <Skeleton className="h-6 w-32" />
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Skeleton className="h-4 w-4" />
-                  <Skeleton className="h-5 w-20" />
-                </div>
-                <div className="space-y-1">
-                  <div className="flex justify-between">
-                    <Skeleton className="h-3 w-12" />
-                    <Skeleton className="h-3 w-8" />
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-5 w-5" />
+                    <Skeleton className="h-6 w-24" />
+                    <Skeleton className="h-6 w-80" />
                   </div>
-                  <Skeleton className="h-2 w-full" />
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <Skeleton className="h-4 w-16" />
+                      <Skeleton className="h-4 w-32" />
+                    </div>
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-4 w-20" />
+                  </div>
+                  <Skeleton className="h-12 w-full" />
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+
+              {/* Action Required: Rework Section Skeleton */}
+              <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Skeleton className="w-1 h-6 bg-gradient-to-b from-orange-500 to-red-600 rounded-sm" />
+                  <Skeleton className="h-6 w-48" />
+                </div>
+                <Skeleton className="h-4 w-80 mb-4" />
+                <div className="space-y-4">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="bg-orange-50/50 rounded-sm p-4 border border-orange-200/50">
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-4 w-4" />
+                          <Skeleton className="h-4 w-32" />
+                        </div>
+                        <Skeleton className="h-4 w-full" />
+                      </div>
+                    </div>
+                  ))}
+                  <div className="flex justify-center">
+                    <Skeleton className="h-10 w-48" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Enhanced Sidebar (1/4 width) */}
+            <div className="space-y-6">
+              {/* Quick Actions Card Skeleton */}
+              <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Skeleton className="w-1 h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-sm" />
+                  <Skeleton className="h-6 w-32" />
+                </div>
+                <div className="space-y-3">
+                  {Array.from({ length: 2 }).map((_, i) => (
+                    <div key={i} className="p-4 rounded-sm bg-gray-50/50 border border-gray-200/50">
+                      <Skeleton className="h-5 w-32 mb-1" />
+                      <Skeleton className="h-4 w-48" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Assessment Summary Skeleton */}
+              <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Skeleton className="w-1 h-6 bg-gradient-to-b from-purple-500 to-pink-600 rounded-sm" />
+                  <Skeleton className="h-6 w-40" />
+                </div>
+                <div className="space-y-4">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="flex justify-between items-center p-3 bg-gray-50/50 rounded-sm">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-6 w-8" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recent Activity Card Skeleton */}
+              <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Skeleton className="w-1 h-6 bg-gradient-to-b from-indigo-500 to-purple-600 rounded-sm" />
+                  <Skeleton className="h-6 w-32" />
+                </div>
+                <div className="space-y-3">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="flex items-center gap-3 p-2">
+                      <Skeleton className="w-2 h-2 rounded-full" />
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-12 ml-auto" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Governance Areas Grid Skeleton - Full Width */}
+          <div className="mt-12">
+            <div className="text-center mb-6">
+              <Skeleton className="h-6 w-48 mx-auto" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 p-6">
+                  <div className="flex items-start gap-3 mb-4">
+                    <Skeleton className="w-12 h-12 rounded-sm" />
+                    <div className="flex-1">
+                      <Skeleton className="h-5 w-32 mb-2" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Skeleton className="h-4 w-4" />
+                      <Skeleton className="h-5 w-20" />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between">
+                        <Skeleton className="h-3 w-12" />
+                        <Skeleton className="h-3 w-8" />
+                      </div>
+                      <Skeleton className="h-2 w-full" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

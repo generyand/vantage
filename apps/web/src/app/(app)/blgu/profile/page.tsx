@@ -1,10 +1,22 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
-import { ProfileForm } from '@/components/features/profile/ProfileForm';
+import { ProfileForm, ProfileSkeleton } from '@/components/features/profile';
 
 export default function BLGUProfilePage() {
   const { isAuthenticated, user } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Show loading skeleton while page is initializing
+  useEffect(() => {
+    // Simulate a brief loading time to show the skeleton
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000); // Show skeleton for 1 second
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Show loading if not authenticated
   if (!isAuthenticated) {
@@ -18,12 +30,16 @@ export default function BLGUProfilePage() {
     );
   }
 
+  if (isLoading) {
+    return <ProfileSkeleton />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                 <div className="space-y-8">
-           {/* Profile Form */}
-           <ProfileForm user={user} />
+        <div className="space-y-8">
+          {/* Profile Form */}
+          <ProfileForm user={user} />
         </div>
       </div>
     </div>

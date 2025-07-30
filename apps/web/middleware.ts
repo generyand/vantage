@@ -40,6 +40,8 @@ export function middleware(request: NextRequest) {
   const authToken = request.cookies.get('auth-token')?.value;
   const isAuthenticated = !!authToken;
   
+  console.log(`Middleware: Path: ${pathname}, Auth token: ${authToken ? 'present' : 'missing'}, Authenticated: ${isAuthenticated}`);
+  
   // If user is authenticated and trying to access auth routes, redirect to appropriate dashboard
   if (isAuthenticated && isAuthRoute) {
     // Try to get user role from the token
@@ -93,16 +95,11 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(dashboardUrl);
       }
       
-      // Check if user is trying to access BLGU routes
-      const isBLGURoute = pathname.startsWith('/blgu');
+      // For all other protected routes (including BLGU routes), allow access
+      // BLGU users can access BLGU routes
+      // Admin users can access both admin and BLGU routes
+      console.log(`Middleware: Allowing user (${userRole}) to access route: ${pathname}`);
       
-      // Only allow BLGU users to access BLGU routes
-      if (isBLGURoute && (userRole === 'SUPERADMIN' || userRole === 'MLGOO_DILG')) {
-        console.log(`Middleware: Redirecting admin user (${userRole}) from ${pathname} to /admin/dashboard`);
-        // Redirect admin users to their appropriate dashboard
-        const dashboardUrl = new URL('/admin/dashboard', request.url);
-        return NextResponse.redirect(dashboardUrl);
-      }
     } catch (error) {
       // If token decoding fails, allow access (fallback)
       console.error('Error decoding token in middleware:', error);

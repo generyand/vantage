@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { usePostAuthLogin, useGetUsersMe } from "@vantage/shared";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [shouldFetchUser, setShouldFetchUser] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Get auth store actions
   const { setToken, setUser } = useAuthStore();
@@ -66,11 +67,32 @@ export default function LoginForm() {
           console.log("User data fetched:", result.data);
           // Store user in auth store
           setUser(result.data);
+
+          // Check for redirect parameter first, then fall back to dashboard
+          const redirectTo = searchParams.get('redirect');
+          let targetPath;
           
-          // Redirect to appropriate dashboard based on user role
-          const isAdmin = result.data.role === 'SUPERADMIN' || result.data.role === 'MLGOO_DILG';
-          const dashboardPath = isAdmin ? '/admin/dashboard' : '/blgu/dashboard';
-          router.replace(dashboardPath);
+          if (redirectTo) {
+            // Validate the redirect path to prevent open redirects
+            const isValidRedirect = redirectTo.startsWith('/blgu/') || 
+                                   redirectTo.startsWith('/admin/') || 
+                                   redirectTo.startsWith('/user-management/') ||
+                                   redirectTo.startsWith('/change-password');
+            
+            if (isValidRedirect) {
+              targetPath = redirectTo;
+            } else {
+              // Fall back to dashboard if redirect is invalid
+              const isAdmin = result.data.role === "SUPERADMIN" || result.data.role === "MLGOO_DILG";
+              targetPath = isAdmin ? "/admin/dashboard" : "/blgu/dashboard";
+            }
+          } else {
+            // No redirect parameter, go to appropriate dashboard
+            const isAdmin = result.data.role === "SUPERADMIN" || result.data.role === "MLGOO_DILG";
+            targetPath = isAdmin ? "/admin/dashboard" : "/blgu/dashboard";
+          }
+          
+          router.replace(targetPath);
         } else if (result.error) {
           console.error("Failed to fetch user data:", result.error);
           // Even if user fetch fails, we can still redirect to dashboard
@@ -80,7 +102,7 @@ export default function LoginForm() {
         setShouldFetchUser(false);
       });
     }
-  }, [shouldFetchUser, userQuery, setUser, router]);
+  }, [shouldFetchUser, userQuery, setUser, router, searchParams]);
 
   // Show toast on login success
   useEffect(() => {
@@ -135,11 +157,15 @@ export default function LoginForm() {
       {Boolean(loginMutation.isPending) ? (
         <>
           <div>
-            <Label className="block text-sm font-medium text-gray-700 mb-2">Email</Label>
+            <Label className="block text-sm font-medium text-gray-700 mb-2">
+              Email
+            </Label>
             <Skeleton shape="rounded" size="lg" width="full" className="mb-2" />
           </div>
           <div className="mt-4">
-            <Label className="block text-sm font-medium text-gray-700 mb-2">Password</Label>
+            <Label className="block text-sm font-medium text-gray-700 mb-2">
+              Password
+            </Label>
             <Skeleton shape="rounded" size="lg" width="full" className="mb-2" />
           </div>
           <Skeleton shape="rounded" size="lg" width="full" className="mt-4" />
@@ -206,12 +232,14 @@ export default function LoginForm() {
           <Button
             type="submit"
             disabled={loginMutation.isPending}
-            className="w-full mt-2 text-lg h-12"
+            className="w-full mt-2 text-lg h-12 text-white"
           >
             {loginMutation.isPending ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                {loginMutation.isPending ? "Signing in..." : "Loading user data..."}
+                {loginMutation.isPending
+                  ? "Signing in..."
+                  : "Loading user data..."}
               </>
             ) : (
               "Sign in"

@@ -1,86 +1,108 @@
-'use client';
+"use client";
 
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from "@/store/useAuthStore";
+import { 
+  AssessmentHeader, 
+  AssessmentTabs, 
+  AssessmentLockedBanner, 
+  AssessmentSkeleton 
+} from "@/components/features/assessments";
+import { useCurrentAssessment, useAssessmentValidation } from "@/hooks/useAssessment";
 
 export default function BLGUAssessmentsPage() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user, token } = useAuthStore();
+  const { data: assessment, isLoading, error } = useCurrentAssessment();
+  const validation = useAssessmentValidation(assessment);
 
-  // Show loading if not authenticated
-  if (!isAuthenticated) {
+  // Show loading if not authenticated or if auth state is still loading
+  if (!isAuthenticated || !user || !token) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Redirecting to login...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading authentication...</p>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Assessments</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Manage and complete your SGLGB assessments
-          </p>
+  // Show loading state
+  if (isLoading) {
+    return <AssessmentSkeleton />;
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 via-red-50/30 to-pink-50/20">
+        <div className="text-center bg-white/80 backdrop-blur-sm rounded-sm p-8 shadow-lg border border-red-200/50">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-red-800 mb-2">Error Loading Assessment</h3>
+          <p className="text-red-600 mb-4">{error.message}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700 transition-colors duration-200"
+          >
+            Try Again
+          </button>
         </div>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-sm hover:bg-blue-700 transition-colors">
-          Start New Assessment
-        </button>
       </div>
+    );
+  }
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Assessment Cards */}
-        <div className="bg-white rounded-sm shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Peace and Order</h3>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-              Completed
-            </span>
+  // Show error if no assessment data
+  if (!assessment) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 via-amber-50/30 to-orange-50/20">
+        <div className="text-center bg-white/80 backdrop-blur-sm rounded-sm p-8 shadow-lg border border-amber-200/50">
+          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
           </div>
-          <p className="text-gray-600 mb-4">Assessment of peace and order initiatives in your barangay.</p>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-500">Score: 85%</span>
-            <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-              View Details
-            </button>
-          </div>
+          <h3 className="text-xl font-semibold text-amber-800 mb-2">No Assessment Data Found</h3>
+          <p className="text-amber-600 mb-4">Please try refreshing the page or contact support</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-2 bg-amber-600 text-white rounded-sm hover:bg-amber-700 transition-colors duration-200"
+          >
+            Refresh Page
+          </button>
         </div>
+      </div>
+    );
+  }
 
-        <div className="bg-white rounded-sm shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Environmental Management</h3>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-              Pending
-            </span>
-          </div>
-          <p className="text-gray-600 mb-4">Evaluation of environmental programs and waste management.</p>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-500">Due: July 30, 2024</span>
-            <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-              Start Assessment
-            </button>
-          </div>
-        </div>
+  // Show locked banner if assessment is not editable
+  const isLocked = assessment.status === 'submitted' || 
+                   assessment.status === 'validated' || 
+                   assessment.status === 'finalized';
 
-        <div className="bg-white rounded-sm shadow p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Financial Administration</h3>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-              Completed
-            </span>
-          </div>
-          <p className="text-gray-600 mb-4">Review of financial management and transparency practices.</p>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-500">Score: 92%</span>
-            <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-              View Details
-            </button>
-          </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+      {/* Enhanced Locked Banner */}
+      {isLocked && <AssessmentLockedBanner status={assessment.status} />}
+      
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="space-y-8">
+          {/* Enhanced Header */}
+          <AssessmentHeader 
+            assessment={assessment}
+            validation={validation}
+          />
+          
+          {/* Enhanced Assessment Tabs */}
+          <AssessmentTabs 
+            assessment={assessment}
+            isLocked={isLocked}
+          />
         </div>
       </div>
     </div>
   );
-} 
+}
