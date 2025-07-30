@@ -19,7 +19,7 @@ const adminNavigation = [
 const blguNavigation = [
   { name: 'BLGU Dashboard', href: '/blgu/dashboard', icon: 'home' },
   { name: 'My Assessments', href: '/blgu/assessments', icon: 'clipboard' },
-  { name: 'My Reports', href: '/blgu/reports', icon: 'chart' },
+  { name: 'Profile', href: '/blgu/profile', icon: 'user' },
 ];
 
 const getIcon = (name: string) => {
@@ -48,6 +48,12 @@ const getIcon = (name: string) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
         </svg>
       );
+    case 'user':
+      return (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      );
     default:
       return null;
   }
@@ -60,9 +66,7 @@ export default function AppLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-
   const { isAuthenticated, user, mustChangePassword } = useAuthStore();
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
@@ -279,9 +283,35 @@ export default function AppLayout({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div className="flex items-center">
-                <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate">
-                  {navigation.find(item => pathname === item.href)?.name || (isAdmin ? 'Admin Dashboard' : 'BLGU Dashboard')}
-                </h2>
+                <div>
+                  <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate">
+                    {isAdmin ? (
+                      // Admin-specific titles
+                      pathname === '/admin/reports' ? 'Analytics & Reports' :
+                      pathname === '/admin/assessments' ? 'SGLGB Assessments' :
+                      navigation.find(item => pathname === item.href)?.name || 'Admin Dashboard'
+                    ) : (
+                      // BLGU titles
+                      navigation.find(item => pathname === item.href)?.name || 'BLGU Dashboard'
+                    )}
+                  </h2>
+                  {/* Show context-specific subtitle for all users */}
+                  {!isAdmin && pathname.startsWith('/blgu') && (
+                    <p className="mt-1 text-sm text-gray-500">
+                      {pathname === '/blgu/dashboard' && 'Welcome to your Barangay Local Government Unit dashboard'}
+                      {pathname === '/blgu/assessments' && 'Manage and complete your SGLGB assessments'}
+                      {pathname === '/blgu/profile' && 'Manage your account settings, update your password, and view your profile information.'}
+                    </p>
+                  )}
+                  {isAdmin && (
+                    <p className="mt-1 text-sm text-gray-500">
+                      {pathname === '/admin/dashboard' && 'Welcome to your Vantage dashboard'}
+                      {pathname === '/admin/assessments' && 'Manage and track your leadership assessments'}
+                      {pathname === '/admin/reports' && 'Track your leadership development progress over time'}
+                      {pathname === '/user-management' && 'Manage user accounts and permissions'}
+                    </p>
+                  )}
+                </div>
               </div>
               <div className="flex items-center space-x-4">
                 {/* Notifications */}

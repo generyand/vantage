@@ -2,3 +2,5 @@
 export * from "./auth";
 export * from "./assessments";
 export * from "./users";
+export * from "./dashboard";
+export * from "./profile";
