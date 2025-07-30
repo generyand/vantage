@@ -1,9 +1,12 @@
 "use client";
 
 import { useAuthStore } from "@/store/useAuthStore";
-import { AssessmentHeader } from "@/components/features/assessments/AssessmentHeader";
-import { AssessmentTabs } from "@/components/features/assessments/AssessmentTabs";
-import { AssessmentLockedBanner } from "@/components/features/assessments/AssessmentLockedBanner";
+import { 
+  AssessmentHeader, 
+  AssessmentTabs, 
+  AssessmentLockedBanner, 
+  AssessmentSkeleton 
+} from "@/components/features/assessments";
 import { useCurrentAssessment, useAssessmentValidation } from "@/hooks/useAssessment";
 
 export default function BLGUAssessmentsPage() {
@@ -25,15 +28,7 @@ export default function BLGUAssessmentsPage() {
 
   // Show loading state
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Loading assessment...</p>
-          <p className="text-gray-500 text-sm mt-2">Please wait while we fetch your data</p>
-        </div>
-      </div>
-    );
+    return <AssessmentSkeleton />;
   }
 
   // Show error state
