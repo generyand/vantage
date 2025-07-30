@@ -1,10 +1,26 @@
 'use client';
 
+import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { PageHeader } from '@/components/shared';
+import { SubmissionsFilters, SubmissionsTable } from '@/components/features/submissions';
+import { useSubmissions } from '@/hooks/useSubmissions';
+import { Submission } from '@/types/submissions';
+import { toast } from 'sonner';
 
 export default function AdminSubmissionsPage() {
   const { isAuthenticated } = useAuthStore();
+  const router = useRouter();
+  const {
+    submissions,
+    filters,
+    updateFilters,
+    resetFilters,
+    loading,
+    governanceAreas,
+    assessors,
+  } = useSubmissions();
 
   // Show loading if not authenticated
   if (!isAuthenticated) {
@@ -18,28 +34,50 @@ export default function AdminSubmissionsPage() {
     );
   }
 
+  const handleViewDetails = (submission: Submission) => {
+    router.push(`/admin/submissions/${submission.id}`);
+  };
+
+  const handleSendReminder = (submission: Submission) => {
+    // TODO: Implement reminder functionality
+    console.log('Send reminder for:', submission.barangayName);
+    toast.success(`Reminder sent to ${submission.barangayName}`);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <PageHeader
-          title="Submission Queue"
-          description="Review and manage submitted assessments from barangays"
+          title="Submissions Queue"
+          description="Live Pre-Assessment Status for All 25 Barangays"
         />
         
         <div className="mt-8">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="text-center py-12">
-              <div className="mx-auto h-12 w-12 text-gray-400">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+          <SubmissionsFilters
+            filters={filters}
+            onFiltersChange={updateFilters}
+            onReset={resetFilters}
+            governanceAreas={governanceAreas}
+            assessors={assessors}
+          />
+
+          <div className="mb-4">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-600">
+                Showing {submissions.length} submission{submissions.length !== 1 ? 's' : ''}
               </div>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No submissions yet</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                Submitted assessments from barangays will appear here for review.
-              </p>
+              <div className="text-sm text-gray-600">
+                {loading ? 'Loading...' : 'Ready'}
+              </div>
             </div>
           </div>
+
+          <SubmissionsTable
+            submissions={submissions}
+            loading={loading}
+            onViewDetails={handleViewDetails}
+            onSendReminder={handleSendReminder}
+          />
         </div>
       </div>
     </div>
