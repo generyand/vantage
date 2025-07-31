@@ -5,4 +5,5 @@ export { default as FileUploader } from './FileUploader';
 export { default as UserNav } from './UserNav';
 export { StatusBadge } from './StatusBadge';
 export { ProgressBar } from './ProgressBar';
-export { AssessorAvatars } from './AssessorAvatars'; 
+export { AssessorAvatars } from './AssessorAvatars';
+export { ConfirmationDialog } from './ConfirmationDialog'; 

@@ -2,9 +2,25 @@
 
 import { useAuthStore } from '@/store/useAuthStore';
 import { PageHeader } from '@/components/shared';
+import { AssessmentPeriodsCard, DeadlinesCard } from '@/components/features/system-settings';
+import { useSystemSettings } from '@/hooks/useSystemSettings';
+import { toast } from 'sonner';
 
 export default function AdminSettingsPage() {
   const { isAuthenticated } = useAuthStore();
+  const {
+    periods,
+    deadlines,
+    isLoading,
+    createAssessmentPeriod,
+    activateAssessmentPeriod,
+    archiveAssessmentPeriod,
+    deleteAssessmentPeriod,
+    saveDeadlines,
+    getActivePeriod,
+  } = useSystemSettings();
+
+  const activePeriod = getActivePeriod();
 
   // Show loading if not authenticated
   if (!isAuthenticated) {
@@ -18,29 +34,82 @@ export default function AdminSettingsPage() {
     );
   }
 
+  const handleCreatePeriod = async (data: { performanceYear: number; assessmentYear: number }) => {
+    try {
+      await createAssessmentPeriod(data);
+      toast.success('Assessment period created successfully');
+    } catch {
+      toast.error('Failed to create assessment period');
+    }
+  };
+
+  const handleActivatePeriod = async (periodId: string) => {
+    try {
+      await activateAssessmentPeriod(periodId);
+      toast.success('Assessment period activated successfully');
+    } catch {
+      toast.error('Failed to activate assessment period');
+    }
+  };
+
+  const handleArchivePeriod = async (periodId: string) => {
+    try {
+      await archiveAssessmentPeriod(periodId);
+      toast.success('Assessment period archived successfully');
+    } catch {
+      toast.error('Failed to archive assessment period');
+    }
+  };
+
+  const handleDeletePeriod = async (periodId: string) => {
+    try {
+      await deleteAssessmentPeriod(periodId);
+      toast.success('Assessment period deleted successfully');
+    } catch {
+      toast.error('Failed to delete assessment period');
+    }
+  };
+
+  const handleViewPeriod = (periodId: string) => {
+    // TODO: Navigate to archived period view
+    console.log('View period:', periodId);
+    toast.info('View functionality coming soon');
+  };
+
+  const handleSaveDeadlines = async (data: { blguSubmissionDeadline: string; reworkCompletionDeadline: string }) => {
+    try {
+      await saveDeadlines(data);
+      toast.success('Deadlines saved successfully');
+    } catch {
+      toast.error('Failed to save deadlines');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <PageHeader
           title="System Settings"
-          description="Configure system preferences and application settings"
+          description="Manage core operational parameters for the VANTAGE application."
         />
         
-        <div className="mt-8">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="text-center py-12">
-              <div className="mx-auto h-12 w-12 text-gray-400">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">System settings</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                Configure application settings, user permissions, and system preferences.
-              </p>
-            </div>
-          </div>
+        <div className="mt-8 space-y-6">
+          <AssessmentPeriodsCard
+            periods={periods}
+            onCreatePeriod={handleCreatePeriod}
+            onActivatePeriod={handleActivatePeriod}
+            onArchivePeriod={handleArchivePeriod}
+            onDeletePeriod={handleDeletePeriod}
+            onViewPeriod={handleViewPeriod}
+            isLoading={isLoading}
+          />
+
+          <DeadlinesCard
+            deadlines={deadlines}
+            activePeriodYear={activePeriod?.assessmentYear}
+            onSaveDeadlines={handleSaveDeadlines}
+            isLoading={isLoading}
+          />
         </div>
       </div>
     </div>
