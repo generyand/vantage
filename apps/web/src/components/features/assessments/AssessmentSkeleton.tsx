@@ -2,15 +2,15 @@ import { Skeleton } from '@/components/ui/Skeleton';
 
 export function AssessmentSkeleton() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+    <div className="min-h-screen bg-[var(--background)]">
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="space-y-8">
           {/* Enhanced Header Skeleton */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-purple-50/40 rounded-sm shadow-lg border-0 p-8">
+          <div className="relative overflow-hidden bg-[var(--card)] border border-[var(--border)] rounded-sm shadow-lg p-8">
             {/* Decorative background elements */}
-            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-20 translate-x-20"></div>
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-16 -translate-x-16"></div>
+            <div className="absolute top-0 right-0 w-40 h-40 bg-[var(--cityscape-yellow)]/5 rounded-full -translate-y-20 translate-x-20"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-[var(--cityscape-yellow)]/3 rounded-full translate-y-16 -translate-x-16"></div>
             
             <div className="relative z-10">
               {/* Header Section */}
@@ -33,7 +33,7 @@ export function AssessmentSkeleton() {
                   {/* Progress Stats */}
                   <div className="flex items-center gap-6">
                     {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="bg-white/80 backdrop-blur-sm rounded-sm p-4 text-center shadow-sm">
+                      <div key={i} className="bg-[var(--card)]/80 backdrop-blur-sm rounded-sm p-4 text-center shadow-sm border border-[var(--border)]">
                         <Skeleton className="h-8 w-16 mx-auto mb-1" />
                         <Skeleton className="h-3 w-20 mx-auto" />
                       </div>
@@ -46,7 +46,7 @@ export function AssessmentSkeleton() {
               </div>
 
               {/* Enhanced Progress Section */}
-              <div className="bg-white/60 backdrop-blur-sm rounded-sm p-6 border border-white/50">
+              <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-6 border border-[var(--border)]">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <Skeleton className="h-5 w-5" />
@@ -68,7 +68,7 @@ export function AssessmentSkeleton() {
                 </div>
 
                 {/* Validation Info */}
-                <div className="mt-4 p-4 bg-amber-50/80 border border-amber-200/60 rounded-sm">
+                <div className="mt-4 p-4 bg-[var(--cityscape-yellow)]/10 border border-[var(--cityscape-yellow)]/20 rounded-sm">
                   <div className="flex items-start gap-3">
                     <Skeleton className="h-5 w-5 mt-0.5 flex-shrink-0" />
                     <div className="space-y-2">
@@ -83,12 +83,12 @@ export function AssessmentSkeleton() {
           </div>
 
           {/* Enhanced Assessment Tabs Skeleton */}
-          <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 overflow-hidden">
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-sm shadow-lg overflow-hidden">
             {/* Enhanced Tab Navigation */}
-            <div className="bg-gradient-to-r from-slate-100/50 to-gray-100/30 border-b border-gray-200/60 px-6 py-6">
+            <div className="bg-[var(--hover)] border-b border-[var(--border)] px-6 py-6">
               <div className="grid w-full grid-cols-6 h-auto gap-3">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="group relative flex flex-col items-center p-5 rounded-sm min-h-[180px] overflow-hidden bg-white/90 backdrop-blur-sm border border-gray-200/60">
+                  <div key={i} className="group relative flex flex-col items-center p-5 rounded-sm min-h-[180px] overflow-hidden bg-[var(--card)]/90 backdrop-blur-sm border border-[var(--border)]">
                     {/* Content */}
                     <div className="relative z-10 flex flex-col items-center space-y-3 w-full">
                       {/* Logo and Status */}
@@ -123,10 +123,10 @@ export function AssessmentSkeleton() {
             {/* Enhanced Tab Content */}
             <div className="space-y-6">
               {/* Enhanced Area Header */}
-              <div className="relative overflow-hidden bg-gradient-to-br from-emerald-50 to-green-50 p-8 border-b border-emerald-200">
+              <div className="relative overflow-hidden bg-[var(--card)] p-8 border-b border-[var(--border)]">
                 {/* Decorative elements */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--cityscape-yellow)]/5 rounded-full -translate-y-16 translate-x-16"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-[var(--cityscape-yellow)]/3 rounded-full translate-y-12 -translate-x-12"></div>
                 
                 <div className="relative z-10">
                   <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
@@ -149,7 +149,7 @@ export function AssessmentSkeleton() {
                     {/* Right side - Stats */}
                     <div className="flex items-center gap-4">
                       {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="bg-white/80 backdrop-blur-sm rounded-sm p-4 text-center shadow-sm">
+                        <div key={i} className="bg-[var(--card)]/80 backdrop-blur-sm rounded-sm p-4 text-center shadow-sm border border-[var(--border)]">
                           <Skeleton className="h-8 w-12 mx-auto mb-1" />
                           <Skeleton className="h-3 w-20 mx-auto" />
                         </div>
@@ -158,7 +158,7 @@ export function AssessmentSkeleton() {
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="mt-6 bg-white/60 backdrop-blur-sm rounded-sm p-4">
+                  <div className="mt-6 bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <Skeleton className="h-4 w-4" />
@@ -185,7 +185,7 @@ export function AssessmentSkeleton() {
                 
                 <div className="space-y-4">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <div key={i} className="bg-white rounded-sm border border-gray-200 overflow-hidden">
+                    <div key={i} className="bg-[var(--card)] rounded-sm border border-[var(--border)] overflow-hidden">
                       {/* Accordion Header */}
                       <div className="p-4 flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -204,7 +204,7 @@ export function AssessmentSkeleton() {
                         <Skeleton className="h-4 w-3/4" />
                         
                         {/* Technical Notes */}
-                        <div className="bg-gray-50 p-4 rounded-sm">
+                        <div className="bg-[var(--hover)] p-4 rounded-sm border border-[var(--border)]">
                           <Skeleton className="h-4 w-32 mb-2" />
                           <Skeleton className="h-4 w-full mb-1" />
                           <Skeleton className="h-4 w-5/6" />
@@ -226,7 +226,7 @@ export function AssessmentSkeleton() {
                         {/* MOV Uploader */}
                         <div className="space-y-2">
                           <Skeleton className="h-4 w-32" />
-                          <div className="border-2 border-dashed border-gray-300 rounded-sm p-6 text-center">
+                          <div className="border-2 border-dashed border-[var(--border)] rounded-sm p-6 text-center">
                             <Skeleton className="h-8 w-8 mx-auto mb-2" />
                             <Skeleton className="h-4 w-48 mx-auto mb-1" />
                             <Skeleton className="h-3 w-64 mx-auto" />

@@ -40,21 +40,21 @@ export function IndicatorAccordion({ indicator, isLocked }: IndicatorAccordionPr
 
   return (
     <Accordion type="single" collapsible value={isOpen ? indicator.id : ""} onValueChange={(value) => setIsOpen(value === indicator.id)}>
-      <AccordionItem value={indicator.id} className="border border-gray-200 rounded-lg">
-        <AccordionTrigger className="px-6 py-4 hover:no-underline">
+      <AccordionItem value={indicator.id} className="border border-[var(--border)] rounded-sm bg-[var(--card)]">
+        <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-[var(--hover)] rounded-sm">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 {getStatusIcon()}
-                <span className="text-sm font-medium text-gray-500">
+                <span className="text-sm font-medium text-[var(--text-secondary)]">
                   {getStatusText()}
                 </span>
               </div>
               <div className="text-left">
-                <div className="font-semibold text-gray-900">
+                <div className="font-semibold text-[var(--foreground)]">
                   {indicator.code} - {indicator.name}
                 </div>
-                <div className="text-sm text-gray-600 mt-1">
+                <div className="text-sm text-[var(--text-secondary)] mt-1">
                   {indicator.description.length > 100 
                     ? `${indicator.description.substring(0, 100)}...` 
                     : indicator.description
@@ -65,7 +65,7 @@ export function IndicatorAccordion({ indicator, isLocked }: IndicatorAccordionPr
             
             {/* MOV Files Count */}
             {indicator.movFiles.length > 0 && (
-              <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <div className="flex items-center space-x-2 text-sm text-[var(--text-secondary)]">
                 <span>{indicator.movFiles.length} MOV file(s)</span>
               </div>
             )}

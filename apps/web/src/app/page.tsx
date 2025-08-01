@@ -385,8 +385,8 @@ export default function Home() {
               <div className="text-sm lg:text-base font-medium tracking-wide uppercase text-gray-200 hover:text-white transition-colors duration-300">
               {currentHeroSlide.location}
             </div>
-            </div>
-            
+          </div>
+
             {/* Enhanced VANTAGE title */}
             <div className={`relative transition-all duration-1200 ease-out delay-500 ${
               heroLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95'
@@ -411,7 +411,7 @@ export default function Home() {
               </span>
               <span aria-label="Platform description">{currentHeroSlide.subtitle}</span>
           </div>
-          </div>
+        </div>
         </main>
       </div>
 

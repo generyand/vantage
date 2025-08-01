@@ -88,32 +88,32 @@ export function AssessmentHeader({ assessment, validation }: AssessmentHeaderPro
     switch (assessment.status) {
       case 'in_progress':
         return {
-          bgGradient: 'from-blue-50/80 via-indigo-50/60 to-purple-50/40',
+          bgGradient: 'bg-[var(--card)]',
           accentColor: 'text-blue-600',
           badgeClass: 'bg-blue-100 text-blue-800 border-blue-200'
         };
       case 'needs_rework':
         return {
-          bgGradient: 'from-amber-50/80 via-orange-50/60 to-red-50/40',
+          bgGradient: 'bg-[var(--card)]',
           accentColor: 'text-amber-600',
           badgeClass: 'bg-amber-100 text-amber-800 border-amber-200'
         };
       case 'submitted':
         return {
-          bgGradient: 'from-purple-50/80 via-violet-50/60 to-indigo-50/40',
+          bgGradient: 'bg-[var(--card)]',
           accentColor: 'text-purple-600',
           badgeClass: 'bg-purple-100 text-purple-800 border-purple-200'
         };
       case 'validated':
       case 'finalized':
         return {
-          bgGradient: 'from-emerald-50/80 via-green-50/60 to-teal-50/40',
+          bgGradient: 'bg-[var(--card)]',
           accentColor: 'text-emerald-600',
           badgeClass: 'bg-green-100 text-green-800 border-green-200'
         };
       default:
         return {
-          bgGradient: 'from-gray-50/80 via-slate-50/60 to-gray-50/40',
+          bgGradient: 'bg-[var(--card)]',
           accentColor: 'text-gray-600',
           badgeClass: 'bg-gray-100 text-gray-800 border-gray-200'
         };
@@ -123,10 +123,10 @@ export function AssessmentHeader({ assessment, validation }: AssessmentHeaderPro
   const statusConfig = getStatusConfig();
 
   return (
-    <div className={`relative overflow-hidden bg-gradient-to-br ${statusConfig.bgGradient} rounded-sm shadow-lg border-0 p-8`}>
+    <div className={`relative overflow-hidden ${statusConfig.bgGradient} border border-[var(--border)] rounded-sm shadow-lg p-8`}>
       {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-20 translate-x-20"></div>
-      <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-16 -translate-x-16"></div>
+      <div className="absolute top-0 right-0 w-40 h-40 bg-[var(--cityscape-yellow)]/5 rounded-full -translate-y-20 translate-x-20"></div>
+      <div className="absolute bottom-0 left-0 w-32 h-32 bg-[var(--cityscape-yellow)]/3 rounded-full translate-y-16 -translate-x-16"></div>
       
       <div className="relative z-10">
         {/* Header Section */}
@@ -134,9 +134,8 @@ export function AssessmentHeader({ assessment, validation }: AssessmentHeaderPro
           {/* Left side - Title and Status */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-2 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-sm"></div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                SGLGB Pre-Assessment for <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{assessment.barangayName}</span>
+              <h1 className="text-3xl font-bold text-[var(--foreground)]">
+                SGLGB Pre-Assessment for <span className="bg-gradient-to-r from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] bg-clip-text text-transparent">{assessment.barangayName}</span>
               </h1>
             </div>
             
@@ -148,8 +147,8 @@ export function AssessmentHeader({ assessment, validation }: AssessmentHeaderPro
                 </span>
               </div>
               
-              <div className="bg-white/60 backdrop-blur-sm px-4 py-2 rounded-sm border border-white/50">
-                <span className="text-sm text-gray-700">
+              <div className="bg-[var(--hover)] backdrop-blur-sm px-4 py-2 rounded-sm border border-[var(--border)]">
+                <span className="text-sm text-[var(--text-secondary)]">
                   <FileText className="inline h-4 w-4 mr-1" />
                   {assessment.completedIndicators} of {assessment.totalIndicators} indicators completed
                 </span>
@@ -161,23 +160,23 @@ export function AssessmentHeader({ assessment, validation }: AssessmentHeaderPro
           <div className="flex flex-col items-end gap-4">
             {/* Progress Stats */}
             <div className="flex items-center gap-6">
-              <div className="bg-white/80 backdrop-blur-sm rounded-sm p-4 text-center shadow-sm">
+              <div className="bg-[var(--card)]/80 backdrop-blur-sm rounded-sm p-4 text-center shadow-sm border border-[var(--border)]">
                 <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                   {assessment.completedIndicators}
                 </div>
-                <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Completed</div>
+                <div className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wide">Completed</div>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-sm p-4 text-center shadow-sm">
-                <div className="text-3xl font-bold text-gray-900">
+              <div className="bg-[var(--card)]/80 backdrop-blur-sm rounded-sm p-4 text-center shadow-sm border border-[var(--border)]">
+                <div className="text-3xl font-bold text-[var(--foreground)]">
                   {assessment.totalIndicators - assessment.completedIndicators}
                 </div>
-                <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Remaining</div>
+                <div className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wide">Remaining</div>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-sm p-4 text-center shadow-sm">
-                <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              <div className="bg-[var(--card)]/80 backdrop-blur-sm rounded-sm p-4 text-center shadow-sm border border-[var(--border)]">
+                <div className="text-3xl font-bold bg-gradient-to-r from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] bg-clip-text text-transparent">
                   {progressPercentage}%
                 </div>
-                <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Complete</div>
+                <div className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wide">Complete</div>
               </div>
             </div>
 
@@ -189,7 +188,7 @@ export function AssessmentHeader({ assessment, validation }: AssessmentHeaderPro
                     <Button
                       onClick={() => submitMutation.mutate()}
                       disabled={!validation.canSubmit || submitMutation.isPending}
-                      className="h-12 px-8 text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-sm shadow-lg hover:shadow-xl transition-all duration-200"
+                      className="h-12 px-8 text-sm font-semibold bg-[var(--cityscape-yellow)] hover:bg-[var(--cityscape-yellow-dark)] text-[var(--cityscape-accent-foreground)] rounded-sm shadow-lg hover:shadow-xl transition-all duration-200"
                     >
                       {submitMutation.isPending ? (
                         <>
@@ -206,7 +205,7 @@ export function AssessmentHeader({ assessment, validation }: AssessmentHeaderPro
                   </div>
                 </TooltipTrigger>
                 {!validation.canSubmit && (
-                  <TooltipContent side="bottom" className="max-w-sm bg-white/95 backdrop-blur-sm border-0 shadow-xl">
+                  <TooltipContent side="bottom" className="max-w-sm bg-[var(--card)]/95 backdrop-blur-sm border border-[var(--border)] shadow-xl">
                     <div className="p-2">
                       {getTooltipContent()}
                     </div>
@@ -217,66 +216,66 @@ export function AssessmentHeader({ assessment, validation }: AssessmentHeaderPro
           </div>
         </div>
 
-        {/* Enhanced Progress Section */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-sm p-6 border border-white/50">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-blue-600" />
-              <span className="text-lg font-semibold text-gray-800">Assessment Progress</span>
-            </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-gray-900">{progressPercentage}%</div>
-              <div className="text-xs text-gray-600">Overall Completion</div>
-            </div>
-          </div>
+                      {/* Enhanced Progress Section */}
+              <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-6 border border-[var(--border)]">
+                       <div className="flex items-center justify-between mb-4">
+               <div className="flex items-center gap-2">
+                 <TrendingUp className="h-5 w-5 text-blue-600" />
+                 <span className="text-lg font-semibold text-[var(--foreground)]">Assessment Progress</span>
+               </div>
+               <div className="text-right">
+                 <div className="text-2xl font-bold text-[var(--foreground)]">{progressPercentage}%</div>
+                 <div className="text-xs text-[var(--text-secondary)]">Overall Completion</div>
+               </div>
+             </div>
           
           <div className="space-y-3">
-            <div className="w-full bg-gray-200/80 rounded-sm h-3 overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-sm transition-all duration-1000 ease-out"
+                            <div className="w-full bg-[var(--border)]/80 rounded-sm h-3 overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] rounded-sm transition-all duration-1000 ease-out"
                 style={{ width: `${progressPercentage}%` }}
               />
             </div>
             
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">
-                {assessment.completedIndicators} indicators completed
-              </span>
-              <span className="text-gray-600">
-                {assessment.totalIndicators - assessment.completedIndicators} remaining
-              </span>
-            </div>
+                         <div className="flex justify-between text-sm">
+               <span className="text-[var(--text-secondary)]">
+                 {assessment.completedIndicators} indicators completed
+               </span>
+               <span className="text-[var(--text-secondary)]">
+                 {assessment.totalIndicators - assessment.completedIndicators} remaining
+               </span>
+             </div>
           </div>
 
-          {/* Validation Info */}
-          {(!validation.canSubmit && (validation.missingIndicators.length > 0 || validation.missingMOVs.length > 0)) && (
-            <div className="mt-4 p-4 bg-amber-50/80 border border-amber-200/60 rounded-sm">
-              <div className="flex items-start gap-3">
-                <Info className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-amber-800">Complete the following to submit:</p>
-                  {validation.missingIndicators.length > 0 && (
-                    <div>
-                      <p className="text-xs text-amber-700 font-medium">Missing Responses ({validation.missingIndicators.length}):</p>
-                      <p className="text-xs text-amber-600">
-                        {validation.missingIndicators.slice(0, 2).join(', ')}
-                        {validation.missingIndicators.length > 2 && ` and ${validation.missingIndicators.length - 2} more`}
-                      </p>
-                    </div>
-                  )}
-                  {validation.missingMOVs.length > 0 && (
-                    <div>
-                      <p className="text-xs text-amber-700 font-medium">Missing MOV Files ({validation.missingMOVs.length}):</p>
-                      <p className="text-xs text-amber-600">
-                        {validation.missingMOVs.slice(0, 2).join(', ')}
-                        {validation.missingMOVs.length > 2 && ` and ${validation.missingMOVs.length - 2} more`}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
+                     {/* Validation Info */}
+           {(!validation.canSubmit && (validation.missingIndicators.length > 0 || validation.missingMOVs.length > 0)) && (
+             <div className="mt-4 p-4 bg-[var(--cityscape-yellow)]/10 border border-[var(--cityscape-yellow)]/20 rounded-sm">
+               <div className="flex items-start gap-3">
+                 <Info className="h-5 w-5 text-[var(--cityscape-yellow)] mt-0.5 flex-shrink-0" />
+                 <div className="space-y-2">
+                   <p className="text-sm font-medium text-[var(--foreground)]">Complete the following to submit:</p>
+                   {validation.missingIndicators.length > 0 && (
+                     <div>
+                       <p className="text-xs text-[var(--cityscape-yellow)] font-medium">Missing Responses ({validation.missingIndicators.length}):</p>
+                       <p className="text-xs text-[var(--text-secondary)]">
+                         {validation.missingIndicators.slice(0, 2).join(', ')}
+                         {validation.missingIndicators.length > 2 && ` and ${validation.missingIndicators.length - 2} more`}
+                       </p>
+                     </div>
+                   )}
+                   {validation.missingMOVs.length > 0 && (
+                     <div>
+                       <p className="text-xs text-[var(--cityscape-yellow)] font-medium">Missing MOV Files ({validation.missingMOVs.length}):</p>
+                       <p className="text-xs text-[var(--text-secondary)]">
+                         {validation.missingMOVs.slice(0, 2).join(', ')}
+                         {validation.missingMOVs.length > 2 && ` and ${validation.missingMOVs.length - 2} more`}
+                       </p>
+                     </div>
+                   )}
+                 </div>
+               </div>
+             </div>
+           )}
         </div>
       </div>
     </div>
