@@ -13,7 +13,7 @@ export function ProfileSkeleton() {
                 {/* Card Header */}
                 <div className="relative z-10 p-6 pb-4">
                   <div className="flex items-center gap-3 mb-2">
-                    <Skeleton className="w-1 h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-sm" />
+                    <Skeleton className="w-1 h-6 bg-gradient-to-b from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] rounded-sm" />
                     <Skeleton className="h-6 w-32" />
                   </div>
                   <Skeleton className="h-4 w-64" />
@@ -86,7 +86,7 @@ export function ProfileSkeleton() {
                 {/* Card Header */}
                 <div className="relative z-10 p-6 pb-4">
                   <div className="flex items-center gap-3 mb-2">
-                    <Skeleton className="w-1 h-6 bg-gradient-to-b from-green-500 to-emerald-600 rounded-sm" />
+                    <Skeleton className="w-1 h-6 bg-gradient-to-b from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] rounded-sm" />
                     <Skeleton className="h-6 w-36" />
                   </div>
                   <Skeleton className="h-4 w-56" />
