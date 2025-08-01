@@ -34,7 +34,7 @@
   --icon-muted: #adb5bd;
 
   /* Palette: interactive */
-  --focus: #b91c1c;
+  --focus: #fbbf24;
   --hover: #f8f9fa;
 
   /* Palette: gradients */
@@ -56,9 +56,19 @@
   --warning: #fd7e14;
   --destructive: #dc3545;
 
+  /* Cityscape Theme Colors (NEW) */
+  --cityscape-black: #000000;
+  --cityscape-dark: #1a1a1a;
+  --cityscape-gray: #2d2d2d;
+  --cityscape-yellow: #fbbf24;
+  --cityscape-yellow-light: #fcd34d;
+  --cityscape-yellow-dark: #f59e0b;
+  --cityscape-accent: #fbbf24;
+  --cityscape-accent-foreground: #000000;
+
   /* Form and system */
   --input: #f8f9fa;
-  --ring: #b91c1c;
+  --ring: #fbbf24;
 
   /* Radius (see @styling.mdc spacing) */
   --radius-xs: 0.25rem;
@@ -107,7 +117,7 @@
   --border-light: #343a40;
   --icon-default: #adb5bd;
   --icon-muted: #6c757d;
-  --focus: #dc2626;
+  --focus: #fbbf24;
   --hover: #23272b;
   --gradient-start: #23272b;
   --gradient-mid: #2d2f31;
@@ -123,7 +133,17 @@
   --warning: #fd7e14;
   --destructive: #dc3545;
   --input: #23272b;
-  --ring: #dc2626;
+  --ring: #fbbf24;
+  
+  /* Cityscape Theme Colors (NEW) - Dark mode */
+  --cityscape-black: #000000;
+  --cityscape-dark: #1a1a1a;
+  --cityscape-gray: #2d2d2d;
+  --cityscape-yellow: #fbbf24;
+  --cityscape-yellow-light: #fcd34d;
+  --cityscape-yellow-dark: #f59e0b;
+  --cityscape-accent: #fbbf24;
+  --cityscape-accent-foreground: #000000;
   
   /* shadcn/ui oklch variables (for compatibility) */
   --card-foreground: oklch(0.985 0 0);
@@ -222,8 +242,8 @@
     box-shadow: 0 0 0 3px var(--ring);
   }
   ::selection {
-    background: var(--primary);
-    color: var(--primary-foreground);
+    background: var(--cityscape-yellow);
+    color: var(--cityscape-accent-foreground);
   }
 }
 
