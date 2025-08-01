@@ -51,11 +51,15 @@ export default function Home() {
   // Sticky header state
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // Hero entrance animations state
+  const [heroLoaded, setHeroLoaded] = useState(false);
+
   // Scroll animation hooks for each section
   const heroAnimation = useScrollAnimation();
   const challengeAnimation = useScrollAnimation();
   const featuresAnimation = useScrollAnimation();
   const processAnimation = useScrollAnimation();
+  const barangaysAnimation = useScrollAnimation();
   const footerAnimation = useScrollAnimation();
 
   // Define steps data at the top level
@@ -153,6 +157,15 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Hero entrance animations - trigger on page load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHeroLoaded(true);
+    }, 100); // Small delay to ensure smooth entrance
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="relative min-h-screen flex flex-col bg-white">
       <style jsx>{`
@@ -220,7 +233,9 @@ export default function Home() {
       </header>
 
       {/* Hero Section Login Button - Top Right */}
-      <div className="fixed top-4 right-4 lg:top-8 lg:right-8 z-40">
+      <div className={`fixed top-4 right-4 lg:top-8 lg:right-8 z-40 transition-all duration-1000 ease-out delay-900 ${
+        heroLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-4 scale-95'
+      }`}>
         <Link href="/login">
           <button 
             className="bg-transparent border-2 border-[#fbbf24] text-white px-6 py-2 rounded-lg hover:bg-[#fbbf24] hover:text-black transition-all duration-300 font-semibold text-sm transform hover:scale-105 active:scale-95 hover:shadow-lg active:shadow-sm focus:outline-none focus:ring-2 focus:ring-[#fbbf24] focus:ring-offset-2 focus:ring-offset-transparent backdrop-blur-sm"
@@ -250,7 +265,9 @@ export default function Home() {
           {/* Top: Logo and Navigation */}
           <div className="space-y-8">
             {/* Logo */}
-            <div className="flex items-center gap-2 lg:gap-3">
+            <div className={`flex items-center gap-2 lg:gap-3 transition-all duration-1000 ease-out ${
+              heroLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
+            }`}>
               <Image
                 src="/DILG.png"
                 alt="Department of the Interior and Local Government (DILG) official logo"
@@ -271,7 +288,9 @@ export default function Home() {
 
           {/* Bottom: Social Media */}
           <div className="flex flex-col items-start space-y-50">
-            <div className="relative">
+            <div className={`relative transition-all duration-1000 ease-out delay-300 ${
+              heroLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
+            }`}>
               <div
                 className="text-white text-sm font-medium tracking-wider"
                 style={{
@@ -285,7 +304,9 @@ export default function Home() {
               </div>
               <div className="absolute top-30 left-3 w-px h-30 bg-white" aria-hidden="true"></div>
             </div>
-            <nav className="flex flex-col space-y-6" role="navigation" aria-label="Social media links">
+            <nav className={`flex flex-col space-y-6 transition-all duration-1000 ease-out delay-500 ${
+              heroLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
+            }`} role="navigation" aria-label="Social media links">
               <a
                 href="#"
                 className="group w-10 h-10 bg-white/10 hover:bg-[#fbbf24] rounded-full flex items-center justify-center text-white hover:text-black transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#fbbf24] focus:ring-offset-2 focus:ring-offset-[#0a0a0b]"
@@ -315,7 +336,9 @@ export default function Home() {
         </aside>
 
         {/* Philippine Flag - positioned between black sidebar and image like 2100 Club */}
-        <div className="hidden 2xl:block absolute top-2/4 left-1/8 transform -translate-y-1/2 z-30" role="img" aria-label="Philippine flag representing national identity and government authority">
+        <div className={`hidden 2xl:block absolute top-2/4 left-1/8 transform -translate-y-1/2 z-30 transition-all duration-1200 ease-out delay-700 ${
+          heroLoaded ? 'opacity-100 translate-x-0 scale-100' : 'opacity-0 -translate-x-16 scale-95'
+        }`} role="img" aria-label="Philippine flag representing national identity and government authority">
           <div className="relative">
             <Image
               src="/flag.jpg"
@@ -338,7 +361,9 @@ export default function Home() {
         {/* Right Content - Large Image with Overlay */}
         <main className="w-full lg:w-3/4 relative" role="main">
           {/* Background Image */}
-          <div className="absolute inset-0">
+          <div className={`absolute inset-0 transition-all duration-1500 ease-out ${
+            heroLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+          }`}>
             <Image
               src={currentHeroSlide.backgroundImage}
               alt="Sulop Municipal Hall, the official government building of the Municipality of Sulop in Davao del Sur, Philippines, serving as the administrative center for local governance"
@@ -353,7 +378,9 @@ export default function Home() {
           {/* Content Overlay */}
           <div className="absolute bottom-8 left-4 lg:bottom-20 lg:left-8 xl:left-32 text-white space-y-2 lg:space-y-6 max-w-sm lg:max-w-2xl xl:max-w-3xl">
             {/* Location with enhanced styling */}
-            <div className="flex items-center gap-2 mb-2 backdrop-blur-sm bg-black/20 px-3 py-1.5 rounded-md border border-white/10 w-fit" role="region" aria-label="Location information">
+            <div className={`flex items-center gap-2 mb-2 backdrop-blur-sm bg-black/20 px-3 py-1.5 rounded-md border border-white/10 w-fit transition-all duration-1000 ease-out delay-300 ${
+              heroLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`} role="region" aria-label="Location information">
               <MapPin className="w-3 h-3 lg:w-4 lg:h-4 text-[#fbbf24]" aria-hidden="true" />
               <div className="text-sm lg:text-base font-medium tracking-wide uppercase text-gray-200 hover:text-white transition-colors duration-300">
                 {currentHeroSlide.location}
@@ -361,7 +388,9 @@ export default function Home() {
             </div>
             
             {/* Enhanced VANTAGE title */}
-            <div className="relative">
+            <div className={`relative transition-all duration-1200 ease-out delay-500 ${
+              heroLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95'
+            }`}>
               <h1 className="text-4xl sm:text-5xl lg:text-7xl xl:text-8xl font-black text-[#fbbf24] leading-none tracking-tight mb-2 lg:mb-4 transform hover:scale-105 transition-all duration-500 ease-out">
                 <span className="inline-block hover:animate-pulse">
                   {currentHeroSlide.title}
@@ -374,7 +403,9 @@ export default function Home() {
             </div>
             
             {/* Enhanced subtitle */}
-            <div className="text-sm sm:text-base lg:text-xl font-light leading-relaxed text-gray-100 max-w-2xl">
+            <div className={`text-sm sm:text-base lg:text-xl font-light leading-relaxed text-gray-100 max-w-2xl transition-all duration-1000 ease-out delay-700 ${
+              heroLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}>
               <span className="block mb-2 text-xs lg:text-sm uppercase tracking-wider text-[#fbbf24] font-semibold" role="banner">
                 Official Platform
               </span>
@@ -962,7 +993,7 @@ export default function Home() {
         </section>
 
         {/* Barangays Coverage Section */}
-        <section className="w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 py-20 relative overflow-hidden">
+        <section ref={barangaysAnimation.elementRef} className="w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 py-20 relative overflow-hidden">
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-10 left-10 w-32 h-32 border border-[#fbbf24] rounded-full"></div>
@@ -972,36 +1003,113 @@ export default function Home() {
 
           <div className="max-w-7xl mx-auto px-8 text-center relative z-10">
             {/* Section Header */}
-            <div className="mb-16">
-              <div className="inline-flex items-center gap-2 bg-[#fbbf24]/20 text-[#fbbf24] px-4 py-2 rounded-full text-sm font-semibold mb-6">
+            <div className={`mb-16 transition-all duration-1000 ${
+              barangaysAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}>
+              <div className={`inline-flex items-center gap-2 bg-[#fbbf24]/20 text-[#fbbf24] px-4 py-2 rounded-full text-sm font-semibold mb-6 transition-all duration-1000 delay-200 ${
+                barangaysAnimation.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+              }`}>
                 <div className="w-2 h-2 bg-[#fbbf24] rounded-full animate-pulse"></div>
                 <span>OUR COVERAGE</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h2 className={`text-4xl md:text-5xl font-bold text-white mb-4 transition-all duration-1000 delay-400 ${
+                barangaysAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+              }`}>
                 Serving All Barangays
               </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              <p className={`text-xl text-gray-300 max-w-3xl mx-auto transition-all duration-1000 delay-600 ${
+                barangaysAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+              }`}>
                 VANTAGE connects and empowers all 25 barangays of Sulop Municipality
               </p>
             </div>
 
             {/* Interactive Map Visualization */}
-            <div className="relative max-w-5xl mx-auto h-96 md:h-[500px]">
+            <div className={`relative max-w-5xl mx-auto h-96 md:h-[500px] transition-all duration-1000 delay-800 ${
+              barangaysAnimation.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+            }`}>
               {/* Connection Lines - Following Sulop's geographic pattern */}
               <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 400">
+                <defs>
+                  {/* Gradient for connection lines */}
+                  <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="rgba(251, 191, 36, 0.1)" />
+                    <stop offset="50%" stopColor="rgba(251, 191, 36, 0.4)" />
+                    <stop offset="100%" stopColor="rgba(251, 191, 36, 0.1)" />
+                  </linearGradient>
+                  {/* Animated gradient for active connections */}
+                  <linearGradient id="activeConnectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="rgba(251, 191, 36, 0.8)">
+                      <animate attributeName="stop-color" 
+                        values="rgba(251, 191, 36, 0.8);rgba(245, 158, 11, 0.8);rgba(251, 191, 36, 0.8)" 
+                        dur="3s" repeatCount="indefinite" />
+                    </stop>
+                    <stop offset="50%" stopColor="rgba(245, 158, 11, 1.0)">
+                      <animate attributeName="stop-color" 
+                        values="rgba(245, 158, 11, 1.0);rgba(251, 191, 36, 1.0);rgba(245, 158, 11, 1.0)" 
+                        dur="3s" repeatCount="indefinite" />
+                    </stop>
+                    <stop offset="100%" stopColor="rgba(251, 191, 36, 0.8)">
+                      <animate attributeName="stop-color" 
+                        values="rgba(251, 191, 36, 0.8);rgba(245, 158, 11, 0.8);rgba(251, 191, 36, 0.8)" 
+                        dur="3s" repeatCount="indefinite" />
+                    </stop>
+                  </linearGradient>
+                </defs>
+                
                 {/* Main roads and connections based on Sulop's layout */}
-                <g stroke="rgba(251, 191, 36, 0.2)" strokeWidth="2" fill="none">
-                  {/* Central hub connections (Municipal Hall to major areas) */}
-                  <path d="M400,200 L200,120" strokeDasharray="3,3" /> {/* To western barangays */}
-                  <path d="M400,200 L600,160" strokeDasharray="3,3" /> {/* To eastern barangays */}
-                  <path d="M400,200 L350,100" strokeDasharray="3,3" /> {/* To northern barangays */}
-                  <path d="M400,200 L450,320" strokeDasharray="3,3" /> {/* To southern barangays */}
+                <g fill="none">
+                  {/* Central hub connections (Municipal Hall to major areas) - Animated drawing effect */}
+                  <path d="M400,200 L200,120" stroke="url(#connectionGradient)" strokeWidth="2" strokeDasharray="3,3"
+                    className={`transition-all duration-2000 delay-1000 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    style={{
+                      strokeDashoffset: barangaysAnimation.isVisible ? '0' : '400',
+                      transition: 'stroke-dashoffset 2s ease-out 1s'
+                    }} />
+                  <path d="M400,200 L600,160" stroke="url(#connectionGradient)" strokeWidth="2" strokeDasharray="3,3"
+                    className={`transition-all duration-2000 delay-1200 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    style={{
+                      strokeDashoffset: barangaysAnimation.isVisible ? '0' : '400',
+                      transition: 'stroke-dashoffset 2s ease-out 1.2s'
+                    }} />
+                  <path d="M400,200 L350,100" stroke="url(#connectionGradient)" strokeWidth="2" strokeDasharray="3,3"
+                    className={`transition-all duration-2000 delay-1400 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    style={{
+                      strokeDashoffset: barangaysAnimation.isVisible ? '0' : '400',
+                      transition: 'stroke-dashoffset 2s ease-out 1.4s'
+                    }} />
+                  <path d="M400,200 L450,320" stroke="url(#connectionGradient)" strokeWidth="2" strokeDasharray="3,3"
+                    className={`transition-all duration-2000 delay-1600 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    style={{
+                      strokeDashoffset: barangaysAnimation.isVisible ? '0' : '400',
+                      transition: 'stroke-dashoffset 2s ease-out 1.6s'
+                    }} />
                   
-                  {/* Regional connections */}
-                  <path d="M200,120 L150,80 L100,100 L120,160 L180,180 L200,120" /> {/* Western cluster */}
-                  <path d="M600,160 L650,120 L700,140 L680,200 L620,220 L600,160" /> {/* Eastern cluster */}
-                  <path d="M350,100 L300,60 L400,50 L450,80 L350,100" /> {/* Northern cluster */}
-                  <path d="M450,320 L400,360 L350,340 L380,300 L450,320" /> {/* Southern cluster */}
+                  {/* Regional connections - Staggered animation */}
+                  <path d="M200,120 L150,80 L100,100 L120,160 L180,180 L200,120" stroke="url(#activeConnectionGradient)" strokeWidth="1.5"
+                    className={`transition-all duration-3000 delay-1800 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`} />
+                  <path d="M600,160 L650,120 L700,140 L680,200 L620,220 L600,160" stroke="url(#activeConnectionGradient)" strokeWidth="1.5"
+                    className={`transition-all duration-3000 delay-2000 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`} />
+                  <path d="M350,100 L300,60 L400,50 L450,80 L350,100" stroke="url(#activeConnectionGradient)" strokeWidth="1.5"
+                    className={`transition-all duration-3000 delay-2200 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`} />
+                  <path d="M450,320 L400,360 L350,340 L380,300 L450,320" stroke="url(#activeConnectionGradient)" strokeWidth="1.5"
+                    className={`transition-all duration-3000 delay-2400 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`} />
                 </g>
               </svg>
 
@@ -1063,13 +1171,16 @@ export default function Home() {
                 return (
                   <div
                     key={i}
-                    className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-500 hover:scale-150 cursor-pointer group ${
+                    className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-800 hover:scale-150 cursor-pointer group ${
                       isHighlighted ? 'animate-pulse' : ''
+                    } ${
+                      barangaysAnimation.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
                     }`}
                     style={{
                       left: `${pos.x}%`,
                       top: `${pos.y}%`,
-                      animationDelay: `${pos.delay}s`
+                      animationDelay: `${pos.delay}s`,
+                      transitionDelay: `${2.5 + pos.delay * 0.1}s` // Staggered entrance after connections
                     }}
                   >
                     {/* Dot with cluster-based coloring */}
@@ -1101,39 +1212,94 @@ export default function Home() {
               })}
 
               {/* Central Hub (Municipal Hall) - Positioned more centrally like in the map */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1200 delay-3000 ${
+                barangaysAnimation.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
+              }`}>
                 <div className="relative">
-                  <div className="w-10 h-10 bg-gradient-to-br from-[#fbbf24] via-[#f59e0b] to-[#d97706] rounded-full shadow-2xl animate-pulse flex items-center justify-center border-4 border-white">
-                    <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center">
-                      <div className="w-2 h-2 bg-[#fbbf24] rounded-full"></div>
+                  {/* Enhanced Municipal Hall with special effects */}
+                  <div className={`w-12 h-12 bg-gradient-to-br from-[#fbbf24] via-[#f59e0b] to-[#d97706] rounded-full shadow-2xl flex items-center justify-center border-4 border-white transition-all duration-1000 ${
+                    barangaysAnimation.isVisible ? 'animate-pulse' : ''
+                  }`}>
+                    <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-inner">
+                      <div className="w-2 h-2 bg-[#fbbf24] rounded-full animate-pulse"></div>
                     </div>
                   </div>
-                  {/* Multiple ripple effects for central importance */}
-                  <div className="absolute inset-0 bg-[#fbbf24]/20 rounded-full animate-ping"></div>
-                  <div className="absolute inset-0 bg-[#fbbf24]/10 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 px-4 py-2 bg-gradient-to-r from-[#fbbf24] to-[#f59e0b] text-black text-sm font-bold rounded-lg shadow-lg whitespace-nowrap">
+                  
+                  {/* Enhanced ripple effects with staggered animations */}
+                  <div className={`absolute inset-0 bg-[#fbbf24]/30 rounded-full transition-all duration-1000 delay-3200 ${
+                    barangaysAnimation.isVisible ? 'animate-ping opacity-100' : 'opacity-0'
+                  }`}></div>
+                  <div className={`absolute inset-0 bg-[#f59e0b]/20 rounded-full transition-all duration-1000 delay-3400 ${
+                    barangaysAnimation.isVisible ? 'animate-ping opacity-100' : 'opacity-0'
+                  }`} style={{ animationDelay: '0.5s' }}></div>
+                  <div className={`absolute inset-0 bg-[#d97706]/15 rounded-full transition-all duration-1000 delay-3600 ${
+                    barangaysAnimation.isVisible ? 'animate-ping opacity-100' : 'opacity-0'
+                  }`} style={{ animationDelay: '1s' }}></div>
+                  
+                  {/* Rotating orbit effect */}
+                  <div className={`absolute inset-0 w-16 h-16 -top-2 -left-2 border border-[#fbbf24]/30 rounded-full transition-all duration-1000 delay-3800 ${
+                    barangaysAnimation.isVisible ? 'opacity-100 animate-spin' : 'opacity-0'
+                  }`} style={{ animationDuration: '8s' }}>
+                    <div className="absolute top-0 left-1/2 w-1 h-1 bg-[#fbbf24] rounded-full transform -translate-x-1/2"></div>
+                    <div className="absolute bottom-0 left-1/2 w-1 h-1 bg-[#f59e0b] rounded-full transform -translate-x-1/2"></div>
+                    <div className="absolute left-0 top-1/2 w-1 h-1 bg-[#d97706] rounded-full transform -translate-y-1/2"></div>
+                    <div className="absolute right-0 top-1/2 w-1 h-1 bg-[#fbbf24] rounded-full transform -translate-y-1/2"></div>
+                  </div>
+                  
+                  {/* Enhanced label with entrance animation */}
+                  <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-4 px-4 py-2 bg-gradient-to-r from-[#fbbf24] to-[#f59e0b] text-black text-sm font-bold rounded-lg shadow-lg whitespace-nowrap transition-all duration-1000 delay-4000 ${
+                    barangaysAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                  }`}>
                     <div className="text-center">
                       <div className="font-bold">Sulop Municipal Hall</div>
                       <div className="text-xs opacity-80">Central Hub</div>
                     </div>
+                    {/* Arrow pointing to center */}
+                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-[#fbbf24]"></div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Statistics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-              <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-[#fbbf24] mb-2">25</div>
-                <div className="text-gray-300 font-medium">Barangays Connected</div>
+            <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 transition-all duration-1000 delay-4500 ${
+              barangaysAnimation.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}>
+              <div className={`text-center transition-all duration-1000 delay-4700 ${
+                barangaysAnimation.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+              }`}>
+                <div className="relative group">
+                  <div className="text-4xl md:text-5xl font-bold text-[#fbbf24] mb-2 transition-all duration-300 group-hover:scale-110">
+                    <span className={`inline-block ${barangaysAnimation.isVisible ? 'animate-pulse' : ''}`}>25</span>
+                  </div>
+                  <div className="text-gray-300 font-medium">Barangays Connected</div>
+                  {/* Decorative elements */}
+                  <div className="absolute -top-2 -right-2 w-3 h-3 bg-[#fbbf24]/30 rounded-full animate-ping"></div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-[#f59e0b] mb-2">100%</div>
-                <div className="text-gray-300 font-medium">Coverage Across Sulop</div>
+              <div className={`text-center transition-all duration-1000 delay-4900 ${
+                barangaysAnimation.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+              }`}>
+                <div className="relative group">
+                  <div className="text-4xl md:text-5xl font-bold text-[#f59e0b] mb-2 transition-all duration-300 group-hover:scale-110">
+                    <span className={`inline-block ${barangaysAnimation.isVisible ? 'animate-pulse' : ''}`} style={{ animationDelay: '0.5s' }}>100%</span>
+                  </div>
+                  <div className="text-gray-300 font-medium">Coverage Across Sulop</div>
+                  {/* Decorative elements */}
+                  <div className="absolute -top-2 -right-2 w-3 h-3 bg-[#f59e0b]/30 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-[#d97706] mb-2">1</div>
-                <div className="text-gray-300 font-medium">Unified Platform</div>
+              <div className={`text-center transition-all duration-1000 delay-5100 ${
+                barangaysAnimation.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+              }`}>
+                <div className="relative group">
+                  <div className="text-4xl md:text-5xl font-bold text-[#d97706] mb-2 transition-all duration-300 group-hover:scale-110">
+                    <span className={`inline-block ${barangaysAnimation.isVisible ? 'animate-pulse' : ''}`} style={{ animationDelay: '1s' }}>1</span>
+                  </div>
+                  <div className="text-gray-300 font-medium">Unified Platform</div>
+                  {/* Decorative elements */}
+                  <div className="absolute -top-2 -right-2 w-3 h-3 bg-[#d97706]/30 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
+                </div>
               </div>
             </div>
           </div>
