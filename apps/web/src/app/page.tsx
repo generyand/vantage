@@ -133,7 +133,14 @@ export default function Home() {
     setActiveHeroSlide(index);
   };
 
+  // Auto-advance carousel only when process section is visible
   useEffect(() => {
+    if (processAnimation.isVisible) {
+      // Reset to step 1 when first entering the section
+      if (activeStep !== 0) {
+        setActiveStep(0);
+      }
+      
     setFade(true);
     const fadeTimeout = setTimeout(() => setFade(false), 500); // match duration-500
     if (timerRef.current) clearInterval(timerRef.current);
@@ -144,7 +151,14 @@ export default function Home() {
       clearTimeout(fadeTimeout);
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [activeStep, stepsLength]);
+    } else {
+      // Clear the interval when section is not visible
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+  }, [processAnimation.isVisible, stepsLength, activeStep]);
 
   // Scroll event listener for sticky header
   useEffect(() => {
@@ -261,7 +275,7 @@ export default function Home() {
       {/* Cityscape Layout - First Section */}
       <div className="flex h-screen relative">
         {/* Left Sidebar - Cityscape Theme */}
-        <aside className="hidden lg:flex lg:w-1/4 bg-[var(--cityscape-black)] dark:bg-[var(--cityscape-dark)] flex-col justify-between p-4 lg:p-8 transition-colors duration-300" role="complementary" aria-label="Navigation sidebar">
+        <aside className="hidden lg:flex lg:w-1/4 bg-black flex-col justify-between p-4 lg:p-8 transition-colors duration-300" role="complementary" aria-label="Navigation sidebar">
           {/* Top: Logo and Navigation */}
           <div className="space-y-8">
             {/* Logo */}
@@ -276,10 +290,10 @@ export default function Home() {
                 className="lg:w-10 lg:h-10 rounded-full bg-white border border-gray-200 object-contain"
               />
               <div className="flex flex-col">
-                <span className="font-extrabold text-lg lg:text-xl tracking-tight text-[var(--text-inverse)] leading-tight">
+                <span className="font-extrabold text-lg lg:text-xl tracking-tight text-white leading-tight">
                   VANTAGE
                 </span>
-                <span className="text-xs text-[var(--text-muted)] font-medium">
+                <span className="text-xs text-gray-400 font-medium">
                   SGLGB Strategic Analytics Platform
                 </span>
               </div>
@@ -292,7 +306,7 @@ export default function Home() {
               heroLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
             }`}>
               <div
-                className="text-[var(--text-inverse)] text-sm font-medium tracking-wider"
+                className="text-white text-sm font-medium tracking-wider"
                 style={{
                   writingMode: "vertical-rl",
                   textOrientation: "mixed",
@@ -302,14 +316,14 @@ export default function Home() {
               >
                 FOLLOW US
               </div>
-              <div className="absolute top-30 left-3 w-px h-30 bg-[var(--text-inverse)]" aria-hidden="true"></div>
+                              <div className="absolute top-30 left-3 w-px h-30 bg-white" aria-hidden="true"></div>
             </div>
             <nav className={`flex flex-col space-y-6 transition-all duration-1000 ease-out delay-500 ${
               heroLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
             }`} role="navigation" aria-label="Social media links">
               <a
                 href="#"
-                className="group w-10 h-10 bg-white/10 dark:bg-white/5 hover:bg-[var(--cityscape-yellow)] rounded-full flex items-center justify-center text-[var(--text-inverse)] hover:text-[var(--cityscape-accent-foreground)] transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--cityscape-yellow)] focus:ring-offset-2 focus:ring-offset-[var(--cityscape-black)]"
+                className="group w-10 h-10 bg-white/10 hover:bg-[#fbbf24] rounded-full flex items-center justify-center text-white hover:text-black transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#fbbf24] focus:ring-offset-2 focus:ring-offset-black"
                 aria-label="Follow us on Facebook"
                 tabIndex={0}
               >
@@ -317,7 +331,7 @@ export default function Home() {
               </a>
               <a
                 href="#"
-                className="group w-10 h-10 bg-white/10 dark:bg-white/5 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 rounded-full flex items-center justify-center text-[var(--text-inverse)] transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--cityscape-yellow)] focus:ring-offset-2 focus:ring-offset-[var(--cityscape-black)]"
+                className="group w-10 h-10 bg-white/10 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#fbbf24] focus:ring-offset-2 focus:ring-offset-black"
                 aria-label="Follow us on Instagram"
                 tabIndex={0}
               >
@@ -325,7 +339,7 @@ export default function Home() {
               </a>
               <a
                 href="#"
-                className="group w-10 h-10 bg-white/10 dark:bg-white/5 hover:bg-blue-400 rounded-full flex items-center justify-center text-[var(--text-inverse)] transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--cityscape-yellow)] focus:ring-offset-2 focus:ring-offset-[var(--cityscape-black)]"
+                className="group w-10 h-10 bg-white/10 hover:bg-blue-400 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#fbbf24] focus:ring-offset-2 focus:ring-offset-black"
                 aria-label="Follow us on Twitter"
                 tabIndex={0}
               >
