@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const skeletonVariants = cva(
-  "animate-pulse bg-gray-200",
+  "animate-pulse bg-[var(--border)]",
   {
     variants: {
       shape: {

@@ -21,13 +21,13 @@ export function FeedbackSection({ feedback }: FeedbackSectionProps) {
   };
 
   return (
-    <Card className="w-full bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200/60 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-sm">
+    <Card className="w-full bg-[var(--card)] border border-[var(--border)] shadow-sm hover:shadow-md transition-shadow duration-200 rounded-sm">
       <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2 text-amber-800">
-          <AlertTriangle className="h-5 w-5" />
+        <CardTitle className="flex items-center gap-2 text-[var(--foreground)]">
+          <AlertTriangle className="h-5 w-5 text-[var(--cityscape-yellow)]" />
           Action Required: Address Assessor&apos;s Feedback
         </CardTitle>
-        <p className="text-sm text-amber-700 leading-relaxed">
+        <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
           Review and address the following items to proceed with your assessment.
         </p>
       </CardHeader>
@@ -36,23 +36,23 @@ export function FeedbackSection({ feedback }: FeedbackSectionProps) {
           {feedback.slice(0, 3).map((item) => (
             <div
               key={item.id}
-              className="bg-white/80 backdrop-blur-sm rounded-sm p-4 border border-amber-200/50 shadow-sm hover:shadow-md transition-all duration-200"
+              className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)] shadow-sm hover:shadow-md transition-all duration-200"
             >
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 mt-0.5">
-                  <MessageSquare className="h-4 w-4 text-amber-600" />
+                  <MessageSquare className="h-4 w-4 text-[var(--cityscape-yellow)]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="inline-flex items-center px-2 py-1 rounded-sm bg-blue-100 text-blue-800 text-xs font-medium font-mono">
+                    <span className="inline-flex items-center px-2 py-1 rounded-sm bg-[var(--cityscape-yellow)]/20 text-[var(--cityscape-yellow)] text-xs font-medium font-mono border border-[var(--cityscape-yellow)]/30">
                       {item.indicator}
                     </span>
-                    <span className="text-xs text-gray-400">•</span>
-                    <span className="text-xs text-gray-600 font-medium">
+                    <span className="text-xs text-[var(--text-secondary)]">•</span>
+                    <span className="text-xs text-[var(--text-secondary)] font-medium">
                       {item.governanceArea}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-700 leading-relaxed">
+                  <p className="text-sm text-[var(--foreground)] leading-relaxed">
                     {truncateComment(item.comment)}
                   </p>
                 </div>
@@ -62,7 +62,7 @@ export function FeedbackSection({ feedback }: FeedbackSectionProps) {
 
           {feedback.length > 3 && (
             <div className="text-center py-2">
-              <span className="text-xs text-amber-700 bg-amber-100/50 px-3 py-1 rounded-sm">
+              <span className="text-xs text-[var(--cityscape-yellow)] bg-[var(--cityscape-yellow)]/10 px-3 py-1 rounded-sm border border-[var(--cityscape-yellow)]/20">
                 +{feedback.length - 3} more items require attention
               </span>
             </div>
@@ -70,9 +70,8 @@ export function FeedbackSection({ feedback }: FeedbackSectionProps) {
 
           <div className="flex justify-center pt-4">
             <Button
-              variant="outline"
               onClick={() => router.push('/blgu/assessments')}
-              className="text-amber-800 border-amber-300 hover:bg-amber-100 flex items-center gap-2 rounded-sm font-medium shadow-sm transition-all duration-200"
+              className="bg-[var(--cityscape-yellow)] hover:bg-[var(--cityscape-yellow-dark)] text-[var(--cityscape-accent-foreground)] flex items-center gap-2 rounded-sm font-medium shadow-sm transition-all duration-200"
             >
               View all feedback and begin rework
               <ArrowRight className="h-4 w-4" />

@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useState } from 'react';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthProvider } from './AuthProvider';
+import { ThemeProvider } from './ThemeProvider';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   // Create a stable QueryClient instance
@@ -25,14 +26,16 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        {children}
-      </AuthProvider>
-      {/* Toast notifications */}
-      <Toaster />
-      {/* Dev tools for debugging React Query */}
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <ThemeProvider defaultTheme="system" storageKey="vantage-theme">
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+        {/* Toast notifications */}
+        <Toaster />
+        {/* Dev tools for debugging React Query */}
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 } 

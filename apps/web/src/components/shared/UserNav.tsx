@@ -46,14 +46,14 @@ export default function UserNav() {
 
   if (!user) {
     return (
-      <div className="px-4 py-4 border-b border-gray-100">
+      <div className="px-4 py-4 border-b border-[var(--border)]">
         <div className="flex items-center space-x-3">
-          <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-            <User className="w-5 h-5 text-gray-400" />
+          <div className="h-10 w-10 rounded-full bg-[var(--hover)] flex items-center justify-center">
+            <User className="w-5 h-5 text-[var(--icon-muted)]" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-900">No user data</p>
-            <p className="text-xs text-gray-500">Please log in</p>
+            <p className="text-sm font-semibold text-[var(--foreground)]">No user data</p>
+            <p className="text-xs text-[var(--text-secondary)]">Please log in</p>
           </div>
         </div>
       </div>
@@ -63,16 +63,16 @@ export default function UserNav() {
   return (
     <>
       {/* User Info Section */}
-      <div className="px-4 py-4 border-b border-gray-100">
+      <div className="px-4 py-4 border-b border-[var(--border)]">
         <div className="flex items-center space-x-3">
-          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#b91c1c] to-[#dc2626] flex items-center justify-center text-white font-semibold text-sm shadow-sm">
+          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] flex items-center justify-center text-[var(--cityscape-accent-foreground)] font-semibold text-sm shadow-sm">
             {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-900 truncate leading-tight">{user.name}</p>
-            <p className="text-xs text-gray-500 truncate mt-0.5">{user.email}</p>
+            <p className="text-sm font-semibold text-[var(--foreground)] truncate leading-tight">{user.name}</p>
+            <p className="text-xs text-[var(--text-secondary)] truncate mt-0.5">{user.email}</p>
             <div className="mt-1.5">
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--hover)] text-[var(--foreground)] border border-[var(--border)]">
                 {user.role}
               </span>
             </div>
@@ -85,16 +85,16 @@ export default function UserNav() {
         <button
           onClick={handleLogout}
           disabled={logoutMutation.isPending}
-          className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#b91c1c] hover:bg-red-50 rounded-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group border border-gray-100 hover:border-red-100"
+          className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-[var(--foreground)] hover:text-[var(--cityscape-yellow)] hover:bg-[var(--hover)] rounded-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group border border-[var(--border)] hover:border-[var(--cityscape-yellow)]"
         >
           {logoutMutation.isPending ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin text-[#b91c1c]" />
+              <Loader2 className="w-4 h-4 mr-2 animate-spin text-[var(--cityscape-yellow)]" />
               Signing out...
             </>
           ) : (
             <>
-              <LogOut className="w-4 h-4 mr-2 text-gray-500 group-hover:text-[#b91c1c] transition-colors duration-200" />
+              <LogOut className="w-4 h-4 mr-2 text-[var(--icon-default)] group-hover:text-[var(--cityscape-yellow)] transition-colors duration-200" />
               Sign out
             </>
           )}

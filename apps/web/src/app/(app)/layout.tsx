@@ -19,7 +19,7 @@ const adminNavigation = [
 ];
 
 const blguNavigation = [
-  { name: 'BLGU Dashboard', href: '/blgu/dashboard', icon: 'home' },
+  { name: 'Dashboard', href: '/blgu/dashboard', icon: 'home' },
   { name: 'My Assessments', href: '/blgu/assessments', icon: 'clipboard' },
   { name: 'Profile', href: '/blgu/profile', icon: 'user' },
 ];
@@ -170,18 +170,18 @@ export default function AppLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--background)] transition-colors duration-300">
       {/* Mobile backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-[var(--overlay)] z-40 md:hidden transition-opacity duration-300"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Mobile sidebar */}
       <div className={`fixed inset-0 flex z-50 md:hidden ${sidebarOpen ? '' : 'hidden'}`}>
-        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white/95 backdrop-blur-sm shadow-xl border-r border-red-100">
+        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-[var(--card)] backdrop-blur-sm shadow-xl border-r border-[var(--border)] transition-colors duration-300">
           <div className="absolute top-0 right-0 -mr-12 pt-2">
             <button
               className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
@@ -203,8 +203,8 @@ export default function AppLayout({
                   />
                 </div>
                 <div className="ml-3">
-                  <h1 className="text-lg font-bold text-gray-900">VANTAGE</h1>
-                  <p className="text-sm text-gray-600">
+                  <h1 className="text-lg font-bold text-[var(--foreground)]">VANTAGE</h1>
+                  <p className="text-sm text-[var(--text-secondary)]">
                     {isAdmin ? 'Admin Portal' : 'Barangay Submission Portal'}
                   </p>
                 </div>
@@ -217,8 +217,8 @@ export default function AppLayout({
                   href={item.href}
                   className={`group flex items-center px-4 py-3 text-left rounded-sm transition-all duration-200 ${
                     pathname === item.href
-                      ? "bg-[#b91c1c] text-white shadow-lg"
-                      : "text-gray-700 hover:bg-red-50 hover:text-red-600"
+                      ? "bg-[var(--cityscape-yellow)] text-[var(--cityscape-accent-foreground)] shadow-lg"
+                      : "text-[var(--foreground)] hover:bg-[var(--hover)] hover:text-[var(--cityscape-yellow)]"
                   }`}
                   onClick={() => setSidebarOpen(false)}
                 >
@@ -233,7 +233,7 @@ export default function AppLayout({
 
       {/* Desktop sidebar */}
       <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
-        <div className="flex-1 flex flex-col min-h-0 bg-white/95 backdrop-blur-sm shadow-xl border-r border-red-100">
+        <div className="flex-1 flex flex-col min-h-0 bg-[var(--card)] backdrop-blur-sm shadow-xl border-r border-[var(--border)] transition-colors duration-300">
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
             <div className="flex items-center flex-shrink-0 px-6 mb-8">
               <div className="flex items-center">
@@ -247,8 +247,8 @@ export default function AppLayout({
                   />
                 </div>
                 <div className="ml-3">
-                  <h1 className="text-lg font-bold text-gray-900">VANTAGE</h1>
-                  <p className="text-sm text-gray-600">
+                  <h1 className="text-lg font-bold text-[var(--foreground)]">VANTAGE</h1>
+                  <p className="text-sm text-[var(--text-secondary)]">
                     {isAdmin ? 'Admin Portal' : 'Barangay Submission Portal'}
                   </p>
                 </div>
@@ -261,8 +261,8 @@ export default function AppLayout({
                   href={item.href}
                   className={`group flex items-center px-4 py-3 text-left rounded-sm transition-all duration-200 ${
                     pathname === item.href
-                      ? "bg-[#b91c1c] text-white shadow-lg"
-                      : "text-gray-700 hover:bg-red-50 hover:text-red-600"
+                      ? "bg-[var(--cityscape-yellow)] text-[var(--cityscape-accent-foreground)] shadow-lg"
+                      : "text-[var(--foreground)] hover:bg-[var(--hover)] hover:text-[var(--cityscape-yellow)]"
                   }`}
                 >
                   {getIcon(item.icon)}
@@ -276,9 +276,9 @@ export default function AppLayout({
 
       {/* Main content */}
       <div className="md:pl-64 flex flex-col flex-1">
-        <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-gray-50">
+        <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-[var(--background)] transition-colors duration-300">
           <button
-            className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+            className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-[var(--icon-default)] hover:text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--cityscape-yellow)] transition-colors duration-200"
             onClick={() => setSidebarOpen(true)}
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -288,12 +288,12 @@ export default function AppLayout({
         </div>
 
         {/* Header */}
-        <header className="bg-white shadow-sm">
+        <header className="bg-[var(--card)] shadow-sm transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div className="flex items-center">
                 <div>
-                  <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate">
+                  <h2 className="text-2xl font-bold leading-7 text-[var(--foreground)] sm:truncate">
                     {isAdmin ? (
                       // Admin-specific titles
                       pathname === '/admin/reports' ? 'Analytics & Reports' :
@@ -302,20 +302,23 @@ export default function AppLayout({
                       pathname === '/admin/profile' ? 'Profile' :
                       navigation.find(item => pathname === item.href)?.name || 'Dashboard'
                     ) : (
-                      // BLGU titles
-                      navigation.find(item => pathname === item.href)?.name || 'BLGU Dashboard'
+                      // BLGU titles - show specific titles for better UX
+                      pathname === '/blgu/dashboard' ? 'SGLGB Dashboard' :
+                      pathname === '/blgu/assessments' ? 'My Assessments' :
+                      pathname === '/blgu/profile' ? 'Profile' :
+                      navigation.find(item => pathname === item.href)?.name || 'Dashboard'
                     )}
                   </h2>
                   {/* Show context-specific subtitle for all users */}
                   {!isAdmin && pathname.startsWith('/blgu') && (
-                    <p className="mt-1 text-sm text-gray-500">
-                      {pathname === '/blgu/dashboard' && 'Welcome to your Barangay Local Government Unit dashboard'}
+                    <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                      {pathname === '/blgu/dashboard' && 'Monitor your SGLGB performance and track assessment progress'}
                       {pathname === '/blgu/assessments' && 'Manage and complete your SGLGB assessments'}
                       {pathname === '/blgu/profile' && 'Manage your account settings, update your password, and view your profile information.'}
                     </p>
                   )}
                   {isAdmin && (
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-[var(--text-secondary)]">
                       {pathname === '/admin/dashboard' && 'Welcome to your Vantage dashboard'}
                       {pathname === '/admin/submissions' && 'Review and manage submitted assessments from barangays'}
                       {pathname === '/admin/reports' && 'View analytics and generate reports on assessment data'}
@@ -328,27 +331,27 @@ export default function AppLayout({
               </div>
               <div className="flex items-center space-x-4">
                 {/* Notifications */}
-                <button className="p-2 rounded-full text-gray-500 hover:text-[#b91c1c] hover:bg-red-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#b91c1c] focus:ring-offset-2">
+                <button className="p-2 rounded-full text-[var(--icon-default)] hover:text-[var(--cityscape-yellow)] hover:bg-[var(--hover)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--cityscape-yellow)] focus:ring-offset-2">
                   <Bell className="h-5 w-5" />
                 </button>
                 
                 {/* Profile dropdown */}
                 <div className="relative">
                   <button 
-                    className="flex items-center space-x-2 p-2 rounded-full text-gray-500 hover:text-[#b91c1c] hover:bg-red-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#b91c1c] focus:ring-offset-2"
+                    className="flex items-center space-x-2 p-2 rounded-full text-[var(--icon-default)] hover:text-[var(--cityscape-yellow)] hover:bg-[var(--hover)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--cityscape-yellow)] focus:ring-offset-2"
                     onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                   >
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#b91c1c] to-[#dc2626] flex items-center justify-center text-white font-semibold text-sm">
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] flex items-center justify-center text-[var(--cityscape-accent-foreground)] font-semibold text-sm">
                       {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                     </div>
-                    <span className="hidden sm:block text-sm font-medium text-gray-700">
+                    <span className="hidden sm:block text-sm font-medium text-[var(--foreground)]">
                       {user?.name || 'User'}
                     </span>
                   </button>
                   
                   {/* Profile dropdown menu */}
                   {profileDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-sm shadow-xl border border-gray-200 z-50">
+                    <div className="absolute right-0 mt-2 w-80 bg-[var(--card)] rounded-sm shadow-xl border border-[var(--border)] z-50 transition-colors duration-300">
                       <div className="py-1">
                         <UserNav />
                       </div>

@@ -50,7 +50,7 @@ export default function AdminSubmissionsPage() {
   const [assessorFilter, setAssessorFilter] = useState("all");
 
   // Mock data matching the design from the image
-  const submissionsData: Submission[] = [
+  const submissionsData = useMemo((): Submission[] => [
     {
       id: 1,
       barangayName: "Barangay Balasinon",
@@ -108,7 +108,7 @@ export default function AdminSubmissionsPage() {
       assignedAssessors: [{ id: 1, name: "John Doe", avatar: "JD" }],
       lastUpdated: "1/11/2024",
     },
-  ];
+  ], []);
 
   // Filter submissions based on search and filters
   const filteredSubmissions = useMemo(() => {

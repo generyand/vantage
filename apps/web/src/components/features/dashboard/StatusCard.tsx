@@ -44,7 +44,7 @@ const CircularProgress = ({
           stroke="currentColor"
           strokeWidth={strokeWidth}
           fill="transparent"
-          className="text-gray-200"
+          className="text-[var(--border)]"
         />
         {/* Progress circle */}
         <circle
@@ -62,10 +62,10 @@ const CircularProgress = ({
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-2xl font-bold text-gray-900">
+          <div className="text-2xl font-bold text-[var(--foreground)]">
             {Math.round(percentage)}%
           </div>
-          <div className="text-xs text-gray-600">Complete</div>
+          <div className="text-xs text-[var(--text-secondary)]">Complete</div>
         </div>
       </div>
     </div>
@@ -130,9 +130,8 @@ export function StatusCard({ status, progress }: StatusCardProps) {
           buttonText: "Continue Assessment",
           buttonAction: () => router.push("/blgu/assessments"),
           primaryColor: "#3b82f6",
-          bgGradient: "from-blue-50/80 via-indigo-50/60 to-purple-50/40",
-          accentColor: "text-blue-600",
-          icon: <TrendingUp className="h-5 w-5 text-blue-600" />,
+          accentColor: "text-blue-500",
+          icon: <TrendingUp className="h-5 w-5 text-blue-500" />,
         };
       case "needs-rework":
         return {
@@ -141,9 +140,8 @@ export function StatusCard({ status, progress }: StatusCardProps) {
           buttonText: "View Feedback & Rework Items",
           buttonAction: () => router.push("/blgu/assessments"),
           primaryColor: "#f59e0b",
-          bgGradient: "from-amber-50/80 via-orange-50/60 to-red-50/40",
-          accentColor: "text-amber-600",
-          icon: <AlertTriangle className="h-5 w-5 text-amber-600" />,
+          accentColor: "text-amber-500",
+          icon: <AlertTriangle className="h-5 w-5 text-amber-500" />,
         };
       case "submitted":
         return {
@@ -152,9 +150,8 @@ export function StatusCard({ status, progress }: StatusCardProps) {
           buttonText: "View My Submission (Read-Only)",
           buttonAction: () => router.push("/blgu/assessments"),
           primaryColor: "#8b5cf6",
-          bgGradient: "from-purple-50/80 via-violet-50/60 to-indigo-50/40",
-          accentColor: "text-purple-600",
-          icon: <CheckCircle2 className="h-5 w-5 text-purple-600" />,
+          accentColor: "text-purple-500",
+          icon: <CheckCircle2 className="h-5 w-5 text-purple-500" />,
         };
       case "validated":
         return {
@@ -163,9 +160,8 @@ export function StatusCard({ status, progress }: StatusCardProps) {
           buttonText: "View My Submission (Read-Only)",
           buttonAction: () => router.push("/blgu/assessments"),
           primaryColor: "#10b981",
-          bgGradient: "from-emerald-50/80 via-green-50/60 to-teal-50/40",
-          accentColor: "text-emerald-600",
-          icon: <CheckCircle2 className="h-5 w-5 text-emerald-600" />,
+          accentColor: "text-emerald-500",
+          icon: <CheckCircle2 className="h-5 w-5 text-emerald-500" />,
         };
     }
   };
@@ -179,20 +175,20 @@ export function StatusCard({ status, progress }: StatusCardProps) {
     <div className="space-y-6">
       {/* Main Status Card */}
       <Card
-        className={`relative overflow-hidden bg-gradient-to-br ${config.bgGradient} border-0 shadow-lg hover:shadow-xl transition-all duration-300 rounded-sm`}
+        className="relative overflow-hidden bg-[var(--card)] border border-[var(--border)] shadow-lg hover:shadow-xl transition-all duration-300 rounded-sm"
       >
         {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--cityscape-yellow)]/5 rounded-full -translate-y-16 translate-x-16"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-[var(--cityscape-yellow)]/3 rounded-full translate-y-12 -translate-x-12"></div>
 
         <CardHeader className="pb-4 relative z-10">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <CardTitle className="text-lg font-semibold text-[var(--foreground)] flex items-center gap-2">
               {config.icon}
               Current Pre-Assessment Status
             </CardTitle>
             <Badge
-              className={`px-3 py-1 text-xs font-medium rounded-sm bg-white/80 ${config.accentColor} border-0`}
+              className={`px-3 py-1 text-xs font-medium rounded-sm bg-[var(--cityscape-yellow)]/20 text-[var(--cityscape-yellow)] border border-[var(--cityscape-yellow)]/30`}
             >
               {config.badgeText}
             </Badge>
@@ -213,38 +209,38 @@ export function StatusCard({ status, progress }: StatusCardProps) {
               </div>
 
               <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="bg-white/60 backdrop-blur-sm rounded-sm p-3">
-                  <div className="text-xl font-bold text-gray-900">
+                <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3 border border-[var(--border)]">
+                  <div className="text-xl font-bold text-[var(--foreground)]">
                     {progress.current}
                   </div>
-                  <div className="text-xs text-gray-600">Compliant</div>
+                  <div className="text-xs text-[var(--text-secondary)]">Compliant</div>
                 </div>
-                <div className="bg-white/60 backdrop-blur-sm rounded-sm p-3">
-                  <div className="text-xl font-bold text-gray-900">
+                <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3 border border-[var(--border)]">
+                  <div className="text-xl font-bold text-[var(--foreground)]">
                     {progress.total - progress.current}
                   </div>
-                  <div className="text-xs text-gray-600">Remaining</div>
+                  <div className="text-xs text-[var(--text-secondary)]">Remaining</div>
                 </div>
-                <div className="bg-white/60 backdrop-blur-sm rounded-sm p-3">
-                  <div className="text-xl font-bold text-gray-900">
+                <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3 border border-[var(--border)]">
+                  <div className="text-xl font-bold text-[var(--foreground)]">
                     {progress.total}
                   </div>
-                  <div className="text-xs text-gray-600">Total</div>
+                  <div className="text-xs text-[var(--text-secondary)]">Total</div>
                 </div>
               </div>
             </div>
 
             {/* Right side - Trend and Details */}
             <div className="space-y-4">
-              <div className="bg-white/60 backdrop-blur-sm rounded-sm p-4">
+              <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-[var(--text-secondary)]">
                     Progress Trend
                   </span>
-                  <Activity className="h-4 w-4 text-gray-600" />
+                  <Activity className="h-4 w-4 text-[var(--icon-default)]" />
                 </div>
                 <MiniTrendChart data={trendData} color={config.primaryColor} />
-                <div className="flex justify-between text-xs text-gray-600 mt-2">
+                <div className="flex justify-between text-xs text-[var(--text-secondary)] mt-2">
                   <span>Last 30 days</span>
                   <span className="flex items-center gap-1">
                     <TrendingUp className="h-3 w-3" />+
@@ -254,22 +250,23 @@ export function StatusCard({ status, progress }: StatusCardProps) {
               </div>
 
               <div className="space-y-3">
-                <h3 className="text-base font-medium text-gray-900 leading-relaxed">
+                <h3 className="text-base font-medium text-[var(--foreground)] leading-relaxed">
                   {config.title}
                 </h3>
 
-                <div className="bg-white/60 backdrop-blur-sm rounded-sm p-3">
+                <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3 border border-[var(--border)]">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="font-medium text-gray-700">
+                    <span className="font-medium text-[var(--text-secondary)]">
                       Overall Progress
                     </span>
-                    <span className="text-gray-600 font-mono">
+                    <span className="text-[var(--text-secondary)] font-mono">
                       {progress.current} / {progress.total} Indicators
                     </span>
                   </div>
                   <Progress
                     value={progress.percentage}
-                    className="h-2 bg-gray-200/60 mt-2"
+                    className="h-2 bg-[var(--border)]/60 mt-2"
+                    progressColor={config.primaryColor}
                   />
                 </div>
               </div>
@@ -278,7 +275,7 @@ export function StatusCard({ status, progress }: StatusCardProps) {
 
           <Button
             onClick={config.buttonAction}
-            className="w-full h-12 text-sm font-medium bg-gray-900 hover:bg-gray-800 text-white rounded-sm shadow-lg hover:shadow-xl transition-all duration-200 mt-6"
+            className="w-full h-12 text-sm font-medium bg-[var(--cityscape-yellow)] hover:bg-[var(--cityscape-yellow-dark)] text-[var(--cityscape-accent-foreground)] rounded-sm shadow-lg hover:shadow-xl transition-all duration-200 mt-6"
           >
             {config.buttonText}
           </Button>
