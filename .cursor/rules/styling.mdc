@@ -45,13 +45,20 @@ Establish a professional, consistent, and accessible styling system for the Vant
 - `#fecaca`, `#fed7aa`, `#e2e8f0`
 
 ### System Colors
-- **Primary:** `#b91c1c` (fg: `#ffffff`)
+- **Primary:** `#b91c1c` (fg: `#ffffff`) - Legacy red theme
 - **Secondary:** `#d97706` (fg: `#ffffff`)
 - **Success:** `#28a745`
 - **Warning:** `#fd7e14`
 - **Destructive:** `#dc3545`
 
-> **Note:** The primary color (`#b91c1c`) is used for all main actions, buttons, and focus states. Update `globals.css` and all component variants to use this theme token for consistency.
+### Cityscape Theme Colors (NEW)
+- **Primary:** `#fbbf24` (fg: `#000000`) - Yellow accent
+- **Secondary:** `#f59e0b` (fg: `#000000`) - Darker yellow
+- **Accent:** `#d97706` (fg: `#000000`) - Orange
+- **Black:** `#000000` (fg: `#ffffff`) - Main background
+- **Dark Gray:** `#1a1a1a` (fg: `#ffffff`) - Secondary background
+
+> **Note:** The cityscape theme uses yellow (`#fbbf24`) as the primary accent color with black backgrounds. The legacy red theme (`#b91c1c`) is still available for backward compatibility. Update `globals.css` and all component variants to use the appropriate theme tokens for consistency.
 
 > **Note:** These colors are mapped to CSS variables in `globals.css` and used via Tailwind utility classes or custom properties.
 

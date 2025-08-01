@@ -1,194 +1,375 @@
+'use client';
+
+import { useState } from 'react';
+import { 
+  Target,
+  Activity,
+  Filter,
+  Zap,
+  Brain
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 export default function ReportsPage() {
-  // Mock data - replace with actual API calls
-  const reportData = {
-    totalAssessments: 12,
-    averageScore: 78,
-    improvement: '+12%',
-    lastAssessment: '2024-03-15',
-    trends: [
-      { month: 'Jan', score: 72 },
-      { month: 'Feb', score: 75 },
-      { month: 'Mar', score: 78 },
-      { month: 'Apr', score: 82 },
-      { month: 'May', score: 85 },
-      { month: 'Jun', score: 88 },
-    ],
-    categories: [
-      { name: 'Strategic Leadership', current: 88, previous: 82 },
-      { name: 'Team Management', current: 82, previous: 78 },
-      { name: 'Communication', current: 90, previous: 85 },
-      { name: 'Decision Making', current: 80, previous: 75 },
-    ],
+  const [selectedPeriod, setSelectedPeriod] = useState('sglgb-2024');
+  const [selectedBarangay, setSelectedBarangay] = useState('');
+
+  // Mock data matching the design from the image
+  const analyticsData = {
+    globalFilters: {
+      assessmentPeriod: 'SGLGB 2024',
+      availablePeriods: ['SGLGB 2024', 'SGLGB 2023', 'SGLGB 2022']
+    },
+    officialPerformance: {
+      title: 'Official SGLGB Performance (sglgb-2024)',
+      passRate: 78,
+      totalBarangays: 25,
+      passed: 18,
+      failed: 5,
+      inProgress: 2,
+      barangays: [
+        { name: 'Barangay Poblacion', score: 95, status: 'passed' },
+        { name: 'Barangay Balasinon', score: 92, status: 'passed' },
+        { name: 'Barangay Buguis', score: 89, status: 'passed' },
+        { name: 'Barangay Carre', score: 85, status: 'passed' },
+        { name: 'Barangay Clib', score: 82, status: 'passed' },
+        { name: 'Barangay Harada Butai', score: 80, status: 'passed' },
+        { name: 'Barangay Katipunan', score: 78, status: 'passed' },
+        { name: 'Barangay Kiblagon', score: 76, status: 'passed' },
+        { name: 'Barangay Labon', score: 73, status: 'passed' },
+        { name: 'Barangay Laperas', score: 70, status: 'passed' },
+        { name: 'Barangay Lapla', score: 68, status: 'passed' },
+        { name: 'Barangay Litos', score: 65, status: 'passed' },
+        { name: 'Barangay Luparan', score: 62, status: 'passed' },
+        { name: 'Barangay Mckinley', score: 60, status: 'passed' },
+        { name: 'Barangay New Cebu', score: 58, status: 'passed' },
+        { name: 'Barangay Osmeña', score: 55, status: 'passed' },
+        { name: 'Barangay Palili', score: 52, status: 'passed' },
+        { name: 'Barangay Parame', score: 50, status: 'failed' },
+        { name: 'Barangay Roxas', score: 48, status: 'failed' },
+        { name: 'Barangay Solongvale', score: 45, status: 'failed' },
+        { name: 'Barangay Tagolilong', score: 42, status: 'failed' },
+        { name: 'Barangay Tala-o', score: 40, status: 'failed' },
+        { name: 'Barangay Talas', score: 38, status: 'inProgress' },
+        { name: 'Barangay Tanwalang', score: 35, status: 'inProgress' },
+        { name: 'Barangay Waterfall', score: 32, status: 'inProgress' }
+      ]
+    },
+    municipalityPerformance: {
+      hotspots: [
+        { indicator: '1.1.5 BADAC Plan', score: '10/25', status: 'critical' },
+        { indicator: '4.2.3 Environmental Management', score: '10/25', status: 'critical' },
+        { indicator: '2.1.2 Financial Records', score: '12/25', status: 'warning' },
+        { indicator: '3.3.1 Youth Development', score: '7/25', status: 'critical' },
+        { indicator: '1.4.1 Digital Governance', score: '6/25', status: 'critical' }
+      ]
+    },
+    capacityDevelopment: {
+      title: 'Capacity Development Priority',
+      description: 'Focus municipal training programs on the indicators with the lowest scores. Indicators with failing indicators represent the most critical areas for capacity development.'
+    },
+    preAssessmentAnalysis: {
+      predictionAccuracy: 92,
+      falsePositives: 1,
+      falseNegatives: 1,
+      summary: 'The VANTAGE pre-assessment system achieved a 92% accuracy rate, with 1 false positives and 1 false negatives. This indicates the system\'s effectiveness in predicting SGLGB outcomes.'
+    },
+    aiReport: {
+      title: 'Generate AI-Powered CapDev Report',
+      description: 'Get detailed insights and recommendations for specific barangays',
+      availableBarangays: [
+        'Barangay Poblacion',
+        'Barangay Balasinon',
+        'Barangay Buguis',
+        'Barangay Carre',
+        'Barangay Clib',
+        'Barangay Harada Butai',
+        'Barangay Katipunan',
+        'Barangay Kiblagon',
+        'Barangay Labon',
+        'Barangay Laperas',
+        'Barangay Lapla',
+        'Barangay Litos',
+        'Barangay Luparan',
+        'Barangay Mckinley',
+        'Barangay New Cebu',
+        'Barangay Osmeña',
+        'Barangay Palili',
+        'Barangay Parame',
+        'Barangay Roxas',
+        'Barangay Solongvale',
+        'Barangay Tagolilong',
+        'Barangay Tala-o',
+        'Barangay Talas',
+        'Barangay Tanwalang',
+        'Barangay Waterfall'
+      ]
+    }
   };
 
-  const getChangeIcon = (current: number, previous: number) => {
-    if (current > previous) {
-      return (
-        <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
-        </svg>
-      );
-    } else if (current < previous) {
-      return (
-        <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 13l-5 5m0 0l-5-5m5 5V6" />
-        </svg>
-      );
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'passed': return 'text-green-600 bg-green-100';
+      case 'failed': return 'text-red-600 bg-red-100';
+      case 'critical': return 'text-red-600 bg-red-100';
+      case 'warning': return 'text-orange-600 bg-orange-100';
+      default: return 'text-gray-600 bg-gray-100';
     }
-    return (
-      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14" />
-      </svg>
-    );
+  };
+
+  const getScoreBarColor = (score: number) => {
+    if (score >= 80) return 'bg-green-500';
+    if (score >= 60) return 'bg-yellow-500';
+    return 'bg-red-500';
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Analytics & Reports</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Track your leadership development progress over time
-        </p>
-      </div>
-
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="space-y-8">
+          {/* Global Filters */}
+          <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Filter className="h-5 w-5 text-blue-600" />
+              <h2 className="text-lg font-semibold text-gray-900">Global Filters</h2>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700">Assessment Period:</span>
+                <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+                  <SelectTrigger className="w-40 bg-white/80 border-gray-300 rounded-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border border-gray-300 shadow-xl rounded-sm z-50">
+                    {analyticsData.globalFilters.availablePeriods.map((period) => (
+                      <SelectItem 
+                        key={period} 
+                        value={period.toLowerCase().replace(' ', '-')}
+                        className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                      >
+                        {period}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Assessments</p>
-              <p className="text-2xl font-semibold text-gray-900">{reportData.totalAssessments}</p>
-            </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-              </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Average Score</p>
-              <p className="text-2xl font-semibold text-gray-900">{reportData.averageScore}%</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
-                </svg>
-              </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Improvement</p>
-              <p className="text-2xl font-semibold text-green-600">{reportData.improvement}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Last Assessment</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {new Date(reportData.lastAssessment).toLocaleDateString()}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Score Trends */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">Score Trends</h2>
-        </div>
-        <div className="p-6">
-          <div className="flex items-end space-x-4 h-64">
-            {reportData.trends.map((item) => (
-              <div key={item.month} className="flex-1 flex flex-col items-center">
-                <div
-                  className="bg-blue-500 rounded-t w-full mb-2 transition-all duration-300 hover:bg-blue-600"
-                  style={{ height: `${(item.score / 100) * 200}px` }}
-                />
-                <div className="text-xs font-medium text-gray-600">{item.month}</div>
-                <div className="text-xs text-gray-500">{item.score}%</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Category Performance */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">Category Performance</h2>
-        </div>
-        <div className="p-6">
-          <div className="space-y-6">
-            {reportData.categories.map((category) => (
-              <div key={category.name} className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">{category.name}</span>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-gray-500">
-                        {category.previous}% → {category.current}%
-                      </span>
-                      {getChangeIcon(category.current, category.previous)}
+          {/* Main Analytics Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Official SGLGB Performance - 2 columns */}
+            <div className="lg:col-span-2">
+              <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 overflow-hidden">
+                <div className="p-6 border-b border-gray-200/60">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    {analyticsData.officialPerformance.title}
+                  </h3>
+                  
+                  {/* Donut Chart and Stats */}
+                  <div className="flex items-center gap-8 mb-6">
+                    {/* Donut Chart Representation */}
+                    <div className="relative w-32 h-32">
+                      <div className="absolute inset-0 rounded-full border-8 border-gray-200"></div>
+                      <div 
+                        className="absolute inset-0 rounded-full border-8 border-green-500 transform -rotate-90"
+                        style={{
+                          borderTopColor: 'transparent',
+                          borderRightColor: 'transparent',
+                          borderBottomColor: 'transparent',
+                          clipPath: `polygon(50% 50%, 50% 0%, ${50 + (analyticsData.officialPerformance.passRate / 100) * 50}% 0%, 100% 50%, 50% 50%)`
+                        }}
+                      ></div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-gray-900">{analyticsData.officialPerformance.totalBarangays}</div>
+                          <div className="text-xs text-gray-600">Total</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Legend */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span className="text-sm text-gray-700">Passed ({analyticsData.officialPerformance.passed})</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <span className="text-sm text-gray-700">Failed ({analyticsData.officialPerformance.failed})</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <span className="text-sm text-gray-700">In Progress ({analyticsData.officialPerformance.inProgress})</span>
+                      </div>
+                    </div>
+                    
+                    {/* Pass Rate */}
+                    <div className="ml-auto text-right">
+                      <div className="text-sm font-medium text-gray-700 mb-1">Officially Passed Barangays</div>
+                      <div className="text-sm text-gray-600">Pass Rate: <span className="font-bold text-green-600">{analyticsData.officialPerformance.passRate}%</span></div>
                     </div>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${category.current}%` }}
-                    />
+                </div>
+                
+                {/* Barangay List */}
+                <div className="p-6">
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    <div className="grid grid-cols-3 gap-4 text-xs font-semibold text-gray-600 uppercase tracking-wide pb-2 border-b border-gray-200">
+                      <div>Barangay</div>
+                      <div>Score</div>
+                      <div>Status</div>
+                    </div>
+                    
+                    {analyticsData.officialPerformance.barangays.map((barangay, index) => (
+                      <div key={index} className="grid grid-cols-3 gap-4 items-center py-2 hover:bg-gray-50/50 rounded-sm transition-colors">
+                        <div className="text-sm font-medium text-gray-900">{barangay.name}</div>
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 bg-gray-200 rounded-full h-2">
+                            <div 
+                              className={`h-2 rounded-full ${getScoreBarColor(barangay.score)}`}
+                              style={{ width: `${barangay.score}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-sm font-medium text-gray-700 w-8">{barangay.score}%</span>
+                        </div>
+                        <div>
+                          <span className={`px-2 py-1 rounded-sm text-xs font-medium ${getStatusColor(barangay.status)}`}>
+                            {barangay.status === 'passed' ? '✓' : '✗'}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
+            </div>
 
-      {/* Export Options */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Export Reports</h3>
-        <div className="flex space-x-4">
-          <button className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Download PDF
-          </button>
-          <button className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-            </svg>
-            Export CSV
-          </button>
+            {/* Municipality-Wide Performance Hotspots */}
+            <div>
+              <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 overflow-hidden">
+                <div className="p-6 border-b border-gray-200/60">
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">Municipality-Wide Performance Hotspots</h3>
+                  <p className="text-sm text-gray-600">Top 5 most commonly failed indicators based on historical results</p>
+                </div>
+                
+                <div className="p-6 space-y-4">
+                  {analyticsData.municipalityPerformance.hotspots.map((hotspot, index) => (
+                    <div key={index} className="bg-gradient-to-r from-red-50/80 to-orange-50/60 rounded-sm p-4 border border-red-200/50">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <div className="text-sm font-semibold text-gray-900 mb-1">{hotspot.indicator}</div>
+                          <div className="text-xs text-gray-600">Failed by {hotspot.score.split('/')[1]} barangays ({hotspot.score})</div>
+                        </div>
+                        <div className={`px-2 py-1 rounded-sm text-xs font-bold ${getStatusColor(hotspot.status)}`}>
+                          {hotspot.score}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Capacity Development Priority */}
+                  <div className="mt-6 bg-gradient-to-r from-blue-50/80 to-indigo-50/60 rounded-sm p-4 border border-blue-200/50">
+                    <div className="flex items-start gap-3">
+                      <Target className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="text-sm font-semibold text-blue-900 mb-1">{analyticsData.capacityDevelopment.title}</h4>
+                        <p className="text-xs text-blue-700 leading-relaxed">{analyticsData.capacityDevelopment.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Pre-Assessment Effectiveness Analysis */}
+          <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 overflow-hidden">
+            <div className="p-6 border-b border-gray-200/60">
+              <h3 className="text-xl font-bold text-gray-900 mb-1">Pre-Assessment Effectiveness Analysis</h3>
+            </div>
+            
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                {/* Prediction Accuracy */}
+                <div className="bg-gradient-to-br from-green-50/80 to-emerald-50/60 rounded-sm p-6 text-center border border-green-200/50">
+                  <div className="text-4xl font-bold text-green-600 mb-2">{analyticsData.preAssessmentAnalysis.predictionAccuracy}%</div>
+                  <div className="text-sm font-semibold text-green-800 mb-1">Prediction Accuracy</div>
+                  <div className="text-xs text-green-700">21 total predictions</div>
+                </div>
+                
+                {/* False Positives */}
+                <div className="bg-gradient-to-br from-orange-50/80 to-red-50/60 rounded-sm p-6 text-center border border-orange-200/50">
+                  <div className="text-4xl font-bold text-orange-600 mb-2">{analyticsData.preAssessmentAnalysis.falsePositives}</div>
+                  <div className="text-sm font-semibold text-orange-800 mb-1">False Positives</div>
+                  <div className="text-xs text-orange-700">Predicted Pass, Actually Failed</div>
+                </div>
+                
+                {/* False Negatives */}
+                <div className="bg-gradient-to-br from-red-50/80 to-pink-50/60 rounded-sm p-6 text-center border border-red-200/50">
+                  <div className="text-4xl font-bold text-red-600 mb-2">{analyticsData.preAssessmentAnalysis.falseNegatives}</div>
+                  <div className="text-sm font-semibold text-red-800 mb-1">False Negatives</div>
+                  <div className="text-xs text-red-700">Predicted Fail, Actually Passed</div>
+                </div>
+              </div>
+              
+              {/* Analysis Summary */}
+              <div className="bg-gradient-to-r from-blue-50/80 to-indigo-50/60 rounded-sm p-4 border border-blue-200/50">
+                <div className="flex items-start gap-3">
+                  <Activity className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-sm font-semibold text-blue-900 mb-1">Analysis Summary</h4>
+                    <p className="text-xs text-blue-700 leading-relaxed">{analyticsData.preAssessmentAnalysis.summary}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* AI-Powered CapDev Report Generator */}
+          <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 overflow-hidden">
+            <div className="p-6 border-b border-gray-200/60">
+              <div className="flex items-center gap-3">
+                <Brain className="h-6 w-6 text-purple-600" />
+                <h3 className="text-xl font-bold text-gray-900">{analyticsData.aiReport.title}</h3>
+              </div>
+              <p className="text-sm text-gray-600 mt-1">{analyticsData.aiReport.description}</p>
+            </div>
+            
+            <div className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-700">Select a Barangay:</span>
+                  <Select value={selectedBarangay} onValueChange={setSelectedBarangay}>
+                    <SelectTrigger className="w-64 bg-white/80 border-gray-300 rounded-sm">
+                      <SelectValue placeholder="Choose a barangay..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border border-gray-300 shadow-xl rounded-sm z-50">
+                      {analyticsData.aiReport.availableBarangays.map((barangay) => (
+                        <SelectItem 
+                          key={barangay} 
+                          value={barangay}
+                          className="text-gray-900 hover:bg-purple-50 hover:text-purple-900 cursor-pointer px-3 py-2"
+                        >
+                          {barangay}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <Button 
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-sm shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+                  disabled={!selectedBarangay}
+                >
+                  <Zap className="h-4 w-4" />
+                  Generate Report
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
