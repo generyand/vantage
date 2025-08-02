@@ -80,7 +80,7 @@ export function SubmissionsTable({
       label: 'Last Updated',
       sortable: true,
       render: (value) => (
-        <span className="text-sm text-gray-600">
+        <span className="text-sm text-[var(--muted-foreground)]">
           {formatDate(value as string)}
         </span>
       ),
@@ -124,7 +124,7 @@ export function SubmissionsTable({
   }));
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div className="bg-[var(--card)] border border-[var(--border)] rounded-sm overflow-hidden">
       <DataTable
         data={tableData}
         columns={columns}

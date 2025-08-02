@@ -44,20 +44,20 @@ export default function UserManagementTable({ users, onEditUser }: UserManagemen
       {users.map((user) => (
         <div 
           key={user.id}
-          className="bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-sm p-6 hover:border-gray-300/80 hover:shadow-md transition-all duration-200"
+          className="bg-[var(--card)] border border-[var(--border)] rounded-sm p-6 hover:border-[var(--border)] hover:shadow-md transition-all duration-200"
         >
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* User Info */}
             <div className="flex-1 space-y-3">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-sm flex items-center justify-center">
-                  <span className="text-lg font-bold text-blue-600">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-sm flex items-center justify-center">
+                  <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
                     {user.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
-                  <p className="text-sm text-gray-600">{user.email}</p>
+                  <h3 className="text-lg font-semibold text-[var(--foreground)]">{user.name}</h3>
+                  <p className="text-sm text-[var(--muted-foreground)]">{user.email}</p>
                 </div>
               </div>
               
@@ -65,10 +65,10 @@ export default function UserManagementTable({ users, onEditUser }: UserManagemen
                 <Badge 
                   variant="outline"
                   className={`px-3 py-1 rounded-sm font-medium ${
-                    user.role === 'SUPERADMIN' ? 'bg-red-100 text-red-800 border-red-200' :
-                    user.role === 'MLGOO_DILG' ? 'bg-purple-100 text-purple-800 border-purple-200' :
-                    user.role === 'AREA_ASSESSOR' ? 'bg-orange-100 text-orange-800 border-orange-200' :
-                    'bg-blue-100 text-blue-800 border-blue-200'
+                    user.role === 'SUPERADMIN' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800' :
+                    user.role === 'MLGOO_DILG' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-800' :
+                    user.role === 'AREA_ASSESSOR' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 border-orange-200 dark:border-orange-800' :
+                    'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800'
                   }`}
                 >
                   {humanizeRole(user.role)}
@@ -78,25 +78,25 @@ export default function UserManagementTable({ users, onEditUser }: UserManagemen
                   variant="outline"
                   className={`px-3 py-1 rounded-sm font-medium ${
                     user.is_active 
-                      ? 'bg-green-100 text-green-800 border-green-200' 
-                      : 'bg-gray-100 text-gray-600 border-gray-200'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-200 dark:border-green-800' 
+                      : 'bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-800'
                   }`}
                 >
                   {user.is_active ? 'Active' : 'Inactive'}
                 </Badge>
                 
                 {user.role === 'BLGU_USER' && user.barangay_id && (
-                  <div className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-sm">
-                    <Building className="h-3 w-3 text-gray-600" />
-                    <span className="text-xs font-medium text-gray-700">
+                  <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-900/30 px-3 py-1 rounded-sm">
+                    <Building className="h-3 w-3 text-gray-600 dark:text-gray-400" />
+                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                       {barangayMap.get(user.barangay_id) || `Barangay #${user.barangay_id}`}
                     </span>
                   </div>
                 )}
                 
                 {user.role === 'AREA_ASSESSOR' && user.governance_area_id && (
-                  <div className="flex items-center gap-2 bg-purple-100 px-3 py-1 rounded-sm">
-                    <span className="text-xs font-medium text-purple-700">
+                  <div className="flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 px-3 py-1 rounded-sm">
+                    <span className="text-xs font-medium text-purple-700 dark:text-purple-300">
                       {governanceAreaMap.get(user.governance_area_id) || `Area #${user.governance_area_id}`}
                     </span>
                   </div>
@@ -104,17 +104,17 @@ export default function UserManagementTable({ users, onEditUser }: UserManagemen
               </div>
               
               {/* Additional Info */}
-              <div className="flex items-center gap-4 text-xs text-gray-600">
+              <div className="flex items-center gap-4 text-xs text-[var(--muted-foreground)]">
                 {user.phone_number && (
                   <span>📞 {user.phone_number}</span>
                 )}
                 {user.is_superuser && (
-                  <span className="bg-red-100 text-red-700 px-2 py-1 rounded-sm font-medium">
+                  <span className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-2 py-1 rounded-sm font-medium">
                     🔐 Superuser
                   </span>
                 )}
                 {user.must_change_password && (
-                  <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-sm font-medium">
+                  <span className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 px-2 py-1 rounded-sm font-medium">
                     🔄 Must Change Password
                   </span>
                 )}
@@ -127,7 +127,7 @@ export default function UserManagementTable({ users, onEditUser }: UserManagemen
                 variant="outline"
                 size="sm"
                 onClick={() => onEditUser?.(user)}
-                className="bg-white/80 hover:bg-blue-50 border-blue-200 text-blue-700 hover:text-blue-800 rounded-sm font-medium transition-colors duration-200"
+                className="bg-[var(--background)] hover:bg-blue-50 dark:hover:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 rounded-sm font-medium transition-colors duration-200"
               >
                 <Edit className="h-4 w-4 mr-2" />
                 Edit User
@@ -139,11 +139,11 @@ export default function UserManagementTable({ users, onEditUser }: UserManagemen
       
       {users.length === 0 && (
         <div className="text-center py-12">
-          <div className="w-16 h-16 bg-gray-100 rounded-sm flex items-center justify-center mx-auto mb-4">
-            <Users className="h-8 w-8 text-gray-400" />
+          <div className="w-16 h-16 bg-[var(--hover)] rounded-sm flex items-center justify-center mx-auto mb-4">
+            <Users className="h-8 w-8 text-[var(--muted-foreground)]" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No users found</h3>
-          <p className="text-gray-600">Get started by adding your first user account.</p>
+          <h3 className="text-lg font-semibold text-[var(--foreground)] mb-2">No users found</h3>
+          <p className="text-[var(--muted-foreground)]">Get started by adding your first user account.</p>
         </div>
       )}
     </div>

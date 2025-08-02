@@ -44,11 +44,11 @@ export function SubmissionsFilters({
     filters.assessor.length > 0;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+    <div className="bg-[var(--card)] border border-[var(--border)] rounded-sm p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
-          <Filter className="h-5 w-5 text-gray-500" />
-          <h3 className="text-lg font-semibold text-gray-900">Filters & Search</h3>
+          <Filter className="h-5 w-5 text-[var(--muted-foreground)]" />
+          <h3 className="text-lg font-semibold text-[var(--foreground)]">Filters & Search</h3>
         </div>
         {hasActiveFilters && (
           <Button
@@ -66,7 +66,7 @@ export function SubmissionsFilters({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Search Input */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--muted-foreground)]" />
           <Input
             placeholder="Search by Barangay Name..."
             value={filters.search}
@@ -77,7 +77,7 @@ export function SubmissionsFilters({
 
         {/* Status Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
             Filter by Status
           </label>
           <Select
@@ -104,7 +104,7 @@ export function SubmissionsFilters({
 
         {/* Governance Area Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
             Filter by Governance Area
           </label>
           <Select
@@ -131,7 +131,7 @@ export function SubmissionsFilters({
 
         {/* Assessor Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
             Filter by Assessor
           </label>
           <Select
@@ -159,7 +159,7 @@ export function SubmissionsFilters({
 
       {/* Active Filters Display */}
       {hasActiveFilters && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="mt-4 pt-4 border-t border-[var(--border)]">
           <div className="flex flex-wrap gap-2">
             {filters.search && (
               <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">

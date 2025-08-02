@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { SubmissionsSkeleton } from "@/components/features/submissions";
 
 interface Submission {
   id: number;
@@ -42,6 +43,9 @@ interface Submission {
 export default function AdminSubmissionsPage() {
   const { isAuthenticated } = useAuthStore();
   const router = useRouter();
+  
+  // Mock loading state - in real app this would come from API
+  const [isLoading] = useState(false);
 
   // State for filters and search
   const [searchQuery, setSearchQuery] = useState("");
@@ -143,29 +147,33 @@ export default function AdminSubmissionsPage() {
   const getStatusConfig = (status: string) => {
     const configs = {
       "Submitted for Review": {
-        bg: "bg-yellow-100",
-        text: "text-yellow-800",
+        bg: "bg-yellow-100 dark:bg-yellow-900/30",
+        text: "text-yellow-800 dark:text-yellow-300",
         icon: Clock,
       },
-      "In Progress": { bg: "bg-blue-100", text: "text-blue-800", icon: Clock },
+      "In Progress": { 
+        bg: "bg-blue-100 dark:bg-blue-900/30", 
+        text: "text-blue-800 dark:text-blue-300", 
+        icon: Clock 
+      },
       Finalized: {
-        bg: "bg-purple-100",
-        text: "text-purple-800",
+        bg: "bg-purple-100 dark:bg-purple-900/30",
+        text: "text-purple-800 dark:text-purple-300",
         icon: CheckCircle,
       },
       "Not Started": {
-        bg: "bg-gray-100",
-        text: "text-gray-800",
+        bg: "bg-gray-100 dark:bg-gray-900/30",
+        text: "text-gray-800 dark:text-gray-300",
         icon: XCircle,
       },
       "Needs Rework": {
-        bg: "bg-orange-100",
-        text: "text-orange-800",
+        bg: "bg-orange-100 dark:bg-orange-900/30",
+        text: "text-orange-800 dark:text-orange-300",
         icon: AlertTriangle,
       },
       Validated: {
-        bg: "bg-green-100",
-        text: "text-green-800",
+        bg: "bg-green-100 dark:bg-green-900/30",
+        text: "text-green-800 dark:text-green-300",
         icon: CheckCircle,
       },
     };
@@ -187,25 +195,30 @@ export default function AdminSubmissionsPage() {
     toast.success(`Reminder sent to ${submission.barangayName}`);
   };
 
+  // Show skeleton while loading
+  if (isLoading) {
+    return <SubmissionsSkeleton />;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+    <div className="min-h-screen bg-[var(--background)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="space-y-8">
           {/* Header */}
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-[var(--foreground)]">
               Submissions Queue
             </h1>
-            <p className="text-gray-600 mt-2">
+            <p className="text-[var(--muted-foreground)] mt-2">
               Live Pre-Assessment Status for All 25 Barangays
             </p>
           </div>
 
           {/* Filters & Search */}
-          <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 p-6">
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-sm shadow-lg p-6">
             <div className="flex items-center gap-3 mb-6">
-              <Filter className="h-5 w-5 text-blue-600" />
-              <h2 className="text-lg font-semibold text-gray-900">
+              <Filter className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <h2 className="text-lg font-semibold text-[var(--foreground)]">
                 Filters & Search
               </h2>
             </div>
@@ -214,19 +227,19 @@ export default function AdminSubmissionsPage() {
               {/* Search Section - Left Side */}
               <div className="flex-1 max-w-md">
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-[var(--foreground)]">
                     Search
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Search className="h-5 w-5 text-gray-400" />
+                      <Search className="h-5 w-5 text-[var(--muted-foreground)]" />
                     </div>
                     <Input
                       type="text"
                       placeholder="Search by Barangay Name"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 h-10 bg-white/80 border-gray-300 rounded-sm focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200"
+                      className="pl-10 h-10 bg-[var(--background)] border-[var(--border)] rounded-sm focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200"
                     />
                   </div>
                 </div>
@@ -237,50 +250,50 @@ export default function AdminSubmissionsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Filter by Status */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--foreground)]">
                       Filter by Status
                     </label>
                     <Select
                       value={statusFilter}
                       onValueChange={setStatusFilter}
                     >
-                      <SelectTrigger className="h-10 bg-white/80 border-gray-300 rounded-sm focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200">
+                      <SelectTrigger className="h-10 bg-[var(--background)] border-[var(--border)] rounded-sm focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200">
                         <SelectValue placeholder="All Statuses" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-300 shadow-xl rounded-sm z-50">
+                      <SelectContent className="bg-[var(--card)] border border-[var(--border)] shadow-xl rounded-sm z-50">
                         <SelectItem
                           value="all"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           All Statuses
                         </SelectItem>
                         <SelectItem
                           value="submitted"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           Submitted for Review
                         </SelectItem>
                         <SelectItem
                           value="progress"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           In Progress
                         </SelectItem>
                         <SelectItem
                           value="finalized"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           Finalized
                         </SelectItem>
                         <SelectItem
                           value="rework"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           Needs Rework
                         </SelectItem>
                         <SelectItem
                           value="validated"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           Validated
                         </SelectItem>
@@ -290,35 +303,35 @@ export default function AdminSubmissionsPage() {
 
                   {/* Filter by Governance Area */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--foreground)]">
                       Filter by Governance Area
                     </label>
                     <Select value={areaFilter} onValueChange={setAreaFilter}>
-                      <SelectTrigger className="h-10 bg-white/80 border-gray-300 rounded-sm focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200">
+                      <SelectTrigger className="h-10 bg-[var(--background)] border-[var(--border)] rounded-sm focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200">
                         <SelectValue placeholder="All Areas" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-300 shadow-xl rounded-sm z-50">
+                      <SelectContent className="bg-[var(--card)] border border-[var(--border)] shadow-xl rounded-sm z-50">
                         <SelectItem
                           value="all"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           All Areas
                         </SelectItem>
                         <SelectItem
                           value="financial"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           Financial Administration
                         </SelectItem>
                         <SelectItem
                           value="disaster"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           Disaster Preparedness
                         </SelectItem>
                         <SelectItem
                           value="safety"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           Safety & Peace Order
                         </SelectItem>
@@ -328,32 +341,32 @@ export default function AdminSubmissionsPage() {
 
                   {/* Filter by Assessor */}
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--foreground)]">
                       Filter by Assessor
                     </label>
                     <Select
                       value={assessorFilter}
                       onValueChange={setAssessorFilter}
                     >
-                      <SelectTrigger className="h-10 bg-white/80 border-gray-300 rounded-sm focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200">
+                      <SelectTrigger className="h-10 bg-[var(--background)] border-[var(--border)] rounded-sm focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200">
                         <SelectValue placeholder="All Assessors" />
                       </SelectTrigger>
-                      <SelectContent className="bg-white border border-gray-300 shadow-xl rounded-sm z-50">
+                      <SelectContent className="bg-[var(--card)] border border-[var(--border)] shadow-xl rounded-sm z-50">
                         <SelectItem
                           value="all"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           All Assessors
                         </SelectItem>
                         <SelectItem
                           value="john"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           John Doe
                         </SelectItem>
                         <SelectItem
                           value="jane"
-                          className="text-gray-900 hover:bg-blue-50 hover:text-blue-900 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
                         >
                           Jane Smith
                         </SelectItem>
@@ -367,53 +380,53 @@ export default function AdminSubmissionsPage() {
 
           {/* Results Summary */}
           <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-[var(--muted-foreground)]">
               Showing {filteredSubmissions.length} submissions
             </div>
           </div>
 
           {/* Submissions Table */}
-          <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 overflow-hidden">
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-sm shadow-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50/80 border-b border-gray-200/60">
+                <thead className="bg-[var(--hover)] border-b border-[var(--border)]">
                   <tr>
                     <th className="px-6 py-4 text-left">
-                      <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wide">
                         Barangay Name
                         <ChevronDown className="h-4 w-4" />
                       </div>
                     </th>
                     <th className="px-6 py-4 text-left">
-                      <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wide">
                         Overall Progress
                         <ChevronDown className="h-4 w-4" />
                       </div>
                     </th>
                     <th className="px-6 py-4 text-left">
-                      <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wide">
                         Current Status
                         <ChevronDown className="h-4 w-4" />
                       </div>
                     </th>
                     <th className="px-6 py-4 text-left">
-                      <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                      <div className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wide">
                         Assigned Assessors
                       </div>
                     </th>
                     <th className="px-6 py-4 text-left">
-                      <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                      <div className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wide">
                         Last Updated
                       </div>
                     </th>
                     <th className="px-6 py-4 text-left">
-                      <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                      <div className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wide">
                         Actions
                       </div>
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200/60">
+                <tbody className="divide-y divide-[var(--border)]">
                   {filteredSubmissions.map((submission) => {
                     const statusConfig = getStatusConfig(
                       submission.currentStatus
@@ -423,18 +436,18 @@ export default function AdminSubmissionsPage() {
                     return (
                       <tr
                         key={submission.id}
-                        className="hover:bg-gray-50/50 transition-colors"
+                        className="hover:bg-[var(--hover)] transition-colors"
                       >
                         <td className="px-6 py-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-[var(--foreground)]">
                             {submission.barangayName}
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="flex-1 bg-gray-200 rounded-full h-3 min-w-[100px]">
+                            <div className="flex-1 bg-[var(--border)] rounded-sm h-3 min-w-[100px]">
                               <div
-                                className={`h-3 rounded-full transition-all duration-300 ${getProgressBarColor(
+                                className={`h-3 rounded-sm transition-all duration-300 ${getProgressBarColor(
                                   submission.overallProgress
                                 )}`}
                                 style={{
@@ -442,7 +455,7 @@ export default function AdminSubmissionsPage() {
                                 }}
                               />
                             </div>
-                            <span className="text-sm font-medium text-gray-700 min-w-[35px]">
+                            <span className="text-sm font-medium text-[var(--foreground)] min-w-[35px]">
                               {submission.overallProgress}%
                             </span>
                           </div>
@@ -470,14 +483,14 @@ export default function AdminSubmissionsPage() {
                                 )
                               )
                             ) : (
-                              <span className="text-sm text-gray-500 italic">
+                              <span className="text-sm text-[var(--muted-foreground)] italic">
                                 No assessors assigned
                               </span>
                             )}
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-[var(--muted-foreground)]">
                             {submission.lastUpdated}
                           </div>
                         </td>
@@ -487,7 +500,7 @@ export default function AdminSubmissionsPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleViewDetails(submission)}
-                              className="bg-white/80 hover:bg-blue-50 border-blue-200 text-blue-700 hover:text-blue-800 rounded-sm font-medium transition-colors duration-200"
+                              className="bg-[var(--background)] hover:bg-blue-50 dark:hover:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 rounded-sm font-medium transition-colors duration-200"
                             >
                               <Eye className="h-4 w-4 mr-1" />
                               View
@@ -496,7 +509,7 @@ export default function AdminSubmissionsPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleSendReminder(submission)}
-                              className="bg-white/80 hover:bg-orange-50 border-orange-200 text-orange-700 hover:text-orange-800 rounded-sm font-medium transition-colors duration-200"
+                              className="bg-[var(--background)] hover:bg-orange-50 dark:hover:bg-orange-900/20 border-orange-200 dark:border-orange-700 text-orange-700 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 rounded-sm font-medium transition-colors duration-200"
                             >
                               <Send className="h-4 w-4 mr-1" />
                               Remind
