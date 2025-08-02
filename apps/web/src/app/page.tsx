@@ -180,6 +180,26 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Scroll event listener for sticky header
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Hero entrance animations - trigger on page load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHeroLoaded(true);
+    }, 100); // Small delay to ensure smooth entrance
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="relative min-h-screen flex flex-col bg-white">
       <style jsx>{`
@@ -413,6 +433,16 @@ export default function Home() {
               {/* Subtle glow effect */}
               <div className="absolute inset-0 text-4xl sm:text-5xl lg:text-7xl xl:text-8xl font-black text-[#fbbf24] leading-none tracking-tight opacity-20 blur-sm -z-10" aria-hidden="true">
                 {currentHeroSlide.title}
+            </div>
+            
+            {/* Enhanced subtitle */}
+            <div className={`text-sm sm:text-base lg:text-xl font-light leading-relaxed text-gray-100 max-w-2xl transition-all duration-1000 ease-out delay-700 ${
+              heroLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}>
+              <span className="block mb-2 text-xs lg:text-sm uppercase tracking-wider text-[#fbbf24] font-semibold" role="banner">
+                Official Platform
+              </span>
+              <span aria-label="Platform description">{currentHeroSlide.subtitle}</span>
             </div>
           </div>
 
@@ -660,7 +690,6 @@ export default function Home() {
                     <div className="text-2xl font-bold text-[#f59e0b] mb-1">95%</div>
                     <div className="text-sm text-gray-600">Success Rate</div>
             </div>
-                  
                   <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg transform group-hover:scale-105 transition-all duration-300 delay-200">
                     <div className="text-2xl font-bold text-[#d97706] mb-1">60%</div>
                     <div className="text-sm text-gray-600">Time Saved</div>
@@ -944,6 +973,116 @@ export default function Home() {
                         ? "bg-[#f59e0b]"
                         : "bg-[#d97706]"
                     }`}
+                    style={{
+                      strokeDashoffset: barangaysAnimation.isVisible ? '0' : '400',
+                      transition: 'stroke-dashoffset 2s ease-out 1.2s'
+                    }} />
+                  <path d="M400,200 L350,100" stroke="url(#connectionGradient)" strokeWidth="2" strokeDasharray="3,3"
+                    className={`transition-all duration-2000 delay-1400 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    style={{
+                      strokeDashoffset: barangaysAnimation.isVisible ? '0' : '400',
+                      transition: 'stroke-dashoffset 2s ease-out 1.4s'
+                    }} />
+                  <path d="M400,200 L450,320" stroke="url(#connectionGradient)" strokeWidth="2" strokeDasharray="3,3"
+                    className={`transition-all duration-2000 delay-1600 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    style={{
+                      strokeDashoffset: barangaysAnimation.isVisible ? '0' : '400',
+                      transition: 'stroke-dashoffset 2s ease-out 1.6s'
+                    }} />
+                  
+                  {/* Regional connections - Staggered animation */}
+                  <path d="M200,120 L150,80 L100,100 L120,160 L180,180 L200,120" stroke="url(#activeConnectionGradient)" strokeWidth="1.5"
+                    className={`transition-all duration-3000 delay-1800 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`} />
+                  <path d="M600,160 L650,120 L700,140 L680,200 L620,220 L600,160" stroke="url(#activeConnectionGradient)" strokeWidth="1.5"
+                    className={`transition-all duration-3000 delay-2000 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`} />
+                  <path d="M350,100 L300,60 L400,50 L450,80 L350,100" stroke="url(#activeConnectionGradient)" strokeWidth="1.5"
+                    className={`transition-all duration-3000 delay-2200 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`} />
+                  <path d="M450,320 L400,360 L350,340 L380,300 L450,320" stroke="url(#activeConnectionGradient)" strokeWidth="1.5"
+                    className={`transition-all duration-3000 delay-2400 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`} />
+                </g>
+              </svg>
+
+              {/* Barangay Dots - Positioned based on Sulop's actual geography */}
+              {Array.from({ length: 25 }, (_, i) => {
+                // More realistic positioning based on Sulop's geographic layout
+                const positions = [
+                  // Western barangays (like Tanwalang, Lati-an, Panaglib areas)
+                  { x: 12, y: 30, delay: 0, cluster: 'west' }, 
+                  { x: 18, y: 25, delay: 0.1, cluster: 'west' }, 
+                  { x: 15, y: 40, delay: 0.2, cluster: 'west' },
+                  { x: 22, y: 35, delay: 0.3, cluster: 'west' }, 
+                  { x: 25, y: 45, delay: 0.4, cluster: 'west' },
+                  
+                  // Northern barangays (like Harada Butai, Tala-o areas)
+                  { x: 35, y: 15, delay: 0.5, cluster: 'north' }, 
+                  { x: 42, y: 12, delay: 0.6, cluster: 'north' }, 
+                  { x: 48, y: 18, delay: 0.7, cluster: 'north' },
+                  { x: 38, y: 22, delay: 0.8, cluster: 'north' }, 
+                  { x: 45, y: 25, delay: 0.9, cluster: 'north' },
+                  
+                  // Eastern barangays (like Balasinon, Bagumbayan areas)
+                  { x: 75, y: 30, delay: 1.0, cluster: 'east' }, 
+                  { x: 82, y: 35, delay: 1.1, cluster: 'east' }, 
+                  { x: 78, y: 45, delay: 1.2, cluster: 'east' },
+                  { x: 85, y: 40, delay: 1.3, cluster: 'east' }, 
+                  { x: 80, y: 55, delay: 1.4, cluster: 'east' },
+                  
+                  // Southern barangays (like New Baclayon, Waterfall areas)
+                  { x: 45, y: 80, delay: 1.5, cluster: 'south' }, 
+                  { x: 52, y: 85, delay: 1.6, cluster: 'south' }, 
+                  { x: 38, y: 85, delay: 1.7, cluster: 'south' },
+                  { x: 48, y: 75, delay: 1.8, cluster: 'south' }, 
+                  { x: 42, y: 90, delay: 1.9, cluster: 'south' },
+                  
+                  // Central/Urban barangays (moved away from Municipal Hall center)
+                  { x: 65, y: 42, delay: 2.0, cluster: 'center' }, 
+                  { x: 30, y: 48, delay: 2.1, cluster: 'center' }, 
+                  { x: 68, y: 62, delay: 2.2, cluster: 'center' },
+                  { x: 28, y: 62, delay: 2.3, cluster: 'center' }, 
+                  { x: 58, y: 35, delay: 2.4, cluster: 'center' }
+                ];
+                
+                const pos = positions[i];
+                const isHighlighted = i % 6 === 0; // Highlight every 6th dot for better distribution
+                
+                // Color coding based on geographic clusters
+                const getClusterColor = (cluster: string) => {
+                  switch(cluster) {
+                    case 'west': return 'bg-[#fbbf24]';
+                    case 'north': return 'bg-[#f59e0b]';
+                    case 'east': return 'bg-[#d97706]';
+                    case 'south': return 'bg-[#b45309]';
+                    case 'center': return 'bg-[#fbbf24]';
+                    default: return 'bg-gray-400';
+                  }
+                };
+
+                return (
+                  <div
+                    key={i}
+                    className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-800 hover:scale-150 cursor-pointer group ${
+                      isHighlighted ? 'animate-pulse' : ''
+                    } ${
+                      barangaysAnimation.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
+                    }`}
+                    style={{
+                      left: `${pos.x}%`,
+                      top: `${pos.y}%`,
+                      animationDelay: `${pos.delay}s`,
+                      transitionDelay: `${2.5 + pos.delay * 0.1}s` // Staggered entrance after connections
+                    }}
                   >
                       <span className="flex items-center justify-center">{steps[activeStep].icon}</span>
                       Step {activeStep + 1}: {steps[activeStep].label}

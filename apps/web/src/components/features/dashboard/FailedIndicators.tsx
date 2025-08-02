@@ -51,6 +51,7 @@ export function FailedIndicators({ data, totalBarangays }: FailedIndicatorsProps
           <div className="flex items-center gap-3">
             <div className="w-1 h-6 bg-gradient-to-b from-red-500 to-orange-600 rounded-sm"></div>
             <div>
+
               <CardTitle className="text-xl font-bold text-[var(--foreground)]">
                 Most Commonly Failed Indicators
               </CardTitle>

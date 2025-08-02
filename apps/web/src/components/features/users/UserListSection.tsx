@@ -330,6 +330,7 @@ export default function UserListSection() {
                 variant="outline"
                 onClick={() => setSearchQuery("")}
                 className="bg-[var(--background)] hover:bg-[var(--hover)] border-[var(--border)] rounded-sm"
+
               >
                 Clear search
               </Button>
