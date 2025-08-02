@@ -115,7 +115,6 @@
   --text-inverse: #212529;
   --border: #495057;
   --border-light: #343a40;
-
   --icon-default: #cbd5e1;
   --icon-muted: #94a3b8;
   --focus: #fbbf24;
@@ -333,6 +332,12 @@
   100% { transform: scale(1) translate(0px, 0px); }
 }
 .animate-blob { animation: blob 8s infinite linear alternate; }
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow { animation: spin-slow 3s linear infinite; }
 
 .animation-delay-800 { animation-delay: 0.8s; }
 .animation-delay-2000 { animation-delay: 2s; }

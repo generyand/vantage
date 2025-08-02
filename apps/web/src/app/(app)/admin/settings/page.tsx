@@ -57,35 +57,6 @@ export default function AdminSettingsPage() {
     },
   ];
 
-  // State for deadlines
-  const [blguDeadline, setBlguDeadline] = useState("April 1st, 2024");
-  const [reworkDeadline, setReworkDeadline] = useState("May 1st, 2024");
-
-  // Mock data matching the design from the image
-  const assessmentPeriods: AssessmentPeriod[] = [
-    {
-      id: 1,
-      performanceYear: 2023,
-      assessmentYear: 2024,
-      status: "Active",
-      statusColor: "green",
-    },
-    {
-      id: 2,
-      performanceYear: 2022,
-      assessmentYear: 2023,
-      status: "Archived",
-      statusColor: "gray",
-    },
-    {
-      id: 3,
-      performanceYear: 2024,
-      assessmentYear: 2025,
-      status: "Upcoming",
-      statusColor: "blue",
-    },
-  ];
-
   // Show loading if not authenticated
   if (!isAuthenticated) {
     return (
@@ -133,6 +104,7 @@ export default function AdminSettingsPage() {
   if (isLoading) {
     return <SettingsSkeleton />;
   }
+    
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
