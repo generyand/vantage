@@ -24,6 +24,12 @@ const blguNavigation = [
   { name: "Profile", href: "/blgu/profile", icon: "user" },
 ];
 
+const assessorNavigation = [
+  { name: "Submissions Queue", href: "/assessor/submissions", icon: "clipboard" },
+  { name: "Analytics", href: "/assessor/analytics", icon: "chart" },
+  { name: "Profile", href: "/assessor/profile", icon: "user" },
+];
+
 const getIcon = (name: string) => {
   switch (name) {
     case "home":
@@ -142,7 +148,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   // Determine navigation based on user role
   const isAdmin = user?.role === "SUPERADMIN" || user?.role === "MLGOO_DILG";
-  const navigation = isAdmin ? adminNavigation : blguNavigation;
+  const isAssessor = user?.role === "AREA_ASSESSOR";
+  const navigation = isAdmin ? adminNavigation : isAssessor ? assessorNavigation : blguNavigation;
 
   // Redirect unauthenticated users to login
   useEffect(() => {
@@ -172,7 +179,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       // If user is on root path, redirect to appropriate dashboard
       if (currentPath === "/") {
-        const dashboardPath = isAdmin ? "/admin/dashboard" : "/blgu/dashboard";
+        const dashboardPath = isAdmin ? "/admin/dashboard" : isAssessor ? "/assessor/submissions" : "/blgu/dashboard";
         router.replace(dashboardPath);
         return;
       }
@@ -180,21 +187,27 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       // Check if user is accessing wrong role routes
       const isAdminRoute = currentPath.startsWith("/admin");
       const isBLGURoute = currentPath.startsWith("/blgu");
+      const isAssessorRoute = currentPath.startsWith("/assessor");
       const isUserManagementRoute = currentPath.startsWith("/user-management");
 
       if (isAdmin) {
-        // Admin users should not access BLGU routes
-        if (isBLGURoute) {
+        // Admin users should not access BLGU or assessor routes
+        if (isBLGURoute || isAssessorRoute) {
           router.replace("/admin/dashboard");
         }
+      } else if (isAssessor) {
+        // Assessor users should not access admin, BLGU routes or user management
+        if (isAdminRoute || isBLGURoute || isUserManagementRoute) {
+          router.replace("/assessor/submissions");
+        }
       } else {
-        // BLGU users should not access admin routes or user management
-        if (isAdminRoute || isUserManagementRoute) {
+        // BLGU users should not access admin, assessor routes or user management
+        if (isAdminRoute || isAssessorRoute || isUserManagementRoute) {
           router.replace("/blgu/dashboard");
         }
       }
     }
-  }, [isAuthenticated, user, mustChangePassword, pathname, router]);
+  }, [isAuthenticated, user, mustChangePassword, pathname, router, isAssessor]);
 
   // Show loading if not authenticated
   if (!isAuthenticated) {
@@ -277,7 +290,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     VANTAGE
                   </h1>
                   <p className="text-sm text-[var(--text-secondary)]">
-                    {isAdmin ? "Admin Portal" : "Barangay Submission Portal"}
+                    {isAdmin ? "Admin Portal" : isAssessor ? "Area Assessor Portal" : "Barangay Submission Portal"}
                   </p>
                 </div>
               </div>
@@ -323,7 +336,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     VANTAGE
                   </h1>
                   <p className="text-sm text-[var(--text-secondary)]">
-                    {isAdmin ? "Admin Portal" : "Barangay Submission Portal"}
+                    {isAdmin ? "Admin Portal" : isAssessor ? "Area Assessor Portal" : "Barangay Submission Portal"}
                   </p>
                 </div>
               </div>
@@ -390,6 +403,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                         ? "Profile"
                         : navigation.find((item) => pathname === item.href)
                             ?.name || "Dashboard"
+                      : isAssessor
+                      ? // Assessor-specific titles
+                        pathname === "/assessor/submissions"
+                        ? "Submissions Queue"
+                        : pathname === "/assessor/analytics"
+                        ? "Analytics"
+                        : pathname === "/assessor/profile"
+                        ? "Profile"
+                        : navigation.find((item) => pathname === item.href)
+                            ?.name || "Dashboard"
                       : // BLGU titles - show specific titles for better UX
                       pathname === "/blgu/dashboard"
                       ? "SGLGB Dashboard"
@@ -409,6 +432,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                         "Manage and complete your SGLGB assessments"}
                       {pathname === "/blgu/profile" &&
                         "Manage your account settings, update your password, and view your profile information."}
+                    </p>
+                  )}
+                  {isAssessor && pathname.startsWith("/assessor") && (
+                    <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                      {pathname === "/assessor/submissions" &&
+                        "Review and assess submitted barangay assessments"}
+                      {pathname === "/assessor/analytics" &&
+                        "View analytics and performance metrics for assessments"}
+                      {pathname === "/assessor/profile" &&
+                        "Manage your account settings and profile information"}
                     </p>
                   )}
                   {isAdmin && (
