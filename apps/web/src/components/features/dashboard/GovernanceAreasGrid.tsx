@@ -164,7 +164,7 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
       'completed': <CheckCircle className="h-4 w-4 text-green-600" />,
       'needs-rework': <XCircle className="h-4 w-4 text-red-600" />,
       'in-progress': <Clock className="h-4 w-4 text-blue-600" />,
-      'not-started': <AlertCircle className="h-4 w-4 text-gray-400" />
+      'not-started': <AlertCircle className="h-4 w-4 text-gray-300" />
     }[status];
 
     const trendIcon = percentage >= 70 ? 

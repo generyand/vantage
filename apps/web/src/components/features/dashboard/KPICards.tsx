@@ -59,14 +59,14 @@ const KPICard = ({
   const config = variantStyles[variant];
 
   return (
-    <Card className={`relative overflow-hidden bg-gradient-to-br ${config.bgGradient} border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]`}>
+    <Card className={`relative overflow-hidden bg-[var(--card)] border border-[var(--border)] shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]`}>
       {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
-      <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/5 rounded-full translate-y-8 -translate-x-8"></div>
+      <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 dark:bg-white/5 rounded-full -translate-y-10 translate-x-10"></div>
+      <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/5 dark:bg-white/3 rounded-full translate-y-8 -translate-x-8"></div>
       
       <CardHeader className="pb-4 relative z-10">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-semibold text-gray-700">
+          <CardTitle className="text-sm font-semibold text-[var(--foreground)]">
             {title}
           </CardTitle>
           <div className={cn('p-3 rounded-sm shadow-sm', config.iconBg)}>
@@ -76,21 +76,21 @@ const KPICard = ({
       </CardHeader>
       <CardContent className="relative z-10">
         <div className="space-y-3">
-          <div className="text-3xl font-bold text-gray-900">
+          <div className="text-3xl font-bold text-[var(--foreground)]">
             {value}
           </div>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-[var(--muted-foreground)] leading-relaxed">
             {description}
           </p>
           {showProgress && progress !== undefined && (
-            <div className="space-y-2 bg-white/60 backdrop-blur-sm rounded-sm p-3">
+            <div className="space-y-2 bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-medium text-gray-700">Progress</span>
+                <span className="text-xs font-medium text-[var(--foreground)]">Progress</span>
                 <span className={cn('text-xs font-bold', config.accentColor)}>{progress}%</span>
               </div>
               <Progress 
                 value={progress} 
-                className="h-2 bg-gray-200/60"
+                className="h-2 bg-[var(--border)]"
               />
             </div>
           )}

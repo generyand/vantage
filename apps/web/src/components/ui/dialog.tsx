@@ -12,7 +12,7 @@ const dialogContentVariants = cva(
     variants: {
       shape: {
         boxy: "rounded-none",
-        rounded: "rounded-lg",
+        rounded: "rounded-sm",
         pill: "rounded-full",
       },
     },
