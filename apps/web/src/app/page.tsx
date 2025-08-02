@@ -357,9 +357,9 @@ export default function Home() {
             <Image
             src="/flag.jpg"
               alt="Philippine flag with blue, red, and white sections featuring the sun and three stars, symbolizing the Republic of the Philippines"
-              width={256}
-              height={416}
-              className="w-64 h-[26rem] object-cover drop-shadow-2xl rounded-sm bg-white"
+              width={320}
+              height={520}
+              className="w-72 h-[28rem] 3xl:w-80 3xl:h-[32rem] object-cover drop-shadow-2xl rounded-sm bg-white"
             />
             {/* Dark overlay for consistent styling */}
             <div className="absolute inset-0 bg-black/15 rounded-sm" aria-hidden="true"></div>

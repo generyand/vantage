@@ -43,7 +43,7 @@ interface Submission {
 export default function AdminSubmissionsPage() {
   const { isAuthenticated } = useAuthStore();
   const router = useRouter();
-  
+
   // Mock loading state - in real app this would come from API
   const [isLoading] = useState(false);
 
@@ -54,65 +54,68 @@ export default function AdminSubmissionsPage() {
   const [assessorFilter, setAssessorFilter] = useState("all");
 
   // Mock data matching the design from the image
-  const submissionsData = useMemo((): Submission[] => [
-    {
-      id: 1,
-      barangayName: "Barangay Balasinon",
-      overallProgress: 85,
-      currentStatus: "Submitted for Review",
-      statusColor: "yellow",
-      assignedAssessors: [
-        { id: 1, name: "John Doe", avatar: "JD" },
-        { id: 2, name: "Jane Smith", avatar: "JS" },
-      ],
-      lastUpdated: "1/15/2024",
-    },
-    {
-      id: 2,
-      barangayName: "Barangay Buguis",
-      overallProgress: 45,
-      currentStatus: "In Progress",
-      statusColor: "blue",
-      assignedAssessors: [{ id: 1, name: "John Doe", avatar: "JD" }],
-      lastUpdated: "1/14/2024",
-    },
-    {
-      id: 3,
-      barangayName: "Barangay Carre",
-      overallProgress: 100,
-      currentStatus: "Finalized",
-      statusColor: "purple",
-      assignedAssessors: [{ id: 1, name: "John Doe", avatar: "JD" }],
-      lastUpdated: "1/13/2024",
-    },
-    {
-      id: 4,
-      barangayName: "Barangay Clib",
-      overallProgress: 0,
-      currentStatus: "Not Started",
-      statusColor: "gray",
-      assignedAssessors: [],
-      lastUpdated: "1/12/2024",
-    },
-    {
-      id: 5,
-      barangayName: "Barangay Harada Butai",
-      overallProgress: 70,
-      currentStatus: "Needs Rework",
-      statusColor: "orange",
-      assignedAssessors: [{ id: 1, name: "John Doe", avatar: "JD" }],
-      lastUpdated: "1/11/2024",
-    },
-    {
-      id: 6,
-      barangayName: "Barangay Katipunan",
-      overallProgress: 95,
-      currentStatus: "Validated",
-      statusColor: "green",
-      assignedAssessors: [{ id: 1, name: "John Doe", avatar: "JD" }],
-      lastUpdated: "1/11/2024",
-    },
-  ], []);
+  const submissionsData = useMemo(
+    (): Submission[] => [
+      {
+        id: 1,
+        barangayName: "Barangay Balasinon",
+        overallProgress: 85,
+        currentStatus: "Submitted for Review",
+        statusColor: "yellow",
+        assignedAssessors: [
+          { id: 1, name: "John Doe", avatar: "JD" },
+          { id: 2, name: "Jane Smith", avatar: "JS" },
+        ],
+        lastUpdated: "1/15/2024",
+      },
+      {
+        id: 2,
+        barangayName: "Barangay Buguis",
+        overallProgress: 45,
+        currentStatus: "In Progress",
+        statusColor: "blue",
+        assignedAssessors: [{ id: 1, name: "John Doe", avatar: "JD" }],
+        lastUpdated: "1/14/2024",
+      },
+      {
+        id: 3,
+        barangayName: "Barangay Carre",
+        overallProgress: 100,
+        currentStatus: "Finalized",
+        statusColor: "purple",
+        assignedAssessors: [{ id: 1, name: "John Doe", avatar: "JD" }],
+        lastUpdated: "1/13/2024",
+      },
+      {
+        id: 4,
+        barangayName: "Barangay Clib",
+        overallProgress: 0,
+        currentStatus: "Not Started",
+        statusColor: "gray",
+        assignedAssessors: [],
+        lastUpdated: "1/12/2024",
+      },
+      {
+        id: 5,
+        barangayName: "Barangay Harada Butai",
+        overallProgress: 70,
+        currentStatus: "Needs Rework",
+        statusColor: "orange",
+        assignedAssessors: [{ id: 1, name: "John Doe", avatar: "JD" }],
+        lastUpdated: "1/11/2024",
+      },
+      {
+        id: 6,
+        barangayName: "Barangay Katipunan",
+        overallProgress: 95,
+        currentStatus: "Validated",
+        statusColor: "green",
+        assignedAssessors: [{ id: 1, name: "John Doe", avatar: "JD" }],
+        lastUpdated: "1/11/2024",
+      },
+    ],
+    []
+  );
 
   // Filter submissions based on search and filters
   const filteredSubmissions = useMemo(() => {
@@ -151,10 +154,10 @@ export default function AdminSubmissionsPage() {
         text: "text-yellow-800 dark:text-yellow-300",
         icon: Clock,
       },
-      "In Progress": { 
-        bg: "bg-blue-100 dark:bg-blue-900/30", 
-        text: "text-blue-800 dark:text-blue-300", 
-        icon: Clock 
+      "In Progress": {
+        bg: "bg-blue-100 dark:bg-blue-900/30",
+        text: "text-blue-800 dark:text-blue-300",
+        icon: Clock,
       },
       Finalized: {
         bg: "bg-purple-100 dark:bg-purple-900/30",
@@ -204,16 +207,6 @@ export default function AdminSubmissionsPage() {
     <div className="min-h-screen bg-[var(--background)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="space-y-8">
-          {/* Header */}
-          <div>
-            <h1 className="text-3xl font-bold text-[var(--foreground)]">
-              Submissions Queue
-            </h1>
-            <p className="text-[var(--muted-foreground)] mt-2">
-              Live Pre-Assessment Status for All 25 Barangays
-            </p>
-          </div>
-
           {/* Filters & Search */}
           <div className="bg-[var(--card)] border border-[var(--border)] rounded-sm shadow-lg p-6">
             <div className="flex items-center gap-3 mb-6">
@@ -471,17 +464,15 @@ export default function AdminSubmissionsPage() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
                             {submission.assignedAssessors.length > 0 ? (
-                              submission.assignedAssessors.map(
-                                (assessor) => (
-                                  <div
-                                    key={assessor.id}
-                                    className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                                    title={assessor.name}
-                                  >
-                                    {assessor.avatar}
-                                  </div>
-                                )
-                              )
+                              submission.assignedAssessors.map((assessor) => (
+                                <div
+                                  key={assessor.id}
+                                  className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                                  title={assessor.name}
+                                >
+                                  {assessor.avatar}
+                                </div>
+                              ))
                             ) : (
                               <span className="text-sm text-[var(--muted-foreground)] italic">
                                 No assessors assigned
