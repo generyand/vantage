@@ -91,7 +91,6 @@ export function ProcessSection() {
       timerRef.current = setInterval(() => {
         setActiveStep((prev) => (prev + 1) % stepsLength);
       }, 7000);
-      
       return () => {
         clearTimeout(fadeTimeout);
         if (timerRef.current) clearInterval(timerRef.current);

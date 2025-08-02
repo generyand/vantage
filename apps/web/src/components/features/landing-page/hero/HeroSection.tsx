@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { MapPin, Facebook, Instagram, Twitter } from "lucide-react";
 
-
-
 // Hero slide data type
 interface HeroSlide {
   location: string;
@@ -46,10 +44,7 @@ export function HeroSection() {
 
   // Hero entrance animations state
   const [heroLoaded, setHeroLoaded] = useState(false);
-
   const currentHeroSlide = heroSlides[activeHeroSlide];
-
-
 
   // Scroll event listener for sticky header
   useEffect(() => {

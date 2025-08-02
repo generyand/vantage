@@ -1,10 +1,9 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { HeroSection, ChallengeSection, FeaturesSection, ProcessSection, BarangaysSection, Footer } from "@/components/features/landing-page";
 
 export default function Home() {
-
-
   return (
     <div className="relative min-h-screen flex flex-col bg-white">
       <style jsx>{`
@@ -31,8 +30,6 @@ export default function Home() {
 
       {/* Barangays Section */}
       <BarangaysSection />
-
-
 
       {/* Footer */}
       <Footer />
