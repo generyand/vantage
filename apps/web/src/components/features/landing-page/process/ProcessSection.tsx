@@ -83,12 +83,10 @@ export function ProcessSection() {
   useEffect(() => {
     if (processAnimation.isVisible) {
       // Reset to step 1 when first entering the section
-      if (activeStep !== 0) {
-        setActiveStep(0);
-      }
-      
+      setActiveStep(0);
       setFade(true);
       const fadeTimeout = setTimeout(() => setFade(false), 500); // match duration-500
+      
       if (timerRef.current) clearInterval(timerRef.current);
       timerRef.current = setInterval(() => {
         setActiveStep((prev) => (prev + 1) % stepsLength);

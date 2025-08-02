@@ -2,41 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { MapPin, Facebook, Instagram, Twitter } from "lucide-react";
-
-// Custom hook for scroll animations
-function useScrollAnimation() {
-  const [isVisible, setIsVisible] = useState(false);
-  const elementRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px",
-      }
-    );
-
-    const currentElement = elementRef.current;
-    if (currentElement) {
-      observer.observe(currentElement);
-    }
-
-    return () => {
-      if (currentElement) {
-        observer.unobserve(currentElement);
-      }
-    };
-  }, []);
-
-  return { elementRef, isVisible };
-}
 
 // Hero slide data type
 interface HeroSlide {
@@ -70,32 +37,14 @@ const heroSlides: HeroSlide[] = [
 
 export function HeroSection() {
   // Hero carousel state
-  const [activeHeroSlide, setActiveHeroSlide] = useState(0);
+  const [activeHeroSlide] = useState(0);
   
   // Sticky header state
   const [isScrolled, setIsScrolled] = useState(false);
 
   // Hero entrance animations state
   const [heroLoaded, setHeroLoaded] = useState(false);
-
-  // Scroll animation hooks
-  const heroAnimation = useScrollAnimation();
-
-  const heroSlidesLength = heroSlides.length;
   const currentHeroSlide = heroSlides[activeHeroSlide];
-
-  // Hero navigation functions
-  const nextHeroSlide = () => {
-    setActiveHeroSlide((prev) => (prev + 1) % heroSlidesLength);
-  };
-
-  const prevHeroSlide = () => {
-    setActiveHeroSlide((prev) => (prev - 1 + heroSlidesLength) % heroSlidesLength);
-  };
-
-  const goToHeroSlide = (index: number) => {
-    setActiveHeroSlide(index);
-  };
 
   // Scroll event listener for sticky header
   useEffect(() => {

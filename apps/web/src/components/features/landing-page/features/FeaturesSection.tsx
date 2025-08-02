@@ -178,15 +178,15 @@ export function FeaturesSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
               
               {/* Floating Stats Cards */}
-              {statistics.map((stat, index) => (
-                <div
-                  key={stat.label}
-                  className={`absolute ${stat.position} bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg transform group-hover:scale-105 transition-all duration-300 delay-${stat.delay}`}
-                >
-                  <div className={`text-2xl font-bold ${stat.color} mb-1`}>{stat.value}</div>
-                  <div className="text-sm text-gray-600">{stat.label}</div>
-                </div>
-              ))}
+                             {statistics.map((stat) => (
+                 <div
+                   key={stat.label}
+                   className={`absolute ${stat.position} bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg transform group-hover:scale-105 transition-all duration-300 delay-${stat.delay}`}
+                 >
+                   <div className={`text-2xl font-bold ${stat.color} mb-1`}>{stat.value}</div>
+                   <div className="text-sm text-gray-600">{stat.label}</div>
+                 </div>
+               ))}
             </div>
           </div>
         </div>
@@ -228,12 +228,12 @@ export function FeaturesSection() {
                     {card.description}
                   </p>
                   <div className="flex items-center gap-4 text-sm text-gray-500">
-                    {card.bulletPoints.map((point, index) => (
-                      <div key={index} className="flex items-center gap-1">
-                        <div className={`w-2 h-2 ${point.color} rounded-full`}></div>
-                        <span>{point.label}</span>
-                      </div>
-                    ))}
+                                      {card.bulletPoints.map((point, _index) => (
+                    <div key={_index} className="flex items-center gap-1">
+                      <div className={`w-2 h-2 ${point.color} rounded-full`}></div>
+                      <span>{point.label}</span>
+                    </div>
+                  ))}
                   </div>
                 </div>
               </div>
