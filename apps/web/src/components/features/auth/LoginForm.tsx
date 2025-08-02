@@ -219,9 +219,7 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
               Email
             </Label>
             <div className="relative">
-              <span className={`absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none transition-colors duration-300 ${
-                isDarkMode ? 'text-gray-500' : 'text-gray-400'
-              }`}>
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-800 z-10">
                 <Mail className="w-5 h-5" />
               </span>
               <Input
@@ -231,10 +229,10 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loginMutation.isPending}
-                className={`pl-10 py-3 text-base transition-all duration-300 hover:border-[#fbbf24]/60 focus:border-[#fbbf24] focus:ring-[#fbbf24]/30 focus:ring-2 hover:shadow-lg focus:shadow-xl transform hover:scale-[1.01] focus:scale-[1.01] ${
+                className={`pl-10 py-3 text-base transition-all duration-300 hover:border-[#fbbf24]/60 focus:border-[#fbbf24] focus:ring-[#fbbf24]/30 focus:ring-2 hover:shadow-lg focus:shadow-xl transform hover:scale-[1.01] focus:scale-[1.01] relative z-0 ${
                   isDarkMode 
-                    ? 'bg-gray-700/80 border-gray-600/60 text-white placeholder-gray-400 hover:bg-gray-600/80 focus:bg-gray-600/80 backdrop-blur-sm' 
-                    : 'bg-gray-50/80 border-gray-300/60 text-gray-900 placeholder-gray-500 hover:bg-white/90 focus:bg-white/90 backdrop-blur-sm'
+                    ? 'bg-gray-700/80 border-gray-600/60 text-white placeholder-gray-400 hover:bg-gray-600/80 focus:bg-gray-600/80' 
+                    : 'bg-white border-gray-300/60 text-gray-900 placeholder-gray-500 hover:bg-white focus:bg-white'
                 }`}
                 shape="boxy"
                 placeholder="Enter your email address"
@@ -252,9 +250,7 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
               Password
             </Label>
             <div className="relative">
-              <span className={`absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none transition-colors duration-300 ${
-                isDarkMode ? 'text-gray-500' : 'text-gray-400'
-              }`}>
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-800 z-10">
                 <Lock className="w-5 h-5" />
               </span>
               <Input
@@ -264,10 +260,10 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loginMutation.isPending}
-                className={`pl-10 pr-10 py-3 text-base transition-all duration-300 hover:border-[#fbbf24]/60 focus:border-[#fbbf24] focus:ring-[#fbbf24]/30 focus:ring-2 hover:shadow-lg focus:shadow-xl transform hover:scale-[1.01] focus:scale-[1.01] ${
+                className={`pl-10 pr-10 py-3 text-base transition-all duration-300 hover:border-[#fbbf24]/60 focus:border-[#fbbf24] focus:ring-[#fbbf24]/30 focus:ring-2 hover:shadow-lg focus:shadow-xl transform hover:scale-[1.01] focus:scale-[1.01] relative z-0 ${
                   isDarkMode 
-                    ? 'bg-gray-700/80 border-gray-600/60 text-white placeholder-gray-400 hover:bg-gray-600/80 focus:bg-gray-600/80 backdrop-blur-sm' 
-                    : 'bg-gray-50/80 border-gray-300/60 text-gray-900 placeholder-gray-500 hover:bg-white/90 focus:bg-white/90 backdrop-blur-sm'
+                    ? 'bg-gray-700/80 border-gray-600/60 text-white placeholder-gray-400 hover:bg-gray-600/80 focus:bg-gray-600/80' 
+                    : 'bg-white border-gray-300/60 text-gray-900 placeholder-gray-500 hover:bg-white focus:bg-white'
                 }`}
                 shape="boxy"
                 placeholder="Enter your password"
