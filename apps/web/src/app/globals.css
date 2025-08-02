@@ -333,6 +333,12 @@
 }
 .animate-blob { animation: blob 8s infinite linear alternate; }
 
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow { animation: spin-slow 3s linear infinite; }
+
 .animation-delay-800 { animation-delay: 0.8s; }
 .animation-delay-2000 { animation-delay: 2s; }
 .animation-delay-4000 { animation-delay: 4s; }
