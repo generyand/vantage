@@ -158,7 +158,7 @@ export default function Home() {
         timerRef.current = null;
       }
     }
-  }, [processAnimation.isVisible, stepsLength, activeStep]);
+  }, [processAnimation.isVisible, stepsLength]);
 
   // Scroll event listener for sticky header
   useEffect(() => {
