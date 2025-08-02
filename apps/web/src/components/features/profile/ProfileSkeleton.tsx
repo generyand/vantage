@@ -2,18 +2,18 @@ import { Skeleton } from '@/components/ui/Skeleton';
 
 export function ProfileSkeleton() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+    <div className="min-h-screen bg-[var(--background)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="space-y-8">
           {/* Profile Form Skeleton */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-stretch">
             {/* User Details Section Skeleton */}
             <div className="xl:col-span-2">
-              <div className="relative overflow-hidden bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-purple-50/40 border-0 shadow-lg h-full rounded-sm">
+              <div className="relative overflow-hidden bg-[var(--card)] border border-[var(--border)] shadow-lg h-full rounded-sm">
                 {/* Card Header */}
                 <div className="relative z-10 p-6 pb-4">
                   <div className="flex items-center gap-3 mb-2">
-                    <Skeleton className="w-1 h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-sm" />
+                    <Skeleton className="w-1 h-6 bg-gradient-to-b from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] rounded-sm" />
                     <Skeleton className="h-6 w-32" />
                   </div>
                   <Skeleton className="h-4 w-64" />
@@ -29,7 +29,7 @@ export function ProfileSkeleton() {
                           <Skeleton className="h-4 w-4" />
                           <Skeleton className="h-4 w-20" />
                         </div>
-                        <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
+                        <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
                           <Skeleton className="h-5 w-32" />
                         </div>
                       </div>
@@ -40,7 +40,7 @@ export function ProfileSkeleton() {
                           <Skeleton className="h-4 w-4" />
                           <Skeleton className="h-4 w-36" />
                         </div>
-                        <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
+                        <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
                           <Skeleton className="h-5 w-40" />
                         </div>
                       </div>
@@ -51,7 +51,7 @@ export function ProfileSkeleton() {
                           <Skeleton className="h-4 w-4" />
                           <Skeleton className="h-4 w-32" />
                         </div>
-                        <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
+                        <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
                           <Skeleton className="h-5 w-28" />
                         </div>
                       </div>
@@ -62,7 +62,7 @@ export function ProfileSkeleton() {
                           <Skeleton className="h-4 w-4" />
                           <Skeleton className="h-4 w-12" />
                         </div>
-                        <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
+                        <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
                           <Skeleton className="h-5 w-24" />
                         </div>
                       </div>
@@ -70,7 +70,7 @@ export function ProfileSkeleton() {
                   </div>
                   
                   {/* Alert */}
-                  <div className="bg-amber-50/80 border-amber-200/60 backdrop-blur-sm rounded-sm p-4 mt-6">
+                  <div className="bg-[var(--cityscape-yellow)]/10 border-[var(--cityscape-yellow)]/20 backdrop-blur-sm rounded-sm p-4 mt-6">
                     <div className="flex items-start gap-3">
                       <Skeleton className="h-4 w-4 mt-0.5 flex-shrink-0" />
                       <Skeleton className="h-4 w-80" />
@@ -82,11 +82,11 @@ export function ProfileSkeleton() {
 
             {/* Password Change Section Skeleton */}
             <div className="space-y-6">
-              <div className="relative overflow-hidden bg-gradient-to-br from-green-50/80 via-emerald-50/60 to-teal-50/40 border-0 shadow-lg rounded-sm">
+              <div className="relative overflow-hidden bg-[var(--card)] border border-[var(--border)] shadow-lg rounded-sm">
                 {/* Card Header */}
                 <div className="relative z-10 p-6 pb-4">
                   <div className="flex items-center gap-3 mb-2">
-                    <Skeleton className="w-1 h-6 bg-gradient-to-b from-green-500 to-emerald-600 rounded-sm" />
+                    <Skeleton className="w-1 h-6 bg-gradient-to-b from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] rounded-sm" />
                     <Skeleton className="h-6 w-36" />
                   </div>
                   <Skeleton className="h-4 w-56" />
@@ -113,7 +113,7 @@ export function ProfileSkeleton() {
                       </div>
                       
                       {/* Password Requirements */}
-                      <div className="bg-white/60 backdrop-blur-sm rounded-sm p-3 border border-white/50">
+                      <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3 border border-[var(--border)]">
                         <Skeleton className="h-3 w-32 mb-2" />
                         <div className="space-y-2">
                           {Array.from({ length: 3 }).map((_, i) => (

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Assessor } from '@/types/submissions';
 import {
@@ -33,9 +34,11 @@ function AssessorAvatars({ assessors, maxVisible = 3, className }: AssessorAvata
               <div className="relative">
                 <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium border-2 border-white shadow-sm">
                   {assessor.avatar ? (
-                    <img
+                    <Image
                       src={assessor.avatar}
                       alt={assessor.name}
+                      width={32}
+                      height={32}
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (

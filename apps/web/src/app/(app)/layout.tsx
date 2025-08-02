@@ -1,66 +1,131 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import { useAuthStore } from '@/store/useAuthStore';
-import UserNav from '@/components/shared/UserNav';
-import { X, Bell } from 'lucide-react';
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useAuthStore } from "@/store/useAuthStore";
+import UserNav from "@/components/shared/UserNav";
+import { X, Bell } from "lucide-react";
 
 // Navigation items for different user roles
 const adminNavigation = [
-  { name: 'Dashboard', href: '/admin/dashboard', icon: 'home' },
-  { name: 'Submission Queue', href: '/admin/submissions', icon: 'clipboard' },
-  { name: 'Analytics & Reports', href: '/admin/reports', icon: 'chart' },
-  { name: 'User Management', href: '/user-management', icon: 'users' },
-  { name: 'System Settings', href: '/admin/settings', icon: 'settings' },
-  { name: 'Profile', href: '/admin/profile', icon: 'user' },
+  { name: "Dashboard", href: "/admin/dashboard", icon: "home" },
+  { name: "Submission Queue", href: "/admin/submissions", icon: "clipboard" },
+  { name: "Analytics & Reports", href: "/admin/reports", icon: "chart" },
+  { name: "User Management", href: "/user-management", icon: "users" },
+  { name: "System Settings", href: "/admin/settings", icon: "settings" },
+  { name: "Profile", href: "/admin/profile", icon: "user" },
 ];
 
 const blguNavigation = [
-  { name: 'BLGU Dashboard', href: '/blgu/dashboard', icon: 'home' },
-  { name: 'My Assessments', href: '/blgu/assessments', icon: 'clipboard' },
-  { name: 'Profile', href: '/blgu/profile', icon: 'user' },
+  { name: "Dashboard", href: "/blgu/dashboard", icon: "home" },
+  { name: "My Assessments", href: "/blgu/assessments", icon: "clipboard" },
+  { name: "Profile", href: "/blgu/profile", icon: "user" },
 ];
 
 const getIcon = (name: string) => {
   switch (name) {
-    case 'home':
+    case "home":
       return (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+          />
         </svg>
       );
-    case 'clipboard':
+    case "clipboard":
       return (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          />
         </svg>
       );
-    case 'chart':
+    case "chart":
       return (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          />
         </svg>
       );
-    case 'users':
+    case "users":
       return (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+          />
         </svg>
       );
-    case 'user':
+    case "user":
       return (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+          />
         </svg>
       );
-    case 'settings':
+    case "settings":
       return (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+          />
         </svg>
       );
     default:
@@ -68,11 +133,7 @@ const getIcon = (name: string) => {
   }
 };
 
-export default function AppLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { isAuthenticated, user, mustChangePassword } = useAuthStore();
@@ -80,20 +141,25 @@ export default function AppLayout({
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   // Determine navigation based on user role
-  const isAdmin = user?.role === 'SUPERADMIN' || user?.role === 'MLGOO_DILG';
+  const isAdmin = user?.role === "SUPERADMIN" || user?.role === "MLGOO_DILG";
   const navigation = isAdmin ? adminNavigation : blguNavigation;
 
   // Redirect unauthenticated users to login
   useEffect(() => {
     if (!isAuthenticated) {
-      router.replace('/login');
+      router.replace("/login");
     }
   }, [isAuthenticated, router]);
 
   // Redirect users to change password if required
   useEffect(() => {
-    if (isAuthenticated && user && mustChangePassword && pathname !== '/change-password') {
-      router.replace('/change-password');
+    if (
+      isAuthenticated &&
+      user &&
+      mustChangePassword &&
+      pathname !== "/change-password"
+    ) {
+      router.replace("/change-password");
       return;
     }
   }, [isAuthenticated, user, mustChangePassword, pathname, router]);
@@ -101,30 +167,30 @@ export default function AppLayout({
   // Redirect users to appropriate dashboard based on role
   useEffect(() => {
     if (isAuthenticated && user && !mustChangePassword) {
-      const isAdmin = user.role === 'SUPERADMIN' || user.role === 'MLGOO_DILG';
+      const isAdmin = user.role === "SUPERADMIN" || user.role === "MLGOO_DILG";
       const currentPath = pathname;
-      
+
       // If user is on root path, redirect to appropriate dashboard
-      if (currentPath === '/') {
-        const dashboardPath = isAdmin ? '/admin/dashboard' : '/blgu/dashboard';
+      if (currentPath === "/") {
+        const dashboardPath = isAdmin ? "/admin/dashboard" : "/blgu/dashboard";
         router.replace(dashboardPath);
         return;
       }
-      
+
       // Check if user is accessing wrong role routes
-      const isAdminRoute = currentPath.startsWith('/admin');
-      const isBLGURoute = currentPath.startsWith('/blgu');
-      const isUserManagementRoute = currentPath.startsWith('/user-management');
-      
+      const isAdminRoute = currentPath.startsWith("/admin");
+      const isBLGURoute = currentPath.startsWith("/blgu");
+      const isUserManagementRoute = currentPath.startsWith("/user-management");
+
       if (isAdmin) {
         // Admin users should not access BLGU routes
         if (isBLGURoute) {
-          router.replace('/admin/dashboard');
+          router.replace("/admin/dashboard");
         }
       } else {
         // BLGU users should not access admin routes or user management
         if (isAdminRoute || isUserManagementRoute) {
-          router.replace('/blgu/dashboard');
+          router.replace("/blgu/dashboard");
         }
       }
     }
@@ -143,7 +209,7 @@ export default function AppLayout({
   }
 
   // If user must change password and is not on the change-password page, show loading
-  if (mustChangePassword && pathname !== '/change-password') {
+  if (mustChangePassword && pathname !== "/change-password") {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -155,7 +221,7 @@ export default function AppLayout({
   }
 
   // If user must change password, show only the change password page without navigation
-  if (mustChangePassword && pathname === '/change-password') {
+  if (mustChangePassword && pathname === "/change-password") {
     return (
       <div className="min-h-screen bg-gray-50">
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
@@ -170,18 +236,22 @@ export default function AppLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--background)] transition-colors duration-300">
       {/* Mobile backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-[var(--overlay)] z-40 md:hidden transition-opacity duration-300"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Mobile sidebar */}
-      <div className={`fixed inset-0 flex z-50 md:hidden ${sidebarOpen ? '' : 'hidden'}`}>
-        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white/95 backdrop-blur-sm shadow-xl border-r border-red-100">
+      <div
+        className={`fixed inset-0 flex z-50 md:hidden ${
+          sidebarOpen ? "" : "hidden"
+        }`}
+      >
+        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-[var(--card)] backdrop-blur-sm shadow-xl border-r border-[var(--border)] transition-colors duration-300">
           <div className="absolute top-0 right-0 -mr-12 pt-2">
             <button
               className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
@@ -203,9 +273,11 @@ export default function AppLayout({
                   />
                 </div>
                 <div className="ml-3">
-                  <h1 className="text-lg font-bold text-gray-900">VANTAGE</h1>
-                  <p className="text-sm text-gray-600">
-                    {isAdmin ? 'Admin Portal' : 'Barangay Submission Portal'}
+                  <h1 className="text-lg font-bold text-[var(--foreground)]">
+                    VANTAGE
+                  </h1>
+                  <p className="text-sm text-[var(--text-secondary)]">
+                    {isAdmin ? "Admin Portal" : "Barangay Submission Portal"}
                   </p>
                 </div>
               </div>
@@ -217,8 +289,8 @@ export default function AppLayout({
                   href={item.href}
                   className={`group flex items-center px-4 py-3 text-left rounded-sm transition-all duration-200 ${
                     pathname === item.href
-                      ? "bg-[#b91c1c] text-white shadow-lg"
-                      : "text-gray-700 hover:bg-red-50 hover:text-red-600"
+                      ? "bg-[var(--cityscape-yellow)] text-[var(--cityscape-accent-foreground)] shadow-lg"
+                      : "text-[var(--foreground)] hover:bg-[var(--hover)] hover:text-[var(--cityscape-yellow)]"
                   }`}
                   onClick={() => setSidebarOpen(false)}
                 >
@@ -233,7 +305,7 @@ export default function AppLayout({
 
       {/* Desktop sidebar */}
       <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
-        <div className="flex-1 flex flex-col min-h-0 bg-white/95 backdrop-blur-sm shadow-xl border-r border-red-100">
+        <div className="flex-1 flex flex-col min-h-0 bg-[var(--card)] backdrop-blur-sm shadow-xl border-r border-[var(--border)] transition-colors duration-300">
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
             <div className="flex items-center flex-shrink-0 px-6 mb-8">
               <div className="flex items-center">
@@ -247,9 +319,11 @@ export default function AppLayout({
                   />
                 </div>
                 <div className="ml-3">
-                  <h1 className="text-lg font-bold text-gray-900">VANTAGE</h1>
-                  <p className="text-sm text-gray-600">
-                    {isAdmin ? 'Admin Portal' : 'Barangay Submission Portal'}
+                  <h1 className="text-lg font-bold text-[var(--foreground)]">
+                    VANTAGE
+                  </h1>
+                  <p className="text-sm text-[var(--text-secondary)]">
+                    {isAdmin ? "Admin Portal" : "Barangay Submission Portal"}
                   </p>
                 </div>
               </div>
@@ -261,8 +335,8 @@ export default function AppLayout({
                   href={item.href}
                   className={`group flex items-center px-4 py-3 text-left rounded-sm transition-all duration-200 ${
                     pathname === item.href
-                      ? "bg-[#b91c1c] text-white shadow-lg"
-                      : "text-gray-700 hover:bg-red-50 hover:text-red-600"
+                      ? "bg-[var(--cityscape-yellow)] text-[var(--cityscape-accent-foreground)] shadow-lg"
+                      : "text-[var(--foreground)] hover:bg-[var(--hover)] hover:text-[var(--cityscape-yellow)]"
                   }`}
                 >
                   {getIcon(item.icon)}
@@ -276,79 +350,108 @@ export default function AppLayout({
 
       {/* Main content */}
       <div className="md:pl-64 flex flex-col flex-1">
-        <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-gray-50">
+        <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-[var(--background)] transition-colors duration-300">
           <button
-            className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+            className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-[var(--icon-default)] hover:text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--cityscape-yellow)] transition-colors duration-200"
             onClick={() => setSidebarOpen(true)}
           >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             </svg>
           </button>
         </div>
 
         {/* Header */}
-        <header className="bg-white shadow-sm">
+        <header className="bg-[var(--card)] shadow-sm transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div className="flex items-center">
                 <div>
-                  <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate">
-                    {isAdmin ? (
-                      // Admin-specific titles
-                      pathname === '/admin/reports' ? 'Analytics & Reports' :
-                      pathname === '/admin/submissions' ? 'Submission Queue' :
-                      pathname === '/admin/settings' ? 'System Settings' :
-                      pathname === '/admin/profile' ? 'Profile' :
-                      navigation.find(item => pathname === item.href)?.name || 'Dashboard'
-                    ) : (
-                      // BLGU titles
-                      navigation.find(item => pathname === item.href)?.name || 'BLGU Dashboard'
-                    )}
+                  <h2 className="text-2xl font-bold leading-7 text-[var(--foreground)] sm:truncate">
+                    {isAdmin
+                      ? // Admin-specific titles
+                        pathname === "/admin/reports"
+                        ? "Analytics & Reports"
+                        : pathname === "/admin/submissions"
+                        ? "Submission Queue"
+                        : pathname === "/admin/settings"
+                        ? "System Settings"
+                        : pathname === "/admin/profile"
+                        ? "Profile"
+                        : navigation.find((item) => pathname === item.href)
+                            ?.name || "Dashboard"
+                      : // BLGU titles - show specific titles for better UX
+                      pathname === "/blgu/dashboard"
+                      ? "SGLGB Dashboard"
+                      : pathname === "/blgu/assessments"
+                      ? "My Assessments"
+                      : pathname === "/blgu/profile"
+                      ? "Profile"
+                      : navigation.find((item) => pathname === item.href)
+                          ?.name || "Dashboard"}
                   </h2>
                   {/* Show context-specific subtitle for all users */}
-                  {!isAdmin && pathname.startsWith('/blgu') && (
-                    <p className="mt-1 text-sm text-gray-500">
-                      {pathname === '/blgu/dashboard' && 'Welcome to your Barangay Local Government Unit dashboard'}
-                      {pathname === '/blgu/assessments' && 'Manage and complete your SGLGB assessments'}
-                      {pathname === '/blgu/profile' && 'Manage your account settings, update your password, and view your profile information.'}
+                  {!isAdmin && pathname.startsWith("/blgu") && (
+                    <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                      {pathname === "/blgu/dashboard" &&
+                        "Monitor your SGLGB performance and track assessment progress"}
+                      {pathname === "/blgu/assessments" &&
+                        "Manage and complete your SGLGB assessments"}
+                      {pathname === "/blgu/profile" &&
+                        "Manage your account settings, update your password, and view your profile information."}
                     </p>
                   )}
                   {isAdmin && (
-                    <p className="mt-1 text-sm text-gray-500">
-                      {pathname === '/admin/dashboard' && 'Welcome to your Vantage dashboard'}
-                      {pathname === '/admin/submissions' && 'Review and manage submitted assessments from barangays'}
-                      {pathname === '/admin/reports' && 'View analytics and generate reports on assessment data'}
-                      {pathname === '/user-management' && 'Manage user accounts and permissions'}
-                      {pathname === '/admin/settings' && 'Configure system settings and preferences'}
-                      {pathname === '/admin/profile' && 'Manage your account settings and profile information'}
+                    <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                      {pathname === "/admin/dashboard" &&
+                        "Welcome to your Vantage dashboard"}
+                      {pathname === "/admin/submissions" &&
+                        "Review and manage submitted assessments from barangays"}
+                      {pathname === "/admin/reports" &&
+                        "View analytics and generate reports on assessment data"}
+                      {pathname === "/user-management" &&
+                        "Manage user accounts and permissions"}
+                      {pathname === "/admin/settings" &&
+                        "Configure system settings and preferences"}
+                      {pathname === "/admin/profile" &&
+                        "Manage your account settings and profile information"}
                     </p>
                   )}
                 </div>
               </div>
               <div className="flex items-center space-x-4">
                 {/* Notifications */}
-                <button className="p-2 rounded-full text-gray-500 hover:text-[#b91c1c] hover:bg-red-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#b91c1c] focus:ring-offset-2">
+                <button className="p-2 rounded-full text-[var(--icon-default)] hover:text-[var(--cityscape-yellow)] hover:bg-[var(--hover)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--cityscape-yellow)] focus:ring-offset-2">
                   <Bell className="h-5 w-5" />
                 </button>
-                
+
                 {/* Profile dropdown */}
                 <div className="relative">
-                  <button 
-                    className="flex items-center space-x-2 p-2 rounded-full text-gray-500 hover:text-[#b91c1c] hover:bg-red-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#b91c1c] focus:ring-offset-2"
+                  <button
+                    className="flex items-center space-x-2 p-2 rounded-full text-[var(--icon-default)] hover:text-[var(--cityscape-yellow)] hover:bg-[var(--hover)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--cityscape-yellow)] focus:ring-offset-2"
                     onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                   >
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#b91c1c] to-[#dc2626] flex items-center justify-center text-white font-semibold text-sm">
-                      {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] flex items-center justify-center text-[var(--cityscape-accent-foreground)] font-semibold text-sm">
+                      {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
                     </div>
-                    <span className="hidden sm:block text-sm font-medium text-gray-700">
-                      {user?.name || 'User'}
+                    <span className="hidden sm:block text-sm font-medium text-[var(--foreground)]">
+                      {user?.name || "User"}
                     </span>
                   </button>
-                  
+
                   {/* Profile dropdown menu */}
                   {profileDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-sm shadow-xl border border-gray-200 z-50">
+                    <div className="absolute right-0 mt-2 w-80 bg-[var(--card)] rounded-sm shadow-xl border border-[var(--border)] z-50 transition-colors duration-300">
                       <div className="py-1">
                         <UserNav />
                       </div>
@@ -369,14 +472,14 @@ export default function AppLayout({
           </div>
         </main>
       </div>
-      
+
       {/* Click outside to close dropdown */}
       {profileDropdownOpen && (
-        <div 
-          className="fixed inset-0 z-40" 
+        <div
+          className="fixed inset-0 z-40"
           onClick={() => setProfileDropdownOpen(false)}
         />
       )}
     </div>
   );
-} 
+}

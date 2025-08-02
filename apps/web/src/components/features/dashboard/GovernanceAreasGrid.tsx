@@ -57,7 +57,7 @@ const CircularProgressRing = ({ percentage, size = 60, strokeWidth = 4, color = 
           stroke="currentColor"
           strokeWidth={strokeWidth}
           fill="transparent"
-          className="text-gray-200"
+          className="text-[var(--border)]"
         />
         <circle
           cx={size / 2}
@@ -73,7 +73,7 @@ const CircularProgressRing = ({ percentage, size = 60, strokeWidth = 4, color = 
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-xs font-bold text-gray-900">{Math.round(percentage)}%</span>
+        <span className="text-xs font-bold text-[var(--foreground)]">{Math.round(percentage)}%</span>
       </div>
     </div>
   );
@@ -164,7 +164,7 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
       'completed': <CheckCircle className="h-4 w-4 text-green-600" />,
       'needs-rework': <XCircle className="h-4 w-4 text-red-600" />,
       'in-progress': <Clock className="h-4 w-4 text-blue-600" />,
-      'not-started': <AlertCircle className="h-4 w-4 text-gray-400" />
+      'not-started': <AlertCircle className="h-4 w-4 text-gray-300" />
     }[status];
 
     const trendIcon = percentage >= 70 ? 
@@ -187,8 +187,8 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
     <div className="space-y-8">
       {/* Header with enhanced styling */}
       <div className="text-center space-y-3">
-        <h2 className="text-2xl font-bold text-gray-900">Assessment Areas</h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <h2 className="text-2xl font-bold text-[var(--foreground)]">Assessment Areas</h2>
+        <p className="text-[var(--text-secondary)] max-w-2xl mx-auto">
           Monitor progress across all governance areas. Click on any area to dive deeper into detailed assessments and requirements.
         </p>
         {/* Removed summary stats (quick stats) here */}
@@ -202,17 +202,17 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
           return (
             <Card
               key={area.id}
-              className={`group cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br ${config.bgGradient} border-0 shadow-lg overflow-hidden relative rounded-sm`}
+              className={`group cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] bg-[var(--card)] border border-[var(--border)] shadow-lg overflow-hidden relative rounded-sm`}
               onClick={() => handleAreaClick(area.id)}
             >
               {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
-              <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/5 rounded-full translate-y-8 -translate-x-8"></div>
+              <div className="absolute top-0 right-0 w-20 h-20 bg-[var(--cityscape-yellow)]/10 rounded-full -translate-y-10 translate-x-10"></div>
+              <div className="absolute bottom-0 left-0 w-16 h-16 bg-[var(--cityscape-yellow)]/5 rounded-full translate-y-8 -translate-x-8"></div>
               
               <CardHeader className="pb-4 relative z-10">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-sm bg-white/90 shadow-sm">
+                    <div className="p-2 rounded-sm bg-[var(--card)]/90 shadow-sm border border-[var(--border)]">
                       <Image
                         src={config.logoPath}
                         alt={`${area.name} logo`}
@@ -233,27 +233,28 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
                     strokeWidth={3}
                   />
                 </div>
-                <CardTitle className="text-sm font-semibold line-clamp-2 text-gray-800 mt-2">
+                <CardTitle className="text-sm font-semibold line-clamp-2 text-[var(--foreground)] mt-2">
                   {area.name}
                 </CardTitle>
               </CardHeader>
               
               <CardContent className="space-y-4 relative z-10">
                 {/* Progress section with enhanced visuals */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-sm p-3 space-y-3">
+                <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3 space-y-3 border border-[var(--border)]">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-medium text-gray-700">Progress Overview</span>
-                    <Badge className={`text-xs px-2 py-1 rounded-sm bg-white/80 ${config.accentColor} border-0`}>
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">Progress Overview</span>
+                    <Badge className={`text-xs px-2 py-1 rounded-sm bg-[var(--card)]/80 ${config.accentColor} border-0`}>
                       {area.current}/{area.total} Compliant
                     </Badge>
                   </div>
                   
                   <div className="space-y-2">
-                    <Progress 
-                      value={area.percentage} 
-                      className="h-2 bg-gray-200/60" 
-                    />
-                    <div className="flex justify-between text-xs text-gray-600">
+                                       <Progress 
+                     value={area.percentage} 
+                     className="h-2 bg-[var(--border)]/60" 
+                     progressColor={config.color}
+                   />
+                    <div className="flex justify-between text-xs text-[var(--text-secondary)]">
                       <span>{Math.round(area.percentage)}% Complete</span>
                       <span>{area.total - area.current} Remaining</span>
                     </div>
@@ -261,10 +262,10 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
                 </div>
 
                 {/* Mini trend chart */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-sm p-3">
+                <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3 border border-[var(--border)]">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-medium text-gray-700">7-Day Trend</span>
-                    <div className="flex items-center gap-1 text-xs text-gray-600">
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">7-Day Trend</span>
+                    <div className="flex items-center gap-1 text-xs text-[var(--text-secondary)]">
                       {config.trendIcon}
                       <span>Activity</span>
                     </div>
@@ -274,23 +275,23 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
 
                 {/* Enhanced stats grid */}
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="bg-white/60 backdrop-blur-sm rounded-sm p-2 text-center">
-                    <div className="text-lg font-bold text-gray-900">{area.current}</div>
-                    <div className="text-xs text-gray-600">Done</div>
+                  <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-2 text-center border border-[var(--border)]">
+                    <div className="text-lg font-bold text-[var(--foreground)]">{area.current}</div>
+                    <div className="text-xs text-[var(--text-secondary)]">Done</div>
                   </div>
-                  <div className="bg-white/60 backdrop-blur-sm rounded-sm p-2 text-center">
-                    <div className="text-lg font-bold text-gray-900">{area.total - area.current}</div>
-                    <div className="text-xs text-gray-600">Todo</div>
+                  <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-2 text-center border border-[var(--border)]">
+                    <div className="text-lg font-bold text-[var(--foreground)]">{area.total - area.current}</div>
+                    <div className="text-xs text-[var(--text-secondary)]">Todo</div>
                   </div>
-                  <div className="bg-white/60 backdrop-blur-sm rounded-sm p-2 text-center">
-                    <div className="text-lg font-bold text-gray-900">{area.total}</div>
-                    <div className="text-xs text-gray-600">Total</div>
+                  <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-2 text-center border border-[var(--border)]">
+                    <div className="text-lg font-bold text-[var(--foreground)]">{area.total}</div>
+                    <div className="text-xs text-[var(--text-secondary)]">Total</div>
                   </div>
                 </div>
 
                 {/* Hover effect indicator */}
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center">
-                  <span className="text-xs text-gray-600 bg-white/80 px-3 py-1 rounded-sm">
+                  <span className="text-xs text-[var(--text-secondary)] bg-[var(--card)]/80 px-3 py-1 rounded-sm border border-[var(--border)]">
                     Click to view details →
                   </span>
                 </div>

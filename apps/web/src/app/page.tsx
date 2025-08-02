@@ -133,7 +133,14 @@ export default function Home() {
     setActiveHeroSlide(index);
   };
 
+  // Auto-advance carousel only when process section is visible
   useEffect(() => {
+    if (processAnimation.isVisible) {
+      // Reset to step 1 when first entering the section
+      if (activeStep !== 0) {
+        setActiveStep(0);
+      }
+      
     setFade(true);
     const fadeTimeout = setTimeout(() => setFade(false), 500); // match duration-500
     if (timerRef.current) clearInterval(timerRef.current);
@@ -144,7 +151,34 @@ export default function Home() {
       clearTimeout(fadeTimeout);
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [activeStep, stepsLength]);
+    } else {
+      // Clear the interval when section is not visible
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+  }, [processAnimation.isVisible, stepsLength, activeStep]);
+
+  // Scroll event listener for sticky header
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Hero entrance animations - trigger on page load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHeroLoaded(true);
+    }, 100); // Small delay to ensure smooth entrance
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Scroll event listener for sticky header
   useEffect(() => {
@@ -260,8 +294,8 @@ export default function Home() {
 
       {/* Cityscape Layout - First Section */}
       <div className="flex h-screen relative">
-        {/* Left Sidebar - Black */}
-        <aside className="hidden lg:flex lg:w-1/4 bg-[#0a0a0b] flex-col justify-between p-4 lg:p-8" role="complementary" aria-label="Navigation sidebar">
+        {/* Left Sidebar - Cityscape Theme */}
+        <aside className="hidden lg:flex lg:w-1/4 bg-black flex-col justify-between p-4 lg:p-8 transition-colors duration-300" role="complementary" aria-label="Navigation sidebar">
           {/* Top: Logo and Navigation */}
           <div className="space-y-8">
             {/* Logo */}
@@ -302,14 +336,14 @@ export default function Home() {
               >
                 FOLLOW US
               </div>
-              <div className="absolute top-30 left-3 w-px h-30 bg-white" aria-hidden="true"></div>
+                              <div className="absolute top-30 left-3 w-px h-30 bg-white" aria-hidden="true"></div>
             </div>
             <nav className={`flex flex-col space-y-6 transition-all duration-1000 ease-out delay-500 ${
               heroLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
             }`} role="navigation" aria-label="Social media links">
               <a
                 href="#"
-                className="group w-10 h-10 bg-white/10 hover:bg-[#fbbf24] rounded-full flex items-center justify-center text-white hover:text-black transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#fbbf24] focus:ring-offset-2 focus:ring-offset-[#0a0a0b]"
+                className="group w-10 h-10 bg-white/10 hover:bg-[#fbbf24] rounded-full flex items-center justify-center text-white hover:text-black transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#fbbf24] focus:ring-offset-2 focus:ring-offset-black"
                 aria-label="Follow us on Facebook"
                 tabIndex={0}
               >
@@ -317,7 +351,7 @@ export default function Home() {
               </a>
               <a
                 href="#"
-                className="group w-10 h-10 bg-white/10 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-[#0a0a0b]"
+                className="group w-10 h-10 bg-white/10 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#fbbf24] focus:ring-offset-2 focus:ring-offset-black"
                 aria-label="Follow us on Instagram"
                 tabIndex={0}
               >
@@ -325,14 +359,14 @@ export default function Home() {
               </a>
               <a
                 href="#"
-                className="group w-10 h-10 bg-white/10 hover:bg-blue-400 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-[#0a0a0b]"
+                className="group w-10 h-10 bg-white/10 hover:bg-blue-400 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:shadow-lg backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#fbbf24] focus:ring-offset-2 focus:ring-offset-black"
                 aria-label="Follow us on Twitter"
                 tabIndex={0}
               >
                 <Twitter className="w-5 h-5" aria-hidden="true" />
               </a>
             </nav>
-          </div>
+            </div>
         </aside>
 
         {/* Philippine Flag - positioned between black sidebar and image like 2100 Club */}
@@ -341,11 +375,11 @@ export default function Home() {
         }`} role="img" aria-label="Philippine flag representing national identity and government authority">
           <div className="relative">
             <Image
-              src="/flag.jpg"
+            src="/flag.jpg"
               alt="Philippine flag with blue, red, and white sections featuring the sun and three stars, symbolizing the Republic of the Philippines"
-              width={256}
-              height={416}
-              className="w-64 h-[26rem] object-cover drop-shadow-2xl rounded-sm bg-white"
+              width={320}
+              height={520}
+              className="w-72 h-[28rem] 3xl:w-80 3xl:h-[32rem] object-cover drop-shadow-2xl rounded-sm bg-white"
             />
             {/* Dark overlay for consistent styling */}
             <div className="absolute inset-0 bg-black/15 rounded-sm" aria-hidden="true"></div>
@@ -383,23 +417,22 @@ export default function Home() {
             }`} role="region" aria-label="Location information">
               <MapPin className="w-3 h-3 lg:w-4 lg:h-4 text-[#fbbf24]" aria-hidden="true" />
               <div className="text-sm lg:text-base font-medium tracking-wide uppercase text-gray-200 hover:text-white transition-colors duration-300">
-                {currentHeroSlide.location}
-              </div>
+              {currentHeroSlide.location}
             </div>
-            
+          </div>
+
             {/* Enhanced VANTAGE title */}
             <div className={`relative transition-all duration-1200 ease-out delay-500 ${
               heroLoaded ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95'
             }`}>
               <h1 className="text-4xl sm:text-5xl lg:text-7xl xl:text-8xl font-black text-[#fbbf24] leading-none tracking-tight mb-2 lg:mb-4 transform hover:scale-105 transition-all duration-500 ease-out">
                 <span className="inline-block hover:animate-pulse">
-                  {currentHeroSlide.title}
+              {currentHeroSlide.title}
                 </span>
-              </h1>
+            </h1>
               {/* Subtle glow effect */}
               <div className="absolute inset-0 text-4xl sm:text-5xl lg:text-7xl xl:text-8xl font-black text-[#fbbf24] leading-none tracking-tight opacity-20 blur-sm -z-10" aria-hidden="true">
                 {currentHeroSlide.title}
-              </div>
             </div>
             
             {/* Enhanced subtitle */}
@@ -412,6 +445,17 @@ export default function Home() {
               <span aria-label="Platform description">{currentHeroSlide.subtitle}</span>
             </div>
           </div>
+
+            {/* Enhanced subtitle */}
+            <div className={`text-sm sm:text-base lg:text-xl font-light leading-relaxed text-gray-100 max-w-2xl transition-all duration-1000 ease-out delay-700 ${
+              heroLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}>
+              <span className="block mb-2 text-xs lg:text-sm uppercase tracking-wider text-[#fbbf24] font-semibold" role="banner">
+                Official Platform
+              </span>
+              <span aria-label="Platform description">{currentHeroSlide.subtitle}</span>
+          </div>
+        </div>
         </main>
       </div>
 
@@ -483,7 +527,7 @@ export default function Home() {
                 <div className="flex items-center justify-center gap-2 text-green-600 text-sm font-medium">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <span>Digital workflow solution</span>
-                </div>
+            </div>
               </div>
             </article>
             
@@ -531,7 +575,7 @@ export default function Home() {
                 <div className="flex items-center justify-center gap-2 text-green-600 text-sm font-medium">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <span>Self-assessment tools</span>
-                </div>
+            </div>
               </div>
             </article>
             
@@ -580,7 +624,7 @@ export default function Home() {
                 <div className="flex items-center justify-center gap-2 text-green-600 text-sm font-medium">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <span>Analytics & insights</span>
-                </div>
+            </div>
               </div>
             </article>
           </div>
@@ -609,8 +653,8 @@ export default function Home() {
               <span>PLATFORM FEATURES</span>
             </div>
             <h2 id="features-heading" className="text-3xl md:text-4xl font-bold text-black mb-4">
-              A Modern Toolkit for Data-Driven Governance
-            </h2>
+            A Modern Toolkit for Data-Driven Governance
+          </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Comprehensive tools designed to support SGLGB evaluation process
             </p>
@@ -628,7 +672,7 @@ export default function Home() {
               <div className="relative group h-full">
                 <div className="w-full h-full min-h-[500px] rounded-2xl shadow-2xl overflow-hidden relative">
                   <Image
-                    src="/Day_Care_Center.jpg"
+                  src="/Day_Care_Center.jpg"
                     alt="Modern day care center facility showcasing community development and local governance infrastructure"
                     fill
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -640,13 +684,12 @@ export default function Home() {
                   <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg transform group-hover:scale-105 transition-all duration-300">
                     <div className="text-2xl font-bold text-[#fbbf24] mb-1">40+</div>
                     <div className="text-sm text-gray-600">Barangays Served</div>
-                  </div>
+              </div>
                   
                   <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg transform group-hover:scale-105 transition-all duration-300 delay-100">
                     <div className="text-2xl font-bold text-[#f59e0b] mb-1">95%</div>
                     <div className="text-sm text-gray-600">Success Rate</div>
-                  </div>
-                  
+            </div>
                   <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg transform group-hover:scale-105 transition-all duration-300 delay-200">
                     <div className="text-2xl font-bold text-[#d97706] mb-1">60%</div>
                     <div className="text-sm text-gray-600">Time Saved</div>
@@ -679,8 +722,8 @@ export default function Home() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <h3 className="text-xl font-bold text-black group-hover:text-[#fbbf24] transition-colors duration-300">
-                        Guided Self-Assessment
-                      </h3>
+                    Guided Self-Assessment
+                  </h3>
                       <div className="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
                         STEP 1
                       </div>
@@ -692,11 +735,11 @@ export default function Home() {
                       <div className="flex items-center gap-1">
                         <div className="w-2 h-2 bg-[#fbbf24] rounded-full"></div>
                         <span>5-10 minutes</span>
-                      </div>
+                </div>
                       <div className="flex items-center gap-1">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                         <span>User-friendly</span>
-                      </div>
+              </div>
                     </div>
                   </div>
                 </div>
@@ -718,8 +761,8 @@ export default function Home() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <h3 className="text-xl font-bold text-black group-hover:text-[#f59e0b] transition-colors duration-300">
-                        Structured Validation & Rework
-                      </h3>
+                    Structured Validation & Rework
+                  </h3>
                       <div className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
                         STEP 2
                       </div>
@@ -731,11 +774,11 @@ export default function Home() {
                       <div className="flex items-center gap-1">
                         <div className="w-2 h-2 bg-[#f59e0b] rounded-full"></div>
                         <span>2-3 days</span>
-                      </div>
+                </div>
                       <div className="flex items-center gap-1">
                         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                         <span>Quality assured</span>
-                      </div>
+              </div>
                     </div>
                   </div>
                 </div>
@@ -757,8 +800,8 @@ export default function Home() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <h3 className="text-xl font-bold text-black group-hover:text-[#d97706] transition-colors duration-300">
-                        Powerful Analytics & AI Insights
-                      </h3>
+                    Powerful Analytics & AI Insights
+                  </h3>
                       <div className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
                         ONGOING
                       </div>
@@ -809,7 +852,7 @@ export default function Home() {
                 <div className="absolute -top-4 left-1/4 w-3 h-12 bg-gradient-to-b from-[#fbbf24] to-transparent opacity-50 animate-pulse" style={{ animationDelay: '1s' }}></div>
                 <div className="absolute -bottom-4 right-1/3 w-10 h-2 bg-[#fbbf24] rounded-full animate-pulse opacity-40" style={{ animationDelay: '1.5s' }}></div>
               </span>
-            </h2>
+              </h2>
           </div>
 
           <div className="flex flex-col lg:flex-row items-stretch gap-8">
@@ -820,22 +863,22 @@ export default function Home() {
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-sm font-medium text-gray-600">
                     Current Step: {activeStep + 1} of {steps.length}
-                  </span>
-                  <div className="flex gap-1">
-                    {steps.map((_, idx) => (
-                      <div
-                        key={idx}
+                </span>
+                <div className="flex gap-1">
+                  {steps.map((_, idx) => (
+                    <div
+                      key={idx}
                         className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                          idx === activeStep
+                        idx === activeStep
                             ? "bg-[#fbbf24] scale-125 shadow-lg"
-                            : idx < activeStep
+                          : idx < activeStep
                             ? "bg-green-500"
-                            : "bg-gray-200"
-                        }`}
-                      />
-                    ))}
-                  </div>
+                          : "bg-gray-200"
+                      }`}
+                    />
+                  ))}
                 </div>
+              </div>
                 
                 {/* Progress Bar */}
                 <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
@@ -884,7 +927,7 @@ export default function Home() {
                     </div>
                     <div className="flex-1">
                       <div className="font-bold text-black text-lg group-hover:text-[#fbbf24] transition-colors duration-300">
-                        {step.label}
+                      {step.label}
                       </div>
                       <div className="text-sm text-gray-600 mt-1">
                         {step.duration} • {step.benefit}
@@ -900,8 +943,8 @@ export default function Home() {
 
             {/* Right: Enhanced Content Display */}
             <div className="flex-1 lg:w-3/5">
-              <div
-                key={activeStep}
+            <div
+              key={activeStep}
                 className={`relative bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden transition-all duration-500 ${
                   fade ? "opacity-0 scale-95" : "opacity-100 scale-100"
                 }`}
@@ -921,26 +964,136 @@ export default function Home() {
                 {/* Content Overlay - Positioned at bottom like footer */}
                 <div className="absolute bottom-0 left-0 right-0 p-6">
                   {/* Step Badge */}
-                  <div className="mb-4">
-                    <span
+                <div className="mb-4">
+                  <span
                       className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-black text-sm font-bold shadow-lg ${
-                        activeStep === 0
-                          ? "bg-[#fbbf24]"
-                          : activeStep === 1
-                          ? "bg-[#f59e0b]"
-                          : "bg-[#d97706]"
-                      }`}
-                    >
+                      activeStep === 0
+                        ? "bg-[#fbbf24]"
+                        : activeStep === 1
+                        ? "bg-[#f59e0b]"
+                        : "bg-[#d97706]"
+                    }`}
+                    style={{
+                      strokeDashoffset: barangaysAnimation.isVisible ? '0' : '400',
+                      transition: 'stroke-dashoffset 2s ease-out 1.2s'
+                    }} />
+                  <path d="M400,200 L350,100" stroke="url(#connectionGradient)" strokeWidth="2" strokeDasharray="3,3"
+                    className={`transition-all duration-2000 delay-1400 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    style={{
+                      strokeDashoffset: barangaysAnimation.isVisible ? '0' : '400',
+                      transition: 'stroke-dashoffset 2s ease-out 1.4s'
+                    }} />
+                  <path d="M400,200 L450,320" stroke="url(#connectionGradient)" strokeWidth="2" strokeDasharray="3,3"
+                    className={`transition-all duration-2000 delay-1600 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    style={{
+                      strokeDashoffset: barangaysAnimation.isVisible ? '0' : '400',
+                      transition: 'stroke-dashoffset 2s ease-out 1.6s'
+                    }} />
+                  
+                  {/* Regional connections - Staggered animation */}
+                  <path d="M200,120 L150,80 L100,100 L120,160 L180,180 L200,120" stroke="url(#activeConnectionGradient)" strokeWidth="1.5"
+                    className={`transition-all duration-3000 delay-1800 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`} />
+                  <path d="M600,160 L650,120 L700,140 L680,200 L620,220 L600,160" stroke="url(#activeConnectionGradient)" strokeWidth="1.5"
+                    className={`transition-all duration-3000 delay-2000 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`} />
+                  <path d="M350,100 L300,60 L400,50 L450,80 L350,100" stroke="url(#activeConnectionGradient)" strokeWidth="1.5"
+                    className={`transition-all duration-3000 delay-2200 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`} />
+                  <path d="M450,320 L400,360 L350,340 L380,300 L450,320" stroke="url(#activeConnectionGradient)" strokeWidth="1.5"
+                    className={`transition-all duration-3000 delay-2400 ${
+                      barangaysAnimation.isVisible ? 'opacity-100' : 'opacity-0'
+                    }`} />
+                </g>
+              </svg>
+
+              {/* Barangay Dots - Positioned based on Sulop's actual geography */}
+              {Array.from({ length: 25 }, (_, i) => {
+                // More realistic positioning based on Sulop's geographic layout
+                const positions = [
+                  // Western barangays (like Tanwalang, Lati-an, Panaglib areas)
+                  { x: 12, y: 30, delay: 0, cluster: 'west' }, 
+                  { x: 18, y: 25, delay: 0.1, cluster: 'west' }, 
+                  { x: 15, y: 40, delay: 0.2, cluster: 'west' },
+                  { x: 22, y: 35, delay: 0.3, cluster: 'west' }, 
+                  { x: 25, y: 45, delay: 0.4, cluster: 'west' },
+                  
+                  // Northern barangays (like Harada Butai, Tala-o areas)
+                  { x: 35, y: 15, delay: 0.5, cluster: 'north' }, 
+                  { x: 42, y: 12, delay: 0.6, cluster: 'north' }, 
+                  { x: 48, y: 18, delay: 0.7, cluster: 'north' },
+                  { x: 38, y: 22, delay: 0.8, cluster: 'north' }, 
+                  { x: 45, y: 25, delay: 0.9, cluster: 'north' },
+                  
+                  // Eastern barangays (like Balasinon, Bagumbayan areas)
+                  { x: 75, y: 30, delay: 1.0, cluster: 'east' }, 
+                  { x: 82, y: 35, delay: 1.1, cluster: 'east' }, 
+                  { x: 78, y: 45, delay: 1.2, cluster: 'east' },
+                  { x: 85, y: 40, delay: 1.3, cluster: 'east' }, 
+                  { x: 80, y: 55, delay: 1.4, cluster: 'east' },
+                  
+                  // Southern barangays (like New Baclayon, Waterfall areas)
+                  { x: 45, y: 80, delay: 1.5, cluster: 'south' }, 
+                  { x: 52, y: 85, delay: 1.6, cluster: 'south' }, 
+                  { x: 38, y: 85, delay: 1.7, cluster: 'south' },
+                  { x: 48, y: 75, delay: 1.8, cluster: 'south' }, 
+                  { x: 42, y: 90, delay: 1.9, cluster: 'south' },
+                  
+                  // Central/Urban barangays (moved away from Municipal Hall center)
+                  { x: 65, y: 42, delay: 2.0, cluster: 'center' }, 
+                  { x: 30, y: 48, delay: 2.1, cluster: 'center' }, 
+                  { x: 68, y: 62, delay: 2.2, cluster: 'center' },
+                  { x: 28, y: 62, delay: 2.3, cluster: 'center' }, 
+                  { x: 58, y: 35, delay: 2.4, cluster: 'center' }
+                ];
+                
+                const pos = positions[i];
+                const isHighlighted = i % 6 === 0; // Highlight every 6th dot for better distribution
+                
+                // Color coding based on geographic clusters
+                const getClusterColor = (cluster: string) => {
+                  switch(cluster) {
+                    case 'west': return 'bg-[#fbbf24]';
+                    case 'north': return 'bg-[#f59e0b]';
+                    case 'east': return 'bg-[#d97706]';
+                    case 'south': return 'bg-[#b45309]';
+                    case 'center': return 'bg-[#fbbf24]';
+                    default: return 'bg-gray-400';
+                  }
+                };
+
+                return (
+                  <div
+                    key={i}
+                    className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-800 hover:scale-150 cursor-pointer group ${
+                      isHighlighted ? 'animate-pulse' : ''
+                    } ${
+                      barangaysAnimation.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
+                    }`}
+                    style={{
+                      left: `${pos.x}%`,
+                      top: `${pos.y}%`,
+                      animationDelay: `${pos.delay}s`,
+                      transitionDelay: `${2.5 + pos.delay * 0.1}s` // Staggered entrance after connections
+                    }}
+                  >
                       <span className="flex items-center justify-center">{steps[activeStep].icon}</span>
                       Step {activeStep + 1}: {steps[activeStep].label}
-                    </span>
-                  </div>
+                  </span>
+                </div>
 
                   {/* Main Content */}
                   <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl border border-white/20">
                     <p className="text-base font-medium leading-relaxed text-gray-800 mb-3">
-                      {steps[activeStep].text}
-                    </p>
+                    {steps[activeStep].text}
+                  </p>
                     
                     {/* Step Metrics */}
                     <div className="flex items-center gap-4 text-sm">
@@ -1338,27 +1491,27 @@ export default function Home() {
             <div className="space-y-6">
               <div>
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="relative group">
-                    <Image
-                      src="/DILG.png"
-                      alt="DILG Logo"
-                      width={50}
-                      height={50}
+                <div className="relative group">
+                  <Image
+                    src="/DILG.png"
+                    alt="DILG Logo"
+                    width={50}
+                    height={50}
                       className="rounded-xl shadow-lg border border-gray-600/30 object-contain p-2 group-hover:shadow-xl transition-all duration-300 group-hover:scale-105 bg-white/10 backdrop-blur-sm"
-                    />
-                    <div className="absolute -inset-1 bg-gradient-to-r from-[#fbbf24]/20 to-[#f59e0b]/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                  <div className="relative group">
-                    <Image
-                      src="/Sulop_Municipal_Government.png"
-                      alt="Sulop Municipal Government Logo"
-                      width={50}
-                      height={50}
-                      className="rounded-xl shadow-lg border border-gray-600/30 object-contain p-2 group-hover:shadow-xl transition-all duration-300 group-hover:scale-105 bg-white/10 backdrop-blur-sm"
-                    />
-                    <div className="absolute -inset-1 bg-gradient-to-r from-[#fbbf24]/20 to-[#f59e0b]/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
+                  />
+                  <div className="absolute -inset-1 bg-gradient-to-r from-[#fbbf24]/20 to-[#f59e0b]/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
+                <div className="relative group">
+                  <Image
+                    src="/Sulop_Municipal_Government.png"
+                    alt="Sulop Municipal Government Logo"
+                    width={50}
+                    height={50}
+                      className="rounded-xl shadow-lg border border-gray-600/30 object-contain p-2 group-hover:shadow-xl transition-all duration-300 group-hover:scale-105 bg-white/10 backdrop-blur-sm"
+                  />
+                  <div className="absolute -inset-1 bg-gradient-to-r from-[#fbbf24]/20 to-[#f59e0b]/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+              </div>
                 <h3 className="text-xl font-bold text-white mb-3">
                   VANTAGE Platform
                 </h3>
@@ -1394,7 +1547,7 @@ export default function Home() {
                   <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-[#fbbf24]/20 transition-colors duration-300">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                  </svg>
                   </div>
                   <span className="font-medium">Platform Features</span>
                 </a>
@@ -1405,7 +1558,7 @@ export default function Home() {
                   <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-[#fbbf24]/20 transition-colors duration-300">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                  </svg>
                   </div>
                   <span className="font-medium">Assessment Process</span>
                 </a>
@@ -1427,7 +1580,7 @@ export default function Home() {
                   <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-[#fbbf24]/20 transition-colors duration-300">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                    </svg>
+                  </svg>
                   </div>
                   <span className="font-medium">Access Portal</span>
                 </Link>
@@ -1503,14 +1656,14 @@ export default function Home() {
                     <Twitter className="w-5 h-5" />
                   </a>
                 </div>
-              </div>
+                </div>
 
               {/* Status Indicators */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="text-gray-300">System Online</span>
-                </div>
+              </div>
                 <div className="flex items-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-[#fbbf24] rounded-full animate-pulse"></div>
                   <span className="text-gray-300">Live Application</span>
@@ -1531,13 +1684,13 @@ export default function Home() {
                 <div className="w-8 h-8 bg-[#fbbf24]/20 rounded-lg flex items-center justify-center">
                   <svg className="w-4 h-4 text-[#fbbf24]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
+                </svg>
+              </div>
                 <div>
                   <div className="font-medium text-white">© 2024 Municipality of Sulop</div>
                   <div className="text-xs">All Rights Reserved • Developed by VANTAGE Team</div>
-                </div>
               </div>
+            </div>
 
               {/* Right: Additional Info */}
               <div className="flex items-center gap-6 text-sm text-gray-400">

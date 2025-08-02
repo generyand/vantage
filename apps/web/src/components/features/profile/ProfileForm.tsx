@@ -127,14 +127,14 @@ export function ProfileForm({ user }: ProfileFormProps) {
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-stretch">
       {/* User Details Section - Enhanced */}
       <div className="xl:col-span-2">
-        <Card className="relative overflow-hidden bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-purple-50/40 border-0 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+        <Card className="relative overflow-hidden bg-[var(--card)] border border-[var(--border)] shadow-lg hover:shadow-xl transition-all duration-300 h-full">
           
           <CardHeader className="relative z-10 pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-sm"></div>
-              <CardTitle className="text-xl font-semibold text-gray-800">User Details</CardTitle>
+              <div className="w-1 h-6 bg-gradient-to-b from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] rounded-sm"></div>
+              <CardTitle className="text-xl font-semibold text-[var(--foreground)]">User Details</CardTitle>
             </div>
-            <CardDescription className="text-gray-600">
+            <CardDescription className="text-[var(--text-secondary)]">
               Your account information and assigned role details
             </CardDescription>
           </CardHeader>
@@ -143,24 +143,24 @@ export function ProfileForm({ user }: ProfileFormProps) {
             <div className="space-y-6 flex-1">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                  <div className="space-y-3">
-                   <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                     <User className="h-4 w-4 text-blue-600" />
+                   <label className="text-sm font-semibold text-[var(--foreground)] flex items-center gap-2">
+                     <User className="h-4 w-4 text-[var(--cityscape-yellow)]" />
                      Full Name
                    </label>
-                   <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
-                     <div className="text-base font-medium text-gray-600">
+                   <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
+                     <div className="text-base font-medium text-[var(--text-secondary)]">
                        {user?.name || 'N/A'}
                      </div>
                    </div>
                  </div>
                  
                  <div className="space-y-3">
-                   <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                     <Mail className="h-4 w-4 text-green-600" />
+                   <label className="text-sm font-semibold text-[var(--foreground)] flex items-center gap-2">
+                     <Mail className="h-4 w-4 text-[var(--cityscape-yellow)]" />
                      Email Address (Login ID)
                    </label>
-                   <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
-                     <div className="text-base font-medium text-gray-600">
+                   <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
+                     <div className="text-base font-medium text-[var(--text-secondary)]">
                        {user?.email || 'N/A'}
                      </div>
                    </div>
@@ -168,12 +168,12 @@ export function ProfileForm({ user }: ProfileFormProps) {
                  
                  {user?.role !== 'SUPERADMIN' && (
                    <div className="space-y-3">
-                     <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                       <MapPin className="h-4 w-4 text-purple-600" />
+                     <label className="text-sm font-semibold text-[var(--foreground)] flex items-center gap-2">
+                       <MapPin className="h-4 w-4 text-[var(--cityscape-yellow)]" />
                        Assigned Barangay
                      </label>
-                     <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
-                       <div className="text-base font-medium text-gray-600">
+                     <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
+                       <div className="text-base font-medium text-[var(--text-secondary)]">
                          {barangayLoading ? 'Loading...' : barangayName || 'N/A'}
                        </div>
                      </div>
@@ -181,24 +181,24 @@ export function ProfileForm({ user }: ProfileFormProps) {
                  )}
                  
                  <div className="space-y-3">
-                   <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                     <Phone className="h-4 w-4 text-orange-600" />
+                   <label className="text-sm font-semibold text-[var(--foreground)] flex items-center gap-2">
+                     <Phone className="h-4 w-4 text-[var(--cityscape-yellow)]" />
                      Mobile Number
                    </label>
-                   <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
-                     <div className="text-base font-medium text-gray-600">
+                   <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
+                     <div className="text-base font-medium text-[var(--text-secondary)]">
                        {user?.phone_number || 'N/A'}
                      </div>
                    </div>
                  </div>
                  
                  <div className="space-y-3">
-                   <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                     <Shield className="h-4 w-4 text-amber-600" />
+                   <label className="text-sm font-semibold text-[var(--foreground)] flex items-center gap-2">
+                     <Shield className="h-4 w-4 text-[var(--cityscape-yellow)]" />
                      Role
                    </label>
-                   <div className="bg-gray-100/80 backdrop-blur-sm rounded-sm p-4 border border-gray-200/50">
-                     <div className="text-base font-medium text-gray-600">
+                   <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
+                     <div className="text-base font-medium text-[var(--text-secondary)]">
                        {user?.role ? user.role.replace(/_/g, ' ') : 'N/A'}
                      </div>
                    </div>
@@ -206,9 +206,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
               </div>
             </div>
             
-            <Alert className="bg-amber-50/80 border-amber-200/60 backdrop-blur-sm mt-6">
-              <Info className="h-4 w-4 text-amber-600" />
-              <AlertDescription className="text-sm text-amber-800">
+            <Alert className="bg-[var(--cityscape-yellow)]/10 border-[var(--cityscape-yellow)]/20 backdrop-blur-sm mt-6">
+              <Info className="h-4 w-4 text-[var(--cityscape-yellow)]" />
+              <AlertDescription className="text-sm text-[var(--foreground)]">
                 Your user details are managed by the administrator. To request a change, please contact your MLGOO-DILG.
               </AlertDescription>
             </Alert>
@@ -218,14 +218,14 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
       {/* Password Change Section - Enhanced */}
       <div className="space-y-6">
-                 <Card className="relative overflow-hidden bg-gradient-to-br from-green-50/80 via-emerald-50/60 to-teal-50/40 border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                 <Card className="relative overflow-hidden bg-[var(--card)] border border-[var(--border)] shadow-lg hover:shadow-xl transition-all duration-300">
           
           <CardHeader className="relative z-10 pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-1 h-6 bg-gradient-to-b from-green-500 to-emerald-600 rounded-sm"></div>
-              <CardTitle className="text-lg font-semibold text-gray-800">Change Password</CardTitle>
+              <div className="w-1 h-6 bg-gradient-to-b from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] rounded-sm"></div>
+              <CardTitle className="text-lg font-semibold text-[var(--foreground)]">Change Password</CardTitle>
             </div>
-            <CardDescription className="text-gray-600">
+            <CardDescription className="text-[var(--text-secondary)]">
               Update your password to keep your account secure
             </CardDescription>
           </CardHeader>
@@ -238,16 +238,16 @@ export function ProfileForm({ user }: ProfileFormProps) {
                   name="currentPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sm font-semibold text-gray-700">Current Password</FormLabel>
+                      <FormLabel className="text-sm font-semibold text-[var(--foreground)]">Current Password</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
                             type="password"
                             placeholder="Enter your current password"
-                            className="bg-white/70 backdrop-blur-sm border-white/50 rounded-sm"
+                            className="bg-[var(--card)] backdrop-blur-sm border-[var(--border)] rounded-sm"
                             {...field}
                           />
-                          <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                          <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--text-secondary)]" />
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -260,38 +260,38 @@ export function ProfileForm({ user }: ProfileFormProps) {
                   name="newPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sm font-semibold text-gray-700">New Password</FormLabel>
+                      <FormLabel className="text-sm font-semibold text-[var(--foreground)]">New Password</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
                             type="password"
                             placeholder="Enter your new password"
-                            className="bg-white/70 backdrop-blur-sm border-white/50 rounded-sm"
+                            className="bg-[var(--card)] backdrop-blur-sm border-[var(--border)] rounded-sm"
                             {...field}
                           />
-                          <Key className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                          <Key className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--text-secondary)]" />
                         </div>
                       </FormControl>
                       <FormMessage />
                       
                       {/* Enhanced Password Requirements */}
                       {newPassword && (
-                        <div className="mt-3 bg-white/60 backdrop-blur-sm rounded-sm p-3 border border-white/50">
-                          <p className="text-xs font-semibold text-gray-700 mb-2">Password Requirements:</p>
+                        <div className="mt-3 bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3 border border-[var(--border)]">
+                          <p className="text-xs font-semibold text-[var(--foreground)] mb-2">Password Requirements:</p>
                           <div className="space-y-2">
-                            <div className={`flex items-center gap-2 text-xs ${passwordRequirements.length ? 'text-green-700' : 'text-red-600'}`}>
+                            <div className={`flex items-center gap-2 text-xs ${passwordRequirements.length ? 'text-green-600' : 'text-red-500'}`}>
                               <div className={`w-4 h-4 rounded-full flex items-center justify-center text-white text-xs ${passwordRequirements.length ? 'bg-green-500' : 'bg-red-500'}`}>
                                 {passwordRequirements.length ? '✓' : '✗'}
                               </div>
                               <span>At least 8 characters</span>
                             </div>
-                            <div className={`flex items-center gap-2 text-xs ${passwordRequirements.number ? 'text-green-700' : 'text-red-600'}`}>
+                            <div className={`flex items-center gap-2 text-xs ${passwordRequirements.number ? 'text-green-600' : 'text-red-500'}`}>
                               <div className={`w-4 h-4 rounded-full flex items-center justify-center text-white text-xs ${passwordRequirements.number ? 'bg-green-500' : 'bg-red-500'}`}>
                                 {passwordRequirements.number ? '✓' : '✗'}
                               </div>
                               <span>At least one number (0-9)</span>
                             </div>
-                            <div className={`flex items-center gap-2 text-xs ${passwordRequirements.special ? 'text-green-700' : 'text-red-600'}`}>
+                            <div className={`flex items-center gap-2 text-xs ${passwordRequirements.special ? 'text-green-600' : 'text-red-500'}`}>
                               <div className={`w-4 h-4 rounded-full flex items-center justify-center text-white text-xs ${passwordRequirements.special ? 'bg-green-500' : 'bg-red-500'}`}>
                                 {passwordRequirements.special ? '✓' : '✗'}
                               </div>
@@ -309,16 +309,16 @@ export function ProfileForm({ user }: ProfileFormProps) {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sm font-semibold text-gray-700">Confirm New Password</FormLabel>
+                      <FormLabel className="text-sm font-semibold text-[var(--foreground)]">Confirm New Password</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
                             type="password"
                             placeholder="Confirm your new password"
-                            className="bg-white/70 backdrop-blur-sm border-white/50 rounded-sm"
+                            className="bg-[var(--card)] backdrop-blur-sm border-[var(--border)] rounded-sm"
                             {...field}
                           />
-                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                          <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--text-secondary)]" />
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -330,7 +330,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                   <Button
                     type="submit"
                     disabled={!allRequirementsMet || changePasswordMutation.isPending}
-                    className="w-full h-12 text-sm font-semibold bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-sm shadow-lg hover:shadow-xl transition-all duration-200"
+                    className="w-full h-12 text-sm font-semibold bg-gradient-to-r from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] hover:from-[var(--cityscape-yellow-dark)] hover:to-[var(--cityscape-yellow)] text-[var(--cityscape-accent-foreground)] rounded-sm shadow-lg hover:shadow-xl transition-all duration-200"
                   >
                     {changePasswordMutation.isPending ? (
                       <>
@@ -355,17 +355,17 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
       {/* Enhanced Logout Dialog */}
       <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
-        <AlertDialogContent className="bg-gradient-to-br from-white to-blue-50/30 border-0 shadow-2xl">
+        <AlertDialogContent className="bg-[var(--card)] border border-[var(--border)] shadow-2xl">
           <AlertDialogHeader>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                <CheckCircle className="h-6 w-6 text-green-600" />
+              <div className="w-12 h-12 bg-[var(--cityscape-yellow)]/20 rounded-full flex items-center justify-center">
+                <CheckCircle className="h-6 w-6 text-[var(--cityscape-yellow)]" />
               </div>
               <div>
-                <AlertDialogTitle className="text-xl font-semibold text-gray-900">Password Updated Successfully</AlertDialogTitle>
+                <AlertDialogTitle className="text-xl font-semibold text-[var(--foreground)]">Password Updated Successfully</AlertDialogTitle>
               </div>
             </div>
-            <AlertDialogDescription className="text-gray-600 leading-relaxed">
+            <AlertDialogDescription className="text-[var(--text-secondary)] leading-relaxed">
               For security reasons, you will be logged out and redirected to the login page. 
               Please log in again with your new password.
             </AlertDialogDescription>
@@ -374,7 +374,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
             <AlertDialogCancel className="rounded-sm">Cancel</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleLogout}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-sm"
+              className="bg-gradient-to-r from-[var(--cityscape-yellow)] to-[var(--cityscape-yellow-dark)] hover:from-[var(--cityscape-yellow-dark)] hover:to-[var(--cityscape-yellow)] text-[var(--cityscape-accent-foreground)] rounded-sm"
             >
               Continue to Login
             </AlertDialogAction>

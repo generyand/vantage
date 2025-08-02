@@ -95,28 +95,28 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
   return (
     <div className="space-y-6">
       {/* Indicator Description */}
-      <div className="bg-gray-50 rounded-lg p-4">
-        <h3 className="font-semibold text-gray-900 mb-2">Indicator Description</h3>
-        <p className="text-gray-700">{indicator.description}</p>
+      <div className="bg-[var(--card)] border border-[var(--border)] rounded-sm p-4 mt-5">
+        <h3 className="font-semibold text-[var(--foreground)] mb-2">Indicator Description</h3>
+        <p className="text-[var(--text-secondary)]">{indicator.description}</p>
       </div>
 
       {/* Technical Notes */}
-      <div className="bg-blue-50 rounded-lg p-4">
-        <h3 className="font-semibold text-gray-900 mb-2">Technical Notes</h3>
-        <p className="text-gray-700 text-sm">{indicator.technicalNotes}</p>
+      <div className="bg-[var(--cityscape-yellow)]/10 border border-[var(--cityscape-yellow)]/20 rounded-sm p-4">
+        <h3 className="font-semibold text-[var(--foreground)] mb-2">Technical Notes</h3>
+        <p className="text-[var(--text-secondary)] text-sm">{indicator.technicalNotes}</p>
       </div>
 
       {/* Assessor's Remarks (Conditional) */}
       {indicator.assessorComment && (
-        <Card className="border-orange-200 bg-orange-50">
+        <Card className="border-[var(--cityscape-yellow)]/30 bg-[var(--cityscape-yellow)]/10 rounded-sm">
           <CardContent className="p-4">
             <div className="flex items-start space-x-3">
-              <AlertTriangle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+              <AlertTriangle className="h-5 w-5 text-[var(--cityscape-yellow)] mt-0.5 flex-shrink-0" />
               <div className="flex-1">
-                <h3 className="font-semibold text-orange-900 mb-2">
+                <h3 className="font-semibold text-[var(--foreground)] mb-2">
                   Assessor&apos;s Comment for Rework
                 </h3>
-                <p className="text-orange-800">{indicator.assessorComment}</p>
+                <p className="text-[var(--text-secondary)]">{indicator.assessorComment}</p>
               </div>
             </div>
           </CardContent>
@@ -125,7 +125,7 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
 
       {/* Compliance Input */}
       <div className="space-y-4">
-        <h3 className="font-semibold text-gray-900">Compliance Assessment</h3>
+        <h3 className="font-semibold text-[var(--foreground)]">Compliance Assessment</h3>
         <RadioGroup
           value={indicator.complianceAnswer || ""}
           onValueChange={handleAnswerChange}
@@ -134,19 +134,19 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="yes" id={`${indicator.id}-yes`} />
-            <Label htmlFor={`${indicator.id}-yes`} className="text-sm font-medium">
+            <Label htmlFor={`${indicator.id}-yes`} className="text-sm font-medium text-[var(--foreground)]">
               Yes - We comply with this requirement
             </Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="no" id={`${indicator.id}-no`} />
-            <Label htmlFor={`${indicator.id}-no`} className="text-sm font-medium">
+            <Label htmlFor={`${indicator.id}-no`} className="text-sm font-medium text-[var(--foreground)]">
               No - We do not comply with this requirement
             </Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="na" id={`${indicator.id}-na`} />
-            <Label htmlFor={`${indicator.id}-na`} className="text-sm font-medium">
+            <Label htmlFor={`${indicator.id}-na`} className="text-sm font-medium text-[var(--foreground)]">
               N/A - This requirement is not applicable to our barangay
             </Label>
           </div>
@@ -156,8 +156,8 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
       {/* MOV Uploader (Conditional) */}
       {indicator.complianceAnswer === 'yes' && (
         <div className="space-y-4">
-          <h3 className="font-semibold text-gray-900">Means of Verification (MOV)</h3>
-          <p className="text-sm text-gray-600">
+          <h3 className="font-semibold text-[var(--foreground)]">Means of Verification (MOV)</h3>
+          <p className="text-sm text-[var(--text-secondary)]">
             Please upload supporting documents to verify your compliance. 
             Accepted formats: PDF, DOC, DOCX, JPG, PNG (Max 10MB per file)
           </p>
@@ -165,10 +165,10 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
           {/* File Upload Area */}
           <div
             className={cn(
-              "border-2 border-dashed rounded-lg p-6 text-center transition-colors",
+              "border-2 border-dashed rounded-sm p-6 text-center transition-colors",
               dragActive 
-                ? "border-primary bg-primary/5" 
-                : "border-gray-300 hover:border-gray-400",
+                ? "border-[var(--cityscape-yellow)] bg-[var(--cityscape-yellow)]/5" 
+                : "border-[var(--border)] hover:border-[var(--cityscape-yellow)]/60",
               isLocked && "opacity-50 cursor-not-allowed"
             )}
             onDragEnter={handleDrag}
@@ -186,27 +186,27 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
               disabled={isLocked}
             />
             
-            <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-            <p className="text-sm text-gray-600 mb-2">
+            <Upload className="h-8 w-8 text-[var(--text-secondary)] mx-auto mb-2" />
+            <p className="text-sm text-[var(--text-secondary)] mb-2">
               Drag and drop files here, or{' '}
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLocked}
-                className="text-primary hover:text-primary/80 underline disabled:opacity-50"
+                className="text-[var(--cityscape-yellow)] hover:text-[var(--cityscape-yellow-dark)] underline disabled:opacity-50"
               >
                 click to browse
               </button>
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-[var(--text-secondary)]">
               Maximum file size: 10MB
             </p>
           </div>
 
           {/* Upload Progress */}
           {uploadMOVMutation.isPending && (
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+            <div className="flex items-center space-x-2 text-sm text-[var(--text-secondary)]">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[var(--cityscape-yellow)]"></div>
               <span>Uploading file...</span>
             </div>
           )}
@@ -214,20 +214,20 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
           {/* Uploaded Files List */}
           {indicator.movFiles.length > 0 && (
             <div className="space-y-2">
-              <h4 className="font-medium text-gray-900">Uploaded Files</h4>
+              <h4 className="font-medium text-[var(--foreground)]">Uploaded Files</h4>
               <div className="space-y-2">
                 {indicator.movFiles.map((file) => (
                   <div
                     key={file.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border"
+                    className="flex items-center justify-between p-3 bg-[var(--hover)] border border-[var(--border)] rounded-sm"
                   >
                     <div className="flex items-center space-x-3">
-                      <FileText className="h-5 w-5 text-gray-400" />
+                      <FileText className="h-5 w-5 text-[var(--text-secondary)]" />
                       <div>
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-[var(--foreground)]">
                           {file.filename}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-[var(--text-secondary)]">
                           {formatFileSize(file.size)} • Uploaded {formatDate(file.uploadedAt)}
                         </p>
                       </div>
@@ -238,6 +238,7 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
                         size="sm"
                         onClick={() => window.open(file.url, '_blank')}
                         disabled={isLocked}
+                        className="border-[var(--border)] hover:bg-[var(--hover)]"
                       >
                         View
                       </Button>
@@ -246,7 +247,7 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
                         size="sm"
                         onClick={() => handleDeleteFile(file.id)}
                         disabled={isLocked || deleteMOVMutation.isPending}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 border-[var(--border)]"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -261,15 +262,15 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
 
       {/* Status Messages */}
       {updateAnswerMutation.isPending && (
-        <div className="flex items-center space-x-2 text-sm text-gray-600">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+        <div className="flex items-center space-x-2 text-sm text-[var(--text-secondary)]">
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[var(--cityscape-yellow)]"></div>
           <span>Saving changes...</span>
         </div>
       )}
 
       {deleteMOVMutation.isPending && (
-        <div className="flex items-center space-x-2 text-sm text-gray-600">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+        <div className="flex items-center space-x-2 text-sm text-[var(--text-secondary)]">
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[var(--cityscape-yellow)]"></div>
           <span>Deleting file...</span>
         </div>
       )}

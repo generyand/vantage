@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { UserManagementSkeleton } from "./UserManagementSkeleton";
 
 export default function UserListSection() {
   const [isFormOpen, setIsFormOpen] = React.useState(false);
@@ -77,13 +78,13 @@ export default function UserListSection() {
   };
 
   if (isLoading) {
-    return <div>Loading users...</div>;
+    return <UserManagementSkeleton />;
   }
   if (error) {
     return <div className="text-red-500">Error loading users.</div>;
   }
   if (!data || !data.users) {
-    return <div>No users found.</div>;
+    return <div className="text-[var(--muted-foreground)]">No users found.</div>;
   }
 
   return (
@@ -92,50 +93,50 @@ export default function UserListSection() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* User Statistics Cards */}
         <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-purple-50/40 border-0 shadow-lg rounded-sm p-6 hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-[var(--card)] border border-[var(--border)] shadow-lg rounded-sm p-6 hover:shadow-xl transition-shadow duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-gray-700">
+                <p className="text-sm font-semibold text-[var(--muted-foreground)]">
                   Total Users
                 </p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-[var(--foreground)]">
                   {data.users.length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-sm flex items-center justify-center">
-                <Users className="h-6 w-6 text-blue-600" />
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-sm flex items-center justify-center">
+                <Users className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-green-50/80 via-emerald-50/60 to-teal-50/40 border-0 shadow-lg rounded-sm p-6 hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-[var(--card)] border border-[var(--border)] shadow-lg rounded-sm p-6 hover:shadow-xl transition-shadow duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-gray-700">
+                <p className="text-sm font-semibold text-[var(--muted-foreground)]">
                   Active Users
                 </p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-[var(--foreground)]">
                   {data.users.filter((u) => u.is_active).length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-sm flex items-center justify-center">
-                <UserCheck className="h-6 w-6 text-green-600" />
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-sm flex items-center justify-center">
+                <UserCheck className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-50/80 via-violet-50/60 to-indigo-50/40 border-0 shadow-lg rounded-sm p-6 hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-[var(--card)] border border-[var(--border)] shadow-lg rounded-sm p-6 hover:shadow-xl transition-shadow duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-gray-700">
+                <p className="text-sm font-semibold text-[var(--muted-foreground)]">
                   BLGU Users
                 </p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-[var(--foreground)]">
                   {data.users.filter((u) => u.role === "BLGU_USER").length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-sm flex items-center justify-center">
-                <Building className="h-6 w-6 text-purple-600" />
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-sm flex items-center justify-center">
+                <Building className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
             </div>
           </div>
@@ -154,17 +155,17 @@ export default function UserListSection() {
       </div>
 
       {/* Enhanced User Table with Search and Pagination */}
-      <div className="bg-gradient-to-br from-white to-gray-50/50 rounded-sm shadow-lg border-0 overflow-hidden">
-        <div className="p-6 border-b border-gray-200/60">
+      <div className="bg-[var(--card)] border border-[var(--border)] rounded-sm shadow-lg overflow-hidden">
+        <div className="p-6 border-b border-[var(--border)]">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
               <div className="flex items-center gap-3">
                 <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-sm"></div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-[var(--foreground)]">
                   User Accounts
                 </h2>
               </div>
-              <p className="text-gray-600 mt-1">
+              <p className="text-[var(--muted-foreground)] mt-1">
                 Manage user accounts, roles, and permissions
               </p>
             </div>
@@ -172,21 +173,21 @@ export default function UserListSection() {
             {/* Search Bar */}
             <div className="relative w-full lg:w-80">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+                <Search className="h-5 w-5 text-[var(--muted-foreground)]" />
               </div>
               <Input
                 type="text"
                 placeholder="Search users by name, email, or role..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full bg-white/80 backdrop-blur-sm border-gray-300 rounded-sm focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200"
+                className="pl-10 pr-4 py-2 w-full bg-[var(--background)] border-[var(--border)] rounded-sm focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200"
               />
             </div>
           </div>
 
           {/* Search Results Info */}
           {searchQuery && (
-            <div className="mt-4 flex items-center gap-2 text-sm text-gray-600">
+            <div className="mt-4 flex items-center gap-2 text-sm text-[var(--muted-foreground)]">
               <span>
                 Showing {filteredAndPaginatedUsers.totalUsers} result
                 {filteredAndPaginatedUsers.totalUsers !== 1 ? "s" : ""}
@@ -197,7 +198,7 @@ export default function UserListSection() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setSearchQuery("")}
-                  className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                  className="h-6 px-2 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                 >
                   Clear search
                 </Button>
@@ -215,7 +216,7 @@ export default function UserListSection() {
           {/* Pagination Controls */}
           {filteredAndPaginatedUsers.totalPages > 1 && (
             <div className="mt-8 flex items-center justify-between">
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-[var(--muted-foreground)]">
                 Showing {(currentPage - 1) * usersPerPage + 1} to{" "}
                 {Math.min(
                   currentPage * usersPerPage,
@@ -232,7 +233,7 @@ export default function UserListSection() {
                     setCurrentPage((prev) => Math.max(prev - 1, 1))
                   }
                   disabled={currentPage === 1}
-                  className="flex items-center gap-2 bg-white/80 hover:bg-gray-50 border-gray-300 rounded-sm"
+                  className="flex items-center gap-2 bg-[var(--background)] hover:bg-[var(--hover)] border-[var(--border)] rounded-sm"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Previous
@@ -283,7 +284,7 @@ export default function UserListSection() {
                         className={`w-10 h-10 rounded-sm ${
                           currentPage === pageNum
                             ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
-                            : "bg-white/80 hover:bg-gray-50 border-gray-300"
+                            : "bg-[var(--background)] hover:bg-[var(--hover)] border-[var(--border)]"
                         }`}
                       >
                         {pageNum}
@@ -303,7 +304,7 @@ export default function UserListSection() {
                   disabled={
                     currentPage === filteredAndPaginatedUsers.totalPages
                   }
-                  className="flex items-center gap-2 bg-white/80 hover:bg-gray-50 border-gray-300 rounded-sm"
+                  className="flex items-center gap-2 bg-[var(--background)] hover:bg-[var(--hover)] border-[var(--border)] rounded-sm"
                 >
                   Next
                   <ChevronRight className="h-4 w-4" />
@@ -315,20 +316,21 @@ export default function UserListSection() {
           {/* No Results Message */}
           {filteredAndPaginatedUsers.users.length === 0 && searchQuery && (
             <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 rounded-sm flex items-center justify-center mx-auto mb-4">
-                <Search className="h-8 w-8 text-gray-400" />
+              <div className="w-16 h-16 bg-[var(--hover)] rounded-sm flex items-center justify-center mx-auto mb-4">
+                <Search className="h-8 w-8 text-[var(--muted-foreground)]" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-[var(--foreground)] mb-2">
                 No users found
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-[var(--muted-foreground)] mb-4">
                 No users match your search for &quot;{searchQuery}&quot;. Try
                 adjusting your search terms.
               </p>
               <Button
                 variant="outline"
                 onClick={() => setSearchQuery("")}
-                className="bg-white/80 hover:bg-gray-50 border-gray-300 rounded-sm"
+                className="bg-[var(--background)] hover:bg-[var(--hover)] border-[var(--border)] rounded-sm"
+
               >
                 Clear search
               </Button>
