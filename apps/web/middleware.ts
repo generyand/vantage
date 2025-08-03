@@ -14,10 +14,10 @@ export function middleware(request: NextRequest) {
   // Get the pathname from the request
   const { pathname } = request.nextUrl;
   
-  // Define protected routes (all routes that start with /admin, /blgu, /assessor, etc.)
+  // Define protected routes (all routes that start with /mlgoo, /blgu, /assessor, etc.)
   // These correspond to the (app) route group
   const protectedRoutes = [
-    '/admin',
+    '/mlgoo',
     '/blgu',
     '/assessor',
     '/user-management',
@@ -56,7 +56,7 @@ export function middleware(request: NextRequest) {
       // Redirect based on user role
       let dashboardUrl;
       if (userRole === 'SUPERADMIN' || userRole === 'MLGOO_DILG') {
-        dashboardUrl = new URL('/admin/dashboard', request.url);
+        dashboardUrl = new URL('/mlgoo/dashboard', request.url);
       } else if (userRole === 'AREA_ASSESSOR') {
         dashboardUrl = new URL('/assessor/submissions', request.url);
       } else {
@@ -86,7 +86,7 @@ export function middleware(request: NextRequest) {
       const userRole = payload.role;
       
       // Check if user is trying to access admin routes
-      const isAdminRoute = pathname.startsWith('/admin');
+      const isAdminRoute = pathname.startsWith('/mlgoo');
       const isUserManagementRoute = pathname.startsWith('/user-management');
       const isAssessorRoute = pathname.startsWith('/assessor');
       const isBLGURoute = pathname.startsWith('/blgu');
@@ -111,7 +111,7 @@ export function middleware(request: NextRequest) {
         console.log(`Middleware: Redirecting non-assessor user (${userRole}) from ${pathname} to appropriate dashboard`);
         let dashboardUrl;
         if (userRole === 'SUPERADMIN' || userRole === 'MLGOO_DILG') {
-          dashboardUrl = new URL('/admin/dashboard', request.url);
+          dashboardUrl = new URL('/mlgoo/dashboard', request.url);
         } else {
           dashboardUrl = new URL('/blgu/dashboard', request.url);
         }

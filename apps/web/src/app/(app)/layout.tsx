@@ -7,15 +7,16 @@ import { useState, useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 import UserNav from "@/components/shared/UserNav";
 import { X, Bell } from "lucide-react";
+import { useAssessorGovernanceArea } from "@/hooks/useAssessorGovernanceArea";
 
 // Navigation items for different user roles
-const adminNavigation = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: "home" },
-  { name: "Submission Queue", href: "/admin/submissions", icon: "clipboard" },
-  { name: "Analytics & Reports", href: "/admin/reports", icon: "chart" },
+const mlgooNavigation = [
+  { name: "Dashboard", href: "/mlgoo/dashboard", icon: "home" },
+  { name: "Submission Queue", href: "/mlgoo/submissions", icon: "clipboard" },
+  { name: "Analytics & Reports", href: "/mlgoo/reports", icon: "chart" },
   { name: "User Management", href: "/user-management", icon: "users" },
-  { name: "System Settings", href: "/admin/settings", icon: "settings" },
-  { name: "Profile", href: "/admin/profile", icon: "user" },
+  { name: "System Settings", href: "/mlgoo/settings", icon: "settings" },
+  { name: "Profile", href: "/mlgoo/profile", icon: "user" },
 ];
 
 const blguNavigation = [
@@ -146,11 +147,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [isUserDataLoaded, setIsUserDataLoaded] = useState(false);
+  
+  // Get assessor's governance area
+  const { governanceAreaName } = useAssessorGovernanceArea();
 
   // Determine navigation based on user role - only when user data is loaded
   const isAdmin = user?.role === "SUPERADMIN" || user?.role === "MLGOO_DILG";
   const isAssessor = user?.role === "AREA_ASSESSOR";
-  const navigation = user ? (isAdmin ? adminNavigation : isAssessor ? assessorNavigation : blguNavigation) : blguNavigation;
+  const navigation = user ? (isAdmin ? mlgooNavigation : isAssessor ? assessorNavigation : blguNavigation) : blguNavigation;
 
   // Track when user data is loaded
   useEffect(() => {
@@ -221,14 +225,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       // If user is on root path, redirect to appropriate dashboard
       if (currentPath === "/") {
-        const dashboardPath = isAdmin ? "/admin/dashboard" : isAssessor ? "/assessor/submissions" : "/blgu/dashboard";
+        const dashboardPath = isAdmin ? "/mlgoo/dashboard" : isAssessor ? "/assessor/submissions" : "/blgu/dashboard";
         console.log('Redirecting from root to:', dashboardPath);
         router.replace(dashboardPath);
         return;
       }
 
       // Check if user is accessing wrong role routes
-      const isAdminRoute = currentPath.startsWith("/admin");
+      const isAdminRoute = currentPath.startsWith("/mlgoo");
       const isBLGURoute = currentPath.startsWith("/blgu");
       const isAssessorRoute = currentPath.startsWith("/assessor");
       const isUserManagementRoute = currentPath.startsWith("/user-management");
@@ -243,8 +247,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       if (isAdmin) {
         // Admin users should not access BLGU or assessor routes
         if (isBLGURoute || isAssessorRoute) {
-          console.log('Admin accessing wrong route, redirecting to /admin/dashboard');
-          router.replace("/admin/dashboard");
+          console.log('Admin accessing wrong route, redirecting to /mlgoo/dashboard');
+          router.replace("/mlgoo/dashboard");
         }
       } else if (isAssessor) {
         // Assessor users should not access admin, BLGU routes or user management
@@ -265,10 +269,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   // Show loading if not authenticated
   if (!isAuthenticated) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-[var(--background)]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Redirecting to login...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--cityscape-yellow)] mx-auto mb-4"></div>
+          <p className="text-[var(--text-secondary)]">Redirecting to login...</p>
         </div>
       </div>
     );
@@ -277,10 +281,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   // If user must change password and is not on the change-password page, show loading
   if (mustChangePassword && pathname !== "/change-password") {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-[var(--background)]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Redirecting to password change...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--cityscape-yellow)] mx-auto mb-4"></div>
+          <p className="text-[var(--text-secondary)]">Redirecting to password change...</p>
         </div>
       </div>
     );
@@ -289,7 +293,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   // If user must change password, show only the change password page without navigation
   if (mustChangePassword && pathname === "/change-password") {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[var(--background)] transition-colors duration-300">
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -446,22 +450,22 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   <h2 className="text-2xl font-bold leading-7 text-[var(--foreground)] sm:truncate">
                     {isAdmin
                       ? // Admin-specific titles
-                        pathname === "/admin/reports"
+                        pathname === "/mlgoo/reports"
                         ? "Analytics & Reports"
-                        : pathname === "/admin/submissions"
+                        : pathname === "/mlgoo/submissions"
                         ? "Submission Queue"
-                        : pathname === "/admin/settings"
+                        : pathname === "/mlgoo/settings"
                         ? "System Settings"
-                        : pathname === "/admin/profile"
+                        : pathname === "/mlgoo/profile"
                         ? "Profile"
                         : navigation.find((item) => pathname === item.href)
                             ?.name || "Dashboard"
                       : isAssessor
                       ? // Assessor-specific titles
                         pathname === "/assessor/submissions"
-                        ? "Submissions Queue"
+                        ? "Submissions Dashboard"
                         : pathname === "/assessor/analytics"
-                        ? "Analytics"
+                        ? `Analytics: ${governanceAreaName || 'Loading...'}`
                         : pathname === "/assessor/profile"
                         ? "Profile"
                         : navigation.find((item) => pathname === item.href)
@@ -490,26 +494,26 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   {isAssessor && pathname.startsWith("/assessor") && (
                     <p className="mt-1 text-sm text-[var(--text-secondary)]">
                       {pathname === "/assessor/submissions" &&
-                        "Review and assess submitted barangay assessments"}
+                        `Governance Area: ${governanceAreaName || 'Loading...'}`}
                       {pathname === "/assessor/analytics" &&
-                        "View analytics and performance metrics for assessments"}
+                        "Performance trends for all 25 barangays in your assigned area"}
                       {pathname === "/assessor/profile" &&
                         "Manage your account settings and profile information"}
                     </p>
                   )}
                   {isAdmin && (
                     <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                      {pathname === "/admin/dashboard" &&
+                      {pathname === "/mlgoo/dashboard" &&
                         "Welcome to your Vantage dashboard"}
-                      {pathname === "/admin/submissions" &&
+                      {pathname === "/mlgoo/submissions" &&
                         "Review and manage submitted assessments from barangays"}
-                      {pathname === "/admin/reports" &&
+                      {pathname === "/mlgoo/reports" &&
                         "View analytics and generate reports on assessment data"}
                       {pathname === "/user-management" &&
                         "Manage user accounts and permissions"}
-                      {pathname === "/admin/settings" &&
+                      {pathname === "/mlgoo/settings" &&
                         "Configure system settings and preferences"}
-                      {pathname === "/admin/profile" &&
+                      {pathname === "/mlgoo/profile" &&
                         "Manage your account settings and profile information"}
                     </p>
                   )}

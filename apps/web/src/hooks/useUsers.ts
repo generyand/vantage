@@ -8,5 +8,12 @@ import { useGetUsers } from '@vantage/shared/src/generated/endpoints/users';
  * @param options - Optional react-query options
  */
 export function useUsers(params?: Parameters<typeof useGetUsers>[0], options?: Parameters<typeof useGetUsers>[1]) {
-  return useGetUsers(params, options);
+  const result = useGetUsers(params, options);
+  
+  // Add debugging
+  if (result.error) {
+    console.error('useUsers hook error:', result.error);
+  }
+  
+  return result;
 } 

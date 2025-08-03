@@ -16,6 +16,18 @@ export default function UserNav() {
   // Get user data and logout function from auth store
   const { user, logout } = useAuthStore();
 
+  // Function to humanize role text
+  const humanizeRole = (role: string) => {
+    const roleMap: Record<string, string> = {
+      'SUPERADMIN': 'Super Administrator',
+      'MLGOO_DILG': 'MLGOO DILG',
+      'AREA_ASSESSOR': 'Area Assessor',
+      'BLGU': 'Barangay Official'
+    };
+    
+    return roleMap[role] || role.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
+
   // Debug: Log the user data
   console.log("UserNav - User data:", user);
 
@@ -73,7 +85,7 @@ export default function UserNav() {
             <p className="text-xs text-[var(--text-secondary)] truncate mt-0.5">{user.email}</p>
             <div className="mt-1.5">
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--hover)] text-[var(--foreground)] border border-[var(--border)]">
-                {user.role}
+                {humanizeRole(user.role)}
               </span>
             </div>
           </div>

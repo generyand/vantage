@@ -1,20 +1,30 @@
-export interface Submission {
+export interface SubmissionStatus {
   id: string;
-  barangayName: string;
-  overallProgress: number;
-  currentStatus: SubmissionStatus;
-  assignedAssessors: Assessor[];
-  lastUpdated: string;
-  governanceArea: string;
+  name: string;
+  color: string;
 }
 
-export type SubmissionStatus = 
-  | 'Not Started'
-  | 'In Progress'
-  | 'Submitted for Review'
-  | 'Needs Rework'
-  | 'Validated'
-  | 'Finalized';
+export interface SubmissionsKPI {
+  awaitingReview: number;
+  inRework: number;
+  validated: number;
+  avgReviewTime: number;
+}
+
+export interface BarangaySubmission {
+  id: string;
+  barangayName: string;
+  areaProgress: number; // Progress percentage for the assessor's specific area
+  areaStatus: 'awaiting_review' | 'in_progress' | 'needs_rework' | 'validated';
+  overallStatus: 'draft' | 'submitted' | 'under_review' | 'needs_rework' | 'validated' | 'completed';
+  lastUpdated: string;
+  assignedTo?: string;
+}
+
+export interface SubmissionsFilter {
+  search: string;
+  status: string[];
+}
 
 export interface Assessor {
   id: string;
@@ -23,15 +33,8 @@ export interface Assessor {
   avatar?: string;
 }
 
-export interface SubmissionFilters {
-  search: string;
-  status: SubmissionStatus[];
-  governanceArea: string[];
-  assessor: string[];
-}
-
-export interface SubmissionTableData {
-  data: Submission[];
-  total: number;
-  loading: boolean;
+export interface SubmissionsData {
+  kpi: SubmissionsKPI;
+  submissions: BarangaySubmission[];
+  governanceArea: string;
 } 

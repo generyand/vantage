@@ -106,7 +106,7 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
           if (redirectTo) {
             // Validate the redirect path to prevent open redirects
             const isValidRedirect = redirectTo.startsWith('/blgu/') || 
-                                   redirectTo.startsWith('/admin/') || 
+                                   redirectTo.startsWith('/mlgoo/') || 
                                    redirectTo.startsWith('/user-management/') ||
                                    redirectTo.startsWith('/change-password');
             
@@ -118,7 +118,7 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
               const isAssessor = result.data.role === "AREA_ASSESSOR";
               
               if (isAdmin) {
-                targetPath = "/admin/dashboard";
+                targetPath = "/mlgoo/dashboard";
               } else if (isAssessor) {
                 targetPath = "/assessor/submissions";
               } else {
@@ -131,7 +131,7 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
             const isAssessor = result.data.role === "AREA_ASSESSOR";
             
             if (isAdmin) {
-              targetPath = "/admin/dashboard";
+              targetPath = "/mlgoo/dashboard";
             } else if (isAssessor) {
               targetPath = "/assessor/submissions";
             } else {

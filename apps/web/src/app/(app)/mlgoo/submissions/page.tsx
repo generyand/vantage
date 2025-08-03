@@ -191,7 +191,7 @@ export default function AdminSubmissionsPage() {
   };
 
   const handleViewDetails = (submission: Submission) => {
-    router.push(`/admin/submissions/${submission.id}`);
+            router.push(`/mlgoo/submissions/${submission.id}`);
   };
 
   const handleSendReminder = (submission: Submission) => {

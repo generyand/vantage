@@ -79,7 +79,7 @@ export default function SubmissionDetailsPage() {
           <div>
             <Button
               variant="ghost"
-              onClick={() => router.push("/admin/submissions")}
+              onClick={() => router.push("/mlgoo/submissions")}
               className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-sm transition-colors duration-200"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />

@@ -240,16 +240,16 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl bg-white" key={isEditing ? 'edit' : 'create'}>
+      <DialogContent className="max-w-2xl bg-[var(--card)] border border-[var(--border)] shadow-lg rounded-sm" key={isEditing ? 'edit' : 'create'}>
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
+          <DialogTitle className="text-xl font-semibold text-[var(--foreground)]">
             {isEditing ? 'Edit User' : 'Add User'}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="name" className="text-sm font-medium">Name *</Label>
+              <Label htmlFor="name" className="text-sm font-medium text-[var(--foreground)]">Name *</Label>
               <Input 
                 id="name" 
                 name="name" 
@@ -257,15 +257,15 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
                 onChange={handleInputChange} 
                 required 
                 disabled={isLoading}
-                className={`mt-1 ${errors.name ? 'border-red-500 focus:border-red-500' : ''}`}
+                className={`mt-1 border-[var(--border)] focus:border-[var(--cityscape-yellow)] focus:ring-[var(--cityscape-yellow)]/20 ${errors.name ? 'border-red-500 dark:border-red-700 focus:border-red-500 focus:ring-red-500/20' : ''}`}
               />
               {errors.name && (
-                <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.name}</p>
               )}
             </div>
             
             <div>
-              <Label htmlFor="email" className="text-sm font-medium">Email *</Label>
+              <Label htmlFor="email" className="text-sm font-medium text-[var(--foreground)]">Email *</Label>
               <Input 
                 id="email" 
                 name="email" 
@@ -275,10 +275,10 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
                 required 
                 disabled={isLoading}
                 autoComplete="off"
-                className={`mt-1 ${errors.email ? 'border-red-500 focus:border-red-500' : ''}`}
+                className={`mt-1 border-[var(--border)] focus:border-[var(--cityscape-yellow)] focus:ring-[var(--cityscape-yellow)]/20 ${errors.email ? 'border-red-500 dark:border-red-700 focus:border-red-500 focus:ring-red-500/20' : ''}`}
               />
               {errors.email && (
-                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.email}</p>
               )}
             </div>
           </div>
@@ -286,7 +286,7 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {!isEditing && (
               <div>
-                <Label htmlFor="password" className="text-sm font-medium">Password *</Label>
+                <Label htmlFor="password" className="text-sm font-medium text-[var(--foreground)]">Password *</Label>
                 <Input 
                   id="password" 
                   name="password" 
@@ -296,21 +296,21 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
                   required 
                   disabled={isLoading}
                   autoComplete="new-password"
-                  className={`mt-1 ${errors.password ? 'border-red-500 focus:border-red-500' : ''}`}
+                  className={`mt-1 border-[var(--border)] focus:border-[var(--cityscape-yellow)] focus:ring-[var(--cityscape-yellow)]/20 ${errors.password ? 'border-red-500 dark:border-red-700 focus:border-red-500 focus:ring-red-500/20' : ''}`}
                 />
                 {errors.password && (
-                  <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+                  <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.password}</p>
                 )}
               </div>
             )}
             
             <div>
-              <Label htmlFor="role" className="text-sm font-medium">Role</Label>
+              <Label htmlFor="role" className="text-sm font-medium text-[var(--foreground)]">Role</Label>
               <Select value={form.role} onValueChange={handleRoleChange} disabled={isLoading}>
-                <SelectTrigger className="mt-1">
+                <SelectTrigger className="mt-1 border-[var(--border)] focus:border-[var(--cityscape-yellow)] focus:ring-[var(--cityscape-yellow)]/20">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
-                <SelectContent className="bg-white border border-gray-200">
+                <SelectContent className="bg-[var(--card)] border border-[var(--border)]">
                   <SelectItem value={UserRole.BLGU_USER}>BLGU User</SelectItem>
                   <SelectItem value={UserRole.AREA_ASSESSOR}>Area Assessor</SelectItem>
                   <SelectItem value={UserRole.MLGOO_DILG}>MLGOO-DILG</SelectItem>
@@ -322,30 +322,30 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="phone_number" className="text-sm font-medium">Phone Number</Label>
+              <Label htmlFor="phone_number" className="text-sm font-medium text-[var(--foreground)]">Phone Number</Label>
               <Input 
                 id="phone_number" 
                 name="phone_number" 
                 value={form.phone_number} 
                 onChange={handleInputChange} 
                 disabled={isLoading}
-                className="mt-1"
+                className="mt-1 border-[var(--border)] focus:border-[var(--cityscape-yellow)] focus:ring-[var(--cityscape-yellow)]/20"
               />
             </div>
             
             {/* Conditional dropdown for BLGU User role */}
             {form.role === UserRole.BLGU_USER && (
               <div>
-                <Label htmlFor="barangay_id" className="text-sm font-medium">Assigned Barangay</Label>
+                <Label htmlFor="barangay_id" className="text-sm font-medium text-[var(--foreground)]">Assigned Barangay</Label>
                 <Select 
                   value={form.barangay_id?.toString() || ''} 
                   onValueChange={(value) => handleSelectChange('barangay_id', value)}
                   disabled={isLoading}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-1 border-[var(--border)] focus:border-[var(--cityscape-yellow)] focus:ring-[var(--cityscape-yellow)]/20">
                     <SelectValue placeholder="Select a barangay" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-200">
+                  <SelectContent className="bg-[var(--card)] border border-[var(--border)]">
                     {isLoadingBarangays ? (
                       <SelectItem value="loading" disabled>Loading...</SelectItem>
                     ) : typedBarangays ? (
@@ -365,16 +365,16 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
             {/* Conditional dropdown for Area Assessor role */}
             {form.role === UserRole.AREA_ASSESSOR && (
               <div>
-                <Label htmlFor="governance_area_id" className="text-sm font-medium">Assigned Governance Area</Label>
+                <Label htmlFor="governance_area_id" className="text-sm font-medium text-[var(--foreground)]">Assigned Governance Area</Label>
                 <Select 
                   value={form.governance_area_id?.toString() || ''} 
                   onValueChange={(value) => handleSelectChange('governance_area_id', value)}
                   disabled={isLoading}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-1 border-[var(--border)] focus:border-[var(--cityscape-yellow)] focus:ring-[var(--cityscape-yellow)]/20">
                     <SelectValue placeholder="Select a governance area" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-200">
+                  <SelectContent className="bg-[var(--card)] border border-[var(--border)]">
                     {isLoadingGovernanceAreas ? (
                       <SelectItem value="loading" disabled>Loading...</SelectItem>
                     ) : typedGovernanceAreas ? (
@@ -393,7 +393,7 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
           </div>
           
           <div className="space-y-3">
-            <h3 className="text-sm font-medium text-gray-900">User Settings</h3>
+            <h3 className="text-sm font-medium text-[var(--foreground)]">User Settings</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex items-center space-x-2">
                 <input
@@ -403,9 +403,9 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
                   checked={form.is_active}
                   onChange={handleInputChange}
                   disabled={isLoading}
-                  className="rounded border-gray-300 h-4 w-4 text-primary focus:ring-primary"
+                  className="rounded border-[var(--border)] h-4 w-4 text-[var(--cityscape-yellow)] focus:ring-[var(--cityscape-yellow)]/20 focus:ring-offset-[var(--background)]"
                 />
-                <Label htmlFor="is_active" className="text-sm">Active</Label>
+                <Label htmlFor="is_active" className="text-sm text-[var(--foreground)]">Active</Label>
               </div>
               
               <div className="flex items-center space-x-2">
@@ -416,9 +416,9 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
                   checked={form.is_superuser}
                   onChange={handleInputChange}
                   disabled={isLoading}
-                  className="rounded border-gray-300 h-4 w-4 text-primary focus:ring-primary"
+                  className="rounded border-[var(--border)] h-4 w-4 text-[var(--cityscape-yellow)] focus:ring-[var(--cityscape-yellow)]/20 focus:ring-offset-[var(--background)]"
                 />
-                <Label htmlFor="is_superuser" className="text-sm">Super User</Label>
+                <Label htmlFor="is_superuser" className="text-sm text-[var(--foreground)]">Super User</Label>
               </div>
               
               <div className="flex items-center space-x-2">
@@ -429,9 +429,9 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
                   checked={form.must_change_password}
                   onChange={handleInputChange}
                   disabled={isLoading}
-                  className="rounded border-gray-300 h-4 w-4 text-primary focus:ring-primary"
+                  className="rounded border-[var(--border)] h-4 w-4 text-[var(--cityscape-yellow)] focus:ring-[var(--cityscape-yellow)]/20 focus:ring-offset-[var(--background)]"
                 />
-                <Label htmlFor="must_change_password" className="text-sm">Must Change Password</Label>
+                <Label htmlFor="must_change_password" className="text-sm text-[var(--foreground)]">Must Change Password</Label>
               </div>
             </div>
           </div>
@@ -442,14 +442,14 @@ export function UserForm({ open, onOpenChange, initialValues, isEditing = false 
               variant="outline" 
               onClick={() => onOpenChange(false)}
               disabled={isLoading}
-              className="flex-1"
+              className="flex-1 border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--hover)]"
             >
               Cancel
             </Button>
             <Button 
               type="submit"
               disabled={isLoading}
-              className="flex-1"
+              className="flex-1 bg-[var(--cityscape-yellow)] hover:bg-[var(--cityscape-yellow-dark)] text-[var(--cityscape-accent-foreground)]"
             >
               {isLoading ? 'Saving...' : (isEditing ? 'Update User' : 'Create User')}
             </Button>

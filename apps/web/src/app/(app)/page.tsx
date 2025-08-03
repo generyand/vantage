@@ -15,7 +15,7 @@ export default function RootPage() {
       
       let dashboardPath;
       if (isAdmin) {
-        dashboardPath = '/admin/dashboard';
+        dashboardPath = '/mlgoo/dashboard';
       } else if (isAssessor) {
         dashboardPath = '/assessor/submissions';
       } else {

@@ -49,7 +49,7 @@ export default function LoginPage() {
       
       let dashboardPath;
       if (isAdmin) {
-        dashboardPath = '/admin/dashboard';
+        dashboardPath = '/mlgoo/dashboard';
       } else if (isAssessor) {
         dashboardPath = '/assessor/submissions';
       } else {

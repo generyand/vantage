@@ -1,6 +1,5 @@
 "use client";
 
-import { PageHeader } from "@/components/shared";
 import { useState, useEffect } from "react";
 import { SystemicWeakness } from "@/components/features/analytics/AssessorAnalyticsTypes";
 import { generateAssessorData } from "@/components/features/analytics/AssessorAnalyticsData";
@@ -52,11 +51,6 @@ export default function AssessorAnalyticsPage() {
 
   return (
     <div className="space-y-8">
-      <PageHeader
-        title={`Area: ${areaName}`}
-        description={`Performance trends for all ${assessorData.assignedBarangays} barangays in your assigned area.`}
-      />
-
       <GlobalFilter data={assessorData} />
 
       <div className="mt-6 space-y-6">
