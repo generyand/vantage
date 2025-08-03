@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { usePostAuthChangePassword, usePostAuthLogout } from '@vantage/shared';
 import { useUserBarangay } from '@/hooks/useUserBarangay';
+import { useAssessorGovernanceArea } from '@/hooks/useAssessorGovernanceArea';
 import { 
   Card, 
   CardContent, 
@@ -64,6 +65,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const { logout } = useAuthStore();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const { barangayName, isLoading: barangayLoading } = useUserBarangay();
+  const { governanceAreaName, isLoading: governanceAreaLoading } = useAssessorGovernanceArea();
   
   const changePasswordMutation = usePostAuthChangePassword();
   const logoutMutation = usePostAuthLogout();
@@ -166,7 +168,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                    </div>
                  </div>
                  
-                 {user?.role !== 'SUPERADMIN' && (
+                 {user?.role !== 'SUPERADMIN' && user?.role !== 'AREA_ASSESSOR' && (
                    <div className="space-y-3">
                      <label className="text-sm font-semibold text-[var(--foreground)] flex items-center gap-2">
                        <MapPin className="h-4 w-4 text-[var(--cityscape-yellow)]" />
@@ -175,6 +177,20 @@ export function ProfileForm({ user }: ProfileFormProps) {
                      <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
                        <div className="text-base font-medium text-[var(--text-secondary)]">
                          {barangayLoading ? 'Loading...' : barangayName || 'N/A'}
+                       </div>
+                     </div>
+                   </div>
+                 )}
+                 
+                 {user?.role === 'AREA_ASSESSOR' && (
+                   <div className="space-y-3">
+                     <label className="text-sm font-semibold text-[var(--foreground)] flex items-center gap-2">
+                       <MapPin className="h-4 w-4 text-[var(--cityscape-yellow)]" />
+                       Assigned Governance Area
+                     </label>
+                     <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
+                       <div className="text-base font-medium text-[var(--text-secondary)]">
+                         {governanceAreaLoading ? 'Loading...' : governanceAreaName || 'N/A'}
                        </div>
                      </div>
                    </div>
@@ -199,7 +215,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                    </label>
                    <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
                      <div className="text-base font-medium text-[var(--text-secondary)]">
-                       {user?.role ? user.role.replace(/_/g, ' ') : 'N/A'}
+                       {user?.role === 'AREA_ASSESSOR' ? 'Area Assessor' : user?.role ? user.role.replace(/_/g, ' ') : 'N/A'}
                      </div>
                    </div>
                  </div>

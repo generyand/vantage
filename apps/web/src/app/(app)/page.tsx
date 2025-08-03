@@ -11,7 +11,24 @@ export default function RootPage() {
   useEffect(() => {
     if (isAuthenticated && user) {
       const isAdmin = user.role === 'SUPERADMIN' || user.role === 'MLGOO_DILG';
-      const dashboardPath = isAdmin ? '/admin/dashboard' : '/blgu/dashboard';
+      const isAssessor = user.role === 'AREA_ASSESSOR';
+      
+      let dashboardPath;
+      if (isAdmin) {
+        dashboardPath = '/admin/dashboard';
+      } else if (isAssessor) {
+        dashboardPath = '/assessor/submissions';
+      } else {
+        dashboardPath = '/blgu/dashboard';
+      }
+      
+      console.log('Root page redirecting:', {
+        userRole: user.role,
+        isAdmin,
+        isAssessor,
+        dashboardPath
+      });
+      
       router.replace(dashboardPath);
     } else if (!isAuthenticated) {
       router.replace('/login');

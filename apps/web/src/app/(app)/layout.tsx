@@ -145,11 +145,44 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, user, mustChangePassword } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [isUserDataLoaded, setIsUserDataLoaded] = useState(false);
 
-  // Determine navigation based on user role
+  // Determine navigation based on user role - only when user data is loaded
   const isAdmin = user?.role === "SUPERADMIN" || user?.role === "MLGOO_DILG";
   const isAssessor = user?.role === "AREA_ASSESSOR";
-  const navigation = isAdmin ? adminNavigation : isAssessor ? assessorNavigation : blguNavigation;
+  const navigation = user ? (isAdmin ? adminNavigation : isAssessor ? assessorNavigation : blguNavigation) : blguNavigation;
+
+  // Track when user data is loaded
+  useEffect(() => {
+    console.log('User Data Loading State:', {
+      isAuthenticated,
+      hasUser: !!user,
+      userRole: user?.role,
+      isUserDataLoaded
+    });
+    
+    if (isAuthenticated && user) {
+      console.log('Setting user data as loaded');
+      setIsUserDataLoaded(true);
+    } else {
+      console.log('Setting user data as not loaded');
+      setIsUserDataLoaded(false);
+    }
+  }, [isAuthenticated, user, isUserDataLoaded]);
+
+  // Debug logging for routing issues
+  useEffect(() => {
+    console.log('Layout Debug:', {
+      user,
+      userRole: user?.role,
+      isAdmin,
+      isAssessor,
+      pathname,
+      isAuthenticated,
+      mustChangePassword,
+      isUserDataLoaded
+    });
+  }, [user, isAdmin, isAssessor, pathname, isAuthenticated, mustChangePassword, isUserDataLoaded]);
 
   // Redirect unauthenticated users to login
   useEffect(() => {
@@ -173,13 +206,23 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   // Redirect users to appropriate dashboard based on role
   useEffect(() => {
+    // Only proceed if user data is fully loaded and we're authenticated
     if (isAuthenticated && user && !mustChangePassword) {
       const isAdmin = user.role === "SUPERADMIN" || user.role === "MLGOO_DILG";
       const currentPath = pathname;
 
+      console.log('Routing Debug:', {
+        currentPath,
+        userRole: user.role,
+        isAdmin,
+        isAssessor,
+        willRedirect: currentPath === "/"
+      });
+
       // If user is on root path, redirect to appropriate dashboard
       if (currentPath === "/") {
         const dashboardPath = isAdmin ? "/admin/dashboard" : isAssessor ? "/assessor/submissions" : "/blgu/dashboard";
+        console.log('Redirecting from root to:', dashboardPath);
         router.replace(dashboardPath);
         return;
       }
@@ -190,19 +233,29 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       const isAssessorRoute = currentPath.startsWith("/assessor");
       const isUserManagementRoute = currentPath.startsWith("/user-management");
 
+      console.log('Route Check:', {
+        isAdminRoute,
+        isBLGURoute,
+        isAssessorRoute,
+        isUserManagementRoute
+      });
+
       if (isAdmin) {
         // Admin users should not access BLGU or assessor routes
         if (isBLGURoute || isAssessorRoute) {
+          console.log('Admin accessing wrong route, redirecting to /admin/dashboard');
           router.replace("/admin/dashboard");
         }
       } else if (isAssessor) {
         // Assessor users should not access admin, BLGU routes or user management
         if (isAdminRoute || isBLGURoute || isUserManagementRoute) {
+          console.log('Assessor accessing wrong route, redirecting to /assessor/submissions');
           router.replace("/assessor/submissions");
         }
       } else {
         // BLGU users should not access admin, assessor routes or user management
         if (isAdminRoute || isAssessorRoute || isUserManagementRoute) {
+          console.log('BLGU accessing wrong route, redirecting to /blgu/dashboard');
           router.replace("/blgu/dashboard");
         }
       }

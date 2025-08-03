@@ -3,7 +3,8 @@
 import { PageHeader } from "@/components/shared";
 import { useState, useEffect } from "react";
 import { SystemicWeakness } from "@/components/features/analytics/AssessorAnalyticsTypes";
-import { mockAssessorData } from "@/components/features/analytics/AssessorAnalyticsData";
+import { generateAssessorData } from "@/components/features/analytics/AssessorAnalyticsData";
+import { useAssessorGovernanceArea } from "@/hooks/useAssessorGovernanceArea";
 import {
   GlobalFilter,
   PerformanceOverviewWidget,
@@ -17,6 +18,8 @@ export default function AssessorAnalyticsPage() {
   const [selectedWeakness, setSelectedWeakness] = useState<SystemicWeakness | null>(null);
   const [showWeaknessModal, setShowWeaknessModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const { governanceAreaName, isLoading: governanceAreaLoading } = useAssessorGovernanceArea();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -36,28 +39,35 @@ export default function AssessorAnalyticsPage() {
     setSelectedWeakness(null);
   };
 
-  if (isLoading) {
+  // Show loading if either the page is loading or governance area is loading
+  if (isLoading || governanceAreaLoading) {
     return <AnalyticsSkeleton />;
   }
+
+  // Use real governance area name or fallback to Environmental Management
+  const areaName = governanceAreaName || "Environmental Management";
+  
+  // Generate data based on the real governance area
+  const assessorData = generateAssessorData(areaName);
 
   return (
     <div className="space-y-8">
       <PageHeader
-        title={`Area: ${mockAssessorData.name}`}
-        description={`Performance trends for all ${mockAssessorData.assignedBarangays} barangays in your assigned area.`}
+        title={`Area: ${areaName}`}
+        description={`Performance trends for all ${assessorData.assignedBarangays} barangays in your assigned area.`}
       />
 
-      <GlobalFilter data={mockAssessorData} />
+      <GlobalFilter data={assessorData} />
 
       <div className="mt-6 space-y-6">
-        <PerformanceOverviewWidget data={mockAssessorData} />
-        <PerformanceHotspotsWidget data={mockAssessorData} onWeaknessClick={handleWeaknessClick} />
-        <WorkflowMetricsWidget data={mockAssessorData} />
+        <PerformanceOverviewWidget data={assessorData} />
+        <PerformanceHotspotsWidget data={assessorData} onWeaknessClick={handleWeaknessClick} />
+        <WorkflowMetricsWidget data={assessorData} />
       </div>
 
       <WeaknessDetailModal
         weakness={selectedWeakness}
-        data={mockAssessorData}
+        data={assessorData}
         isOpen={showWeaknessModal}
         onClose={handleCloseModal}
       />
