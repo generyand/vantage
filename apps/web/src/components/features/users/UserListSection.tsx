@@ -27,7 +27,10 @@ export default function UserListSection() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
-  const { data, isLoading, error } = useUsers() as {
+  const { data, isLoading, error } = useUsers({
+    page: 1,
+    size: 100, // Fetch up to 100 users to show all users
+  }) as {
     data?: UserListResponse;
     isLoading: boolean;
     error: unknown;
@@ -57,10 +60,10 @@ export default function UserListSection() {
     return {
       users: paginatedUsers,
       totalPages,
-      totalUsers: filtered.length,
+      totalUsers: data.total || filtered.length, // Use API total if available
       allFilteredUsers: filtered,
     };
-  }, [data?.users, searchQuery, currentPage]);
+  }, [data?.users, data?.total, searchQuery, currentPage]);
 
   // Reset to first page when search changes
   React.useEffect(() => {
@@ -119,7 +122,7 @@ export default function UserListSection() {
                   Total Users
                 </p>
                 <p className="text-3xl font-bold text-[var(--foreground)]">
-                  {data.users.length}
+                  {data.total || data.users.length}
                 </p>
               </div>
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-sm flex items-center justify-center">

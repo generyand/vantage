@@ -269,10 +269,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   // Show loading if not authenticated
   if (!isAuthenticated) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[var(--background)]">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--cityscape-yellow)] mx-auto mb-4"></div>
-          <p className="text-[var(--text-secondary)]">Redirecting to login...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecting to login...</p>
         </div>
       </div>
     );
@@ -281,10 +281,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   // If user must change password and is not on the change-password page, show loading
   if (mustChangePassword && pathname !== "/change-password") {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[var(--background)]">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--cityscape-yellow)] mx-auto mb-4"></div>
-          <p className="text-[var(--text-secondary)]">Redirecting to password change...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecting to password change...</p>
         </div>
       </div>
     );
@@ -293,7 +293,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   // If user must change password, show only the change password page without navigation
   if (mustChangePassword && pathname === "/change-password") {
     return (
-      <div className="min-h-screen bg-[var(--background)] transition-colors duration-300">
+      <div className="min-h-screen bg-gray-50">
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

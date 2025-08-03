@@ -9,6 +9,15 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Force dark mode background on root elements */
+html.dark,
+html.dark body {
+  background-color: #212529 !important;
+  background: #212529 !important;
+}
+
+
+
 /* THEME COLOR VARIABLES (see @styling.mdc) */
 :root {
   --radius: 0.625rem;
@@ -176,6 +185,16 @@
   html {
     font-family: var(--font-sans);
     font-size: 16px;
+    background: var(--background) !important;
+    color: var(--foreground);
+  }
+  body {
+    background: var(--background) !important;
+    color: var(--foreground);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
   }
   h1 {
     font-size: 2.25rem;
@@ -206,13 +225,6 @@
     font-size: 1rem;
     font-weight: 500;
     line-height: 1.45;
-  }
-  body {
-    background: var(--background);
-    color: var(--foreground);
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.6;
   }
   .text-muted {
     color: var(--text-muted);
@@ -307,6 +319,15 @@
 @layer base {
   .shadcn-ui {
     /* Used to scope shadcn/ui overrides if needed */
+  }
+  
+  /* Ensure dark mode background is applied to root elements */
+  html.dark {
+    background: var(--background) !important;
+  }
+  
+  html.dark body {
+    background: var(--background) !important;
   }
 }
 
