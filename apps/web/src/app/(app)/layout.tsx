@@ -335,7 +335,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <div className="flex items-center">
                 <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
                   <Image
-                    src="/DILG.png"
+                    src="/officialLogo/DILG.png"
                     alt="DILG Logo"
                     width={40}
                     height={40}
@@ -381,7 +381,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <div className="flex items-center">
                 <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
                   <Image
-                    src="/DILG.png"
+                    src="/officialLogo/DILG.png"
                     alt="DILG Logo"
                     width={40}
                     height={40}

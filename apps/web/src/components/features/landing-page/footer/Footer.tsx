@@ -75,7 +75,7 @@ export function Footer() {
               <div className="flex items-center gap-4 mb-4">
                 <div className="relative group">
                   <Image
-                    src="/DILG.png"
+                    src="/officialLogo/DILG.png"
                     alt="DILG Logo"
                     width={50}
                     height={50}
@@ -85,7 +85,7 @@ export function Footer() {
                 </div>
                 <div className="relative group">
                   <Image
-                    src="/Sulop_Municipal_Government.png"
+                    src="/officialLogo/Sulop_Municipal_Government.png"
                     alt="Sulop Municipal Government Logo"
                     width={50}
                     height={50}

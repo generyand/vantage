@@ -21,19 +21,19 @@ const heroSlides: HeroSlide[] = [
     location: "Sulop, Philippines",
     title: "VANTAGE",
     subtitle: "The official pre-assessment and analytics web application for the Municipality of Sulop's Seal of Good Local Governance for Barangays program.",
-    backgroundImage: "/Sulop_Hall.png"
+    backgroundImage: "/Scenery/Sulop_Hall.png"
   },
   {
     location: "Sulop, Philippines", 
     title: "VANTAGE",
     subtitle: "The official pre-assessment and analytics web application for the Municipality of Sulop's Seal of Good Local Governance for Barangays program.",
-    backgroundImage: "/Sulop_Hall.png"
+    backgroundImage: "/Scenery/Sulop_Hall.png"
   },
   {
     location: "Sulop, Philippines",
     title: "VANTAGE", 
     subtitle: "The official pre-assessment and analytics web application for the Municipality of Sulop's Seal of Good Local Governance for Barangays program.",
-    backgroundImage: "/Sulop_Hall.png"
+    backgroundImage: "/Scenery/Sulop_Hall.png"
   }
 ];
 
@@ -96,7 +96,7 @@ export function HeroSection() {
             {/* Left: VANTAGE Logo */}
             <div className="flex items-center gap-3">
               <Image
-                src="/DILG.png"
+                src="/officialLogo/DILG.png"
                 alt="Department of the Interior and Local Government (DILG) official logo"
                 width={32}
                 height={32}
@@ -174,7 +174,7 @@ export function HeroSection() {
               heroLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
             }`}>
               <Image
-                src="/DILG.png"
+                src="/officialLogo/DILG.png"
                 alt="Department of the Interior and Local Government (DILG) official logo"
                 width={32}
                 height={32}
@@ -246,7 +246,7 @@ export function HeroSection() {
         }`} role="img" aria-label="Philippine flag representing national identity and government authority">
           <div className="relative">
             <Image
-              src="/flag.jpg"
+                              src="/officialLogo/flag.jpg"
               alt="Philippine flag with blue, red, and white sections featuring the sun and three stars, symbolizing the Republic of the Philippines"
               width={320}
               height={520}
