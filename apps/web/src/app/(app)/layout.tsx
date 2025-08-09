@@ -333,13 +333,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
             <div className="flex-shrink-0 flex items-center px-6 mb-8">
               <div className="flex items-center">
-                <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-sm bg-white border-2 border-gray-300/70 shadow-md flex items-center justify-center backdrop-blur-sm flex-shrink-0">
                   <Image
-                    src="/officialLogo/DILG.png"
-                    alt="DILG Logo"
-                    width={40}
-                    height={40}
-                    className="w-full h-full object-contain"
+                    src="/officialLogo/MLGRC.png"
+                    alt="MLGRC Davao del Sur Logo"
+                    width={28}
+                    height={28}
+                    className="lg:w-8 lg:h-8 object-contain"
                   />
                 </div>
                 <div className="ml-3">
@@ -379,13 +379,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
             <div className="flex items-center flex-shrink-0 px-6 mb-8">
               <div className="flex items-center">
-                <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-sm bg-white border-2 border-gray-300/70 shadow-md flex items-center justify-center backdrop-blur-sm flex-shrink-0">
                   <Image
-                    src="/officialLogo/DILG.png"
-                    alt="DILG Logo"
-                    width={40}
-                    height={40}
-                    className="w-full h-full object-contain"
+                    src="/officialLogo/MLGRC.png"
+                    alt="MLGRC Davao del Sur Logo"
+                    width={28}
+                    height={28}
+                    className="lg:w-8 lg:h-8 object-contain"
                   />
                 </div>
                 <div className="ml-3">

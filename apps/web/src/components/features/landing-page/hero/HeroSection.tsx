@@ -95,13 +95,15 @@ export function HeroSection() {
           <div className="flex items-center justify-between">
             {/* Left: VANTAGE Logo */}
             <div className="flex items-center gap-3">
-              <Image
-                src="/officialLogo/DILG.png"
-                alt="Department of the Interior and Local Government (DILG) official logo"
-                width={32}
-                height={32}
-                className="rounded-full bg-white border border-gray-200 object-contain"
-              />
+              <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-sm bg-white border-2 border-gray-300/70 shadow-md flex items-center justify-center backdrop-blur-sm">
+                <Image
+                  src="/officialLogo/MLGRC.png"
+                  alt="MLGRC Davao del Sur official logo"
+                  width={28}
+                  height={28}
+                  className="lg:w-8 lg:h-8 object-contain"
+                />
+              </div>
               <div className="flex flex-col">
                 <span className="font-extrabold text-lg tracking-tight text-white leading-tight">
                   VANTAGE
@@ -173,13 +175,15 @@ export function HeroSection() {
             <div className={`flex items-center gap-2 lg:gap-3 transition-all duration-1000 ease-out ${
               heroLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
             }`}>
-              <Image
-                src="/officialLogo/DILG.png"
-                alt="Department of the Interior and Local Government (DILG) official logo"
-                width={32}
-                height={32}
-                className="lg:w-10 lg:h-10 rounded-full bg-white border border-gray-200 object-contain"
-              />
+              <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-sm bg-white border-2 border-gray-300/70 shadow-md flex items-center justify-center backdrop-blur-sm">
+                <Image
+                  src="/officialLogo/MLGRC.png"
+                  alt="MLGRC Davao del Sur official logo"
+                  width={28}
+                  height={28}
+                  className="lg:w-8 lg:h-8 object-contain"
+                />
+              </div>
               <div className="flex flex-col">
                 <span className="font-extrabold text-lg lg:text-xl tracking-tight text-white leading-tight">
                   VANTAGE
