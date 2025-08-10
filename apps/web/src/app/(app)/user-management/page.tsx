@@ -16,12 +16,17 @@ export default function UserManagementPage() {
     }
   }, [isAuthenticated, router]);
 
-  // Redirect non-admin users to their dashboard
+  // Redirect non-admin users to their appropriate dashboard
   useEffect(() => {
     if (isAuthenticated && user) {
       const isAdmin = user.role === 'SUPERADMIN' || user.role === 'MLGOO_DILG';
       if (!isAdmin) {
-        router.replace('/blgu/dashboard');
+        // Redirect to appropriate dashboard based on role
+        if (user.role === 'AREA_ASSESSOR') {
+          router.replace('/assessor/submissions');
+        } else {
+          router.replace('/blgu/dashboard');
+        }
       }
     }
   }, [isAuthenticated, user, router]);
@@ -44,7 +49,7 @@ export default function UserManagementPage() {
       <div className="flex items-center justify-center min-h-screen bg-[var(--background)]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-[var(--muted-foreground)]">Redirecting to dashboard...</p>
+          <p className="text-[var(--muted-foreground)]">Access denied. Redirecting to your dashboard...</p>
         </div>
       </div>
     );

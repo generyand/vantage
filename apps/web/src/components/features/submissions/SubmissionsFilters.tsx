@@ -1,217 +1,149 @@
 'use client';
 
-import * as React from 'react';
-import { Search, Filter, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { SubmissionFilters, SubmissionStatus } from '@/types/submissions';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Search, Filter, X } from 'lucide-react';
+import { SubmissionsFilter } from '@/types/submissions';
+import { useState } from 'react';
 
 interface SubmissionsFiltersProps {
-  filters: SubmissionFilters;
-  onFiltersChange: (filters: Partial<SubmissionFilters>) => void;
-  onReset: () => void;
-  governanceAreas: string[];
-  assessors: Array<{ id: string; name: string; email: string }>;
+  filters: SubmissionsFilter;
+  onFiltersChange: (filters: SubmissionsFilter) => void;
 }
 
-export function SubmissionsFilters({
-  filters,
-  onFiltersChange,
-  onReset,
-  governanceAreas,
-  assessors,
-}: SubmissionsFiltersProps) {
-  const statusOptions: SubmissionStatus[] = [
-    'Not Started',
-    'In Progress',
-    'Submitted for Review',
-    'Needs Rework',
-    'Validated',
-    'Finalized',
-  ];
+const statusOptions = [
+  { value: 'awaiting_review', label: 'Awaiting Review', color: 'bg-blue-100 text-blue-800' },
+  { value: 'in_progress', label: 'In Progress', color: 'bg-yellow-100 text-yellow-800' },
+  { value: 'needs_rework', label: 'Needs Rework', color: 'bg-orange-100 text-orange-800' },
+  { value: 'validated', label: 'Validated', color: 'bg-green-100 text-green-800' },
+];
 
-  const hasActiveFilters = 
-    filters.search ||
-    filters.status.length > 0 ||
-    filters.governanceArea.length > 0 ||
-    filters.assessor.length > 0;
+export function SubmissionsFilters({ filters, onFiltersChange }: SubmissionsFiltersProps) {
+  const [showStatusFilter, setShowStatusFilter] = useState(false);
+
+  const handleSearchChange = (value: string) => {
+    onFiltersChange({ ...filters, search: value });
+  };
+
+  const handleStatusToggle = (status: string) => {
+    const newStatuses = filters.status.includes(status)
+      ? filters.status.filter(s => s !== status)
+      : [...filters.status, status];
+    
+    onFiltersChange({ ...filters, status: newStatuses });
+  };
+
+  const clearFilters = () => {
+    onFiltersChange({ search: '', status: [] });
+  };
+
+  const hasActiveFilters = filters.search || filters.status.length > 0;
 
   return (
-    <div className="bg-[var(--card)] border border-[var(--border)] rounded-sm p-6 mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-2">
-          <Filter className="h-5 w-5 text-[var(--muted-foreground)]" />
-          <h3 className="text-lg font-semibold text-[var(--foreground)]">Filters & Search</h3>
+    <div className="space-y-6">
+      {/* Enhanced Search and Filter Controls */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="relative lg:col-span-2">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]" />
+            <Input
+              placeholder="Search by barangay name, assigned assessor, or status..."
+              value={filters.search}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="pl-12 pr-4 py-3 border-2 border-[var(--border)] bg-[var(--card)] hover:border-[var(--cityscape-yellow)] focus:border-[var(--cityscape-yellow)] transition-all duration-200 text-base"
+            />
+          </div>
+          {filters.search && (
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <button
+                onClick={() => handleSearchChange('')}
+                className="text-[var(--text-muted)] hover:text-[var(--foreground)] transition-colors duration-200"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
         </div>
-        {hasActiveFilters && (
+        
+        <div className="relative">
           <Button
             variant="outline"
-            size="sm"
-            onClick={onReset}
-            className="flex items-center space-x-1"
+            onClick={() => setShowStatusFilter(!showStatusFilter)}
+            className={`w-full border-2 border-[var(--border)] bg-[var(--card)] hover:border-[var(--cityscape-yellow)] hover:bg-[var(--hover)] transition-all duration-200 py-3 ${
+              filters.status.length > 0 ? 'border-[var(--cityscape-yellow)] bg-[var(--cityscape-yellow)]/10' : ''
+            }`}
           >
-            <X className="h-4 w-4" />
-            <span>Reset</span>
+            <Filter className="h-5 w-5 mr-2" />
+            <span className="font-medium">Filter by Status</span>
+            {filters.status.length > 0 && (
+              <Badge variant="secondary" className="ml-2 bg-[var(--cityscape-yellow)] text-[var(--cityscape-accent-foreground)]">
+                {filters.status.length}
+              </Badge>
+            )}
           </Button>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Search Input */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--muted-foreground)]" />
-          <Input
-            placeholder="Search by Barangay Name..."
-            value={filters.search}
-            onChange={(e) => onFiltersChange({ search: e.target.value })}
-            className="pl-10"
-          />
-        </div>
-
-        {/* Status Filter */}
-        <div>
-          <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
-            Filter by Status
-          </label>
-          <Select
-            value={filters.status[0] || 'all'}
-            onValueChange={(value) => 
-              onFiltersChange({ 
-                status: value === 'all' ? [] : [value as SubmissionStatus] 
-              })
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All Statuses" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              {statusOptions.map((status) => (
-                <SelectItem key={status} value={status}>
-                  {status}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Governance Area Filter */}
-        <div>
-          <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
-            Filter by Governance Area
-          </label>
-          <Select
-            value={filters.governanceArea[0] || 'all'}
-            onValueChange={(value) => 
-              onFiltersChange({ 
-                governanceArea: value === 'all' ? [] : [value] 
-              })
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All Areas" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Areas</SelectItem>
-              {governanceAreas.map((area) => (
-                <SelectItem key={area} value={area}>
-                  {area}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Assessor Filter */}
-        <div>
-          <label className="block text-sm font-medium text-[var(--foreground)] mb-1">
-            Filter by Assessor
-          </label>
-          <Select
-            value={filters.assessor[0] || 'all'}
-            onValueChange={(value) => 
-              onFiltersChange({ 
-                assessor: value === 'all' ? [] : [value] 
-              })
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All Assessors" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Assessors</SelectItem>
-              {assessors.map((assessor) => (
-                <SelectItem key={assessor.id} value={assessor.id}>
-                  {assessor.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          
+          {showStatusFilter && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--card)] border-2 border-[var(--border)] rounded-sm shadow-xl z-10 p-4">
+              <div className="space-y-3">
+                <h4 className="font-semibold text-[var(--foreground)] text-sm border-b border-[var(--border)] pb-2">
+                  Filter by Status
+                </h4>
+                {statusOptions.map((option) => (
+                  <label key={option.value} className="flex items-center space-x-3 cursor-pointer p-2 rounded-sm hover:bg-[var(--hover)] transition-colors duration-200">
+                    <input
+                      type="checkbox"
+                      checked={filters.status.includes(option.value)}
+                      onChange={() => handleStatusToggle(option.value)}
+                      className="rounded border-2 border-[var(--border)] text-[var(--cityscape-yellow)] focus:ring-[var(--cityscape-yellow)]"
+                    />
+                    <span className="text-sm font-medium text-[var(--foreground)]">{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Active Filters Display */}
+      {/* Enhanced Active Filters Display */}
       {hasActiveFilters && (
-        <div className="mt-4 pt-4 border-t border-[var(--border)]">
+        <div className="bg-gradient-to-r from-[var(--muted)] to-[var(--card)] border border-[var(--border)] rounded-sm p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-semibold text-[var(--foreground)] text-sm">
+              Active Filters ({filters.status.length + (filters.search ? 1 : 0)})
+            </h4>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearFilters}
+              className="text-[var(--text-muted)] hover:text-[var(--foreground)] hover:bg-[var(--hover)] transition-all duration-200"
+            >
+              <X className="h-4 w-4 mr-1" />
+              Clear All
+            </Button>
+          </div>
           <div className="flex flex-wrap gap-2">
             {filters.search && (
-              <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                Search: &quot;{filters.search}&quot;
-                <button
-                  onClick={() => onFiltersChange({ search: '' })}
-                  className="ml-1 hover:text-blue-600"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
+              <Badge 
+                variant="secondary" 
+                className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300 px-3 py-1 font-medium"
+              >
+                <Search className="h-3 w-3 mr-1" />
+                &quot;{filters.search}&quot;
+              </Badge>
             )}
-            {filters.status.map((status) => (
-              <div key={status} className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
-                Status: {status}
-                <button
-                  onClick={() => onFiltersChange({ 
-                    status: filters.status.filter(s => s !== status) 
-                  })}
-                  className="ml-1 hover:text-yellow-600"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-            {filters.governanceArea.map((area) => (
-              <div key={area} className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                Area: {area}
-                <button
-                  onClick={() => onFiltersChange({ 
-                    governanceArea: filters.governanceArea.filter(a => a !== area) 
-                  })}
-                  className="ml-1 hover:text-green-600"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-            {filters.assessor.map((assessorId) => {
-              const assessor = assessors.find(a => a.id === assessorId);
+            {filters.status.map((status) => {
+              const option = statusOptions.find(opt => opt.value === status);
               return (
-                <div key={assessorId} className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-purple-100 text-purple-800">
-                  Assessor: {assessor?.name}
-                  <button
-                    onClick={() => onFiltersChange({ 
-                      assessor: filters.assessor.filter(a => a !== assessorId) 
-                    })}
-                    className="ml-1 hover:text-purple-600"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
+                <Badge
+                  key={status}
+                  variant="secondary"
+                  className={`${option?.color} border px-3 py-1 font-medium`}
+                >
+                  <Filter className="h-3 w-3 mr-1" />
+                  {option?.label}
+                </Badge>
               );
             })}
           </div>

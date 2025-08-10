@@ -45,7 +45,17 @@ export default function LoginPage() {
   useEffect(() => {
     if (isAuthenticated && user) {
       const isAdmin = user.role === 'SUPERADMIN' || user.role === 'MLGOO_DILG';
-      const dashboardPath = isAdmin ? '/admin/dashboard' : '/blgu/dashboard';
+      const isAssessor = user.role === 'AREA_ASSESSOR';
+      
+      let dashboardPath;
+      if (isAdmin) {
+        dashboardPath = '/mlgoo/dashboard';
+      } else if (isAssessor) {
+        dashboardPath = '/assessor/submissions';
+      } else {
+        dashboardPath = '/blgu/dashboard';
+      }
+      
       router.replace(dashboardPath);
     }
   }, [isAuthenticated, user, router]);
@@ -143,13 +153,42 @@ export default function LoginPage() {
             <div className={`mb-6 animate-float transition-all duration-1000 delay-200 ${
               isPageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
             }`}>
-              <Image
-                src="/DILG.png"
-                alt="DILG Logo"
-                width={180}
-                height={180}
-                priority
-              />
+              <div className="relative">
+                {/* Elegant container with subtle styling */}
+                <div className={`relative overflow-hidden transition-all duration-500 ${
+                  isDarkMode 
+                    ? 'bg-gradient-to-br from-gray-800/95 via-gray-900/90 to-gray-800/95 border border-gray-600/40' 
+                    : 'bg-gradient-to-br from-white/95 via-gray-100/90 to-white/95 border border-gray-300/50'
+                } rounded-3xl shadow-2xl`}>
+                  {/* Inner padding and logo */}
+                  <div className="p-6">
+                    <Image
+                      src="/officialLogo/MLGRC.png"
+                      alt="MLGRC Davao del Sur Logo"
+                      width={180}
+                      height={180}
+                      priority
+                      className="drop-shadow-lg"
+                    />
+                  </div>
+                  {/* Subtle accent border */}
+                  <div className={`absolute inset-0 rounded-3xl border border-transparent bg-gradient-to-br from-amber-400/20 via-orange-400/10 to-transparent pointer-events-none`}></div>
+                  {/* Subtle inner glow */}
+                  <div className={`absolute inset-2 rounded-2xl bg-gradient-to-br from-amber-200/5 via-transparent to-orange-200/5 pointer-events-none`}></div>
+                  {/* Additional dark accent for light mode */}
+                  <div className={`absolute inset-0 rounded-3xl border border-transparent bg-gradient-to-br from-gray-400/10 via-gray-500/5 to-transparent pointer-events-none ${!isDarkMode ? 'block' : 'hidden'}`}></div>
+                </div>
+                {/* Enhanced glow effect */}
+                <div className={`absolute -inset-6 rounded-3xl bg-gradient-to-br from-amber-300/20 via-orange-300/15 to-transparent blur-3xl -z-10 transition-all duration-500 ${
+                  isDarkMode ? 'opacity-70' : 'opacity-60'
+                }`}></div>
+                {/* Additional subtle glow layers */}
+                <div className={`absolute -inset-8 rounded-3xl bg-gradient-to-br from-amber-200/10 via-transparent to-orange-200/10 blur-2xl -z-20 transition-all duration-700 ${
+                  isDarkMode ? 'opacity-40' : 'opacity-40'
+                }`}></div>
+                {/* Dark shadow for light mode */}
+                <div className={`absolute -inset-4 rounded-3xl bg-gradient-to-br from-gray-400/15 via-gray-500/10 to-transparent blur-xl -z-15 transition-all duration-500 ${!isDarkMode ? 'block' : 'hidden'}`}></div>
+              </div>
             </div>
             <h1 className={`text-4xl font-extrabold mb-4 tracking-tight text-center transition-all duration-1000 delay-400 ${
               isPageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
@@ -199,7 +238,7 @@ export default function LoginPage() {
             <p className={`text-sm text-center mt-4 transition-all duration-1000 delay-1000 ${
               isPageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             } ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              For account assistance, please contact your DILG Administrator.
+              For account assistance, please contact your MLGRC Administrator.
             </p>
           </div>
         </div>
@@ -214,7 +253,7 @@ export default function LoginPage() {
           <div className={`flex items-center gap-3 text-xs ${
             isDarkMode ? 'text-gray-400' : 'text-gray-500'
           }`}>
-            <span>&copy; 2024 DILG-Sulop</span>
+            <span>&copy; 2024 MLGRC Davao del Sur</span>
             <span className="hidden md:inline">|</span>
             <span className="flex items-center gap-1">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,7 +265,7 @@ export default function LoginPage() {
           <div className={`text-center text-xs ${
             isDarkMode ? 'text-gray-400' : 'text-gray-500'
           }`}>
-            <div>Support: (02) 1234-5678 | support.vantage@dilg.gov.ph</div>
+            <div>Support: (02) 1234-5678 | support.vantage@mlgrc.gov.ph</div>
             <div className="text-xs opacity-75">Version 1.0.0 | Build 2024.01.15</div>
           </div>
         </div>
@@ -285,6 +324,9 @@ export default function LoginPage() {
         }
         .animation-delay-4000 {
           animation-delay: 4s;
+        }
+        .shadow-3xl {
+          box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
         }
       `}</style>
     </div>

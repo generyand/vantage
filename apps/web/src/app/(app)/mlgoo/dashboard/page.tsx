@@ -160,14 +160,14 @@ export default function AdminDashboardPage() {
                 </div>
                 <div className="space-y-3">
                   <button 
-                    onClick={() => router.push('/admin/submissions')}
+                    onClick={() => router.push('/mlgoo/submissions')}
                     className="group w-full text-left p-4 rounded-sm bg-blue-50/50 dark:bg-blue-900/20 border border-blue-200/50 dark:border-blue-800/50 hover:bg-blue-100/50 dark:hover:bg-blue-900/30 hover:border-blue-300/50 dark:hover:border-blue-700/50 transition-all duration-200 hover:shadow-md"
                   >
                     <div className="font-semibold text-[var(--foreground)] group-hover:text-blue-900 dark:group-hover:text-blue-400">Review Submissions</div>
                     <div className="text-sm text-[var(--muted-foreground)] group-hover:text-blue-700 dark:group-hover:text-blue-300">Check pending assessments</div>
                   </button>
                   <button 
-                    onClick={() => router.push('/admin/reports')}
+                    onClick={() => router.push('/mlgoo/reports')}
                     className="group w-full text-left p-4 rounded-sm bg-green-50/50 dark:bg-green-900/20 border border-green-200/50 dark:border-green-800/50 hover:bg-green-100/50 dark:hover:bg-green-900/30 hover:border-green-300/50 dark:hover:border-green-700/50 transition-all duration-200 hover:shadow-md"
                   >
                     <div className="font-semibold text-[var(--foreground)] group-hover:text-green-900 dark:group-hover:text-green-400">Generate Reports</div>

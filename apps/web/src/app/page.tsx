@@ -1,15 +1,25 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { HeroSection, ChallengeSection, FeaturesSection, ProcessSection, BarangaysSection, Footer } from "@/components/features/landing-page";
+import {
+  HeroSection,
+  ChallengeSection,
+  FeaturesSection,
+  ProcessSection,
+  BarangaysSection,
+  Footer,
+} from "@/components/features/landing-page";
 
 export default function Home() {
   return (
     <div className="relative min-h-screen flex flex-col bg-white">
       <style jsx>{`
         @keyframes spin-slow {
-          from { transform: rotate(45deg); }
-          to { transform: rotate(405deg); }
+          from {
+            transform: rotate(45deg);
+          }
+          to {
+            transform: rotate(405deg);
+          }
         }
         .animate-spin-slow {
           animation: spin-slow 4s linear infinite;
@@ -22,7 +32,7 @@ export default function Home() {
       {/* Challenge Section */}
       <ChallengeSection />
 
-            {/* Features Section */}
+      {/* Features Section */}
       <FeaturesSection />
 
       {/* Process Section */}

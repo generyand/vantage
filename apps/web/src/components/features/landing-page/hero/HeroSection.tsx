@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { MapPin, Facebook, Instagram, Twitter } from "lucide-react";
 
+
+
 // Hero slide data type
 interface HeroSlide {
   location: string;
@@ -19,19 +21,19 @@ const heroSlides: HeroSlide[] = [
     location: "Sulop, Philippines",
     title: "VANTAGE",
     subtitle: "The official pre-assessment and analytics web application for the Municipality of Sulop's Seal of Good Local Governance for Barangays program.",
-    backgroundImage: "/Sulop_Hall.png"
+    backgroundImage: "/Scenery/Sulop_Hall.png"
   },
   {
     location: "Sulop, Philippines", 
     title: "VANTAGE",
     subtitle: "The official pre-assessment and analytics web application for the Municipality of Sulop's Seal of Good Local Governance for Barangays program.",
-    backgroundImage: "/Sulop_Hall.png"
+    backgroundImage: "/Scenery/Sulop_Hall.png"
   },
   {
     location: "Sulop, Philippines",
     title: "VANTAGE", 
     subtitle: "The official pre-assessment and analytics web application for the Municipality of Sulop's Seal of Good Local Governance for Barangays program.",
-    backgroundImage: "/Sulop_Hall.png"
+    backgroundImage: "/Scenery/Sulop_Hall.png"
   }
 ];
 
@@ -44,7 +46,10 @@ export function HeroSection() {
 
   // Hero entrance animations state
   const [heroLoaded, setHeroLoaded] = useState(false);
+
   const currentHeroSlide = heroSlides[activeHeroSlide];
+
+
 
   // Scroll event listener for sticky header
   useEffect(() => {
@@ -90,13 +95,15 @@ export function HeroSection() {
           <div className="flex items-center justify-between">
             {/* Left: VANTAGE Logo */}
             <div className="flex items-center gap-3">
-              <Image
-                src="/DILG.png"
-                alt="Department of the Interior and Local Government (DILG) official logo"
-                width={32}
-                height={32}
-                className="rounded-full bg-white border border-gray-200 object-contain"
-              />
+              <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-sm bg-white border-2 border-gray-300/70 shadow-md flex items-center justify-center backdrop-blur-sm">
+                <Image
+                  src="/officialLogo/MLGRC.png"
+                  alt="MLGRC Davao del Sur official logo"
+                  width={28}
+                  height={28}
+                  className="lg:w-8 lg:h-8 object-contain"
+                />
+              </div>
               <div className="flex flex-col">
                 <span className="font-extrabold text-lg tracking-tight text-white leading-tight">
                   VANTAGE
@@ -168,13 +175,15 @@ export function HeroSection() {
             <div className={`flex items-center gap-2 lg:gap-3 transition-all duration-1000 ease-out ${
               heroLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
             }`}>
-              <Image
-                src="/DILG.png"
-                alt="Department of the Interior and Local Government (DILG) official logo"
-                width={32}
-                height={32}
-                className="lg:w-10 lg:h-10 rounded-full bg-white border border-gray-200 object-contain"
-              />
+              <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-sm bg-white border-2 border-gray-300/70 shadow-md flex items-center justify-center backdrop-blur-sm">
+                <Image
+                  src="/officialLogo/MLGRC.png"
+                  alt="MLGRC Davao del Sur official logo"
+                  width={28}
+                  height={28}
+                  className="lg:w-8 lg:h-8 object-contain"
+                />
+              </div>
               <div className="flex flex-col">
                 <span className="font-extrabold text-lg lg:text-xl tracking-tight text-white leading-tight">
                   VANTAGE
@@ -241,7 +250,7 @@ export function HeroSection() {
         }`} role="img" aria-label="Philippine flag representing national identity and government authority">
           <div className="relative">
             <Image
-              src="/flag.jpg"
+                              src="/officialLogo/flag.jpg"
               alt="Philippine flag with blue, red, and white sections featuring the sun and three stars, symbolizing the Republic of the Philippines"
               width={320}
               height={520}

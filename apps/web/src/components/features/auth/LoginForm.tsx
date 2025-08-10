@@ -106,7 +106,7 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
           if (redirectTo) {
             // Validate the redirect path to prevent open redirects
             const isValidRedirect = redirectTo.startsWith('/blgu/') || 
-                                   redirectTo.startsWith('/admin/') || 
+                                   redirectTo.startsWith('/mlgoo/') || 
                                    redirectTo.startsWith('/user-management/') ||
                                    redirectTo.startsWith('/change-password');
             
@@ -115,19 +115,36 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
             } else {
               // Fall back to dashboard if redirect is invalid
               const isAdmin = result.data.role === "SUPERADMIN" || result.data.role === "MLGOO_DILG";
-              targetPath = isAdmin ? "/admin/dashboard" : "/blgu/dashboard";
+              const isAssessor = result.data.role === "AREA_ASSESSOR";
+              
+              if (isAdmin) {
+                targetPath = "/mlgoo/dashboard";
+              } else if (isAssessor) {
+                targetPath = "/assessor/submissions";
+              } else {
+                targetPath = "/blgu/dashboard";
+              }
             }
           } else {
             // No redirect parameter, go to appropriate dashboard
             const isAdmin = result.data.role === "SUPERADMIN" || result.data.role === "MLGOO_DILG";
-            targetPath = isAdmin ? "/admin/dashboard" : "/blgu/dashboard";
+            const isAssessor = result.data.role === "AREA_ASSESSOR";
+            
+            if (isAdmin) {
+              targetPath = "/mlgoo/dashboard";
+            } else if (isAssessor) {
+              targetPath = "/assessor/submissions";
+            } else {
+              targetPath = "/blgu/dashboard";
+            }
           }
           
           router.replace(targetPath);
         } else if (result.error) {
           console.error("Failed to fetch user data:", result.error);
           // Even if user fetch fails, we can still redirect to dashboard
-          router.replace("/blgu/dashboard");
+          // Since we don't have user data, redirect to login to be safe
+          router.replace("/login");
         }
         // Reset the flag
         setShouldFetchUser(false);

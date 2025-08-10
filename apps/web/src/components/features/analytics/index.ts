@@ -1,5 +1,16 @@
-export { AnalyticsHeader } from './AnalyticsHeader';
-export { OfficialPerformanceWidget } from './OfficialPerformanceWidget';
-export { CrossMatchingWidget } from './CrossMatchingWidget';
-export { SystemicWeaknessWidget } from './SystemicWeaknessWidget';
-export { AIRecommendationsWidget } from './AIRecommendationsWidget'; 
+// Types
+export * from "./AssessorAnalyticsTypes";
+
+// Utilities
+export * from "./AssessorAnalyticsUtils";
+
+// Data
+export * from "./AssessorAnalyticsData";
+
+// Components
+export { GlobalFilter } from "./GlobalFilter";
+export { PerformanceOverviewWidget } from "./PerformanceOverviewWidget";
+export { PerformanceHotspotsWidget } from "./PerformanceHotspotsWidget";
+export { WorkflowMetricsWidget } from "./WorkflowMetricsWidget";
+export { WeaknessDetailModal } from "./WeaknessDetailModal";
+export { AnalyticsSkeleton } from "./AnalyticsSkeleton";

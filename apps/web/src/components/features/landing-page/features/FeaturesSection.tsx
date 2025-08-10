@@ -169,7 +169,7 @@ export function FeaturesSection() {
           <div className="relative group h-full">
             <div className="w-full h-full min-h-[500px] rounded-2xl shadow-2xl overflow-hidden relative">
               <Image
-                src="/Day_Care_Center.jpg"
+                src="/Scenery/Day_Care_Center.jpg"
                 alt="Modern day care center facility showcasing community development and local governance infrastructure"
                 fill
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"

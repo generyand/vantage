@@ -27,7 +27,10 @@ export default function UserListSection() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
-  const { data, isLoading, error } = useUsers() as {
+  const { data, isLoading, error } = useUsers({
+    page: 1,
+    size: 100, // Fetch up to 100 users to show all users
+  }) as {
     data?: UserListResponse;
     isLoading: boolean;
     error: unknown;
@@ -57,10 +60,10 @@ export default function UserListSection() {
     return {
       users: paginatedUsers,
       totalPages,
-      totalUsers: filtered.length,
+      totalUsers: data.total || filtered.length, // Use API total if available
       allFilteredUsers: filtered,
     };
-  }, [data?.users, searchQuery, currentPage]);
+  }, [data?.users, data?.total, searchQuery, currentPage]);
 
   // Reset to first page when search changes
   React.useEffect(() => {
@@ -81,7 +84,26 @@ export default function UserListSection() {
     return <UserManagementSkeleton />;
   }
   if (error) {
-    return <div className="text-red-500">Error loading users.</div>;
+    console.error('User loading error:', error);
+    return (
+      <div className="text-center py-8">
+        <div className="text-red-500 mb-4">
+          <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+          <h3 className="text-lg font-semibold mb-2">Error Loading Users</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            Unable to fetch user data. Please check your connection and try again.
+          </p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-blue-600 text-white rounded-sm hover:bg-blue-700 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
   if (!data || !data.users) {
     return <div className="text-[var(--muted-foreground)]">No users found.</div>;
@@ -100,7 +122,7 @@ export default function UserListSection() {
                   Total Users
                 </p>
                 <p className="text-3xl font-bold text-[var(--foreground)]">
-                  {data.users.length}
+                  {data.total || data.users.length}
                 </p>
               </div>
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-sm flex items-center justify-center">

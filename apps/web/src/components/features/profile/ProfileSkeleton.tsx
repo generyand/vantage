@@ -45,14 +45,14 @@ export function ProfileSkeleton() {
                         </div>
                       </div>
                       
-                      {/* Assigned Barangay */}
+                      {/* Mobile Number */}
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
                           <Skeleton className="h-4 w-4" />
-                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-4 w-28" />
                         </div>
                         <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
-                          <Skeleton className="h-5 w-28" />
+                          <Skeleton className="h-5 w-32" />
                         </div>
                       </div>
                       
@@ -64,6 +64,28 @@ export function ProfileSkeleton() {
                         </div>
                         <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
                           <Skeleton className="h-5 w-24" />
+                        </div>
+                      </div>
+                      
+                      {/* Assigned Barangay (for BLGU users) */}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Skeleton className="h-4 w-4" />
+                          <Skeleton className="h-4 w-32" />
+                        </div>
+                        <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
+                          <Skeleton className="h-5 w-28" />
+                        </div>
+                      </div>
+                      
+                      {/* Assigned Governance Area (for Assessors) */}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Skeleton className="h-4 w-4" />
+                          <Skeleton className="h-4 w-40" />
+                        </div>
+                        <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)]">
+                          <Skeleton className="h-5 w-36" />
                         </div>
                       </div>
                     </div>
