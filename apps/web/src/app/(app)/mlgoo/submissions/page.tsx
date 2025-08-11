@@ -150,33 +150,33 @@ export default function AdminSubmissionsPage() {
   const getStatusConfig = (status: string) => {
     const configs = {
       "Submitted for Review": {
-        bg: "bg-yellow-100 dark:bg-yellow-900/30",
-        text: "text-yellow-800 dark:text-yellow-300",
+        bgColor: 'var(--analytics-warning-bg)',
+        textColor: 'var(--analytics-warning-text)',
         icon: Clock,
       },
       "In Progress": {
-        bg: "bg-blue-100 dark:bg-blue-900/30",
-        text: "text-blue-800 dark:text-blue-300",
+        bgColor: 'var(--kpi-blue-from)',
+        textColor: 'var(--kpi-blue-text)',
         icon: Clock,
       },
       Finalized: {
-        bg: "bg-purple-100 dark:bg-purple-900/30",
-        text: "text-purple-800 dark:text-purple-300",
+        bgColor: 'var(--kpi-purple-from)',
+        textColor: 'var(--kpi-purple-text)',
         icon: CheckCircle,
       },
       "Not Started": {
-        bg: "bg-gray-100 dark:bg-gray-900/30",
-        text: "text-gray-800 dark:text-gray-300",
+        bgColor: 'var(--analytics-neutral-bg)',
+        textColor: 'var(--analytics-neutral-text)',
         icon: XCircle,
       },
       "Needs Rework": {
-        bg: "bg-orange-100 dark:bg-orange-900/30",
-        text: "text-orange-800 dark:text-orange-300",
+        bgColor: 'var(--analytics-warning-bg)',
+        textColor: 'var(--analytics-warning-text)',
         icon: AlertTriangle,
       },
       Validated: {
-        bg: "bg-green-100 dark:bg-green-900/30",
-        text: "text-green-800 dark:text-green-300",
+        bgColor: 'var(--analytics-success-bg)',
+        textColor: 'var(--analytics-success-text)',
         icon: CheckCircle,
       },
     };
@@ -184,10 +184,10 @@ export default function AdminSubmissionsPage() {
   };
 
   const getProgressBarColor = (progress: number) => {
-    if (progress >= 90) return "bg-green-500";
-    if (progress >= 70) return "bg-yellow-500";
-    if (progress >= 40) return "bg-orange-500";
-    return "bg-red-500";
+    if (progress >= 90) return "var(--analytics-success)";
+    if (progress >= 70) return "var(--analytics-warning)";
+    if (progress >= 40) return "var(--analytics-warning)";
+    return "var(--analytics-danger)";
   };
 
   const handleViewDetails = (submission: Submission) => {
@@ -210,7 +210,7 @@ export default function AdminSubmissionsPage() {
           {/* Filters & Search */}
           <div className="bg-[var(--card)] border border-[var(--border)] rounded-sm shadow-lg p-6">
             <div className="flex items-center gap-3 mb-6">
-              <Filter className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <Filter className="h-5 w-5" style={{ color: 'var(--kpi-blue-text)' }} />
               <h2 className="text-lg font-semibold text-[var(--foreground)]">
                 Filters & Search
               </h2>
@@ -256,37 +256,37 @@ export default function AdminSubmissionsPage() {
                       <SelectContent className="bg-[var(--card)] border border-[var(--border)] shadow-xl rounded-sm z-50">
                         <SelectItem
                           value="all"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           All Statuses
                         </SelectItem>
                         <SelectItem
                           value="submitted"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           Submitted for Review
                         </SelectItem>
                         <SelectItem
                           value="progress"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           In Progress
                         </SelectItem>
                         <SelectItem
                           value="finalized"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           Finalized
                         </SelectItem>
                         <SelectItem
                           value="rework"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           Needs Rework
                         </SelectItem>
                         <SelectItem
                           value="validated"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           Validated
                         </SelectItem>
@@ -306,25 +306,25 @@ export default function AdminSubmissionsPage() {
                       <SelectContent className="bg-[var(--card)] border border-[var(--border)] shadow-xl rounded-sm z-50">
                         <SelectItem
                           value="all"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           All Areas
                         </SelectItem>
                         <SelectItem
                           value="financial"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           Financial Administration
                         </SelectItem>
                         <SelectItem
                           value="disaster"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           Disaster Preparedness
                         </SelectItem>
                         <SelectItem
                           value="safety"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           Safety & Peace Order
                         </SelectItem>
@@ -347,19 +347,19 @@ export default function AdminSubmissionsPage() {
                       <SelectContent className="bg-[var(--card)] border border-[var(--border)] shadow-xl rounded-sm z-50">
                         <SelectItem
                           value="all"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           All Assessors
                         </SelectItem>
                         <SelectItem
                           value="john"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           John Doe
                         </SelectItem>
                         <SelectItem
                           value="jane"
-                          className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                          className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                         >
                           Jane Smith
                         </SelectItem>
@@ -439,14 +439,13 @@ export default function AdminSubmissionsPage() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="flex-1 bg-[var(--border)] rounded-sm h-3 min-w-[100px]">
-                              <div
-                                className={`h-3 rounded-sm transition-all duration-300 ${getProgressBarColor(
-                                  submission.overallProgress
-                                )}`}
-                                style={{
-                                  width: `${submission.overallProgress}%`,
-                                }}
-                              />
+                                                          <div
+                              className="h-3 rounded-sm transition-all duration-300"
+                              style={{
+                                backgroundColor: getProgressBarColor(submission.overallProgress),
+                                width: `${submission.overallProgress}%`,
+                              }}
+                            />
                             </div>
                             <span className="text-sm font-medium text-[var(--foreground)] min-w-[35px]">
                               {submission.overallProgress}%
@@ -455,7 +454,11 @@ export default function AdminSubmissionsPage() {
                         </td>
                         <td className="px-6 py-4">
                           <div
-                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-sm text-xs font-medium ${statusConfig.bg} ${statusConfig.text}`}
+                            className="inline-flex items-center gap-2 px-3 py-1 rounded-sm text-xs font-medium"
+                            style={{
+                              backgroundColor: statusConfig.bgColor,
+                              color: statusConfig.textColor
+                            }}
                           >
                             <StatusIcon className="h-3 w-3" />
                             {submission.currentStatus}
@@ -465,13 +468,14 @@ export default function AdminSubmissionsPage() {
                           <div className="flex items-center gap-2">
                             {submission.assignedAssessors.length > 0 ? (
                               submission.assignedAssessors.map((assessor) => (
-                                <div
-                                  key={assessor.id}
-                                  className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                                  title={assessor.name}
-                                >
-                                  {assessor.avatar}
-                                </div>
+                                                            <div
+                              key={assessor.id}
+                              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                              style={{ backgroundColor: 'var(--analytics-danger)' }}
+                              title={assessor.name}
+                            >
+                              {assessor.avatar}
+                            </div>
                               ))
                             ) : (
                               <span className="text-sm text-[var(--muted-foreground)] italic">
@@ -491,7 +495,7 @@ export default function AdminSubmissionsPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleViewDetails(submission)}
-                              className="bg-[var(--background)] hover:bg-blue-50 dark:hover:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 rounded-sm font-medium transition-colors duration-200"
+                              className="bg-[var(--background)] hover:bg-[var(--kpi-blue-from)] border-[var(--border)] text-[var(--foreground)] rounded-sm font-medium transition-colors duration-200"
                             >
                               <Eye className="h-4 w-4 mr-1" />
                               View
@@ -500,7 +504,7 @@ export default function AdminSubmissionsPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleSendReminder(submission)}
-                              className="bg-[var(--background)] hover:bg-orange-50 dark:hover:bg-orange-900/20 border-orange-200 dark:border-orange-700 text-orange-700 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 rounded-sm font-medium transition-colors duration-200"
+                              className="bg-[var(--background)] hover:bg-[var(--analytics-warning-bg)] border-[var(--border)] text-[var(--foreground)] rounded-sm font-medium transition-colors duration-200"
                             >
                               <Send className="h-4 w-4 mr-1" />
                               Remind

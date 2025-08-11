@@ -24,15 +24,19 @@ export function SubmissionsTable({ submissions, onSubmissionClick }: Submissions
 
   const getStatusBadge = (status: BarangaySubmission['areaStatus']) => {
     const statusConfig = {
-      awaiting_review: { label: 'Awaiting Review', color: 'bg-blue-100 text-blue-800' },
-      in_progress: { label: 'In Progress', color: 'bg-yellow-100 text-yellow-800' },
-      needs_rework: { label: 'Needs Rework', color: 'bg-orange-100 text-orange-800' },
-      validated: { label: 'Validated', color: 'bg-green-100 text-green-800' },
+      awaiting_review: { label: 'Awaiting Review', color: 'text-[var(--kpi-blue-text)]', bgColor: 'var(--kpi-blue-bg)' },
+      in_progress: { label: 'In Progress', color: 'text-[var(--kpi-orange-text)]', bgColor: 'var(--kpi-orange-bg)' },
+      needs_rework: { label: 'Needs Rework', color: 'text-[var(--kpi-orange-text)]', bgColor: 'var(--kpi-orange-bg)' },
+      validated: { label: 'Validated', color: 'text-[var(--kpi-green-text)]', bgColor: 'var(--kpi-green-bg)' },
     };
 
     const config = statusConfig[status];
     return (
-      <Badge variant="secondary" className={config.color}>
+      <Badge 
+        variant="secondary" 
+        className={`${config.color} border-0`}
+        style={{ backgroundColor: config.bgColor }}
+      >
         {config.label}
       </Badge>
     );
@@ -40,17 +44,21 @@ export function SubmissionsTable({ submissions, onSubmissionClick }: Submissions
 
   const getOverallStatusBadge = (status: BarangaySubmission['overallStatus']) => {
     const statusConfig = {
-      draft: { label: 'Draft', color: 'bg-gray-100 text-gray-800' },
-      submitted: { label: 'Submitted', color: 'bg-blue-100 text-blue-800' },
-      under_review: { label: 'Under Review', color: 'bg-yellow-100 text-yellow-800' },
-      needs_rework: { label: 'Needs Rework', color: 'bg-orange-100 text-orange-800' },
-      validated: { label: 'Validated', color: 'bg-green-100 text-green-800' },
-      completed: { label: 'Completed', color: 'bg-purple-100 text-purple-800' },
+      draft: { label: 'Draft', color: 'text-[var(--text-muted)]', bgColor: 'var(--muted)' },
+      submitted: { label: 'Submitted', color: 'text-[var(--kpi-blue-text)]', bgColor: 'var(--kpi-blue-bg)' },
+      under_review: { label: 'Under Review', color: 'text-[var(--kpi-orange-text)]', bgColor: 'var(--kpi-orange-bg)' },
+      needs_rework: { label: 'Needs Rework', color: 'text-[var(--kpi-orange-text)]', bgColor: 'var(--kpi-orange-bg)' },
+      validated: { label: 'Validated', color: 'text-[var(--kpi-green-text)]', bgColor: 'var(--kpi-green-bg)' },
+      completed: { label: 'Completed', color: 'text-[var(--kpi-purple-text)]', bgColor: 'var(--kpi-purple-bg)' },
     };
 
     const config = statusConfig[status];
     return (
-      <Badge variant="secondary" className={`${config.color} text-xs`}>
+      <Badge 
+        variant="secondary" 
+        className={`${config.color} text-xs border-0`}
+        style={{ backgroundColor: config.bgColor }}
+      >
         {config.label}
       </Badge>
     );

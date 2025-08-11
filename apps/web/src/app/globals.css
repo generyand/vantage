@@ -9,12 +9,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* Force dark mode background on root elements */
-html.dark,
-html.dark body {
-  background-color: #212529 !important;
-  background: #212529 !important;
-}
+/* Theme-aware background styling - no forced overrides */
 
 
 
@@ -74,6 +69,85 @@ html.dark body {
   --cityscape-yellow-dark: #f59e0b;
   --cityscape-accent: #fbbf24;
   --cityscape-accent-foreground: #000000;
+
+  /* KPI Card Theme Colors - Light Mode */
+  --kpi-blue-from: #eff6ff;
+  --kpi-blue-to: #dbeafe;
+  --kpi-blue-text: #1d4ed8;
+  --kpi-blue-bg: #dbeafe;
+  --kpi-blue-progress: #2563eb;
+  
+  --kpi-orange-from: #fff7ed;
+  --kpi-orange-to: #fed7aa;
+  --kpi-orange-text: #c2410c;
+  --kpi-orange-bg: #fed7aa;
+  --kpi-orange-progress: #ea580c;
+  
+  --kpi-green-from: #f0fdf4;
+  --kpi-green-to: #dcfce7;
+  --kpi-green-text: #166534;
+  --kpi-green-bg: #dcfce7;
+  --kpi-green-progress: #16a34a;
+  
+  --kpi-purple-from: #faf5ff;
+  --kpi-purple-to: #e9d5ff;
+  --kpi-purple-text: #7c3aed;
+  --kpi-purple-bg: #e9d5ff;
+  --kpi-purple-progress: #8b5cf6;
+
+  /* Dashboard KPI Card Variants - Light Mode */
+  --dashboard-default-from: #eff6ff80;
+  --dashboard-default-via: #e0e7ff99;
+  --dashboard-default-to: #faf5ff66;
+  --dashboard-default-icon-bg: #dbeafe;
+  --dashboard-default-icon-text: #2563eb;
+  --dashboard-default-accent: #2563eb;
+  
+  --dashboard-success-from: #ecfdf580;
+  --dashboard-success-via: #f0fdf499;
+  --dashboard-success-to: #f0fdfa66;
+  --dashboard-success-icon-bg: #dcfce7;
+  --dashboard-success-icon-text: #16a34a;
+  --dashboard-success-accent: #16a34a;
+  
+  --dashboard-warning-from: #fffbeb80;
+  --dashboard-warning-via: #fef3c799;
+  --dashboard-warning-to: #fef2f266;
+  --dashboard-warning-icon-bg: #fed7aa;
+  --dashboard-warning-icon-text: #ea580c;
+  --dashboard-warning-accent: #ea580c;
+  
+  --dashboard-danger-from: #fef2f280;
+  --dashboard-danger-via: #fce7f399;
+  --dashboard-danger-to: #fdf2f866;
+  --dashboard-danger-icon-bg: #fecaca;
+  --dashboard-danger-icon-text: #dc2626;
+  --dashboard-danger-accent: #dc2626;
+
+  /* Analytics Chart Colors - Light Mode */
+  --analytics-success: #10b981;
+  --analytics-success-bg: #ecfdf5;
+  --analytics-success-border: #d1fae5;
+  --analytics-success-text: #065f46;
+  --analytics-success-text-light: #047857;
+  
+  --analytics-danger: #ef4444;
+  --analytics-danger-bg: #fef2f2;
+  --analytics-danger-border: #fecaca;
+  --analytics-danger-text: #991b1b;
+  --analytics-danger-text-light: #dc2626;
+  
+  --analytics-warning: #f59e0b;
+  --analytics-warning-bg: #fffbeb;
+  --analytics-warning-border: #fed7aa;
+  --analytics-warning-text: #92400e;
+  --analytics-warning-text-light: #d97706;
+  
+  --analytics-neutral: #6b7280;
+  --analytics-neutral-bg: #f9fafb;
+  --analytics-neutral-border: #e5e7eb;
+  --analytics-neutral-text: #374151;
+  --analytics-neutral-text-light: #4b5563;
 
   /* Form and system */
   --input: #f8f9fa;
@@ -153,6 +227,85 @@ html.dark body {
   --cityscape-yellow-dark: #f59e0b;
   --cityscape-accent: #fbbf24;
   --cityscape-accent-foreground: #000000;
+  
+  /* KPI Card Theme Colors - Dark Mode */
+  --kpi-blue-from: #1e3a8a20;
+  --kpi-blue-to: #1e40af20;
+  --kpi-blue-text: #93c5fd;
+  --kpi-blue-bg: #1e40af30;
+  --kpi-blue-progress: #60a5fa;
+  
+  --kpi-orange-from: #ea580c20;
+  --kpi-orange-to: #c2410c20;
+  --kpi-orange-text: #fdba74;
+  --kpi-orange-bg: #ea580c30;
+  --kpi-orange-progress: #fb923c;
+  
+  --kpi-green-from: #16a34a20;
+  --kpi-green-to: #15803d20;
+  --kpi-green-text: #86efac;
+  --kpi-green-bg: #16a34a30;
+  --kpi-green-progress: #4ade80;
+  
+  --kpi-purple-from: #7c3aed20;
+  --kpi-purple-to: #6d28d920;
+  --kpi-purple-text: #c4b5fd;
+  --kpi-purple-bg: #7c3aed30;
+  --kpi-purple-progress: #a78bfa;
+  
+  /* Dashboard KPI Card Variants - Dark Mode */
+  --dashboard-default-from: #1e3a8a20;
+  --dashboard-default-via: #1e40af30;
+  --dashboard-default-to: #7c3aed20;
+  --dashboard-default-icon-bg: #1e40af30;
+  --dashboard-default-icon-text: #93c5fd;
+  --dashboard-default-accent: #93c5fd;
+  
+  --dashboard-success-from: #16a34a20;
+  --dashboard-success-via: #15803d30;
+  --dashboard-success-to: #14b8a620;
+  --dashboard-success-icon-bg: #16a34a30;
+  --dashboard-success-icon-text: #86efac;
+  --dashboard-success-accent: #86efac;
+  
+  --dashboard-warning-from: #ea580c20;
+  --dashboard-warning-via: #c241c030;
+  --dashboard-warning-to: #dc262620;
+  --dashboard-warning-icon-bg: #ea580c30;
+  --dashboard-warning-icon-text: #fdba74;
+  --dashboard-warning-accent: #fdba74;
+  
+  --dashboard-danger-from: #dc262620;
+  --dashboard-danger-via: #ec489930;
+  --dashboard-danger-to: #f4338f20;
+  --dashboard-danger-icon-bg: #dc262630;
+  --dashboard-danger-icon-text: #fca5a5;
+  --dashboard-danger-accent: #fca5a5;
+  
+  /* Analytics Chart Colors - Dark Mode */
+  --analytics-success: #4ade80;
+  --analytics-success-bg: #16a34a20;
+  --analytics-success-border: #16a34a40;
+  --analytics-success-text: #86efac;
+  --analytics-success-text-light: #4ade80;
+  
+  --analytics-danger: #f87171;
+  --analytics-danger-bg: #dc262620;
+  --analytics-danger-border: #dc262640;
+  --analytics-danger-text: #fca5a5;
+  --analytics-danger-text-light: #f87171;
+  
+  --analytics-warning: #fbbf24;
+  --analytics-warning-bg: #f59e0b20;
+  --analytics-warning-border: #f59e0b40;
+  --analytics-warning-text: #fcd34d;
+  --analytics-warning-text-light: #fbbf24;
+  
+  --analytics-neutral: #9ca3af;
+  --analytics-neutral-bg: #6b728020;
+  --analytics-neutral-border: #6b728040;
+  --analytics-neutral-text: #d1d5db;
+  --analytics-neutral-text-light: #9ca3af;
   
   /* shadcn/ui oklch variables (for compatibility) */
   --card-foreground: oklch(0.985 0 0);
@@ -319,6 +472,7 @@ html.dark body {
 @layer base {
   .shadcn-ui {
     /* Used to scope shadcn/ui overrides if needed */
+    color: inherit;
   }
   
   /* Ensure dark mode background is applied to root elements */

@@ -51,7 +51,7 @@ export function OfficialPerformanceWidget({ data, period }: OfficialPerformanceW
                   cy="50"
                   r="45"
                   fill="none"
-                  stroke="#e5e7eb"
+                  stroke="var(--analytics-neutral-border)"
                   strokeWidth="8"
                 />
                 {/* Passed segment */}
@@ -60,7 +60,7 @@ export function OfficialPerformanceWidget({ data, period }: OfficialPerformanceW
                   cy="50"
                   r="45"
                   fill="none"
-                  stroke="#10b981"
+                  stroke="var(--analytics-success)"
                   strokeWidth="8"
                   strokeDasharray={`${passedDashArray} ${circumference}`}
                   strokeDashoffset="0"
@@ -72,7 +72,7 @@ export function OfficialPerformanceWidget({ data, period }: OfficialPerformanceW
                   cy="50"
                   r="45"
                   fill="none"
-                  stroke="#ef4444"
+                  stroke="var(--analytics-danger)"
                   strokeWidth="8"
                   strokeDasharray={`${failedDashArray} ${circumference}`}
                   strokeDashoffset={`-${passedDashArray}`}
@@ -84,7 +84,7 @@ export function OfficialPerformanceWidget({ data, period }: OfficialPerformanceW
                   cy="50"
                   r="45"
                   fill="none"
-                  stroke="#6b7280"
+                  stroke="var(--analytics-neutral)"
                   strokeWidth="8"
                   strokeDasharray={`${notAssessedDashArray} ${circumference}`}
                   strokeDashoffset={`-${passedDashArray + failedDashArray}`}
@@ -92,24 +92,33 @@ export function OfficialPerformanceWidget({ data, period }: OfficialPerformanceW
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-2xl font-bold text-gray-900">{data.passed}</div>
-                <div className="text-sm text-gray-600">/ {data.totalBarangays} Passers</div>
+                <div className="text-2xl font-bold text-[var(--foreground)]">{data.passed}</div>
+                <div className="text-sm text-[var(--text-secondary)]">/ {data.totalBarangays} Passers</div>
               </div>
             </div>
             
             {/* Legend */}
             <div className="mt-4 space-y-2">
               <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-sm">Passed ({data.passed})</span>
+                <div 
+                  className="w-3 h-3 rounded-full" 
+                  style={{ backgroundColor: 'var(--analytics-success)' }}
+                ></div>
+                <span className="text-sm text-[var(--text-primary)]">Passed ({data.passed})</span>
               </div>
               <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <span className="text-sm">Failed ({data.failed})</span>
+                <div 
+                  className="w-3 h-3 rounded-full" 
+                  style={{ backgroundColor: 'var(--analytics-danger)' }}
+                ></div>
+                <span className="text-sm text-[var(--text-primary)]">Failed ({data.failed})</span>
               </div>
               <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
-                <span className="text-sm">Not Assessed ({data.notAssessed})</span>
+                <div 
+                  className="w-3 h-3 rounded-full" 
+                  style={{ backgroundColor: 'var(--analytics-neutral)' }}
+                ></div>
+                <span className="text-sm text-[var(--text-primary)]">Not Assessed ({data.notAssessed})</span>
               </div>
             </div>
           </div>
@@ -117,9 +126,9 @@ export function OfficialPerformanceWidget({ data, period }: OfficialPerformanceW
           {/* Data Table */}
           <div>
             <div className="mb-4">
-              <h4 className="text-lg font-semibold mb-2">Officially Passed Barangays</h4>
-              <p className="text-sm text-gray-600">
-                Pass Rate: <span className="font-semibold text-green-600">{passRate}%</span>
+              <h4 className="text-lg font-semibold mb-2 text-[var(--foreground)]">Officially Passed Barangays</h4>
+              <p className="text-sm text-[var(--text-secondary)]">
+                Pass Rate: <span className="font-semibold" style={{ color: 'var(--analytics-success-text-light)' }}>{passRate}%</span>
               </p>
             </div>
             
@@ -138,7 +147,11 @@ export function OfficialPerformanceWidget({ data, period }: OfficialPerformanceW
                       <TableCell className="font-medium">{barangay.name}</TableCell>
                       <TableCell>{barangay.score}%</TableCell>
                       <TableCell>
-                        <Badge variant="default" className="bg-green-500">
+                        <Badge 
+                          variant="default" 
+                          className="border-0 text-white"
+                          style={{ backgroundColor: 'var(--analytics-success)' }}
+                        >
                           Passed
                         </Badge>
                       </TableCell>

@@ -12,13 +12,16 @@ export function PerformanceOverviewWidget({ data }: PerformanceOverviewWidgetPro
   const failedPercentage = (performance.failed / performance.totalAssessed) * 100;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-sm border border-gray-200 dark:border-gray-700 p-8 shadow-sm hover:shadow-md transition-shadow duration-200">
+    <div className="bg-[var(--card)] rounded-sm border border-[var(--border)] p-8 shadow-sm hover:shadow-md transition-shadow duration-200">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+        <h3 className="text-xl font-bold text-[var(--foreground)]">
           Official Performance in {data.name}
         </h3>
-        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+        <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+          <div 
+            className="w-2 h-2 rounded-full" 
+            style={{ backgroundColor: 'var(--analytics-success)' }}
+          ></div>
           <span>Live Data</span>
         </div>
       </div>
@@ -33,16 +36,14 @@ export function PerformanceOverviewWidget({ data }: PerformanceOverviewWidgetPro
             >
               {/* Background circle */}
               <path
-                className="text-gray-200 dark:text-gray-700"
-                stroke="currentColor"
+                stroke="var(--analytics-neutral-border)"
                 strokeWidth="2.5"
                 fill="transparent"
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               />
               {/* Passed segment */}
               <path
-                className="text-emerald-500"
-                stroke="currentColor"
+                stroke="var(--analytics-success)"
                 strokeWidth="2.5"
                 fill="transparent"
                 strokeDasharray={`${passedPercentage} ${100 - passedPercentage}`}
@@ -52,8 +53,7 @@ export function PerformanceOverviewWidget({ data }: PerformanceOverviewWidgetPro
               />
               {/* Failed segment */}
               <path
-                className="text-red-500"
-                stroke="currentColor"
+                stroke="var(--analytics-danger)"
                 strokeWidth="2.5"
                 fill="transparent"
                 strokeDasharray={`${failedPercentage} ${100 - failedPercentage}`}
@@ -64,10 +64,10 @@ export function PerformanceOverviewWidget({ data }: PerformanceOverviewWidgetPro
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+                <div className="text-3xl font-bold text-[var(--foreground)] mb-1">
                   {performance.passed} / {performance.totalAssessed}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Passers</div>
+                <div className="text-sm text-[var(--text-secondary)]">Passers</div>
               </div>
             </div>
           </div>
@@ -75,14 +75,20 @@ export function PerformanceOverviewWidget({ data }: PerformanceOverviewWidgetPro
           {/* Legend */}
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
+              <div 
+                className="w-3 h-3 rounded-full" 
+                style={{ backgroundColor: 'var(--analytics-success)' }}
+              ></div>
+              <span className="text-sm text-[var(--text-primary)]">
                 Passed ({performance.passed})
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
+              <div 
+                className="w-3 h-3 rounded-full" 
+                style={{ backgroundColor: 'var(--analytics-danger)' }}
+              ></div>
+              <span className="text-sm text-[var(--text-primary)]">
                 Failed ({performance.failed})
               </span>
             </div>
@@ -91,36 +97,54 @@ export function PerformanceOverviewWidget({ data }: PerformanceOverviewWidgetPro
 
         {/* Enhanced Key Data Points */}
         <div className="space-y-4">
-          <div className="bg-gray-50 dark:bg-gray-700 rounded-sm p-4 border border-gray-100 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
+          <div 
+            className="rounded-sm p-4 border hover:opacity-90 transition-all duration-200"
+            style={{
+              backgroundColor: 'var(--analytics-neutral-bg)',
+              borderColor: 'var(--analytics-neutral-border)'
+            }}
+          >
             <div className="flex justify-between items-center">
-              <span className="text-gray-600 dark:text-gray-300 font-medium">
+              <span className="font-medium" style={{ color: 'var(--analytics-neutral-text)' }}>
                 Total Barangays Assessed
               </span>
-              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              <span className="text-2xl font-bold text-[var(--foreground)]">
                 {performance.totalAssessed}
               </span>
             </div>
           </div>
 
-          <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-sm p-4 border border-emerald-200 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors duration-200">
+          <div 
+            className="rounded-sm p-4 border hover:opacity-90 transition-all duration-200"
+            style={{
+              backgroundColor: 'var(--analytics-success-bg)',
+              borderColor: 'var(--analytics-success-border)'
+            }}
+          >
             <div className="flex justify-between items-center">
-              <span className="text-emerald-700 dark:text-emerald-300 font-medium">
+              <span className="font-medium" style={{ color: 'var(--analytics-success-text)' }}>
                 Pass Rate for this Area
               </span>
               <div className="text-right">
-                <span className="text-2xl font-bold text-emerald-800 dark:text-emerald-200">
+                <span className="text-2xl font-bold" style={{ color: 'var(--analytics-success-text-light)' }}>
                   {performance.passRate}%
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="bg-red-50 dark:bg-red-900/20 rounded-sm p-4 border border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors duration-200">
+          <div 
+            className="rounded-sm p-4 border hover:opacity-90 transition-all duration-200"
+            style={{
+              backgroundColor: 'var(--analytics-danger-bg)',
+              borderColor: 'var(--analytics-danger-border)'
+            }}
+          >
             <div className="flex justify-between items-center">
-              <span className="text-red-700 dark:text-red-300 font-medium">
+              <span className="font-medium" style={{ color: 'var(--analytics-danger-text)' }}>
                 Failed Barangays
               </span>
-              <span className="text-2xl font-bold text-red-800 dark:text-red-200">
+              <span className="text-2xl font-bold" style={{ color: 'var(--analytics-danger-text-light)' }}>
                 {performance.failed}
               </span>
             </div>

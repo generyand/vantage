@@ -4,6 +4,7 @@
 import { usePostAuthLogout } from "@vantage/shared";
 import { useAuthStore } from "@/store/useAuthStore";
 import { User, LogOut, Loader2 } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
 
 /**
  * User navigation component with logout functionality
@@ -92,8 +93,24 @@ export default function UserNav() {
         </div>
       </div>
 
-      {/* Logout Button */}
-      <div className="px-2 py-2">
+      {/* Theme Toggle and Logout Section */}
+      <div className="px-2 py-2 space-y-2">
+        {/* Theme Toggle */}
+        <div className="flex items-center justify-between px-1">
+          <span className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wide">
+            Theme
+          </span>
+          <ThemeToggle 
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8 hover:bg-[var(--hover)] hover:text-[var(--foreground)]"
+          />
+        </div>
+        
+        {/* Divider */}
+        <div className="h-px bg-[var(--border)] mx-1"></div>
+        
+        {/* Logout Button */}
         <button
           onClick={handleLogout}
           disabled={logoutMutation.isPending}
