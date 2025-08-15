@@ -34,14 +34,13 @@ export function ThemeProvider({
   const [theme, setTheme] = useState<Theme>(defaultTheme);
   const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('light');
 
-  // Always use system theme - no manual override
-  // useEffect(() => {
-  //   // Load theme from localStorage on mount
-  //   const savedTheme = localStorage.getItem(storageKey) as Theme;
-  //   if (savedTheme) {
-  //     setTheme(savedTheme);
-  //   }
-  // }, [storageKey]);
+  useEffect(() => {
+    // Load theme from localStorage on mount
+    const savedTheme = localStorage.getItem(storageKey) as Theme;
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
+  }, [storageKey]);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -62,8 +61,8 @@ export function ThemeProvider({
     root.classList.add(resolvedTheme);
     setActualTheme(resolvedTheme);
 
-    // No need to save theme - always follows system
-    // localStorage.setItem(storageKey, theme);
+    // Save theme preference to localStorage
+    localStorage.setItem(storageKey, theme);
   }, [theme, storageKey]);
 
   // Listen for system theme changes when using 'system' theme

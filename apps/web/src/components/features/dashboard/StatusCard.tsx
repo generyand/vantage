@@ -131,7 +131,7 @@ export function StatusCard({ status, progress }: StatusCardProps) {
           buttonAction: () => router.push("/blgu/assessments"),
           primaryColor: "#3b82f6",
           accentColor: "text-blue-500",
-          icon: <TrendingUp className="h-5 w-5 text-blue-500" />,
+          icon: <TrendingUp className="h-5 w-5" style={{ color: 'var(--kpi-blue-text)' }} />,
         };
       case "needs-rework":
         return {
@@ -141,7 +141,7 @@ export function StatusCard({ status, progress }: StatusCardProps) {
           buttonAction: () => router.push("/blgu/assessments"),
           primaryColor: "#f59e0b",
           accentColor: "text-amber-500",
-          icon: <AlertTriangle className="h-5 w-5 text-amber-500" />,
+          icon: <AlertTriangle className="h-5 w-5" style={{ color: 'var(--analytics-warning-text)' }} />,
         };
       case "submitted":
         return {
@@ -151,7 +151,7 @@ export function StatusCard({ status, progress }: StatusCardProps) {
           buttonAction: () => router.push("/blgu/assessments"),
           primaryColor: "#8b5cf6",
           accentColor: "text-purple-500",
-          icon: <CheckCircle2 className="h-5 w-5 text-purple-500" />,
+          icon: <CheckCircle2 className="h-5 w-5" style={{ color: 'var(--kpi-purple-text)' }} />,
         };
       case "validated":
         return {
@@ -161,7 +161,7 @@ export function StatusCard({ status, progress }: StatusCardProps) {
           buttonAction: () => router.push("/blgu/assessments"),
           primaryColor: "#10b981",
           accentColor: "text-emerald-500",
-          icon: <CheckCircle2 className="h-5 w-5 text-emerald-500" />,
+          icon: <CheckCircle2 className="h-5 w-5" style={{ color: 'var(--analytics-success-text)' }} />,
         };
     }
   };

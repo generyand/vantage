@@ -8,7 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
+
 
 interface StatusData {
   status: string;
@@ -24,11 +24,11 @@ interface MunicipalProgressChartProps {
 }
 
 const statusConfig = {
-  'Validated': { color: 'text-green-600 dark:text-green-400', bgColor: 'bg-green-100 dark:bg-green-900/30' },
-  'Submitted for Review': { color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-100 dark:bg-blue-900/30' },
-  'In Rework': { color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-100 dark:bg-orange-900/30' },
-  'In Progress': { color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-100 dark:bg-purple-900/30' },
-  'Not Started': { color: 'text-gray-600 dark:text-gray-300', bgColor: 'bg-gray-100 dark:bg-gray-900/30' },
+  'Validated': { color: 'var(--analytics-success-text)', bgColor: 'var(--analytics-success-bg)' },
+  'Submitted for Review': { color: 'var(--kpi-blue-text)', bgColor: 'var(--kpi-blue-from)' },
+  'In Rework': { color: 'var(--analytics-warning-text)', bgColor: 'var(--analytics-warning-bg)' },
+  'In Progress': { color: 'var(--kpi-purple-text)', bgColor: 'var(--kpi-purple-from)' },
+  'Not Started': { color: 'var(--analytics-neutral-text)', bgColor: 'var(--analytics-neutral-bg)' },
 };
 
 export function MunicipalProgressChart({ data, totalBarangays }: MunicipalProgressChartProps) {
@@ -51,7 +51,7 @@ export function MunicipalProgressChart({ data, totalBarangays }: MunicipalProgre
         <div className="space-y-4">
           {data.map((item) => {
             const config = statusConfig[item.status as keyof typeof statusConfig] || 
-                          { color: 'text-gray-600 dark:text-gray-300', bgColor: 'bg-gray-100 dark:bg-gray-900/30' };
+                          { color: 'var(--analytics-neutral-text)', bgColor: 'var(--analytics-neutral-bg)' };
             
             return (
               <TooltipProvider key={item.status}>
@@ -62,7 +62,11 @@ export function MunicipalProgressChart({ data, totalBarangays }: MunicipalProgre
                         <div className="flex items-center space-x-3">
                           <Badge 
                             variant="secondary" 
-                            className={cn('text-xs font-semibold px-3 py-1 rounded-sm', config.bgColor, config.color)}
+                            className="text-xs font-semibold px-3 py-1 rounded-sm"
+                            style={{
+                              backgroundColor: config.bgColor,
+                              color: config.color
+                            }}
                           >
                             {item.status}
                           </Badge>
@@ -81,11 +85,11 @@ export function MunicipalProgressChart({ data, totalBarangays }: MunicipalProgre
                       
                       <div className="relative w-full h-3 bg-[var(--border)] rounded-sm overflow-hidden shadow-inner">
                         <div
-                          className={cn(
-                            'h-full transition-all duration-1000 ease-out rounded-sm',
-                            config.bgColor
-                          )}
-                          style={{ width: `${item.percentage}%` }}
+                          className="h-full transition-all duration-1000 ease-out rounded-sm"
+                          style={{ 
+                            backgroundColor: config.bgColor,
+                            width: `${item.percentage}%` 
+                          }}
                         />
                       </div>
                     </div>
@@ -107,11 +111,17 @@ export function MunicipalProgressChart({ data, totalBarangays }: MunicipalProgre
         <div className="mt-6 pt-4 border-t border-[var(--border)]">
           <div className="flex items-center justify-between bg-[var(--hover)] rounded-sm p-3">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <div 
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: 'var(--kpi-blue-text)' }}
+              ></div>
               <span className="text-sm font-medium text-[var(--foreground)]">Total Barangays: {totalBarangays}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <div 
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ backgroundColor: 'var(--analytics-success)' }}
+              ></div>
               <span className="text-sm text-[var(--muted-foreground)]">Last updated: {new Date().toLocaleTimeString()}</span>
             </div>
           </div>

@@ -80,9 +80,9 @@ export function DashboardHeader({
                     <SelectTrigger className="w-20 h-8 text-sm font-semibold border-0 bg-transparent p-0 focus:ring-0">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-[var(--card)] border border-[var(--border)] shadow-lg">
                       {availableYears.map((year) => (
-                        <SelectItem key={year} value={year}>
+                        <SelectItem key={year} value={year} className="text-[var(--foreground)] hover:bg-[var(--hover)]">
                           {year}
                         </SelectItem>
                       ))}

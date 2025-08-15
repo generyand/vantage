@@ -6,4 +6,5 @@ export { default as UserNav } from './UserNav';
 export { StatusBadge } from './StatusBadge';
 export { ProgressBar } from './ProgressBar';
 export { AssessorAvatars } from './AssessorAvatars';
-export { ConfirmationDialog } from './ConfirmationDialog'; 
+export { ConfirmationDialog } from './ConfirmationDialog';
+export { ThemeToggle } from './ThemeToggle'; 

@@ -45,8 +45,11 @@ export default function AdminDashboardPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Redirecting to login...</p>
+          <div 
+            className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-4"
+            style={{ borderColor: 'var(--analytics-danger)' }}
+          ></div>
+          <p className="text-[var(--muted-foreground)]">Redirecting to login...</p>
         </div>
       </div>
     );
@@ -66,7 +69,10 @@ export default function AdminDashboardPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <div className="text-red-600 mb-4">
+          <div 
+            className="mb-4"
+            style={{ color: 'var(--analytics-danger)' }}
+          >
             <svg className="h-12 w-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
@@ -79,7 +85,11 @@ export default function AdminDashboardPage() {
           </p>
           <button 
             onClick={() => dashboardQuery.refetch()}
-            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
+            className="px-4 py-2 rounded-md transition-colors"
+            style={{
+              backgroundColor: 'var(--kpi-blue-from)',
+              color: 'var(--kpi-blue-text)'
+            }}
           >
             Retry
           </button>
@@ -134,20 +144,42 @@ export default function AdminDashboardPage() {
                   <h3 className="text-lg font-semibold text-[var(--foreground)]">System Status</h3>
                 </div>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-green-50/50 dark:bg-green-900/20 rounded-sm">
+                  <div 
+                    className="flex items-center justify-between p-3 rounded-sm"
+                    style={{ backgroundColor: 'var(--analytics-success-bg)' }}
+                  >
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <div 
+                        className="w-2 h-2 rounded-full animate-pulse"
+                        style={{ backgroundColor: 'var(--analytics-success)' }}
+                      ></div>
                       <span className="text-sm font-medium text-[var(--foreground)]">Live Data</span>
                     </div>
-                    <span className="text-xs text-green-600 dark:text-green-400 font-semibold">ACTIVE</span>
+                    <span 
+                      className="text-xs font-semibold"
+                      style={{ color: 'var(--analytics-success-text-light)' }}
+                    >
+                      ACTIVE
+                    </span>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-blue-50/50 dark:bg-blue-900/20 rounded-sm">
+                  <div 
+                    className="flex items-center justify-between p-3 rounded-sm"
+                    style={{ backgroundColor: 'var(--kpi-blue-from)' }}
+                  >
                     <span className="text-sm font-medium text-[var(--foreground)]">Last Updated</span>
                     <span className="text-xs text-[var(--muted-foreground)]">{new Date().toLocaleTimeString()}</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-purple-50/50 dark:bg-purple-900/20 rounded-sm">
+                  <div 
+                    className="flex items-center justify-between p-3 rounded-sm"
+                    style={{ backgroundColor: 'var(--kpi-purple-from)' }}
+                  >
                     <span className="text-sm font-medium text-[var(--foreground)]">Auto-refresh</span>
-                    <span className="text-xs text-purple-600 dark:text-purple-400 font-semibold">30s</span>
+                    <span 
+                      className="text-xs font-semibold"
+                      style={{ color: 'var(--kpi-purple-text)' }}
+                    >
+                      30s
+                    </span>
                   </div>
                 </div>
               </div>
@@ -161,24 +193,36 @@ export default function AdminDashboardPage() {
                 <div className="space-y-3">
                   <button 
                     onClick={() => router.push('/mlgoo/submissions')}
-                    className="group w-full text-left p-4 rounded-sm bg-blue-50/50 dark:bg-blue-900/20 border border-blue-200/50 dark:border-blue-800/50 hover:bg-blue-100/50 dark:hover:bg-blue-900/30 hover:border-blue-300/50 dark:hover:border-blue-700/50 transition-all duration-200 hover:shadow-md"
+                    className="group w-full text-left p-4 rounded-sm border hover:shadow-md transition-all duration-200 hover:opacity-90"
+                    style={{
+                      backgroundColor: 'var(--kpi-blue-from)',
+                      borderColor: 'var(--kpi-blue-border, var(--border))'
+                    }}
                   >
-                    <div className="font-semibold text-[var(--foreground)] group-hover:text-blue-900 dark:group-hover:text-blue-400">Review Submissions</div>
-                    <div className="text-sm text-[var(--muted-foreground)] group-hover:text-blue-700 dark:group-hover:text-blue-300">Check pending assessments</div>
+                    <div className="font-semibold text-[var(--foreground)]">Review Submissions</div>
+                    <div className="text-sm text-[var(--muted-foreground)]">Check pending assessments</div>
                   </button>
                   <button 
                     onClick={() => router.push('/mlgoo/reports')}
-                    className="group w-full text-left p-4 rounded-sm bg-green-50/50 dark:bg-green-900/20 border border-green-200/50 dark:border-green-800/50 hover:bg-green-100/50 dark:hover:bg-green-900/30 hover:border-green-300/50 dark:hover:border-green-700/50 transition-all duration-200 hover:shadow-md"
+                    className="group w-full text-left p-4 rounded-sm border hover:shadow-md transition-all duration-200 hover:opacity-90"
+                    style={{
+                      backgroundColor: 'var(--analytics-success-bg)',
+                      borderColor: 'var(--analytics-success-border)'
+                    }}
                   >
-                    <div className="font-semibold text-[var(--foreground)] group-hover:text-green-900 dark:group-hover:text-green-400">Generate Reports</div>
-                    <div className="text-sm text-[var(--muted-foreground)] group-hover:text-green-700 dark:group-hover:text-green-300">View analytics & insights</div>
+                    <div className="font-semibold text-[var(--foreground)]">Generate Reports</div>
+                    <div className="text-sm text-[var(--muted-foreground)]">View analytics & insights</div>
                   </button>
                   <button 
                     onClick={() => router.push('/user-management')}
-                    className="group w-full text-left p-4 rounded-sm bg-purple-50/50 dark:bg-purple-900/20 border border-purple-200/50 dark:border-purple-800/50 hover:bg-purple-100/50 dark:hover:bg-purple-900/30 hover:border-purple-300/50 dark:hover:border-purple-700/50 transition-all duration-200 hover:shadow-md"
+                    className="group w-full text-left p-4 rounded-sm border hover:shadow-md transition-all duration-200 hover:opacity-90"
+                    style={{
+                      backgroundColor: 'var(--kpi-purple-from)',
+                      borderColor: 'var(--kpi-purple-border, var(--border))'
+                    }}
                   >
-                    <div className="font-semibold text-[var(--foreground)] group-hover:text-purple-900 dark:group-hover:text-purple-400">Manage Users</div>
-                    <div className="text-sm text-[var(--muted-foreground)] group-hover:text-purple-700 dark:group-hover:text-purple-300">User accounts & permissions</div>
+                    <div className="font-semibold text-[var(--foreground)]">Manage Users</div>
+                    <div className="text-sm text-[var(--muted-foreground)]">User accounts & permissions</div>
                   </button>
                 </div>
               </div>

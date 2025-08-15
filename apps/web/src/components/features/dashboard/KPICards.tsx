@@ -8,7 +8,7 @@ import {
   AlertTriangle, 
   TrendingUp 
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+
 
 interface KPICardProps {
   title: string;
@@ -31,46 +31,62 @@ const KPICard = ({
 }: KPICardProps) => {
   const variantStyles = {
     default: {
-      bgGradient: 'from-blue-50/80 via-indigo-50/60 to-purple-50/40',
-      iconBg: 'bg-blue-100',
-      iconColor: 'text-blue-600',
-      accentColor: 'text-blue-600'
+      bgFromColor: 'var(--dashboard-default-from)',
+      bgViaColor: 'var(--dashboard-default-via)', 
+      bgToColor: 'var(--dashboard-default-to)',
+      iconBgColor: 'var(--dashboard-default-icon-bg)',
+      iconTextColor: 'var(--dashboard-default-icon-text)',
+      accentColor: 'var(--dashboard-default-accent)'
     },
     success: {
-      bgGradient: 'from-emerald-50/80 via-green-50/60 to-teal-50/40',
-      iconBg: 'bg-green-100',
-      iconColor: 'text-green-600',
-      accentColor: 'text-green-600'
+      bgFromColor: 'var(--dashboard-success-from)',
+      bgViaColor: 'var(--dashboard-success-via)',
+      bgToColor: 'var(--dashboard-success-to)', 
+      iconBgColor: 'var(--dashboard-success-icon-bg)',
+      iconTextColor: 'var(--dashboard-success-icon-text)',
+      accentColor: 'var(--dashboard-success-accent)'
     },
     warning: {
-      bgGradient: 'from-amber-50/80 via-orange-50/60 to-red-50/40',
-      iconBg: 'bg-orange-100',
-      iconColor: 'text-orange-600',
-      accentColor: 'text-orange-600'
+      bgFromColor: 'var(--dashboard-warning-from)',
+      bgViaColor: 'var(--dashboard-warning-via)',
+      bgToColor: 'var(--dashboard-warning-to)',
+      iconBgColor: 'var(--dashboard-warning-icon-bg)',
+      iconTextColor: 'var(--dashboard-warning-icon-text)',
+      accentColor: 'var(--dashboard-warning-accent)'
     },
     danger: {
-      bgGradient: 'from-red-50/80 via-pink-50/60 to-rose-50/40',
-      iconBg: 'bg-red-100',
-      iconColor: 'text-red-600',
-      accentColor: 'text-red-600'
+      bgFromColor: 'var(--dashboard-danger-from)',
+      bgViaColor: 'var(--dashboard-danger-via)',
+      bgToColor: 'var(--dashboard-danger-to)',
+      iconBgColor: 'var(--dashboard-danger-icon-bg)',
+      iconTextColor: 'var(--dashboard-danger-icon-text)',
+      accentColor: 'var(--dashboard-danger-accent)'
     }
   };
 
   const config = variantStyles[variant];
 
   return (
-    <Card className={`relative overflow-hidden bg-[var(--card)] border border-[var(--border)] shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]`}>
+    <Card 
+      className="relative overflow-hidden border border-[var(--border)] shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+      style={{
+        background: `linear-gradient(135deg, ${config.bgFromColor}, ${config.bgViaColor}, ${config.bgToColor})`
+      }}
+    >
       {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 dark:bg-white/5 rounded-full -translate-y-10 translate-x-10"></div>
-      <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/5 dark:bg-white/3 rounded-full translate-y-8 -translate-x-8"></div>
+      <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
+      <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/5 rounded-full translate-y-8 -translate-x-8"></div>
       
       <CardHeader className="pb-4 relative z-10">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-semibold text-[var(--foreground)]">
             {title}
           </CardTitle>
-          <div className={cn('p-3 rounded-sm shadow-sm', config.iconBg)}>
-            <Icon className={cn('h-5 w-5', config.iconColor)} />
+          <div 
+            className="p-3 rounded-sm shadow-sm"
+            style={{ backgroundColor: config.iconBgColor }}
+          >
+            <Icon className="h-5 w-5" style={{ color: config.iconTextColor }} />
           </div>
         </div>
       </CardHeader>
@@ -86,7 +102,12 @@ const KPICard = ({
             <div className="space-y-2 bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3">
               <div className="flex justify-between items-center">
                 <span className="text-xs font-medium text-[var(--foreground)]">Progress</span>
-                <span className={cn('text-xs font-bold', config.accentColor)}>{progress}%</span>
+                <span 
+                  className="text-xs font-bold"
+                  style={{ color: config.accentColor }}
+                >
+                  {progress}%
+                </span>
               </div>
               <Progress 
                 value={progress} 

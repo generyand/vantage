@@ -110,68 +110,68 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
     
     let baseConfig = {
       logoPath,
-      color: '#6b7280',
-      bgGradient: 'from-gray-50 to-slate-50',
-      accentColor: 'text-gray-600'
+      color: 'var(--analytics-neutral-border)',
+      bgGradient: 'var(--analytics-neutral-bg)',
+      accentColor: 'var(--analytics-neutral-text)'
     };
 
     if (name.includes('financial')) {
       baseConfig = {
         logoPath,
-        color: '#10b981',
-        bgGradient: 'from-emerald-50 to-green-50',
-        accentColor: 'text-emerald-600'
+        color: 'var(--analytics-success)',
+        bgGradient: 'var(--analytics-success-bg)',
+        accentColor: 'var(--analytics-success-text)'
       };
     } else if (name.includes('disaster')) {
       baseConfig = {
         logoPath,
-        color: '#3b82f6',
-        bgGradient: 'from-blue-50 to-indigo-50',
-        accentColor: 'text-blue-600'
+        color: 'var(--kpi-blue-text)',
+        bgGradient: 'var(--kpi-blue-from)',
+        accentColor: 'var(--kpi-blue-text)'
       };
     } else if (name.includes('safety') || name.includes('peace')) {
       baseConfig = {
         logoPath,
-        color: '#f59e0b',
-        bgGradient: 'from-amber-50 to-orange-50',
-        accentColor: 'text-amber-600'
+        color: 'var(--analytics-warning)',
+        bgGradient: 'var(--analytics-warning-bg)',
+        accentColor: 'var(--analytics-warning-text)'
       };
     } else if (name.includes('social') || name.includes('protection')) {
       baseConfig = {
         logoPath,
-        color: '#ec4899',
-        bgGradient: 'from-pink-50 to-rose-50',
-        accentColor: 'text-pink-600'
+        color: 'var(--kpi-purple-text)',
+        bgGradient: 'var(--kpi-purple-from)',
+        accentColor: 'var(--kpi-purple-text)'
       };
     } else if (name.includes('business') || name.includes('competitiveness')) {
       baseConfig = {
         logoPath,
-        color: '#8b5cf6',
-        bgGradient: 'from-purple-50 to-violet-50',
-        accentColor: 'text-purple-600'
+        color: 'var(--kpi-purple-text)',
+        bgGradient: 'var(--kpi-purple-from)',
+        accentColor: 'var(--kpi-purple-text)'
       };
     } else if (name.includes('environmental')) {
       baseConfig = {
         logoPath,
-        color: '#10b981',
-        bgGradient: 'from-green-50 to-emerald-50',
-        accentColor: 'text-green-600'
+        color: 'var(--analytics-success)',
+        bgGradient: 'var(--analytics-success-bg)',
+        accentColor: 'var(--analytics-success-text)'
       };
     }
 
     // Status-based modifications
     const statusIcon = {
-      'completed': <CheckCircle className="h-4 w-4 text-green-600" />,
-      'needs-rework': <XCircle className="h-4 w-4 text-red-600" />,
-      'in-progress': <Clock className="h-4 w-4 text-blue-600" />,
-      'not-started': <AlertCircle className="h-4 w-4 text-gray-300" />
+      'completed': <CheckCircle className="h-4 w-4" style={{ color: 'var(--analytics-success-text)' }} />,
+      'needs-rework': <XCircle className="h-4 w-4" style={{ color: 'var(--analytics-danger-text)' }} />,
+      'in-progress': <Clock className="h-4 w-4" style={{ color: 'var(--kpi-blue-text)' }} />,
+      'not-started': <AlertCircle className="h-4 w-4" style={{ color: 'var(--analytics-neutral-text)' }} />
     }[status];
 
     const trendIcon = percentage >= 70 ? 
-      <TrendingUp className="h-3 w-3 text-green-500" /> : 
+      <TrendingUp className="h-3 w-3" style={{ color: 'var(--analytics-success)' }} /> : 
       percentage >= 40 ? 
-      <Minus className="h-3 w-3 text-yellow-500" /> : 
-      <TrendingDown className="h-3 w-3 text-red-500" />;
+      <Minus className="h-3 w-3" style={{ color: 'var(--analytics-warning)' }} /> : 
+      <TrendingDown className="h-3 w-3" style={{ color: 'var(--analytics-danger)' }} />;
 
     return { ...baseConfig, statusIcon, trendIcon };
   };
@@ -243,7 +243,10 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
                 <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3 space-y-3 border border-[var(--border)]">
                   <div className="flex justify-between items-center">
                     <span className="text-xs font-medium text-[var(--text-secondary)]">Progress Overview</span>
-                    <Badge className={`text-xs px-2 py-1 rounded-sm bg-[var(--card)]/80 ${config.accentColor} border-0`}>
+                    <Badge 
+                      className="text-xs px-2 py-1 rounded-sm bg-[var(--card)]/80 border-0"
+                      style={{ color: config.accentColor }}
+                    >
                       {area.current}/{area.total} Compliant
                     </Badge>
                   </div>

@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+
 
 interface AssessorData {
   id: string;
@@ -21,26 +21,26 @@ const getStatusConfig = (status: AssessorData['status']) => {
   switch (status) {
     case 'overloaded':
       return {
-        color: 'text-red-600 dark:text-red-400',
-        bgColor: 'bg-red-50 dark:bg-red-900/20',
+        color: 'var(--analytics-danger-text)',
+        bgColor: 'var(--analytics-danger-bg)',
         label: 'Overloaded'
       };
     case 'active':
       return {
-        color: 'text-orange-600 dark:text-orange-400',
-        bgColor: 'bg-orange-50 dark:bg-orange-900/20',
+        color: 'var(--analytics-warning-text)',
+        bgColor: 'var(--analytics-warning-bg)',
         label: 'Active'
       };
     case 'available':
       return {
-        color: 'text-green-600 dark:text-green-400',
-        bgColor: 'bg-green-50 dark:bg-green-900/20',
+        color: 'var(--analytics-success-text)',
+        bgColor: 'var(--analytics-success-bg)',
         label: 'Available'
       };
     default:
       return {
-        color: 'text-gray-600 dark:text-gray-300',
-        bgColor: 'bg-gray-50 dark:bg-gray-900/20',
+        color: 'var(--analytics-neutral-text)',
+        bgColor: 'var(--analytics-neutral-bg)',
         label: 'Unknown'
       };
   }
@@ -78,12 +78,24 @@ export function AssessorQueue({ data }: AssessorQueueProps) {
       <CardContent>
         <div className="space-y-6">
           {overloadedAssessors > 0 && (
-            <div className="bg-red-50/80 dark:bg-red-900/20 border border-red-200/60 dark:border-red-800/60 rounded-sm p-4 backdrop-blur-sm">
+            <div 
+              className="rounded-sm p-4 backdrop-blur-sm border"
+              style={{
+                backgroundColor: 'var(--analytics-danger-bg)',
+                borderColor: 'var(--analytics-danger-border)'
+              }}
+            >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-red-100 dark:bg-red-900/40 rounded-sm flex items-center justify-center">
-                  <span className="text-red-600 dark:text-red-400 text-sm">⚠️</span>
+                <div 
+                  className="w-8 h-8 rounded-sm flex items-center justify-center"
+                  style={{ backgroundColor: 'var(--analytics-danger-bg)' }}
+                >
+                  <span className="text-sm" style={{ color: 'var(--analytics-danger-text)' }}>⚠️</span>
                 </div>
-                <p className="text-sm text-red-800 dark:text-red-200 font-medium">
+                <p 
+                  className="text-sm font-medium"
+                  style={{ color: 'var(--analytics-danger-text)' }}
+                >
                   {overloadedAssessors} assessor{overloadedAssessors > 1 ? 's' : ''} 
                   {overloadedAssessors > 1 ? ' are' : ' is'} overloaded and may need assistance
                 </p>
@@ -99,14 +111,20 @@ export function AssessorQueue({ data }: AssessorQueueProps) {
               return (
                 <div 
                   key={assessor.id}
-                  className={cn(
-                    'p-4 rounded-sm border transition-all duration-200 hover:shadow-md',
-                    isOverloaded 
-                      ? 'bg-red-50/80 dark:bg-red-900/20 border-red-200/60 dark:border-red-800/60' 
+                  className="p-4 rounded-sm border transition-all duration-200 hover:shadow-md"
+                  style={{
+                    backgroundColor: isOverloaded 
+                      ? 'var(--analytics-danger-bg)' 
                       : assessor.pendingReviews === 0
-                      ? 'bg-green-50/80 dark:bg-green-900/20 border-green-200/60 dark:border-green-800/60 opacity-80'
-                      : 'bg-[var(--hover)] backdrop-blur-sm border-[var(--border)] hover:border-[var(--border)]'
-                  )}
+                      ? 'var(--analytics-success-bg)'
+                      : 'var(--hover)',
+                    borderColor: isOverloaded 
+                      ? 'var(--analytics-danger-border)' 
+                      : assessor.pendingReviews === 0
+                      ? 'var(--analytics-success-border)'
+                      : 'var(--border)',
+                    opacity: assessor.pendingReviews === 0 ? 0.8 : 1
+                  }}
                 >
                   <div className="flex items-center justify-between">
                     {/* Assessor Info */}
@@ -117,7 +135,11 @@ export function AssessorQueue({ data }: AssessorQueueProps) {
                         </h4>
                         <Badge 
                           variant="secondary" 
-                          className={cn('text-xs font-medium rounded-sm', statusConfig.bgColor, statusConfig.color)}
+                          className="text-xs font-medium rounded-sm"
+                          style={{
+                            backgroundColor: statusConfig.bgColor,
+                            color: statusConfig.color
+                          }}
                         >
                           {statusConfig.label}
                         </Badge>
@@ -130,12 +152,15 @@ export function AssessorQueue({ data }: AssessorQueueProps) {
                     {/* Metrics */}
                     <div className="flex items-center gap-6">
                       <div className="text-center">
-                        <div className={cn(
-                          'text-2xl font-bold',
-                          assessor.pendingReviews > 5 && 'text-red-600',
-                          assessor.pendingReviews > 0 && assessor.pendingReviews <= 5 && 'text-orange-600',
-                          assessor.pendingReviews === 0 && 'text-green-600'
-                        )}>
+                        <div 
+                          className="text-2xl font-bold"
+                          style={{
+                            color: assessor.pendingReviews > 5 ? 'var(--analytics-danger-text-light)' :
+                                   assessor.pendingReviews > 0 && assessor.pendingReviews <= 5 ? 'var(--analytics-warning-text-light)' :
+                                   assessor.pendingReviews === 0 ? 'var(--analytics-success-text-light)' :
+                                   'var(--foreground)'
+                          }}
+                        >
                           {assessor.pendingReviews}
                         </div>
                         <div className="text-xs text-[var(--muted-foreground)]">Pending</div>
@@ -157,15 +182,24 @@ export function AssessorQueue({ data }: AssessorQueueProps) {
             <h4 className="text-sm font-semibold text-[var(--foreground)] mb-2">Performance Insights</h4>
             <div className="grid grid-cols-1 gap-2 text-xs text-[var(--muted-foreground)]">
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                <div 
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ backgroundColor: 'var(--analytics-danger)' }}
+                ></div>
                 <span>High pending reviews (&gt;5) indicate potential bottlenecks</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                <div 
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ backgroundColor: 'var(--kpi-blue-text)' }}
+                ></div>
                 <span>Average review time helps identify performance patterns</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                <div 
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ backgroundColor: 'var(--analytics-success)' }}
+                ></div>
                 <span>Consider redistributing workload for overloaded assessors</span>
               </div>
             </div>

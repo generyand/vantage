@@ -92,7 +92,7 @@ export default function UserListSection() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
           <h3 className="text-lg font-semibold mb-2">Error Loading Users</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-sm text-[var(--muted-foreground)] mb-4">
             Unable to fetch user data. Please check your connection and try again.
           </p>
           <button 
@@ -125,8 +125,11 @@ export default function UserListSection() {
                   {data.total || data.users.length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-sm flex items-center justify-center">
-                <Users className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              <div 
+                className="w-12 h-12 rounded-sm flex items-center justify-center"
+                style={{ backgroundColor: 'var(--kpi-blue-from)' }}
+              >
+                <Users className="h-6 w-6" style={{ color: 'var(--kpi-blue-text)' }} />
               </div>
             </div>
           </div>
@@ -141,8 +144,11 @@ export default function UserListSection() {
                   {data.users.filter((u) => u.is_active).length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-sm flex items-center justify-center">
-                <UserCheck className="h-6 w-6 text-green-600 dark:text-green-400" />
+              <div 
+                className="w-12 h-12 rounded-sm flex items-center justify-center"
+                style={{ backgroundColor: 'var(--analytics-success-bg)' }}
+              >
+                <UserCheck className="h-6 w-6" style={{ color: 'var(--analytics-success-text)' }} />
               </div>
             </div>
           </div>
@@ -157,8 +163,11 @@ export default function UserListSection() {
                   {data.users.filter((u) => u.role === "BLGU_USER").length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-sm flex items-center justify-center">
-                <Building className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              <div 
+                className="w-12 h-12 rounded-sm flex items-center justify-center"
+                style={{ backgroundColor: 'var(--kpi-purple-from)' }}
+              >
+                <Building className="h-6 w-6" style={{ color: 'var(--kpi-purple-text)' }} />
               </div>
             </div>
           </div>
@@ -220,7 +229,8 @@ export default function UserListSection() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setSearchQuery("")}
-                  className="h-6 px-2 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                  className="h-6 px-2 text-xs hover:bg-[var(--kpi-blue-from)]"
+                  style={{ color: 'var(--kpi-blue-text)' }}
                 >
                   Clear search
                 </Button>

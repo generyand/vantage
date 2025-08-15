@@ -71,9 +71,18 @@ export default function AdminSettingsPage() {
 
   const getStatusConfig = (status: string) => {
     const configs = {
-      Active: { bg: "bg-green-100 dark:bg-green-900/30", text: "text-green-800 dark:text-green-300" },
-      Archived: { bg: "bg-gray-100 dark:bg-gray-900/30", text: "text-gray-800 dark:text-gray-300" },
-      Upcoming: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-800 dark:text-blue-300" },
+      Active: { 
+        bgColor: 'var(--analytics-success-bg)', 
+        textColor: 'var(--analytics-success-text)'
+      },
+      Archived: { 
+        bgColor: 'var(--analytics-neutral-bg)', 
+        textColor: 'var(--analytics-neutral-text)'
+      },
+      Upcoming: { 
+        bgColor: 'var(--kpi-blue-from)', 
+        textColor: 'var(--kpi-blue-text)'
+      },
     };
     return configs[status as keyof typeof configs] || configs["Archived"];
   };
@@ -177,7 +186,11 @@ export default function AdminSettingsPage() {
                           </td>
                           <td className="px-6 py-4">
                             <div
-                              className={`inline-flex items-center px-3 py-1 rounded-sm text-sm font-medium ${statusConfig.bg} ${statusConfig.text}`}
+                              className="inline-flex items-center px-3 py-1 rounded-sm text-sm font-medium"
+                              style={{
+                                backgroundColor: statusConfig.bgColor,
+                                color: statusConfig.textColor
+                              }}
                             >
                               {period.status}
                             </div>
@@ -201,7 +214,7 @@ export default function AdminSettingsPage() {
                                   onClick={() =>
                                     handlePeriodAction("Edit", period)
                                   }
-                                  className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                                  className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                                 >
                                   Edit Period
                                 </DropdownMenuItem>
@@ -209,7 +222,7 @@ export default function AdminSettingsPage() {
                                   onClick={() =>
                                     handlePeriodAction("Activate", period)
                                   }
-                                  className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                                  className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                                 >
                                   Activate
                                 </DropdownMenuItem>
@@ -217,7 +230,7 @@ export default function AdminSettingsPage() {
                                   onClick={() =>
                                     handlePeriodAction("Archive", period)
                                   }
-                                  className="text-[var(--foreground)] hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-900 dark:hover:text-blue-400 cursor-pointer px-3 py-2"
+                                  className="text-[var(--foreground)] hover:bg-[var(--kpi-blue-from)] cursor-pointer px-3 py-2"
                                 >
                                   Archive
                                 </DropdownMenuItem>
@@ -225,7 +238,16 @@ export default function AdminSettingsPage() {
                                   onClick={() =>
                                     handlePeriodAction("Delete", period)
                                   }
-                                  className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300 cursor-pointer px-3 py-2"
+                                  className="cursor-pointer px-3 py-2"
+                                  style={{
+                                    color: 'var(--analytics-danger-text-light)'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'var(--analytics-danger-bg)';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'transparent';
+                                  }}
                                 >
                                   Delete
                                 </DropdownMenuItem>
@@ -245,8 +267,11 @@ export default function AdminSettingsPage() {
           <Card className="bg-[var(--card)] border border-[var(--border)] rounded-sm shadow-lg overflow-hidden">
             <CardHeader className="pb-6">
               <CardTitle className="flex items-center gap-3 text-xl font-bold text-[var(--foreground)]">
-                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-sm flex items-center justify-center">
-                  <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <div 
+                  className="w-8 h-8 rounded-sm flex items-center justify-center"
+                  style={{ backgroundColor: 'var(--kpi-blue-from)' }}
+                >
+                  <Calendar className="h-5 w-5" style={{ color: 'var(--kpi-blue-text)' }} />
                 </div>
                 Active Period Deadlines (SGLGB 2024)
               </CardTitle>
