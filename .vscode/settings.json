@@ -1,0 +1,45 @@
+{
+  // Python interpreter configuration
+  "python.defaultInterpreterPath": "apps/api/.venv/bin/python",
+  // Configure the working directory for Python
+  "python.analysis.autoSearchPaths": true,
+  "python.analysis.extraPaths": [
+    "apps/api",
+    "apps/api/app",
+    "apps/api/alembic"
+  ],
+  // Set the correct working directory for Python execution
+  "python.terminal.activateEnvironment": true,
+  "python.terminal.activateEnvInCurrentTerminal": true,
+  // Pylance/Pyright configuration
+  "python.languageServer": "Pylance",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.packageIndexDepths": [
+    {
+      "name": "app",
+      "depth": 10
+    }
+  ],
+  // Ruff configuration (since you added the extension)
+  "ruff.configuration": "apps/api/pyproject.toml",
+  // Set terminal to start in API directory for Python work
+  "terminal.integrated.cwd": "apps/api",
+  // File associations
+  "files.associations": {
+    "*.env": "dotenv"
+  },
+  // Format on save
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  // Language-specific settings
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll": "explicit"
+    }
+  }
+}
