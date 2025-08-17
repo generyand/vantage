@@ -1,8 +1,11 @@
 ---
 description: Guides the AI in creating a detailed, three-tier task list for a feature from a PRD with explicit PRD traceability and tech-stack alignment.
+description: Guides the AI in creating a detailed, three-tier task list for a feature from a PRD with explicit PRD traceability and tech-stack alignment.
 globs: ["docs/prds/prd-*.md"]
 alwaysApply: false
 ---
+
+# Rule: Generating a Three-Tier Feature Task List from a PRD
 
 # Rule: Generating a Three-Tier Feature Task List from a PRD
 
@@ -38,6 +41,10 @@ Consulting these rules is essential for creating tasks that are consistent with 
 
 ## Three-Tier Process
 
+- **Filename:** `tasks-[prd-file-name].md`
+
+## Three-Tier Process
+
 1.  **Receive PRD Reference:** User points to a specific PRD file
 2.  **Analyze PRD:** Read and map functional requirements to implementation domains
 3.  **Phase 1: Generate Epic Tasks** - Create file with high-level epics (3-5 epics) directly mapped to PRD functional requirements
@@ -46,9 +53,18 @@ Consulting these rules is essential for creating tasks that are consistent with 
 6.  **Phase 3: Generate Atomic Tasks** - Create granular, file-specific tasks with explicit acceptance criteria
 7.  **PRD Traceability Mapping** - Create explicit mapping between PRD requirements and tasks
 8.  **Save Task List** - Save with complete three-tier structure
+9.  **Receive PRD Reference:** User points to a specific PRD file
+10. **Analyze PRD:** Read and map functional requirements to implementation domains
+11. **Phase 1: Generate Epic Tasks** - Create file with high-level epics (3-5 epics) directly mapped to PRD functional requirements
+12. **Wait for Confirmation:** Pause for user approval with "Go"
+13. **Phase 2: Generate Story Tasks** - Break epics into tech-stack specific implementation areas (Frontend, API, Database, etc.)
+14. **Phase 3: Generate Atomic Tasks** - Create granular, file-specific tasks with explicit acceptance criteria
+15. **PRD Traceability Mapping** - Create explicit mapping between PRD requirements and tasks
+16. **Save Task List** - Save with complete three-tier structure
 
 ## Output Format
 
+The generated task list _must_ follow this three-tier structure:
 The generated task list _must_ follow this three-tier structure:
 
 ```markdown
@@ -60,9 +76,35 @@ Map each functional requirement to specific tasks:
 - **FR-02** Email Verification → Epic 2.0
 - **FR-03** Profile Management → Epic 3.0
 
+## PRD Traceability Matrix
+
+Map each functional requirement to specific tasks:
+
+- **FR-01** User Registration → Epic 1.0
+- **FR-02** Email Verification → Epic 2.0
+- **FR-03** Profile Management → Epic 3.0
+
 ## Relevant Files
 
 A user registration feature would involve these files:
+
+- **Backend Model:** `apps/api/app/db/models/user.py`
+- **Backend Schema:** `apps/api/app/schemas/user.py`
+- **Backend Service:** `apps/api/app/services/user_service.py`
+- **Backend API Route:** `apps/api/app/api/v1/users.py`
+- **Database Migration:** `apps/api/alembic/versions/xxxxxxxxxxxx_add_user_registration_fields.py`
+- **Frontend Page:** `apps/web/src/app/(auth)/register/page.tsx`
+- **Frontend Component:** `apps/web/src/components/features/auth/RegisterForm.tsx`
+- **Frontend Hook:** `apps/web/src/hooks/useUsers.ts`
+- **Shared Types:** `packages/shared/src/generated/schemas/users/index.ts` (auto-generated)
+
+### Testing Notes
+
+- **Backend Testing:** Place Pytest tests in `apps/api/tests/`. Test services and API endpoints separately.
+- **Frontend Testing:** Place component tests alongside the component (e.g., `RegisterForm.test.tsx`). Use Vitest and React Testing Library.
+- **Type Safety:** Import auto-generated types from `@vantage/shared` to ensure frontend and backend are in sync.
+- **Run Tests:** Use `pnpm test` from the root, which will run tests for all workspaces.
+  A user registration feature would involve these files:
 
 - **Backend Model:** `apps/api/app/db/models/user.py`
 - **Backend Schema:** `apps/api/app/schemas/user.py`
