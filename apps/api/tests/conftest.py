@@ -4,27 +4,23 @@ Essential testing setup for 2-person team
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Add the parent directory to Python path so we can import main and app modules
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
+from app.db.base import Base, get_db
 from fastapi.testclient import TestClient
+from main import app
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
-from main import app
-from app.db.base import get_db, Base
-from app.core.config import settings
 
 # Test database URL (use SQLite for simplicity in tests)
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, 
-    connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -72,5 +68,5 @@ def sample_user_data():
     return {
         "email": "test@example.com",
         "name": "Test User",
-        "password": "testpassword123"
-    } 
+        "password": "testpassword123",
+    }

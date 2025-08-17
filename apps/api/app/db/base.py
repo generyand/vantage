@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_ANON_KEY)
 
 # Admin Supabase client for server-side operations
-supabase_admin: Client = (
+supabase_admin: Client | None = (
     create_client(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_ROLE_KEY)
     if settings.SUPABASE_SERVICE_ROLE_KEY
     else None
@@ -159,7 +159,7 @@ async def check_supabase_connection() -> Dict[str, Any]:
     try:
         # Test Supabase connection by checking auth status
         # This is a lightweight check that doesn't require authentication
-        response = supabase.auth.get_session()
+        supabase.auth.get_session()
 
         return {
             "connected": True,

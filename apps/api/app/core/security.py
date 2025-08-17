@@ -2,31 +2,31 @@
 # Password hashing, JWT token creation/verification, and security utilities
 
 from datetime import datetime, timedelta
-from typing import Any, Union, Optional
-from jose import jwt, JWTError
-from passlib.context import CryptContext
+from typing import Optional, Union
 
 from app.core.config import settings
+from jose import JWTError, jwt
+from passlib.context import CryptContext
 
 # Password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def create_access_token(
-    subject: Union[str, int], 
+    subject: Union[str, int],
     expires_delta: Optional[timedelta] = None,
     role: Optional[str] = None,
-    must_change_password: Optional[bool] = None
+    must_change_password: Optional[bool] = None,
 ) -> str:
     """
     Create a new JWT access token.
-    
+
     Args:
         subject: The subject (usually user ID) to encode in the token
         expires_delta: Custom expiration time, defaults to settings value
         role: User role to include in token payload
         must_change_password: Whether user must change password
-        
+
     Returns:
         str: Encoded JWT token
     """
@@ -36,32 +36,31 @@ def create_access_token(
         expire = datetime.utcnow() + timedelta(
             minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
         )
-    
-    to_encode = {
-        "exp": expire, 
-        "sub": str(subject)
-    }
-    
+
+    to_encode = {"exp": expire, "sub": str(subject)}
+
     # Add optional fields to payload
     if role is not None:
         to_encode["role"] = role
     if must_change_password is not None:
         to_encode["must_change_password"] = must_change_password
-    
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+    encoded_jwt = jwt.encode(
+        to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
+    )
     return encoded_jwt
 
 
 def verify_token(token: str) -> dict:
     """
     Verify and decode a JWT token.
-    
+
     Args:
         token: JWT token string
-        
+
     Returns:
         dict: Decoded token payload
-        
+
     Raises:
         JWTError: If token is invalid or expired
     """
@@ -77,11 +76,11 @@ def verify_token(token: str) -> dict:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
     Verify a password against its hash.
-    
+
     Args:
         plain_password: Plain text password
         hashed_password: Hashed password from database
-        
+
     Returns:
         bool: True if password matches, False otherwise
     """
@@ -91,10 +90,10 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def get_password_hash(password: str) -> str:
     """
     Generate password hash.
-    
+
     Args:
         password: Plain text password
-        
+
     Returns:
         str: Hashed password
     """
@@ -104,15 +103,17 @@ def get_password_hash(password: str) -> str:
 def verify_password_reset_token(token: str) -> Optional[str]:
     """
     Verify password reset token and return user email.
-    
+
     Args:
         token: Password reset token
-        
+
     Returns:
         Optional[str]: User email if token is valid, None otherwise
     """
     try:
-        decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        decoded_token = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
         return decoded_token.get("sub")
     except JWTError:
         return None
@@ -121,10 +122,10 @@ def verify_password_reset_token(token: str) -> Optional[str]:
 def generate_password_reset_token(email: str) -> str:
     """
     Generate a password reset token.
-    
+
     Args:
         email: User email address
-        
+
     Returns:
         str: Password reset token
     """
@@ -133,8 +134,8 @@ def generate_password_reset_token(email: str) -> str:
     expires = now + delta
     exp = expires.timestamp()
     encoded_jwt = jwt.encode(
-        {"exp": exp, "nbf": now, "sub": email}, 
-        settings.SECRET_KEY, 
-        algorithm=settings.ALGORITHM
+        {"exp": exp, "nbf": now, "sub": email},
+        settings.SECRET_KEY,
+        algorithm=settings.ALGORITHM,
     )
-    return encoded_jwt 
+    return encoded_jwt
