@@ -1,18 +1,18 @@
 """Initial database schema
 
 Revision ID: 421de4cd5e1e
-Revises: 
+Revises:
 Create Date: 2025-07-29 10:34:18.284880
 
 """
+
 from typing import Sequence, Union
 
-from alembic import op
-import sqlalchemy as sa
+# Removed unused imports - this migration has no operations
 
 
 # revision identifiers, used by Alembic.
-revision: str = '421de4cd5e1e'
+revision: str = "421de4cd5e1e"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

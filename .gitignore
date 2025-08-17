@@ -89,7 +89,6 @@ pip-delete-this-directory.txt
 # ===========================
 # IDE and Editor files
 # ===========================
-.vscode/
 .idea/
 *.swp
 *.swo

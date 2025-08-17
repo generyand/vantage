@@ -1,0 +1,41 @@
+{
+  "recommendations": [
+    // Python development
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.debugpy",
+    "anysphere.cursorpyright",
+    "tamasfe.even-better-toml",
+    "charliermarsh.ruff",
+    
+    // Frontend development
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "ms-vscode.vscode-typescript-next",
+    
+    // React/Next.js
+    "burkeholland.simple-react-snippets",
+    "formulahendry.auto-rename-tag",
+    
+    // Database/SQL
+    "ms-mssql.mssql",
+    
+    // General development
+    "ms-vscode.vscode-json",
+    "redhat.vscode-yaml",
+    "ms-vscode.vscode-eslint",
+    
+    // Git integration
+    "eamodio.gitlens",
+    
+    // API development
+    "humao.rest-client",
+    
+    // Monorepo management
+    "arcanis.vscode-zipfs"
+  ],
+  "unwantedRecommendations": [
+    // Avoid conflicting Python extensions
+    "ms-python.isort"
+  ]
+}
