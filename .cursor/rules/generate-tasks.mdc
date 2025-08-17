@@ -1,69 +1,147 @@
 ---
-description: Guides the AI in creating a detailed, step-by-step task list for a VANTAGE feature from a PRD.
+description: Guides the AI in creating a detailed, three-tier task list for a feature from a PRD with explicit PRD traceability and tech-stack alignment.
+description: Guides the AI in creating a detailed, three-tier task list for a feature from a PRD with explicit PRD traceability and tech-stack alignment.
 globs: ["docs/prds/prd-*.md"]
 alwaysApply: false
 ---
----
-description: This rule is triggered when a PRD is provided to generate a developer task list.
-globs: ["tasks/tasks-*.md"]
-alwaysApply: false
----
-# Rule: Generating a VANTAGE Feature Task List from a PRD
+
+# Rule: Generating a Three-Tier Feature Task List from a PRD
+
+# Rule: Generating a Three-Tier Feature Task List from a PRD
 
 ## Goal
 
-To guide an AI assistant in creating a detailed, step-by-step task list in Markdown format based on an existing Product Requirements Document (PRD) for the VANTAGE project. The task list should guide a developer through implementation, with testing instructions specific to our monorepo tech stack.
+To guide an AI assistant in creating a detailed, three-tier task list in Markdown format based on an existing Product Requirements Document (PRD). The task list uses Epic → Story → Atomic task hierarchy to ensure complete PRD traceability and tech-stack specificity for junior developers.
+
+## Tech Stack Context
+
+- **Monorepo:** Turborepo with pnpm workspaces
+- **Backend:** Python with FastAPI, SQLAlchemy (ORM), Alembic (migrations), and Pydantic (schemas). Located in `apps/api`.
+- **Frontend:** Next.js with App Router, TypeScript, Tailwind CSS, shadcn/ui (component library), and TanStack Query (server state). Located in `apps/web`.
+- **Shared Code:** Auto-generated API client and TypeScript types via Orval from the backend's OpenAPI spec. Located in `packages/shared`.
+- **Testing:** Pytest for backend unit/integration tests; Vitest/React Testing Library for frontend component tests.
+
+## Adherence to Project-Wide Rules
+
+To ensure all generated tasks align with our project's architecture, they must follow our established development guidelines. The main index of all rules can be found at `@index.mdc`.
+
+For example, when creating tasks, you should consider our specific conventions for things like:
+
+- **Backend:** How we structure API endpoints (`@api-endpoint-creation.mdc`) and implement business logic (`@service-layer-pattern.mdc`).
+- **Frontend:** How we build pages (`@page-structure.mdc`), create components (`@ui-components.mdc`), and manage data (`@hooks.mdc`).
+- **Testing:** Our overall approach to writing tests (`@testing.mdc`).
+
+Consulting these rules is essential for creating tasks that are consistent with our codebase.
 
 ## Output
 
 - **Format:** Markdown (`.md`)
 - **Location:** `/tasks/`
-- **Filename:** `tasks-[prd-file-name].md` (e.g., `tasks-prd-core-user-authentication-and-management.md`)
+- **Filename:** `tasks-[prd-file-name].md`
 
-## Process
+## Three-Tier Process
 
-1.  **Receive PRD Reference:** The user points the AI to a specific PRD file (e.g., `@docs/prds/prd-core-user-authentication-and-management.md`).
-2.  **Analyze PRD:** The AI reads and analyzes the functional requirements, user stories, and technical considerations of the specified PRD.
-3.  **Phase 1: Generate Parent Tasks:** Based on the PRD analysis, create the file and generate the main, high-level tasks required to implement the feature. Use your judgement on how many high-level tasks to use. It's likely to be about 5-7. Present these tasks to the user in the specified format (without sub-tasks yet). Inform the user: "I have generated the high-level tasks based on the PRD. Ready to generate the sub-tasks? Respond with 'Go' to proceed."
-4.  **Wait for Confirmation:** Pause and wait for the user to respond with "Go".
-5.  **Phase 2: Generate Sub-Tasks:** Once the user confirms, break down each parent task into smaller, actionable sub-tasks necessary to complete the parent task. Ensure sub-tasks logically follow from the parent task and cover the implementation details implied by the PRD.
-6.  **Identify Relevant Files:** Based on the tasks and PRD, identify potential files that will need to be created or modified across the monorepo. List these under the `Relevant Files` section, including corresponding test files with the correct naming conventions for our stack.
-7.  **Generate Final Output:** Combine the parent tasks, sub-tasks, relevant files, and notes into the final Markdown structure.
-8.  **Save Task List:** Save the generated document in the `/tasks/` directory with the filename `tasks-[prd-file-name].md`.
+- **Filename:** `tasks-[prd-file-name].md`
+
+## Three-Tier Process
+
+1.  **Receive PRD Reference:** User points to a specific PRD file
+2.  **Analyze PRD:** Read and map functional requirements to implementation domains
+3.  **Phase 1: Generate Epic Tasks** - Create file with high-level epics (3-5 epics) directly mapped to PRD functional requirements
+4.  **Wait for Confirmation:** Pause for user approval with "Go"
+5.  **Phase 2: Generate Story Tasks** - Break epics into tech-stack specific implementation areas (Frontend, API, Database, etc.)
+6.  **Phase 3: Generate Atomic Tasks** - Create granular, file-specific tasks with explicit acceptance criteria
+7.  **PRD Traceability Mapping** - Create explicit mapping between PRD requirements and tasks
+8.  **Save Task List** - Save with complete three-tier structure
+9.  **Receive PRD Reference:** User points to a specific PRD file
+10. **Analyze PRD:** Read and map functional requirements to implementation domains
+11. **Phase 1: Generate Epic Tasks** - Create file with high-level epics (3-5 epics) directly mapped to PRD functional requirements
+12. **Wait for Confirmation:** Pause for user approval with "Go"
+13. **Phase 2: Generate Story Tasks** - Break epics into tech-stack specific implementation areas (Frontend, API, Database, etc.)
+14. **Phase 3: Generate Atomic Tasks** - Create granular, file-specific tasks with explicit acceptance criteria
+15. **PRD Traceability Mapping** - Create explicit mapping between PRD requirements and tasks
+16. **Save Task List** - Save with complete three-tier structure
 
 ## Output Format
 
-The generated task list _must_ follow this structure:
+The generated task list _must_ follow this three-tier structure:
+The generated task list _must_ follow this three-tier structure:
 
 ```markdown
+## PRD Traceability Matrix
+
+Map each functional requirement to specific tasks:
+
+- **FR-01** User Registration → Epic 1.0
+- **FR-02** Email Verification → Epic 2.0
+- **FR-03** Profile Management → Epic 3.0
+
+## PRD Traceability Matrix
+
+Map each functional requirement to specific tasks:
+
+- **FR-01** User Registration → Epic 1.0
+- **FR-02** Email Verification → Epic 2.0
+- **FR-03** Profile Management → Epic 3.0
+
 ## Relevant Files
 
--   `apps/api/app/schemas/new_schema.py` - Brief description (e.g., Pydantic schema for the new data model).
--   `apps/api/app/db/models/new_model.py` - Brief description (e.g., SQLAlchemy model for the database table).
--   `apps/api/app/api/v1/new_router.py` - Brief description (e.g., FastAPI router containing the new API endpoints).
--   `apps/api/tests/api/v1/test_new_router.py` - Backend unit/integration tests for the new API endpoints using `pytest`.
--   `apps/web/src/components/features/new-feature/NewComponent.tsx` - Brief description (e.g., Main React component for this feature).
--   `apps/web/src/components/features/new-feature/NewComponent.test.tsx` - Frontend unit tests for the React component using Jest and React Testing Library.
+A user registration feature would involve these files:
 
-### Notes on Testing
+- **Backend Model:** `apps/api/app/db/models/user.py`
+- **Backend Schema:** `apps/api/app/schemas/user.py`
+- **Backend Service:** `apps/api/app/services/user_service.py`
+- **Backend API Route:** `apps/api/app/api/v1/users.py`
+- **Database Migration:** `apps/api/alembic/versions/xxxxxxxxxxxx_add_user_registration_fields.py`
+- **Frontend Page:** `apps/web/src/app/(auth)/register/page.tsx`
+- **Frontend Component:** `apps/web/src/components/features/auth/RegisterForm.tsx`
+- **Frontend Hook:** `apps/web/src/hooks/useUsers.ts`
+- **Shared Types:** `packages/shared/src/generated/schemas/users/index.ts` (auto-generated)
 
--   **Backend Testing:** Unit tests for the Python backend are located in `apps/api/tests/`. To run them, navigate to the `apps/api` directory and execute `pytest`.
--   **Frontend Testing:** Unit tests for Next.js components are placed alongside the component files (e.g., `NewComponent.tsx` and `NewComponent.test.tsx` in the same folder). To run them, navigate to the `apps/web` directory and execute `pnpm test`.
+### Testing Notes
+
+- **Backend Testing:** Place Pytest tests in `apps/api/tests/`. Test services and API endpoints separately.
+- **Frontend Testing:** Place component tests alongside the component (e.g., `RegisterForm.test.tsx`). Use Vitest and React Testing Library.
+- **Type Safety:** Import auto-generated types from `@vantage/shared` to ensure frontend and backend are in sync.
+- **Run Tests:** Use `pnpm test` from the root, which will run tests for all workspaces.
+  A user registration feature would involve these files:
+
+- **Backend Model:** `apps/api/app/db/models/user.py`
+- **Backend Schema:** `apps/api/app/schemas/user.py`
+- **Backend Service:** `apps/api/app/services/user_service.py`
+- **Backend API Route:** `apps/api/app/api/v1/users.py`
+- **Database Migration:** `apps/api/alembic/versions/xxxxxxxxxxxx_add_user_registration_fields.py`
+- **Frontend Page:** `apps/web/src/app/(auth)/register/page.tsx`
+- **Frontend Component:** `apps/web/src/components/features/auth/RegisterForm.tsx`
+- **Frontend Hook:** `apps/web/src/hooks/useUsers.ts`
+- **Shared Types:** `packages/shared/src/generated/schemas/users/index.ts` (auto-generated)
+
+### Testing Notes
+
+- **Backend Testing:** Place Pytest tests in `apps/api/tests/`. Test services and API endpoints separately.
+- **Frontend Testing:** Place component tests alongside the component (e.g., `RegisterForm.test.tsx`). Use Vitest and React Testing Library.
+- **Type Safety:** Import auto-generated types from `@vantage/shared` to ensure frontend and backend are in sync.
+- **Run Tests:** Use `pnpm test` from the root, which will run tests for all workspaces.
 
 ## Tasks
 
--   [ ] 1.0 Parent Task Title (e.g., Setup Backend API Endpoints)
-    -   [ ] 1.1 [Sub-task description 1.1]
-    -   [ ] 1.2 [Sub-task description 1.2]
--   [ ] 2.0 Parent Task Title (e.g., Build Frontend UI Components)
-    -   [ ] 2.1 [Sub-task description 2.1]
--   [ ] 3.0 Parent Task Title (may not require sub-tasks if purely structural or configuration)
+### Three-Tier Structure: Epic → Story → Atomic
 
-## Interaction Model
+- [ ] **1.0 Epic: User Registration System** _(FR-01)_
 
-The process explicitly requires a pause after generating parent tasks to get user confirmation ("Go") before proceeding to generate the detailed sub-tasks. This ensures the high-level plan aligns with user expectations before diving into details.
-
-## Target Audience
-
-
-Assume the primary reader of the task list is a **junior developer** who will implement the feature.
+  - [ ] **1.1 Story: Backend Registration API**
+    - [ ] **1.1.1 Atomic:** Update `User` model with `hashed_password`.
+      - **Files:** `apps/api/app/db/models/user.py`
+      - **Dependencies:** None
+      - **Acceptance:** `User` model in SQLAlchemy includes a `hashed_password` string field.
+      - **Tech:** SQLAlchemy ORM model definition.
+    - [ ] **1.1.2 Atomic:** Create `UserCreate` Pydantic schema.
+      - **Files:** `apps/api/app/schemas/user.py`
+      - **Dependencies:** None
+      - **Acceptance:** Schema includes `email`, `password` (plain text for input), `full_name`.
+      - **Tech:** Pydantic `BaseModel`.
+    - [ ] **1.1.3 Atomic:** Implement `create_user` method in `user_service`.
+      - **Files:** `apps/api/app/services/user_service.py`
+      - **Dependencies:** 1.1.1, 1.1.2. `core.security.get_password_hash` utility.
+      - **Acceptance:** Service method accepts a `UserCreate`
+```
