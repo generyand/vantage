@@ -1,12 +1,12 @@
 // API utilities for file uploads and other operations
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { useAuthStore } from '../store/useAuthStore';
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { useAuthStore } from "../store/useAuthStore";
 
 // Create axios instance with base configuration
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -31,11 +31,15 @@ axiosInstance.interceptors.response.use(
   (error) => {
     // Handle 401 Unauthorized - redirect to login
     if (error.response?.status === 401) {
-      // Clear auth data using the store
-      useAuthStore.getState().logout();
-      // Redirect to login (only in browser)
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+      // Don't redirect if we're already on the login page
+      if (
+        typeof window !== "undefined" &&
+        window.location.pathname !== "/login"
+      ) {
+        // Clear auth data using the store
+        useAuthStore.getState().logout();
+        // Redirect to login
+        window.location.href = "/login";
       }
     }
     return Promise.reject(error);
@@ -79,57 +83,63 @@ export async function uploadWithProgress(
   options: UploadWithProgressOptions = {}
 ): Promise<Response> {
   const { onProgress, signal } = options;
-  
+
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    
+
     // Handle progress updates
-    xhr.upload.addEventListener('progress', (event) => {
+    xhr.upload.addEventListener("progress", (event) => {
       if (event.lengthComputable && onProgress) {
         const progress: UploadProgress = {
           loaded: event.loaded,
           total: event.total,
-          percentage: Math.round((event.loaded / event.total) * 100)
+          percentage: Math.round((event.loaded / event.total) * 100),
         };
         onProgress(progress);
       }
     });
-    
+
     // Handle completion
-    xhr.addEventListener('load', () => {
+    xhr.addEventListener("load", () => {
       if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(new Response(xhr.responseText, {
-          status: xhr.status,
-          statusText: xhr.statusText
-        }));
+        resolve(
+          new Response(xhr.responseText, {
+            status: xhr.status,
+            statusText: xhr.statusText,
+          })
+        );
       } else {
-        reject(new Error(`Upload failed with status ${xhr.status}: ${xhr.statusText}`));
+        reject(
+          new Error(
+            `Upload failed with status ${xhr.status}: ${xhr.statusText}`
+          )
+        );
       }
     });
-    
+
     // Handle errors
-    xhr.addEventListener('error', () => {
-      reject(new Error('Upload failed due to network error'));
+    xhr.addEventListener("error", () => {
+      reject(new Error("Upload failed due to network error"));
     });
-    
+
     // Handle abort
-    xhr.addEventListener('abort', () => {
-      reject(new Error('Upload was aborted'));
+    xhr.addEventListener("abort", () => {
+      reject(new Error("Upload was aborted"));
     });
-    
+
     // Handle abort signal
     if (signal) {
-      signal.addEventListener('abort', () => {
+      signal.addEventListener("abort", () => {
         xhr.abort();
       });
     }
-    
+
     // Prepare form data
     const formData = new FormData();
-    formData.append('file', file);
-    
+    formData.append("file", file);
+
     // Send the request
-    xhr.open('POST', url);
+    xhr.open("POST", url);
     xhr.send(formData);
   });
 }
@@ -138,17 +148,19 @@ export async function uploadWithProgress(
  * Decode a JWT token (without verification) to extract the payload.
  * Used for server-side role checks in Next.js server components.
  */
-export function decodeJwtPayload(token: string): Record<string, unknown> | null {
+export function decodeJwtPayload(
+  token: string
+): Record<string, unknown> | null {
   if (!token) return null;
   try {
-    const payload = token.split('.')[1];
+    const payload = token.split(".")[1];
     // Use atob if available (browser/edge), otherwise Buffer (Node.js)
     let decoded: string;
-    if (typeof atob === 'function') {
-      decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+    if (typeof atob === "function") {
+      decoded = atob(payload.replace(/-/g, "+").replace(/_/g, "/"));
     } else {
       // Node.js polyfill
-      decoded = Buffer.from(payload, 'base64').toString('utf-8');
+      decoded = Buffer.from(payload, "base64").toString("utf-8");
     }
     return JSON.parse(decoded);
   } catch {
@@ -159,53 +171,66 @@ export function decodeJwtPayload(token: string): Record<string, unknown> | null 
 // Additional API utilities can be added here
 export const apiClient = {
   uploadWithProgress,
-  
+
   // Base fetch wrapper
   async fetch(url: string, options: RequestInit = {}): Promise<Response> {
     const response = await fetch(url, {
       ...options,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...options.headers,
       },
     });
-    
+
     if (!response.ok) {
-      throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `API request failed: ${response.status} ${response.statusText}`
+      );
     }
-    
+
     return response;
   },
-  
+
   // GET request
   async get<T = unknown>(url: string, options: RequestInit = {}): Promise<T> {
-    const response = await this.fetch(url, { ...options, method: 'GET' });
+    const response = await this.fetch(url, { ...options, method: "GET" });
     return response.json();
   },
-  
+
   // POST request
-  async post<T = unknown>(url: string, data: unknown, options: RequestInit = {}): Promise<T> {
+  async post<T = unknown>(
+    url: string,
+    data: unknown,
+    options: RequestInit = {}
+  ): Promise<T> {
     const response = await this.fetch(url, {
       ...options,
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(data),
     });
     return response.json();
   },
-  
+
   // PUT request
-  async put<T = unknown>(url: string, data: unknown, options: RequestInit = {}): Promise<T> {
+  async put<T = unknown>(
+    url: string,
+    data: unknown,
+    options: RequestInit = {}
+  ): Promise<T> {
     const response = await this.fetch(url, {
       ...options,
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     });
     return response.json();
   },
-  
+
   // DELETE request
-  async delete<T = unknown>(url: string, options: RequestInit = {}): Promise<T> {
-    const response = await this.fetch(url, { ...options, method: 'DELETE' });
+  async delete<T = unknown>(
+    url: string,
+    options: RequestInit = {}
+  ): Promise<T> {
+    const response = await this.fetch(url, { ...options, method: "DELETE" });
     return response.json();
   },
-}; 
+};
