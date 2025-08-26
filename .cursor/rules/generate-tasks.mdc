@@ -1,11 +1,8 @@
 ---
 description: Guides the AI in creating a detailed, three-tier task list for a feature from a PRD with explicit PRD traceability and tech-stack alignment.
-description: Guides the AI in creating a detailed, three-tier task list for a feature from a PRD with explicit PRD traceability and tech-stack alignment.
 globs: ["docs/prds/prd-*.md"]
 alwaysApply: false
 ---
-
-# Rule: Generating a Three-Tier Feature Task List from a PRD
 
 # Rule: Generating a Three-Tier Feature Task List from a PRD
 
@@ -41,10 +38,6 @@ Consulting these rules is essential for creating tasks that are consistent with 
 
 ## Three-Tier Process
 
-- **Filename:** `tasks-[prd-file-name].md`
-
-## Three-Tier Process
-
 1.  **Receive PRD Reference:** User points to a specific PRD file
 2.  **Analyze PRD:** Read and map functional requirements to implementation domains
 3.  **Phase 1: Generate Epic Tasks** - Create file with high-level epics (3-5 epics) directly mapped to PRD functional requirements
@@ -68,14 +61,6 @@ The generated task list _must_ follow this three-tier structure:
 The generated task list _must_ follow this three-tier structure:
 
 ```markdown
-## PRD Traceability Matrix
-
-Map each functional requirement to specific tasks:
-
-- **FR-01** User Registration → Epic 1.0
-- **FR-02** Email Verification → Epic 2.0
-- **FR-03** Profile Management → Epic 3.0
-
 ## PRD Traceability Matrix
 
 Map each functional requirement to specific tasks:
@@ -116,13 +101,6 @@ A user registration feature would involve these files:
 - **Frontend Hook:** `apps/web/src/hooks/useUsers.ts`
 - **Shared Types:** `packages/shared/src/generated/schemas/users/index.ts` (auto-generated)
 
-### Testing Notes
-
-- **Backend Testing:** Place Pytest tests in `apps/api/tests/`. Test services and API endpoints separately.
-- **Frontend Testing:** Place component tests alongside the component (e.g., `RegisterForm.test.tsx`). Use Vitest and React Testing Library.
-- **Type Safety:** Import auto-generated types from `@vantage/shared` to ensure frontend and backend are in sync.
-- **Run Tests:** Use `pnpm test` from the root, which will run tests for all workspaces.
-
 ## Tasks
 
 ### Three-Tier Structure: Epic → Story → Atomic
@@ -145,3 +123,74 @@ A user registration feature would involve these files:
       - **Dependencies:** 1.1.1, 1.1.2. `core.security.get_password_hash` utility.
       - **Acceptance:** Service method accepts a `UserCreate`
 ```
+
+## Task Specificity Requirements
+
+### Epic Tasks (1.0, 2.0, 3.0...)
+
+- **Scope:** Maps 1:1 with PRD functional requirements
+- **Purpose:** High-level feature boundaries
+- **Duration:** Multiple days to weeks
+- **Example:** "User Authentication System" covering registration, login, logout
+
+### Story Tasks (1.1, 1.2, 2.1, 2.2...)
+
+- **Scope:** Tech-stack specific implementation domains
+- **Purpose:** Logical grouping of related atomic tasks
+- **Duration:** 1-3 days
+- **Categories:** Frontend Components, API Endpoints, Database Schema, Utilities, Testing
+- **Example:** "Frontend Registration Interface" containing all UI components for registration
+
+### Atomic Tasks (1.1.1, 1.1.2, 1.2.1...)
+
+- **Scope:** Single file or specific functionality
+- **Purpose:** Immediately actionable work items
+- **Duration:** 2-8 hours
+- **Requirements:**
+  - **Files:** Exact file paths to create/modify
+  - **Dependencies:** What must be complete first
+  - **Acceptance:** Specific, testable completion criteria
+  - **Tech:** Specific technologies and patterns to use
+
+## Quality Gates
+
+### Epic Review Checklist
+
+- [ ] All PRD functional requirements are covered
+- [ ] No functional requirement spans multiple epics
+- [ ] Epic titles clearly indicate the feature boundary
+
+### Story Review Checklist
+
+- [ ] Stories align with project's tech stack
+- [ ] Each story represents a cohesive implementation domain
+- [ ] Dependencies between stories are clearly identified
+- [ ] Stories can be worked on by different developers simultaneously
+
+### Atomic Review Checklist
+
+- [ ] Task can be completed by a junior developer in 2-8 hours
+- [ ] Specific file paths are provided
+- [ ] Acceptance criteria are testable and specific
+- [ ] Tech requirements specify exact tools/patterns from our stack
+- [ ] Dependencies are clearly stated
+
+## Interaction Model
+
+**Three-Phase Generation:**
+
+1. **Phase 1:** Generate epics only, wait for "Go" confirmation
+2. **Phase 2:** Generate stories for each epic, wait for "Go" confirmation
+3. **Phase 3:** Generate atomic tasks for each story
+
+This staged approach ensures alignment at each level before adding complexity.
+
+## Target Audience
+
+Assume the primary reader is a **junior developer** who needs:
+
+- Explicit file paths and structures
+- Clear acceptance criteria for each task
+- Specific tech stack guidance
+- Obvious dependency ordering
+- Testable completion conditions
