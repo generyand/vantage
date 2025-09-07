@@ -1,88 +1,150 @@
+## PRD Traceability Matrix
+
+- **FR 4.1 (BLGU Dashboard)** → Epic 2.0
+- **FR 4.2 (Assessment Interface)** → Epic 2.0, Epic 3.0
+- **FR 4.3 (MOV Uploader)** → Epic 3.0
+- **FR 4.4 (Submission Workflow)** → Epic 4.0
+- **FR 4.5 (Rework Workflow)** → Epic 4.0
+- **Technical Considerations (Database & API)** → Epic 1.0
+
 ## Relevant Files
 
--   `apps/api/app/db/enums.py` - **Update** to include `AssessmentStatus` and the new `IndicatorResponseType` Enums.
--   `apps/api/app/db/models/governance_indicator.py` - **Modify** to include the `response_type` column.
--   `apps/api/app/db/models/assessment.py` - New SQLAlchemy model for the `assessments` table.
--   `apps/api/app/db/models/assessment_response.py` - **Modify** to use a `JSONB` column for flexible data storage.
--   `apps/api/app/db/models/mov.py` - New SQLAlchemy model for `movs` (Means of Verification).
--   `apps/api/app/db/models/feedback_comment.py` - New SQLAlchemy model for `feedback_comments`.
--   `apps/api/alembic/versions/` - A new Alembic migration file will be generated for these schema changes.
--   `apps/api/app/schemas/assessment.py` - **Update** Pydantic schemas to handle dynamic `response_data`.
--   `apps/api/app/services/assessment_service.py` - **Update** service logic to read from and write to the new `JSONB` field.
--   `apps/api/tests/api/v1/test_assessments.py` - Backend `pytest` tests for the new assessment API.
--   `apps/web/src/app/(app)/dashboard/page.tsx` - **Update** the main dashboard to route users based on role.
--   `apps/web/src/app/(app)/assessments/[assessmentId]/page.tsx` - The main page for the assessment interface.
--   `apps/web/src/components/features/assessments/` - Directory for all new assessment-related components.
--   `apps/web/src/components/features/assessments/inputs/` - **New Directory** to hold the various dynamic input components (Numeric, Date, etc.).
--   `apps/web/src/hooks/useAssessment.ts` - New custom hooks for fetching and mutating assessment data.
--   `packages/shared/` - This package will be updated by running the `generate` script after backend changes.
+- **Backend Models:**
+  - `apps/api/app/db/models/governance_area.py` (for `Indicator` model)
+  - `apps/api/app/db/models/assessment.py` (new file for `Assessment`, `AssessmentResponse`, `MOV`, `FeedbackComment` models)
+- **Database Migration:**
+  - `apps/api/alembic/versions/xxxxxxxx_add_dynamic_assessment_schema.py` (new migration file)
+- **Backend Schemas:**
+  - `apps/api/app/schemas/assessment.py` (new file for assessment-related Pydantic schemas)
+- **Backend Services:**
+  - `apps/api/app/services/assessment_service.py` (new file for business logic)
+- **Backend API Routes:**
+  - `apps/api/app/api/v1/assessments.py` (new file for assessment endpoints)
+- **Frontend Pages:**
+  - `apps/web/src/app/(app)/blgu/dashboard/page.tsx`
+  - `apps/web/src/app/(app)/blgu/assessments/page.tsx`
+- **Frontend Components:**
+  - `apps/web/src/components/features/dashboard/` (various new dashboard components)
+  - `apps/web/src/components/features/assessments/` (various new assessment components, including a dynamic form renderer)
+  - `apps/web/src/components/shared/FileUploader.tsx`
+- **Frontend Hooks:**
+  - `apps/web/src/hooks/useDashboard.ts`
+  - `apps/web/src/hooks/useAssessment.ts`
+- **Shared Types:**
+  - `packages/shared/src/generated/schemas/assessment/index.ts` (auto-generated)
 
-### Notes on Testing
+### Testing Notes
 
--   **Backend Testing:** Unit tests are in `apps/api/tests/`. Run them via `uv run pytest`.
--   **Frontend Testing:** Unit tests are co-located with components. Run them via `pnpm --filter web test`.
+- **Backend Testing:** Place Pytest tests in `apps/api/tests/`. Test the new `assessment_service` and API endpoints in `assessments.py`. Focus on validating the dynamic `response_data` against the `form_schema`.
+- **Frontend Testing:** Place component tests alongside the new components (e.g., `DynamicForm.test.tsx`). Use Vitest and React Testing Library to test form rendering logic and submission workflows.
+- **Type Safety:** Ensure the auto-generated types from `@vantage/shared` are used for all data exchange between the frontend and backend.
 
 ## Tasks
 
--   [ ] 1.0 **Backend: Evolve Database for Dynamic Indicators**
-    -   [ ] 1.1 In `apps/api/app/db/enums.py`, create a new string-based `IndicatorResponseType` Enum with values: `YES_NO`, `NUMERIC`, `DATE`, `TEXT`.
-    -   [ ] 1.2 Also in `enums.py`, create the string-based `AssessmentStatus` Enum with values: `IN_PROGRESS`, `SUBMITTED`, `NEEDS_REWORK`, `VALIDATED`.
-    -   [ ] 1.3 In `apps/api/app/db/models/governance_indicator.py`, add a new column `response_type` that uses the `Enum(IndicatorResponseType)` and set a default value (e.g., `YES_NO`).
-    -   [ ] 1.4 In `apps/api/app/db/models/`, create `assessment.py`. The `Assessment` model must include a `status` field using the `Enum(AssessmentStatus)`, a `rework_count` integer field (defaulting to 0), and foreign keys to `barangays` and `users`.
-    -   [ ] 1.5 In `apps/api/app/db/models/`, create `assessment_response.py`. The model must:
-        -   [ ] 1.5.1 Link to `assessments` and `governance_indicators`.
-        -   [ ] 1.5.2 Include a `response_data` column with a data type of `JSONB` (from `sqlalchemy.dialects.postgresql`).
-        -   [ ] 1.5.3 Include a boolean `is_flagged_for_rework` field, defaulting to `False`.
-    -   [ ] 1.6 Create `mov.py` and `feedback_comment.py` models as originally planned, linking them correctly to the new `assessment_response` model.
-    -   [ ] 1.7 Run `uv run alembic revision --autogenerate -m "Add dynamic indicator support and assessment models"` to create the migration.
-    -   [ ] 1.8 **Critically review the generated migration script.** Autogenerate may need help with `JSONB` or Enum changes. Manually adjust if necessary.
-    -   [ ] 1.9 Update the database seeding script for `governance_indicators` to populate the `response_type` for each indicator.
-    -   [ ] 1.10 Apply the migration using `uv run alembic upgrade head`.
+### Three-Tier Structure: Epic → Story → Atomic
 
--   [ ] 2.0 **Backend: Update Services and API for Flexible Data**
-    -   [ ] 2.1 In `apps/api/app/schemas/assessment.py`, update `AssessmentResponseUpdate` to accept a flexible `response_data: dict`. Update `AssessmentResponseRead` to expose it.
-    -   [ ] 2.2 In `apps/api/app/services/assessment_service.py`, refactor `update_indicator_response` to correctly serialize the incoming dictionary into the `response_data` `JSONB` field.
-    -   [ ] 2.3 In `get_assessment_for_user`, ensure the query joins with `governance_indicators` so that the `response_type` for each indicator is returned with the assessment data.
-    -   [ ] 2.4 Implement the other service functions (`add_mov_to_response`, `delete_mov`, `submit_assessment_for_review`), ensuring they are compatible with the new structure.
-    -   [ ] 2.5 Ensure the `submit_assessment_for_review` service function correctly increments the `rework_count` if the status was `NEEDS_REWORK`.
-    -   [ ] 2.6 Implement the `send_for_rework` service function, which must check that `rework_count` is zero before flagging responses and changing the status.
-    -   [ ] 2.7 In `apps/api/app/api/v1/assessments.py`, implement the planned RESTful endpoints, ensuring the `PUT` endpoint for responses correctly handles the flexible JSON payload.
-    -   [ ] 2.8 Write comprehensive `pytest` tests covering the new `JSONB` data structures, validation for different response types, and the rework cycle logic.
+- [ ] **1.0 Epic: Backend Foundation for Dynamic Assessments** _(FR 7)_
 
--   [ ] 3.0 **Frontend: BLGU Dashboard Page**
-    -   [ ] 3.1 In the main dashboard page (`apps/web/src/app/(app)/dashboard/page.tsx`), add logic to check the user's role from the auth store and render a specific `BLGUDashboard` component.
-    -   [ ] 3.2 Create the `useAssessment` hook to fetch data using the auto-generated `useGetAssessmentsMy-assessment` query hook.
-    -   [ ] 3.3 Build the `AssessmentStatusBadge`, `ProgressSummary`, and `GovernanceAreaLinks` components as planned.
-    -   [ ] 3.4 Build the `NotificationHandler` component to display a prominent banner or alert on the dashboard if the assessment status is `NEEDS_REWORK`.
-    -   [ ] 3.5 Build the `ReworkComments` component to display assessor feedback.
+  - [ ] **1.1 Story: Database Schema for Dynamic Assessments**
+    - [ ] **1.1.1 Atomic:** Update `Indicator` model in `governance_area.py` to include `form_schema: Mapped[dict] = mapped_column(JSONB, nullable=False)`.
+      - **Files:** `apps/api/app/db/models/governance_area.py`
+      - **Acceptance:** The `Indicator` model has a non-nullable `form_schema` column of type `JSONB`.
+    - [ ] **1.1.2 Atomic:** Create new models for `Assessment`, `AssessmentResponse`, `MOV`, and `FeedbackComment` in a new file.
+      - **Files:** `apps/api/app/db/models/assessment.py`
+      - **Acceptance:** `AssessmentResponse` model must include a `response_data: Mapped[dict] = mapped_column(JSONB, nullable=True)` to store dynamic form data. Models for tracking overall assessment status, file uploads (MOVs), and feedback are created with correct relationships.
+    - [ ] **1.1.3 Atomic:** Generate a new Alembic migration script for the database changes.
+      - **Files:** `apps/api/alembic/versions/`
+      - **Acceptance:** The auto-generated migration script correctly reflects the changes to the `Indicator` model and the creation of the new assessment-related tables.
+    - [ ] **1.1.4 Atomic:** Apply the migration to the local database.
+      - **Command:** `cd apps/api && alembic upgrade head`
+      - **Acceptance:** The database schema is successfully updated.
+  - [ ] **1.2 Story: API Endpoints for Managing Assessments**
+    - [ ] **1.2.1 Atomic:** Create Pydantic schemas for assessment data in a new file.
+      - **Files:** `apps/api/app/schemas/assessment.py`
+      - **Acceptance:** Schemas for `AssessmentResponseCreate`, `AssessmentResponseUpdate`, and a main `Assessment` schema (including indicators with their `form_schema`) are defined.
+    - [ ] **1.2.2 Atomic:** Implement `assessment_service.py` with core business logic.
+      - **Files:** `apps/api/app/services/assessment_service.py`
+      - **Acceptance:** Service contains functions like `get_assessment_for_blgu`, `update_assessment_response`, and `submit_assessment`. The `update` function must validate the incoming `response_data` JSON against the indicator's `form_schema`.
+    - [ ] **1.2.3 Atomic:** Create the `GET /api/v1/assessments/my-assessment` endpoint.
+      - **Files:** `apps/api/app/api/v1/assessments.py`
+      - **Acceptance:** Endpoint returns the full assessment data for the logged-in BLGU user, including all governance areas, indicators, `form_schema` for each indicator, and any existing `response_data`.
+    - [ ] **1.2.4 Atomic:** Create the `PUT /api/v1/assessments/responses/{response_id}` endpoint.
+      - **Files:** `apps/api/app/api/v1/assessments.py`
+      - **Acceptance:** Endpoint accepts a payload with `response_data` and updates the corresponding `AssessmentResponse` in the database after validation in the service layer.
 
--   [ ] 4.0 **Frontend: Build Dynamic Assessment Interface**
-    -   [ ] 4.1 Create the main assessment page (`/assessments/[assessmentId]/page.tsx`) and the main `GovernanceAreaTabs` component.
-    -   [ ] 4.2 Create the new directory: `apps/web/src/components/features/assessments/inputs/`.
-        -   [ ] 4.2.1 Create `YesNoInput.tsx`.
-        -   [ ] 4.2.2 Create `NumericInput.tsx`.
-        -   [ ] 4.2.3 Create `DateInput.tsx`.
-        -   [ ] 4.2.4 Create `TextInput.tsx`.
-    -   [ ] 4.3 Refactor the `IndicatorAccordion.tsx` to act as a dynamic renderer.
-        -   [ ] 4.3.1 It must accept the full indicator object, including `response_type` and `response_data`, as a prop.
-        -   [ ] 4.3.2 It must use a component map or switch statement based on `response_type` to render the correct component from the `inputs` directory.
-        -   [ ] 4.3.3 It must pass down the relevant part of the `response_data` JSON to the specific input component.
-    -   [ ] 4.4 In each specific input component (e.g., `DateInput.tsx`):
-        -   [ ] 4.4.1 Manage its own state.
-        -   [ ] 4.4.2 On change, call the `usePutAssessmentResponsesResponseId` mutation hook with the correctly formatted JSON payload (e.g., `{"value": "2024-01-01"}`).
-    -   [ ] 4.5 Display the read-only "Technical Notes" and any assessor feedback within each `IndicatorAccordion` item.
-    -   [ ] 4.6 Implement the read-only logic, disabling form controls based on the overall assessment status and the `is_flagged_for_rework` field on each indicator.
+- [ ] **2.0 Epic: BLGU Dashboard & Assessment Page UI** _(FR 4.1, 4.2)_
 
--   [ ] 5.0 **Frontend: MOV Uploader and Submission Logic**
-    -   [ ] 5.1 Build the `MovUploader` component with client-side validation for file types and size.
-    -   [ ] 5.2 The uploader must call the `usePostAssessmentResponsesResponseIdMovs` mutation hook on file drop.
-    -   [ ] 5.3 Display the list of uploaded files with a delete button that calls the `useDeleteMovsMovId` mutation hook.
-    -   [ ] 5.4 On the main assessment page, implement the client-side "Preliminary Compliance Check" logic. This check must now be more robust, ensuring the `response_data` is not null for "Yes" answers, not just that an MOV exists.
-    -   [ ] 5.5 The "Submit" button should call the `usePostAssessmentsAssessmentIdSubmit` mutation hook, showing a confirmation on success.
-    -   [ ] 5.6 Ensure MOV upload/delete functionality is correctly enabled/disabled based on the assessment status and rework flags.
+  - [ ] **2.1 Story: Implement BLGU "Mission Control" Dashboard**
+    - [ ] **2.1.1 Atomic:** Create the main BLGU dashboard page component.
+      - **Files:** `apps/web/src/app/(app)/blgu/dashboard/page.tsx`
+      - **Acceptance:** The page is created within the correct route group and serves as the container for all dashboard widgets.
+    - [ ] **2.1.2 Atomic:** Create a `useDashboard` hook to fetch all necessary data for the dashboard.
+      - **Files:** `apps/web/src/hooks/useDashboard.ts`
+      - **Acceptance:** Hook uses TanStack Query to fetch assessment status, progress, and governance area list from the backend.
+    - [ ] **2.1.3 Atomic:** Build dashboard components for progress bar, status badge, and governance area links.
+      - **Files:** `apps/web/src/components/features/dashboard/`
+      - **Acceptance:** Reusable components are created to display key dashboard information fetched by the `useDashboard` hook.
+  - [ ] **2.2 Story: Build the Main Assessment Interface**
+    - [ ] **2.2.1 Atomic:** Create the main "My Assessment" page component.
+      - **Files:** `apps/web/src/app/(app)/blgu/assessments/page.tsx`
+      - **Acceptance:** The page component is set up to display the assessment interface.
+    - [ ] **2.2.2 Atomic:** Create a `useAssessment` hook to fetch the full assessment data structure.
+      - **Files:** `apps/web/src/hooks/useAssessment.ts`
+      - **Acceptance:** The hook fetches all governance areas, indicators, `form_schema`, and existing responses for the BLGU user.
+    - [ ] **2.2.3 Atomic:** Implement the tabbed navigation for Governance Areas.
+      - **Files:** `apps/web/src/components/features/assessments/AssessmentTabs.tsx`
+      - **Acceptance:** A user can click through tabs, each corresponding to a governance area.
+    - [ ] **2.2.4 Atomic:** Implement the accordion UI for indicators within each tab.
+      - **Files:** `apps/web/src/components/features/assessments/IndicatorAccordion.tsx`
+      - **Acceptance:** Each indicator is displayed in an accordion item that can be expanded to show the form.
 
--   [ ] 6.0 **Finalization & Integration**
-    -   [ ] 6.1 After all backend changes are complete and migrated, run `pnpm generate-types` to update the shared package.
-    -   [ ] 6.2 Conduct a full, manual end-to-end test, ensuring to test indicators with **each of the four different response types**.
-    -   [ ] 6.3 Write frontend unit tests for the new dynamic input components (`YesNoInput`, `NumericInput`, etc.).
-    -   [ ] 6.4 Verify all new components and pages are fully responsive on mobile devices.
+- [ ] **3.0 Epic: Dynamic Indicator Form Rendering & MOV Upload** _(FR 4.2, 4.3)_
+
+  - [ ] **3.1 Story: Develop a Dynamic Form Renderer**
+    - [ ] **3.1.1 Atomic:** Create a `DynamicIndicatorForm` component that renders inputs based on JSON schema.
+      - **Files:** `apps/web/src/components/features/assessments/DynamicIndicatorForm.tsx`
+      - **Acceptance:** The component accepts an indicator's `form_schema` and `response_data` as props. It correctly renders `RadioGroup`, `Input`, `DatePicker`, etc., based on the schema definition.
+    - [ ] **3.1.2 Atomic:** Implement a `useUpdateResponse` mutation hook.
+      - **Files:** `apps/web/src/hooks/useAssessment.ts`
+      - **Acceptance:** The hook provides a function to call the `PUT /assessments/responses/{id}` endpoint. It should be configured to automatically save form data on change (debounced).
+    - [ ] **3.1.3 Atomic:** Integrate the `DynamicIndicatorForm` into the `IndicatorAccordion`.
+      - **Files:** `apps/web/src/components/features/assessments/IndicatorAccordion.tsx`
+      - **Acceptance:** When an indicator is expanded, its dynamic form is displayed, populated with existing data, and is fully interactive.
+  - [ ] **3.2 Story: Implement MOV Uploader and Management**
+    - [ ] **3.2.1 Atomic:** Create backend API endpoints for uploading and deleting MOVs.
+      - **Files:** `apps/api/app/api/v1/assessments.py`, `apps/api/app/services/assessment_service.py`
+      - **Acceptance:** `POST /responses/{id}/movs` and `DELETE /movs/{mov_id}` endpoints are created. The service logic handles file uploads to Supabase Storage and updates the `movs` table.
+    - [ ] **3.2.2 Atomic:** Enhance the `FileUploader` shared component for MOV management.
+      - **Files:** `apps/web/src/components/shared/FileUploader.tsx`
+      - **Acceptance:** The component is updated to show a list of already uploaded files with delete buttons, and it enforces file type and size restrictions.
+    - [ ] **3.2.3 Atomic:** Create `useUploadMov` and `useDeleteMov` mutation hooks.
+      - **Files:** `apps/web/src/hooks/useAssessment.ts`
+      - **Acceptance:** Hooks are created to interact with the new MOV endpoints and invalidate relevant queries on success to refresh the UI.
+    - [ ] **3.2.4 Atomic:** Integrate the MOV uploader into the `IndicatorAccordion`.
+      - **Files:** `apps/web/src/components/features/assessments/IndicatorAccordion.tsx`
+      - **Acceptance:** Each indicator has a fully functional file upload and management section.
+
+- [ ] **4.0 Epic: Assessment Submission & Rework Workflow** _(FR 4.4, 4.5)_
+  - [ ] **4.1 Story: Implement Assessment Submission Workflow**
+    - [ ] **4.1.1 Atomic:** Create the `POST /assessments/{id}/submit` backend endpoint.
+      - **Files:** `apps/api/app/api/v1/assessments.py`, `apps/api/app/services/assessment_service.py`
+      - **Acceptance:** Endpoint runs the "Preliminary Compliance Check" (no `YES` answers without MOVs). If valid, it updates the assessment status to `Submitted for Review`. If invalid, it returns a 400 error with details of the failed indicators.
+    - [ ] **4.1.2 Atomic:** Add a "Submit for Review" button and `useSubmitAssessment` mutation hook on the frontend.
+      - **Files:** `apps/web/src/app/(app)/blgu/assessments/page.tsx`, `apps/web/src/hooks/useAssessment.ts`
+      - **Acceptance:** The button triggers the mutation. On success, a confirmation modal is shown and the user is redirected. On failure, the specific indicators that failed the check are highlighted in the UI.
+    - [ ] **4.1.3 Atomic:** Implement the "locked" (read-only) state for the assessment UI.
+      - **Files:** `apps/web/src/components/features/assessments/`
+      - **Acceptance:** When the assessment status is `Submitted for Review` or `Validated`, all form inputs, uploader buttons, and delete icons are disabled.
+  - [ ] **4.2 Story: Implement Rework Notification and Editing**
+    - [ ] **4.2.1 Atomic:** Update backend `GET /assessments/my-assessment` endpoint to include rework data.
+      - **Files:** `apps/api/app/api/v1/assessments.py`
+      - **Acceptance:** The endpoint response includes assessor feedback comments and a flag on each `AssessmentResponse` indicating if it requires rework.
+    - [ ] **4.2.2 Atomic:** Display rework comments and status on the BLGU dashboard.
+      - **Files:** `apps/web/src/app/(app)/blgu/dashboard/page.tsx`
+      - **Acceptance:** If the assessment status is `Needs Rework`, a new section appears on the dashboard summarizing assessor feedback.
+    - [ ] **4.2.3 Atomic:** Conditionally enable editing for flagged indicators.
+      - **Files:** `apps/web/src/components/features/assessments/`
+      - **Acceptance:** When the assessment status is `Needs Rework`, only the specific indicators flagged for rework are editable. All others remain in a read-only state.
+    - [ ] **4.2.4 Atomic:** Allow resubmission after rework is complete.
+      - **Files:** `apps/web/src/app/(app)/blgu/assessments/page.tsx`
+      - **Acceptance:** The "Submit for Review" button becomes active again during the `Needs Rework` phase and functions as before.
