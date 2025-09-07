@@ -272,7 +272,7 @@ export default function LoginPage() {
                   {/* Inner padding and logo */}
                   <div className="p-6">
                     <Image
-                      src="/officialLogo/MLGRC.png"
+                      src="/officialLogo/MLGRC.webp"
                       alt="MLGRC Davao del Sur Logo"
                       width={180}
                       height={180}
