@@ -242,10 +242,10 @@ export function BarangaysSection() {
             (Array.from({ length: 25 }, (_, i) => ({
               id: i + 1,
               name: `Barangay ${i + 1}`,
-            })) as any[])
+            })) as Array<{ id: number; name: string }>)
           )
             .slice(0, 25)
-            .map((b: any, i: number) => {
+            .map((b: { id: number; name: string }, i: number) => {
               // More realistic positioning based on Sulop's geographic layout
               const positions = [
                 // Western barangays (like Tanwalang, Lati-an, Panaglib areas)
