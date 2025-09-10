@@ -53,38 +53,38 @@ interface ChallengeCard {
 // Challenge cards data
 const challengeCards: ChallengeCard[] = [
   {
-    id: "inefficient-processes",
-    title: "Inefficient Manual Processes",
-    imageSrc: "/Toolkit/manual.png",
+    id: "digitize-processes",
+    title: "Digitize Manual Processes",
+    imageSrc: "/Toolkit/manual.webp",
     statistic: "70%",
     statisticLabel: "Time lost on paperwork",
     description:
-      "Moving beyond paper-based checklists and physical document submissions to a secure, centralized digital workflow.",
-    solution: "Move to a guided digital workflow",
+      "Move beyond paper-based checklists and physical document submissions to a secure, centralized digital workflow.",
+    solution: "✓ Centralized Digital Workflow",
     color: "bg-[#fbbf24]",
     delay: 300,
   },
   {
-    id: "lack-of-tools",
-    title: "Lack of Proactive Tools",
-    imageSrc: "/Toolkit/lack.png",
+    id: "proactive-preparation",
+    title: "Empower Proactive Preparation",
+    imageSrc: "/Toolkit/empower.webp",
     statistic: "45%",
     statisticLabel: "Fail due to unpreparedness",
     description:
-      "Providing barangays with a powerful self-assessment tool to identify and rectify weaknesses before the official audit.",
-    solution: "Give barangays a self‑assessment tool",
+      "Provide barangays with a powerful self-assessment tool to identify and rectify weaknesses before the official audit.",
+    solution: "✓ Guided Self-Assessment Tool",
     color: "bg-[#f59e0b]",
     delay: 400,
   },
   {
-    id: "pass-rates",
-    title: "Improving Pass Rates",
-    imageSrc: "/Toolkit/pass-rate.png",
+    id: "improve-pass-rates",
+    title: "Improve SGLGB Pass Rates",
+    imageSrc: "/Toolkit/pass-rate.webp",
     statistic: "30%",
     statisticLabel: "Gap between local & national",
     description:
-      "Addressing the discrepancy between local and national validation results by ensuring submissions meet the highest standards of quality and completeness.",
-    solution: "Use analytics to close validation gaps",
+      "Address the discrepancy between local and national validation results by ensuring submissions meet the highest standards of quality.",
+    solution: "✓ Data-Driven Gap Analysis",
     color: "bg-[#d97706]",
     delay: 500,
   },
@@ -112,13 +112,12 @@ export function ChallengeSection() {
       >
         <h2
           id="challenges-heading"
-          className="text-4xl md:text-5xl font-extrabold text-black mb-2"
+          className="text-3xl md:text-4xl lg:text-4xl font-extrabold text-black mb-2"
         >
-          Close the Validation Gap
+          A Proactive Approach to Governance
         </h2>
-        <p className="text-sm md:text-base text-gray-600 max-w-3xl">
-          From pre‑assessment to table validation, identify issues early and set
-          clear remedies so submissions meet standards the first time.
+        <p className="text-sm md:text-base text-gray-500 max-w-3xl font-normal">
+          Bridging the gap between municipal preparation and national standards.
         </p>
       </div>
 
@@ -170,9 +169,8 @@ export function ChallengeSection() {
 
             {/* Solution Preview (subtle, descriptive outcome) */}
             <div className="mt-auto pt-4 border-t border-gray-100 w-full">
-              <div className="flex items-center gap-2 text-gray-600 text-sm">
-                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                <span>{card.solution}</span>
+              <div className="flex items-center gap-2 text-gray-600 text-sm font-medium">
+                <span className="text-green-600">{card.solution}</span>
               </div>
             </div>
           </article>

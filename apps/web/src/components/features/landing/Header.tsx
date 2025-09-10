@@ -2,10 +2,24 @@
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 export function Header() {
+  // Smooth scroll function with header offset
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const headerHeight = 64; // Height of the sticky header (h-16 = 64px)
+      const elementPosition = element.offsetTop - headerHeight;
+
+      window.scrollTo({
+        top: elementPosition,
+        behavior: "smooth",
+      });
+    }
+  };
   return (
-    <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Product Name */}
@@ -29,40 +43,39 @@ export function Header() {
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a
-              href="#home"
-              className="text-gray-700 hover:text-[#fbbf24] transition-colors"
+            <button
+              onClick={() => scrollToSection("home")}
+              className="text-black hover:text-[#fbbf24] hover:font-semibold transition-all duration-200 cursor-pointer bg-transparent border-none outline-none p-0"
             >
               Home
-            </a>
-            <a
-              href="#problems"
-              className="text-gray-700 hover:text-[#fbbf24] transition-colors"
+            </button>
+            <button
+              onClick={() => scrollToSection("problems")}
+              className="text-black hover:text-[#fbbf24] hover:font-semibold transition-all duration-200 cursor-pointer bg-transparent border-none outline-none p-0"
             >
-              Problems
-            </a>
-            <a
-              href="#process"
-              className="text-gray-700 hover:text-[#fbbf24] transition-colors"
+              The Challenge
+            </button>
+            <button
+              onClick={() => scrollToSection("process")}
+              className="text-black hover:text-[#fbbf24] hover:font-semibold transition-all duration-200 cursor-pointer bg-transparent border-none outline-none p-0"
             >
-              How It Works
-            </a>
-            <a
-              href="#coverage"
-              className="text-gray-700 hover:text-[#fbbf24] transition-colors"
+              The Workflow
+            </button>
+            <button
+              onClick={() => scrollToSection("coverage")}
+              className="text-black hover:text-[#fbbf24] hover:font-semibold transition-all duration-200 cursor-pointer bg-transparent border-none outline-none p-0"
             >
               Coverage
-            </a>
+            </button>
           </nav>
 
           {/* CTA Button */}
           <div className="flex items-center">
-            <Button
-              variant="outline"
-              className="border-[#fbbf24] text-[#fbbf24] hover:bg-[#fbbf24] hover:text-black"
-            >
-              Sign In
-            </Button>
+            <Link href="/login">
+              <Button className="bg-[#fbbf24] text-black hover:bg-[#fbbf24]/90 transition-colors duration-200 font-medium px-6 py-2 border-0">
+                Login
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

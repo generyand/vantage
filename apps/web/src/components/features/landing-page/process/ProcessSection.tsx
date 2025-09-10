@@ -57,7 +57,7 @@ export function ProcessSection() {
       label: "Prepare & Submit",
       color: "bg-[#fbbf24]", // Orange/Yellow for action-oriented step
       activeColor: "#fbbf24",
-      text: "BLGU Users complete their pre-assessment and upload all required documents through the guided digital workflow.",
+      text: "BLGUs complete a guided self-assessment and upload all required Means of Verification (MOVs).",
       backgroundImage: "/Toolkit/Submit.mp4",
       icon: <FileText className="w-4 h-4 text-black" />,
       duration: "5-10 minutes",
@@ -77,7 +77,7 @@ export function ProcessSection() {
       label: "Analyze & Improve",
       color: "bg-[#28A745]", // Success Green for positive outcome
       activeColor: "#28A745",
-      text: "The MLGOO-DILG records the final, official result and uses the system's analytics and AI-powered insights to drive strategic improvements in local governance.",
+      text: "Final results are analyzed, generating AI-powered insights and CapDev recommendations for strategic improvement.",
       backgroundImage: "/Toolkit/analyze.mp4",
       icon: <LineChart className="w-4 h-4 text-white" />,
       duration: "Ongoing",
@@ -127,10 +127,14 @@ export function ProcessSection() {
       <div className="text-left mb-8">
         <h2
           id="process-heading"
-          className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-black mb-6"
+          className="text-3xl md:text-4xl lg:text-4xl font-extrabold text-black mb-2"
         >
-          Three Step Process
+          How VANTAGE Works
         </h2>
+        <p className="text-sm md:text-base text-gray-500 max-w-3xl font-normal">
+          A clear, three-step process for efficient SGLGB preparation and
+          validation.
+        </p>
       </div>
 
       <div className="flex flex-col lg:flex-row items-stretch gap-8">
