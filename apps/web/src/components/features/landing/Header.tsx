@@ -36,7 +36,7 @@ export function Header() {
                 VANTAGE
               </div>
               <div className="text-[10px] md:text-xs text-gray-500">
-                SGLGB Strategic Analytics Platform
+                SGLGB Pre-Assessment for Sulop
               </div>
             </div>
           </div>

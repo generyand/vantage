@@ -7,6 +7,7 @@ import {
   ProcessSection,
 } from "@/components/features/landing-page";
 import { Header } from "./Header";
+import { HeroSection } from "./HeroSection";
 
 export function LandingPage() {
   return (
@@ -16,8 +17,7 @@ export function LandingPage() {
       {/* Main content */}
       <div className="relative z-10">
         <Header />
-        {/* Blank hero area for /landing */}
-        <section id="home" className="min-h-screen" />
+        <HeroSection />
         <div id="problems" className="bg-gray-50">
           <ChallengeSection />
         </div>
