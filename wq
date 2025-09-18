@@ -1,0 +1,2656 @@
+[33mcommit f616580e64a8a7e88cb768bb1bcfb48172723e88[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrevised-landing[m[33m, [m[1;31morigin/revised-landing[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Sep 10 16:14:24 2025 +0800
+
+    Landing Page Done
+
+[33mcommit 5cf0908304dc43b279279b16bf659d65194f68db[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Sep 10 12:21:11 2025 +0800
+
+    enhanced landing page
+
+[33mcommit dae2ee8c9b13ec939a6a711885971a9be988a41c[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Sep 10 00:35:57 2025 +0800
+
+    pnpm build
+
+[33mcommit 5ee9bf713f08bdee3af517673b200e0332506692[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sun Sep 7 23:03:09 2025 +0800
+
+    Footer, Barangay, Three Step
+
+[33mcommit 4f141c479e29fc29cd93bc759ecc8c5f08da5c9d[m[33m ([m[1;32mfirstObj[m[33m)[m
+Merge: 4f0e97f a263be8
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sun Sep 7 11:27:37 2025 +0800
+
+    Merge branch 'main' of https://github.com/generyand/vantage into firstObj
+
+[33mcommit a263be8ff5838c7fdfd09f3232f9ec8d8dac2a1f[m[33m ([m[1;31mupstream/main[m[33m)[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Tue Aug 26 09:21:09 2025 +0800
+
+    enhance: refine PRD and task generation documentation
+    
+    - Updated the generate-tasks.mdc file to remove redundant descriptions and improve clarity.
+    - Added a new section on task specificity requirements, detailing the expectations for Epic, Story, and Atomic tasks.
+    - Enhanced the PRD traceability matrix in the prd-blgu-pre-assessment-workflow.md to align with the updated task structure.
+    - Expanded the tasks-prd-blgu-pre-assessment-workflow.md to include detailed backend and frontend implementation notes, ensuring comprehensive guidance for developers.
+    - Improved testing notes to clarify backend and frontend testing strategies for the new assessment features.
+
+[33mcommit 9626514ddcc94c2cc6c9678292d581f687cd2c13[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Mon Aug 18 09:00:44 2025 +0800
+
+    fix: detect wrong credentials + add system theme support (#42)
+    
+    * Theme Dark/Light Added
+    
+    * fix: detect wrong credentials + add system theme support
+
+[33mcommit 4f0e97f6472290e1fec934eec87ac60302370c39[m[33m ([m[1;31morigin/firstObj[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Aug 18 08:35:42 2025 +0800
+
+    fix: detect wrong credentials + add system theme support
+
+[33mcommit 9fe806fa38df129ed4eebbebc1829e4a7213cb0e[m
+Merge: adb510e 29d631e
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Aug 18 07:59:53 2025 +0800
+
+    Merge branch 'main' of https://github.com/generyand/vantage into firstObj
+
+[33mcommit 29d631e5eab1dfa938d71f32bda2fe3e7f30ea5e[m
+Merge: f3f2959 8b9260e
+Author: generyand <generyan.dep@gmail.com>
+Date:   Mon Aug 18 07:35:16 2025 +0800
+
+    merged head
+
+[33mcommit f3f2959f7a3d47a63c8c3ade4b706c1cef76ad6f[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Mon Aug 18 07:22:41 2025 +0800
+
+    enhance: update task generation rules for PRD alignment
+    
+    - Expanded the task generation process to create a detailed three-tier task list (Epic → Story → Atomic) for features derived from a PRD.
+    - Improved PRD traceability and tech-stack alignment for junior developers.
+    - Added explicit tech stack context and testing notes to guide implementation.
+    - Introduced a structured output format with a PRD traceability matrix and quality gates for task review.
+    
+    - Added a section on adherence to project-wide rules to ensure generated tasks align with established development guidelines.
+    - Included specific conventions for backend, frontend, and testing tasks to maintain consistency across the codebase.
+    - Emphasized the importance of consulting the main index of rules for task creation.
+
+[33mcommit 8b9260e326f696f8bf0bf17c5fa81ffe6457be6c[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Mon Aug 18 07:22:41 2025 +0800
+
+    enhance: update task generation rules for PRD alignment
+    
+    - Expanded the task generation process to create a detailed three-tier task list (Epic → Story → Atomic) for features derived from a PRD.
+    - Improved PRD traceability and tech-stack alignment for junior developers.
+    - Added explicit tech stack context and testing notes to guide implementation.
+    - Introduced a structured output format with a PRD traceability matrix and quality gates for task review.
+
+[33mcommit 084014206147df911af21b4735c5a42bfc0bc14a[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sun Aug 17 15:48:24 2025 +0800
+
+    modified settings.json
+
+[33mcommit adb510e0ee3adc2142d25ef0a4c7acf0563c8028[m[33m ([m[1;32mmode[m[33m)[m
+Merge: c455a6b 1fab46c
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sun Aug 17 12:48:40 2025 +0800
+
+    Merge branch 'main' of https://github.com/generyand/vantage into mode
+
+[33mcommit 1fab46ccc640da15b6ffd6ada862dc5d3b3aa6c9[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sun Aug 17 12:30:02 2025 +0800
+
+    refactor: clean up imports and improve code formatting
+    
+    - Rearranged and removed unused imports across multiple files for better clarity.
+    - Enhanced code formatting by removing unnecessary blank lines and ensuring consistent spacing.
+    - Updated health check and user management endpoints for improved readability.
+    - Refactored startup service for better logging and connection validation.
+    - Adjusted database migration scripts for consistency in ENUM type handling.
+
+[33mcommit 6dc544f6a56f25079f8b333b6a064caac476c2a1[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sun Aug 17 12:18:04 2025 +0800
+
+    feat: configure IDE and Python import resolution
+    
+    - Add VS Code extensions and settings for Python/TypeScript development
+    - Add pyrightconfig.json for monorepo import resolution
+    - Fix Alembic import warnings
+
+[33mcommit 6fcf8c33b86bd864ae141367aa94ef6ad6491f14[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sun Aug 17 11:36:39 2025 +0800
+
+    docs: add extension recommendations for vscode/cursor
+
+[33mcommit ddc9b922609545225474ff9ad624951f135a0f96[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Fri Aug 15 21:51:44 2025 +0800
+
+    Theme Dark/Light Added (#41)
+
+[33mcommit c455a6b7f78dbc6cc5e443c2d59d4afaffa93212[m[33m ([m[1;31morigin/mode[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Aug 11 15:28:15 2025 +0800
+
+    Theme Dark/Light Added
+
+[33mcommit 06ee958ba7e8fef7515e3d00a3eab13c7caba43b[m[33m ([m[1;32mAssessor[m[33m)[m
+Merge: ad3810e 2e9f073
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sun Aug 10 22:01:42 2025 +0800
+
+    Merge branch 'Assessor' into main
+
+[33mcommit 2e9f0737c3809a20ca9cb75600990f157f27c528[m[33m ([m[1;31morigin/Assessor[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Aug 9 17:19:59 2025 +0800
+
+    Logo
+
+[33mcommit 66651de840f722b05afa7dd1ec4becb5b476082f[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Aug 9 00:38:41 2025 +0800
+
+    Clean Image Directory
+
+[33mcommit c21a204492b686e2884bb0950e461074f7060b4a[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sun Aug 3 19:45:33 2025 +0800
+
+    fixed all
+
+[33mcommit 88aab83b94d77554a6965d150a63fce3a75be2a2[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sun Aug 3 16:23:07 2025 +0800
+
+    Assessor Done, fixed some changes
+
+[33mcommit c72d80ec3db1703d89d7d7f54bb8c9f5d33d9c94[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sun Aug 3 11:26:55 2025 +0800
+
+    Assessors Profile and Fix Routing
+
+[33mcommit 992a187dd4db790778bf90c457e1b8aa959d9349[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sun Aug 3 00:22:17 2025 +0800
+
+    Assessor Analytics
+    
+    Assessor Analytics
+
+[33mcommit ad3810ece17cf53991feb7c82a766de679581a89[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Sat Aug 2 21:58:39 2025 +0800
+
+    Already Refractor Landing Page (w/ pnpm build) (#37)
+    
+    * Commit to Merge
+    
+    * pnpm build fixed
+    
+    * task 5.1 w/ pnpm build
+    
+    * task 5.2 w/ pnpm build
+    
+    * task 5.3 w/ pnpm build | also fixed user_management only for admin
+    
+    * Replaced components to Shadcn
+    
+    * minor changes
+    
+    * UI Components
+    
+    * Basic UI
+    
+    * Background UI for Login
+    
+    * Added variants on each shadcn components
+    
+    * minor ui changes
+    
+    * Skeleton Loading
+    
+    * Font Inter Added
+    
+    * Hero Section Not Done
+    
+    * pnpm build, minor error fixed
+    
+    * GlobalCSS fixed
+    
+    * 2nd Part Landing Page
+    
+    * 3rd Part Landing Page
+    
+    * Checkpoint
+    
+    * Landing Page
+    
+    * 5.5, 5.5.2, 5.5.3
+    
+    * 5.6 utilized the auto-generated usePostUsers and usePutUsersUserId hooks
+    
+    * Login Authentication Fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * Still uses mock data, waiting for fix backend
+    
+    * Fixed API and Implementation
+    
+    * side nav and header
+    
+    * Fixed Network Error
+    
+    * task 6 DONE
+    
+    * Header subtitle added
+    
+    * ui
+    
+    * BLGU Dashboard Content
+    
+    * BLGU Dashboard content | pnpm build
+    
+    * Profile Content
+    
+    * BLGU Profile Content | pnpm build
+    
+    * login text, assessment blgu clean
+    
+    * BLGU Assessment content
+    
+    * reload routing
+    
+    * Skeleton Loading on: Assessment and Profile
+    
+    * Assessment Completed
+    
+    * blgu-content
+    
+    * Assessment + build
+    
+    * Sidebar Admin
+    
+    * admin dashboard content
+    
+    * Admin Dashboard
+    
+    * miss type error
+    
+    * User-Management Content
+    
+    Remove corrupted temporary file
+    
+    Remove corrupted temporary file
+    
+    User Management Admin Content
+    
+    BLGU UI Draft Modification (#30)
+    
+    BLGU and ADMIN separate folder
+    Routing (also some validations with specific role)
+    Removed Temporary Mock Data and used real data
+    Redesigned SideBar and Header
+    
+    User Management Admin Content
+    
+    Role are Humanized
+    
+    Role are Humanized
+    
+    * Analytics Content Admin
+    
+    * Analytics & Report Admin
+    
+    * Submission Queue Content
+    
+    * Submission Queue Fixed
+    
+    Profile Admin
+    
+    System Settings Content No Design
+    
+    Admin Content Fixed
+    
+    * Landing Page Done
+    
+    * Landing Page Done
+    
+    * Login Page
+    
+    * Login Fix
+    
+    * BLGU Dashboard
+    
+    * My Assessment BLGU
+    
+    * BLGU Profile
+    
+    * Landing Page Fix Light Mode
+    
+    * Login Icon Fix
+    
+    * Admin Dashboard
+    
+    * Admin Done
+    
+    * Flag fixed
+    
+    * Three Step Process Fixed
+    
+    * Refractor
+    
+    * pnpm built fix
+    
+    ---------
+    
+    Co-authored-by: Gene Ryan <110978525+generyand@users.noreply.github.com>
+
+[33mcommit b2848fd6e9eba649c8298aa173a00ea634f6014a[m[33m ([m[1;31morigin/Refractor[m[33m, [m[1;32mRefractor[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Aug 2 21:02:28 2025 +0800
+
+    pnpm built fix
+
+[33mcommit 2f6fb27f09f3f806c48a83644aa767228d5cf756[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Sat Aug 2 20:30:26 2025 +0800
+
+    Landing page refactor (#35)
+    
+    * Commit to Merge
+    
+    * pnpm build fixed
+    
+    * task 5.1 w/ pnpm build
+    
+    * task 5.2 w/ pnpm build
+    
+    * task 5.3 w/ pnpm build | also fixed user_management only for admin
+    
+    * Replaced components to Shadcn
+    
+    * minor changes
+    
+    * UI Components
+    
+    * Basic UI
+    
+    * Background UI for Login
+    
+    * Added variants on each shadcn components
+    
+    * minor ui changes
+    
+    * Skeleton Loading
+    
+    * Font Inter Added
+    
+    * Hero Section Not Done
+    
+    * pnpm build, minor error fixed
+    
+    * GlobalCSS fixed
+    
+    * 2nd Part Landing Page
+    
+    * 3rd Part Landing Page
+    
+    * Checkpoint
+    
+    * Landing Page
+    
+    * 5.5, 5.5.2, 5.5.3
+    
+    * 5.6 utilized the auto-generated usePostUsers and usePutUsersUserId hooks
+    
+    * Login Authentication Fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * Still uses mock data, waiting for fix backend
+    
+    * Fixed API and Implementation
+    
+    * side nav and header
+    
+    * Fixed Network Error
+    
+    * task 6 DONE
+    
+    * Header subtitle added
+    
+    * ui
+    
+    * BLGU Dashboard Content
+    
+    * BLGU Dashboard content | pnpm build
+    
+    * Profile Content
+    
+    * BLGU Profile Content | pnpm build
+    
+    * login text, assessment blgu clean
+    
+    * BLGU Assessment content
+    
+    * reload routing
+    
+    * Skeleton Loading on: Assessment and Profile
+    
+    * Assessment Completed
+    
+    * blgu-content
+    
+    * Assessment + build
+    
+    * Sidebar Admin
+    
+    * admin dashboard content
+    
+    * Admin Dashboard
+    
+    * miss type error
+    
+    * User-Management Content
+    
+    Remove corrupted temporary file
+    
+    Remove corrupted temporary file
+    
+    User Management Admin Content
+    
+    BLGU UI Draft Modification (#30)
+    
+    BLGU and ADMIN separate folder
+    Routing (also some validations with specific role)
+    Removed Temporary Mock Data and used real data
+    Redesigned SideBar and Header
+    
+    User Management Admin Content
+    
+    Role are Humanized
+    
+    Role are Humanized
+    
+    * Analytics Content Admin
+    
+    * Analytics & Report Admin
+    
+    * Submission Queue Content
+    
+    * Submission Queue Fixed
+    
+    Profile Admin
+    
+    System Settings Content No Design
+    
+    Admin Content Fixed
+    
+    * Landing Page Done
+    
+    * Landing Page Done
+    
+    * Login Page
+    
+    * Login Fix
+    
+    * BLGU Dashboard
+    
+    * My Assessment BLGU
+    
+    * BLGU Profile
+    
+    * Landing Page Fix Light Mode
+    
+    * Login Icon Fix
+    
+    * Admin Dashboard
+    
+    * Admin Done
+    
+    * Flag fixed
+    
+    * Three Step Process Fixed
+    
+    * Refractor
+    
+    ---------
+    
+    Co-authored-by: Gene Ryan <110978525+generyand@users.noreply.github.com>
+
+[33mcommit 8385396f4c971a50c8fb8709e08cef5a3607f5f3[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Aug 2 19:57:58 2025 +0800
+
+    Refractor
+
+[33mcommit 5f14c358858c93cfc5c858eb66c38751b5cb7f7a[m[33m ([m[1;32mfinal-landingPage[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Aug 2 18:23:42 2025 +0800
+
+    Three Step Process Fixed
+
+[33mcommit 0c504f4940735bacd4574f288d7dc5030ed19fb0[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Sat Aug 2 14:59:53 2025 +0800
+
+    Login, BLGU, Admin UI (for the logo not final) (#34)
+    
+    * Commit to Merge
+    
+    * pnpm build fixed
+    
+    * task 5.1 w/ pnpm build
+    
+    * task 5.2 w/ pnpm build
+    
+    * task 5.3 w/ pnpm build | also fixed user_management only for admin
+    
+    * Replaced components to Shadcn
+    
+    * minor changes
+    
+    * UI Components
+    
+    * Basic UI
+    
+    * Background UI for Login
+    
+    * Added variants on each shadcn components
+    
+    * minor ui changes
+    
+    * Skeleton Loading
+    
+    * Font Inter Added
+    
+    * Hero Section Not Done
+    
+    * pnpm build, minor error fixed
+    
+    * GlobalCSS fixed
+    
+    * 2nd Part Landing Page
+    
+    * 3rd Part Landing Page
+    
+    * Checkpoint
+    
+    * Landing Page
+    
+    * 5.5, 5.5.2, 5.5.3
+    
+    * 5.6 utilized the auto-generated usePostUsers and usePutUsersUserId hooks
+    
+    * Login Authentication Fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * Still uses mock data, waiting for fix backend
+    
+    * Fixed API and Implementation
+    
+    * side nav and header
+    
+    * Fixed Network Error
+    
+    * task 6 DONE
+    
+    * Header subtitle added
+    
+    * ui
+    
+    * BLGU Dashboard Content
+    
+    * BLGU Dashboard content | pnpm build
+    
+    * Profile Content
+    
+    * BLGU Profile Content | pnpm build
+    
+    * login text, assessment blgu clean
+    
+    * BLGU Assessment content
+    
+    * reload routing
+    
+    * Skeleton Loading on: Assessment and Profile
+    
+    * Assessment Completed
+    
+    * blgu-content
+    
+    * Assessment + build
+    
+    * Sidebar Admin
+    
+    * admin dashboard content
+    
+    * Admin Dashboard
+    
+    * miss type error
+    
+    * User-Management Content
+    
+    Remove corrupted temporary file
+    
+    Remove corrupted temporary file
+    
+    User Management Admin Content
+    
+    BLGU UI Draft Modification (#30)
+    
+    BLGU and ADMIN separate folder
+    Routing (also some validations with specific role)
+    Removed Temporary Mock Data and used real data
+    Redesigned SideBar and Header
+    
+    User Management Admin Content
+    
+    Role are Humanized
+    
+    Role are Humanized
+    
+    * Analytics Content Admin
+    
+    * Analytics & Report Admin
+    
+    * Submission Queue Content
+    
+    * Submission Queue Fixed
+    
+    Profile Admin
+    
+    System Settings Content No Design
+    
+    Admin Content Fixed
+    
+    * Landing Page Done
+    
+    * Landing Page Done
+    
+    * Login Page
+    
+    * Login Fix
+    
+    * BLGU Dashboard
+    
+    * My Assessment BLGU
+    
+    * BLGU Profile
+    
+    * Landing Page Fix Light Mode
+    
+    * Login Icon Fix
+    
+    * Admin Dashboard
+    
+    * Admin Done
+    
+    * Flag fixed
+    
+    ---------
+    
+    Co-authored-by: Gene Ryan <110978525+generyand@users.noreply.github.com>
+
+[33mcommit 3f74162e78d8047782ae47e9d98f137655fc090e[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Aug 2 14:13:43 2025 +0800
+
+    Flag fixed
+
+[33mcommit 9ef420a438084c6b2699850eb041733972b13d9e[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Aug 2 13:49:36 2025 +0800
+
+    Admin Done
+
+[33mcommit 1561a01c9183d35c9c9678be7ced9f660295851d[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Aug 2 12:36:51 2025 +0800
+
+    Admin Dashboard
+
+[33mcommit 4a0ecf0d2b84cfb775da921a1bda0fae83216b0f[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Aug 2 11:52:44 2025 +0800
+
+    Login Icon Fix
+
+[33mcommit 7609a84ed5e055653dc9b670aaacab32255986f6[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Aug 2 01:51:20 2025 +0800
+
+    Landing Page Fix Light Mode
+
+[33mcommit e687e62331c08623437c42475eeca088eb96c1c0[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Aug 2 01:01:08 2025 +0800
+
+    BLGU Profile
+
+[33mcommit ea14eb520604e0d7144101bf35344d06e60fb96c[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Fri Aug 1 23:51:52 2025 +0800
+
+    My Assessment BLGU
+
+[33mcommit e82498b8b25f59cb3450c714f3981601e7fcf6b5[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Fri Aug 1 22:54:01 2025 +0800
+
+    BLGU Dashboard
+
+[33mcommit 7d54dcea3997c531a74ec7be8b3e49e04987afdf[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Fri Aug 1 14:18:18 2025 +0800
+
+    Login Fix
+
+[33mcommit 4dc0c3f422052bb927b77af8155044c8295800ee[m
+Merge: 710f0ef 98121dd
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Fri Aug 1 14:06:55 2025 +0800
+
+    Merge branch 'final-landingPage' of https://github.com/Kyaa-A/vantage into final-landingPage
+
+[33mcommit 710f0ef82b27fb9f254c8c37848ca105d534b1ed[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Fri Aug 1 14:05:25 2025 +0800
+
+    Login Page
+
+[33mcommit e5b553333a42e51fa39771f03e154d164a1d87d8[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Fri Aug 1 12:58:34 2025 +0800
+
+    Final Landing Page (#32)
+    
+    * Commit to Merge
+    
+    * pnpm build fixed
+    
+    * task 5.1 w/ pnpm build
+    
+    * task 5.2 w/ pnpm build
+    
+    * task 5.3 w/ pnpm build | also fixed user_management only for admin
+    
+    * Replaced components to Shadcn
+    
+    * minor changes
+    
+    * UI Components
+    
+    * Basic UI
+    
+    * Background UI for Login
+    
+    * Added variants on each shadcn components
+    
+    * minor ui changes
+    
+    * Skeleton Loading
+    
+    * Font Inter Added
+    
+    * Hero Section Not Done
+    
+    * pnpm build, minor error fixed
+    
+    * GlobalCSS fixed
+    
+    * 2nd Part Landing Page
+    
+    * 3rd Part Landing Page
+    
+    * Checkpoint
+    
+    * Landing Page
+    
+    * 5.5, 5.5.2, 5.5.3
+    
+    * 5.6 utilized the auto-generated usePostUsers and usePutUsersUserId hooks
+    
+    * Login Authentication Fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * Still uses mock data, waiting for fix backend
+    
+    * Fixed API and Implementation
+    
+    * side nav and header
+    
+    * Fixed Network Error
+    
+    * task 6 DONE
+    
+    * Header subtitle added
+    
+    * ui
+    
+    * BLGU Dashboard Content
+    
+    * BLGU Dashboard content | pnpm build
+    
+    * Profile Content
+    
+    * BLGU Profile Content | pnpm build
+    
+    * login text, assessment blgu clean
+    
+    * BLGU Assessment content
+    
+    * reload routing
+    
+    * Skeleton Loading on: Assessment and Profile
+    
+    * Assessment Completed
+    
+    * blgu-content
+    
+    * Assessment + build
+    
+    * Sidebar Admin
+    
+    * admin dashboard content
+    
+    * Admin Dashboard
+    
+    * miss type error
+    
+    * User-Management Content
+    
+    Remove corrupted temporary file
+    
+    Remove corrupted temporary file
+    
+    User Management Admin Content
+    
+    BLGU UI Draft Modification (#30)
+    
+    BLGU and ADMIN separate folder
+    Routing (also some validations with specific role)
+    Removed Temporary Mock Data and used real data
+    Redesigned SideBar and Header
+    
+    User Management Admin Content
+    
+    Role are Humanized
+    
+    Role are Humanized
+    
+    * Analytics Content Admin
+    
+    * Analytics & Report Admin
+    
+    * Submission Queue Content
+    
+    * Submission Queue Fixed
+    
+    Profile Admin
+    
+    System Settings Content No Design
+    
+    Admin Content Fixed
+    
+    * Landing Page Done
+    
+    * Landing Page Done
+    
+    ---------
+    
+    Co-authored-by: Gene Ryan <110978525+generyand@users.noreply.github.com>
+
+[33mcommit 98121dd5b7521d1fcf794d9c12a5ef5019006664[m
+Merge: 2e808fd aba49a9
+Author: Gene Ryan <110978525+generyand@users.noreply.github.com>
+Date:   Fri Aug 1 12:58:17 2025 +0800
+
+    Merge branch 'main' into final-landingPage
+
+[33mcommit 2e808fde15ac4fff51ee7bba41c2731dbcc41b4e[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Fri Aug 1 12:35:06 2025 +0800
+
+    Landing Page Done
+
+[33mcommit 27afc30798caf352173e748320170be08fa71aab[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Fri Aug 1 10:52:14 2025 +0800
+
+    Landing Page Done
+
+[33mcommit aba49a9483da90d3584112841ddc850537ca607e[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jul 31 22:20:42 2025 +0800
+
+    remove temporary-tasks
+
+[33mcommit 8be50644bead89334ad3689bb8deddeec6e80f9d[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 21:23:57 2025 +0800
+
+    Submission Queue Fixed
+    
+    Profile Admin
+    
+    System Settings Content No Design
+    
+    Admin Content Fixed
+
+[33mcommit e3aeaaa06e2e77789a474ef2f9d58f21ed30f755[m[33m ([m[1;32madmin-side[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 19:20:51 2025 +0800
+
+    Submission Queue Content
+
+[33mcommit 97197af11391907512725d2d9d0c30a0470b3e8b[m[33m ([m[1;31morigin/admin-side[m[33m, [m[1;32madmin-content[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 19:00:35 2025 +0800
+
+    Analytics & Report Admin
+
+[33mcommit 252acbb508ea06895fc8a7b8e1960879fbe7b224[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 18:27:20 2025 +0800
+
+    Analytics Content Admin
+
+[33mcommit d6598e45265190e220301b0dbe9a7b5807a36b77[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 16:17:49 2025 +0800
+
+    User-Management Content
+    
+    Remove corrupted temporary file
+    
+    Remove corrupted temporary file
+    
+    User Management Admin Content
+    
+    BLGU UI Draft Modification (#30)
+    
+    BLGU and ADMIN separate folder
+    Routing (also some validations with specific role)
+    Removed Temporary Mock Data and used real data
+    Redesigned SideBar and Header
+    
+    User Management Admin Content
+    
+    Role are Humanized
+    
+    Role are Humanized
+
+[33mcommit 513443585bd3819357f1b7a85a8dbd1dad6ca71c[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Wed Jul 30 17:22:26 2025 +0800
+
+    fix: removed typo in web/package.json
+
+[33mcommit f1dbb78d32d481e82cff9d782ea2be95b846fb74[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Wed Jul 30 17:10:28 2025 +0800
+
+    deledted w file
+
+[33mcommit 3eb42a8cb9f9fc4f3d85180c075f7cc0a2741004[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Wed Jul 30 16:52:49 2025 +0800
+
+    docs: made temporary-tasks durectory
+
+[33mcommit 7fe1632e456430ebbfcd495903c634e9932016e4[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 16:01:55 2025 +0800
+
+    miss type error
+
+[33mcommit e4348ea4e2edd3d676f1ea7df6c878adbf453cf8[m
+Merge: 6d5d791 814bf73
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 15:58:10 2025 +0800
+
+    Merge branch 'admin-content' of https://github.com/Kyaa-A/vantage into admin-content
+
+[33mcommit 6d5d791034ad576c8daa3fb1eda3c72d1a1d87e9[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 15:56:15 2025 +0800
+
+    Admin Dashboard
+
+[33mcommit 3cecddaea55c864899ccc37c930371a7057287f8[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Wed Jul 30 07:48:50 2025 +0000
+
+    BLGU UI Draft Modification (#30)
+    
+    BLGU and ADMIN separate folder
+    Routing (also some validations with specific role)
+    Removed Temporary Mock Data and used real data
+    Redesigned SideBar and Header
+
+[33mcommit 814bf738b77de7b09306ca9fa7f16ad207737b40[m
+Merge: 9497d2d db53229
+Author: Gene Ryan <110978525+generyand@users.noreply.github.com>
+Date:   Wed Jul 30 15:47:00 2025 +0800
+
+    Merge branch 'main' into admin-content
+
+[33mcommit 89fb3d1f5219059207f351d47556d7ce7060df0c[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 15:26:13 2025 +0800
+
+    admin dashboard content
+
+[33mcommit 9497d2d0aab824d3ad138742c4f212e75f966180[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 15:12:20 2025 +0800
+
+    Sidebar Admin
+
+[33mcommit f674cddb0b6daa424b8003397a766caca41fa2bb[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 14:41:19 2025 +0800
+
+    Assessment + build
+
+[33mcommit 3b26482056cd69f38733405ffdc160e26272b715[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 14:26:14 2025 +0800
+
+    blgu-content
+
+[33mcommit dab1b59239a0b512f68ab5000b7538c47eda21b8[m[33m ([m[1;31morigin/blgu-content[m[33m, [m[1;32mblgu-content[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 13:57:11 2025 +0800
+
+    Assessment Completed
+
+[33mcommit a345358db7438e37a284e02a16b76504bdf48fbf[m
+Merge: 1d23f4c f361b9f
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 10:59:05 2025 +0800
+
+    Skeleton Loading on: Assessment and Profile
+
+[33mcommit 1d23f4c136be407fdfb006357e9b00f8eaf80569[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 10:56:21 2025 +0800
+
+    Skeleton Loading on: Assessment and Profile
+
+[33mcommit 6f0528fc79463255df162f28490ec812a66ff0e4[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 10:47:19 2025 +0800
+
+    reload routing
+
+[33mcommit 4f148ec106e2d003b31bdebc13018743324b0832[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 09:51:02 2025 +0800
+
+    BLGU Assessment content
+
+[33mcommit db5322941b46f73dd703c0b08c539bfe5210b1c6[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Wed Jul 30 01:17:32 2025 +0000
+
+    Blgu Dashboard Content (#25)
+    
+    * Commit to Merge
+    
+    * pnpm build fixed
+    
+    * task 5.1 w/ pnpm build
+    
+    * task 5.2 w/ pnpm build
+    
+    * task 5.3 w/ pnpm build | also fixed user_management only for admin
+    
+    * Replaced components to Shadcn
+    
+    * minor changes
+    
+    * UI Components
+    
+    * Basic UI
+    
+    * Background UI for Login
+    
+    * Added variants on each shadcn components
+    
+    * minor ui changes
+    
+    * Skeleton Loading
+    
+    * Font Inter Added
+    
+    * Hero Section Not Done
+    
+    * pnpm build, minor error fixed
+    
+    * GlobalCSS fixed
+    
+    * 2nd Part Landing Page
+    
+    * 3rd Part Landing Page
+    
+    * Checkpoint
+    
+    * Landing Page
+    
+    * 5.5, 5.5.2, 5.5.3
+    
+    * 5.6 utilized the auto-generated usePostUsers and usePutUsersUserId hooks
+    
+    * Login Authentication Fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * Still uses mock data, waiting for fix backend
+    
+    * Fixed API and Implementation
+    
+    * side nav and header
+    
+    * Fixed Network Error
+    
+    * task 6 DONE
+    
+    * Header subtitle added
+    
+    * ui
+    
+    * BLGU Dashboard Content
+    
+    * BLGU Dashboard content | pnpm build
+    
+    * Profile Content
+    
+    * BLGU Profile Content | pnpm build
+    
+    ---------
+    
+    Co-authored-by: Gene Ryan <110978525+generyand@users.noreply.github.com>
+
+[33mcommit f361b9f20d3e442fdaaf310da0fa81dc1425a65a[m
+Merge: 66e3644 5224b65
+Author: Gene Ryan <110978525+generyand@users.noreply.github.com>
+Date:   Wed Jul 30 09:17:19 2025 +0800
+
+    Merge branch 'main' into blgu-content
+
+[33mcommit 3cce50146802ac57993800bba60dfd2181ca545f[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 09:08:29 2025 +0800
+
+    login text, assessment blgu clean
+
+[33mcommit 66e36444d9e17438d25e2c45a3f3317a32094ec2[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 08:27:53 2025 +0800
+
+    BLGU Profile Content | pnpm build
+
+[33mcommit de855719928c82518e9af8b656145c355daa6f2a[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 30 08:05:30 2025 +0800
+
+    Profile Content
+
+[33mcommit d5dfac50c1573bef8bbe79664a1340397c2badb6[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 29 23:01:49 2025 +0800
+
+    BLGU Dashboard content | pnpm build
+
+[33mcommit fcf0212fd603f65f1b4af048f4ad33c8420af40b[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 29 22:45:26 2025 +0800
+
+    BLGU Dashboard Content
+
+[33mcommit 5224b65c12d116ebdd8965566597deb5adc9139f[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Tue Jul 29 14:23:19 2025 +0000
+
+    Task 6 (#24)
+    
+    * Commit to Merge
+    
+    * pnpm build fixed
+    
+    * task 5.1 w/ pnpm build
+    
+    * task 5.2 w/ pnpm build
+    
+    * task 5.3 w/ pnpm build | also fixed user_management only for admin
+    
+    * Replaced components to Shadcn
+    
+    * minor changes
+    
+    * UI Components
+    
+    * Basic UI
+    
+    * Background UI for Login
+    
+    * Added variants on each shadcn components
+    
+    * minor ui changes
+    
+    * Skeleton Loading
+    
+    * Font Inter Added
+    
+    * Hero Section Not Done
+    
+    * pnpm build, minor error fixed
+    
+    * GlobalCSS fixed
+    
+    * 2nd Part Landing Page
+    
+    * 3rd Part Landing Page
+    
+    * Checkpoint
+    
+    * Landing Page
+    
+    * 5.5, 5.5.2, 5.5.3
+    
+    * 5.6 utilized the auto-generated usePostUsers and usePutUsersUserId hooks
+    
+    * Login Authentication Fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * Still uses mock data, waiting for fix backend
+    
+    * Fixed API and Implementation
+    
+    * side nav and header
+    
+    * Fixed Network Error
+    
+    * task 6 DONE
+    
+    ---------
+    
+    Co-authored-by: Gene Ryan <110978525+generyand@users.noreply.github.com>
+
+[33mcommit b70a2179979521b291cfcdc5b5bb327802b286c1[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 29 22:05:21 2025 +0800
+
+    ui
+
+[33mcommit e81e95110323b98603d131b54eeaab9ea1d5e03d[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 29 20:36:02 2025 +0800
+
+    Header subtitle added
+
+[33mcommit e5073125dfa7703f27d3409f1489aa229e7f9efe[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 29 20:01:42 2025 +0800
+
+    task 6 DONE
+
+[33mcommit 78edc7f2c1067a21b5affa71cf45b79d118c026b[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Tue Jul 29 05:03:30 2025 +0000
+
+    BLGU Dashboard (#23)
+    
+    * Commit to Merge
+    
+    * pnpm build fixed
+    
+    * task 5.1 w/ pnpm build
+    
+    * task 5.2 w/ pnpm build
+    
+    * task 5.3 w/ pnpm build | also fixed user_management only for admin
+    
+    * Replaced components to Shadcn
+    
+    * minor changes
+    
+    * UI Components
+    
+    * Basic UI
+    
+    * Background UI for Login
+    
+    * Added variants on each shadcn components
+    
+    * minor ui changes
+    
+    * Skeleton Loading
+    
+    * Font Inter Added
+    
+    * Hero Section Not Done
+    
+    * pnpm build, minor error fixed
+    
+    * GlobalCSS fixed
+    
+    * 2nd Part Landing Page
+    
+    * 3rd Part Landing Page
+    
+    * Checkpoint
+    
+    * Landing Page
+    
+    * 5.5, 5.5.2, 5.5.3
+    
+    * 5.6 utilized the auto-generated usePostUsers and usePutUsersUserId hooks
+    
+    * Login Authentication Fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * BLGU dashboard, routes modified, login auth fixed
+    
+    * Still uses mock data, waiting for fix backend
+    
+    * Fixed API and Implementation
+    
+    * side nav and header
+    
+    * Fixed Network Error
+
+[33mcommit 1e7a9d25d39fa03e6c7066140862ebc28b53a85d[m[33m ([m[1;31morigin/task-5.5[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 29 12:17:31 2025 +0800
+
+    Fixed Network Error
+
+[33mcommit 4cd91b3a9038e2c517d1a8e6921c147b2e652be8[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 29 12:01:11 2025 +0800
+
+    side nav and header
+
+[33mcommit 2648f8efaad7a9e2f98b8d45b6c1c5d312119647[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 29 11:12:23 2025 +0800
+
+    Fixed API and Implementation
+
+[33mcommit db060b22f8f00aa06dde54d9c361915ec30ce2f4[m
+Merge: 6a9f253 ada6f3e
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 29 11:04:34 2025 +0800
+
+    Merge branch 'main' of https://github.com/generyand/vantage into task-5.5
+
+[33mcommit ada6f3ea454bc270821637287294846840f6cda5[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Tue Jul 29 10:41:39 2025 +0800
+
+    refactor: update governance area model and remove obsolete migration files
+    
+    - Added GovernanceArea model import in Alembic environment.
+    - Deleted outdated migration scripts related to user fields and governance area relationships.
+    - Updated test database to reflect recent changes.
+
+[33mcommit 6a9f2530fe65b5c19924aff8fde7ad36cab49f14[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 29 10:15:04 2025 +0800
+
+    Still uses mock data, waiting for fix backend
+
+[33mcommit 9f9987727cf96730ea606aa88ff2091620605281[m
+Merge: 658bb53 d62f5b7
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 29 09:48:56 2025 +0800
+
+    Merge branch 'main' of https://github.com/generyand/vantage into task-5.5
+
+[33mcommit d62f5b736832bf7cf2403a53422d4b84c630a375[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Tue Jul 29 09:40:36 2025 +0800
+
+    feat: add lookups for governance areas and barangays with corresponding hooks and types
+
+[33mcommit 658bb53997ba556dfa49e64250568b94fafc2944[m
+Merge: ad1ec78 373aa6e
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 28 22:39:09 2025 +0800
+
+    Removed temp mock data for 5.5 tasks and use the API
+
+[33mcommit ad1ec78e9d1cd2f98904b2b23b5b5bea3a6c88eb[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 28 22:10:55 2025 +0800
+
+    BLGU dashboard, routes modified, login auth fixed
+
+[33mcommit 220659c3dab44a9c24cca9f82684f178d4407b58[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 28 22:01:40 2025 +0800
+
+    BLGU dashboard, routes modified, login auth fixed
+
+[33mcommit 373aa6ea3b3a4dec4a8fbbb4365a279baaafacc1[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Mon Jul 28 21:55:25 2025 +0800
+
+    feature: created barangays and governance areas look up endpoints for dropdown menu
+
+[33mcommit 5db4dc58549904f961c0db43ff02aaeecd0ee607[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Mon Jul 28 13:49:14 2025 +0000
+
+    Task 5.5 (#18)
+    
+    * Commit to Merge
+    
+    * pnpm build fixed
+    
+    * task 5.1 w/ pnpm build
+    
+    * task 5.2 w/ pnpm build
+    
+    * task 5.3 w/ pnpm build | also fixed user_management only for admin
+    
+    * Replaced components to Shadcn
+    
+    * minor changes
+    
+    * UI Components
+    
+    * Basic UI
+    
+    * Background UI for Login
+    
+    * Added variants on each shadcn components
+    
+    * minor ui changes
+    
+    * Skeleton Loading
+    
+    * Font Inter Added
+    
+    * Hero Section Not Done
+    
+    * pnpm build, minor error fixed
+    
+    * GlobalCSS fixed
+    
+    * 2nd Part Landing Page
+    
+    * 3rd Part Landing Page
+    
+    * Checkpoint
+    
+    * Landing Page
+    
+    * 5.5, 5.5.2, 5.5.3
+    
+    * 5.6 utilized the auto-generated usePostUsers and usePutUsersUserId hooks
+    
+    * Login Authentication Fixed
+
+[33mcommit 8be1149e41b8cb18b2162ee7d98b2395e5968643[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 28 15:03:17 2025 +0800
+
+    Login Authentication Fixed
+
+[33mcommit b8718020f63367cac9c8c8e4d47817024ead308c[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 28 14:46:29 2025 +0800
+
+    5.6 utilized the auto-generated usePostUsers and usePutUsersUserId hooks
+
+[33mcommit ef971d059a79d929e41977c6b97fefd38f910ab9[m
+Merge: c21f196 5235dd4
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 28 12:29:34 2025 +0800
+
+    Pulled Gene/Main Resolved Conflict
+
+[33mcommit c21f1968dc91bf9a0dfb0b230f6f42f8cff50217[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 28 12:09:32 2025 +0800
+
+    5.5, 5.5.2, 5.5.3
+
+[33mcommit 5235dd4d260bfaa40cf0fe86d4cb1f746a702c8d[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 26 18:58:39 2025 +0800
+
+    docs: modify tasks prd for epic 2
+
+[33mcommit e5d1d9f8b68f51077428ced682a7ac8021c706c2[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Sat Jul 26 08:21:11 2025 +0000
+
+    Landing Page + Solve Merge Conflict (#16)
+    
+    * Commit to Merge
+    
+    * pnpm build fixed
+    
+    * task 5.1 w/ pnpm build
+    
+    * task 5.2 w/ pnpm build
+    
+    * task 5.3 w/ pnpm build | also fixed user_management only for admin
+    
+    * Replaced components to Shadcn
+    
+    * minor changes
+    
+    * UI Components
+    
+    * Basic UI
+    
+    * Background UI for Login
+    
+    * Added variants on each shadcn components
+    
+    * minor ui changes
+    
+    * Skeleton Loading
+    
+    * Font Inter Added
+    
+    * Hero Section Not Done
+    
+    * pnpm build, minor error fixed
+    
+    * GlobalCSS fixed
+    
+    * 2nd Part Landing Page
+    
+    * 3rd Part Landing Page
+    
+    * Checkpoint
+    
+    * Landing Page
+
+[33mcommit f840a21a374a1a2b217ef4cad43dcbb7e7aad353[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 26 16:12:50 2025 +0800
+
+    docs: edit create-prd and styling rules, and added Epic 2 PRD
+
+[33mcommit 1f05155e2e116f38b442e4060516ef74b01996f2[m[33m ([m[1;31morigin/landing-pull[m[33m, [m[1;32mlanding-pull[m[33m)[m
+Merge: 8109a94 2b8461f
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Jul 26 16:08:07 2025 +0800
+
+    Conflict Resolved
+
+[33mcommit 8109a940123e2d5b701553ae258b9d167f998d23[m[33m ([m[1;31morigin/landing-page[m[33m, [m[1;32mlanding-page[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Jul 26 15:48:28 2025 +0800
+
+    Landing Page
+
+[33mcommit 2b8461fb2a020ee2d17cdc9b52a1d6d79e72e923[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 26 15:23:39 2025 +0800
+
+    docs: edit tasks inconsistencies in Epic 1
+
+[33mcommit d96ed80cee4f2a3a8b91e2e8985aa54bec1da796[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 26 15:19:13 2025 +0800
+
+    fix: align schema field names with database models
+    
+    - Change assessor_area → governance_area_id in all Pydantic schemas
+    - Add missing is_superuser and updated_at fields to User schema
+    - Update service layer logic to use correct field names
+    - Regenerate TypeScript types to reflect schema changes
+    - Update task documentation with fix annotations
+    
+    Resolves critical field mismatch that would cause API serialization errorsfeat: implement backend user management API
+    
+    - Updated all user Pydantic schemas to use integer IDs and string enums.
+    
+    - Added assessor_area field to relevant schemas for role-specific logic.
+    
+    - Refactored UserService to enforce business rules for AREA_ASSESSOR roles.
+    
+    - Aligned all user-related API endpoints to use integer IDs in path parameters.
+    
+    - Ensured data integrity by handling role-specific fields (assessor_area vs. barangay_id).
+    
+    Related to Task 3.0 in PRD Core User Authentication & Management
+
+[33mcommit 500bf70aff8ee933630571fb34f64405adfb5067[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Jul 26 12:46:16 2025 +0800
+
+    Checkpoint
+
+[33mcommit b78b312586da378a3945438c7b0934feb8739be9[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sat Jul 26 01:12:46 2025 +0800
+
+    3rd Part Landing Page
+
+[33mcommit 436f3d02f9ea90c53d6b5d0e6369148c42edf3d7[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Fri Jul 25 23:06:36 2025 +0800
+
+    2nd Part Landing Page
+
+[33mcommit e788d5887abea2070cf89a4542ad39262134a300[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Fri Jul 25 10:39:05 2025 +0800
+
+    GlobalCSS fixed
+
+[33mcommit 9501903bd68e40736054953f870e911a2545975a[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Fri Jul 25 02:01:39 2025 +0000
+
+     Login UI + Design System + Skeleton Loading  (#15)
+    
+    * Commit to Merge
+    
+    * pnpm build fixed
+    
+    * task 5.1 w/ pnpm build
+    
+    * task 5.2 w/ pnpm build
+    
+    * task 5.3 w/ pnpm build | also fixed user_management only for admin
+    
+    * Replaced components to Shadcn
+    
+    * minor changes
+    
+    * UI Components
+    
+    * Basic UI
+    
+    * Background UI for Login
+    
+    * Added variants on each shadcn components
+    
+    * minor ui changes
+    
+    * Skeleton Loading
+    
+    * Font Inter Added
+
+[33mcommit 5ad968c40fbc6cb62fe6d6dfc57515a21d8d2894[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Thu Jul 24 23:39:19 2025 +0800
+
+    pnpm build, minor error fixed
+
+[33mcommit 465f0932ed0a60219477cc6c6703b83ca18529e1[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Thu Jul 24 23:34:41 2025 +0800
+
+    Hero Section Not Done
+
+[33mcommit e39b7a4100f03f5063d55415fca5b4f826da1cf2[m[33m ([m[1;31morigin/designsystem[m[33m, [m[1;32mdesignsystem[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Thu Jul 24 17:40:01 2025 +0800
+
+    Font Inter Added
+
+[33mcommit eca2673bcc232468dd6310ef1db6d476892f0721[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Thu Jul 24 16:50:37 2025 +0800
+
+    Skeleton Loading
+
+[33mcommit ffd6e8bf0f71a9dce76c51ceb28e8bde07921ceb[m
+Merge: 210b195 ccb8b51
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Thu Jul 24 14:10:51 2025 +0800
+
+    Merge branch 'main' of https://github.com/generyand/vantage into designsystem
+
+[33mcommit ccb8b51eedc59905e8082ee43e89986dd5ebfef4[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jul 24 14:03:49 2025 +0800
+
+    docs: Update project-structure rule
+
+[33mcommit 16c4c976f46167f08b032778faa2ab833b4b1a06[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jul 24 13:48:54 2025 +0800
+
+    Refactor API configuration and clean up unused hooks
+    
+    - Updated the API base URL to use an environment variable for better flexibility in different environments.
+    - Removed the unused placeholder hooks to streamline the codebase and enhance maintainability.
+    - Adjusted the import path for the user-related hook to reflect the updated API structure.
+
+[33mcommit 371b36c1ea25fa1e03f221f8cc6f65422a896115[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jul 24 13:41:00 2025 +0800
+
+    Refactor generated API structure and remove unused endpoint files
+    
+    - Updated the main index file to streamline exports for generated endpoints and schemas.
+    - Consolidated endpoint exports into a single index file for better organization and maintainability.
+    - Removed obsolete endpoint and schema files to clean up the codebase and enhance clarity.
+    - Improved comments for better understanding of the generated structure.
+
+[33mcommit 3d00e15fe4c2d1ed8416e87cc835e53e1978b7de[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jul 24 13:22:47 2025 +0800
+
+    Refactor type generation script to create dynamic exports for API endpoints
+    
+    - Updated the type generation script to dynamically generate exports for endpoint hooks based on existing directory structure.
+    - Removed static exports from the generated index file, enhancing maintainability and reducing manual updates.
+    - Cleaned up comments for clarity and improved organization of the generated code.
+
+[33mcommit 4afd640dcd4f47810edb6824c0541c803969dc3f[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jul 24 13:16:19 2025 +0800
+
+    Remove project and assessment models along with their associated migration files and TypeScript exports. This cleanup streamlines the codebase by eliminating unused components and references, enhancing maintainability.
+
+[33mcommit 0217c87881289555463c79e9eb406712caa84346[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jul 24 13:05:08 2025 +0800
+
+    Refactor API routes and update user-related endpoints
+    
+    - Rearranged the inclusion order of routers in the API initialization file for better organization.
+    - Updated user-related endpoints to use the "users" tag instead of "admin" for improved clarity and consistency.
+    - Removed the admin schema file as it is no longer needed, streamlining the schema exports.
+    - Adjusted TypeScript endpoint and schema files to reflect the new structure and naming conventions for system-related API calls.
+
+[33mcommit 210b19521b95f3dadc6e5af7f0472df7b26603c3[m[33m ([m[1;31morigin/login-ui[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Thu Jul 24 11:21:27 2025 +0800
+
+    minor ui changes
+
+[33mcommit 416c23abac2d982b815eec043a0d9f5dfec34eb3[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Thu Jul 24 01:12:03 2025 +0800
+
+    Added variants on each shadcn components
+
+[33mcommit 08cae285eb3c4f5d914579224d1951934824dab9[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 23 15:59:18 2025 +0800
+
+    Background UI for Login
+
+[33mcommit df1db552a1d9dcf11aec4facef086d7100378f80[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 23 15:01:45 2025 +0800
+
+    Basic UI
+
+[33mcommit 57a6a621c5c043d1c0b8ceb284a6dc0eaf123860[m
+Merge: dd06cf6 13b66d7
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 23 14:53:57 2025 +0800
+
+    Reolve merge conflict
+
+[33mcommit 13b66d78e4e12b970e498a030b0ac5f8c0d83045[m
+Merge: e9ae191 c96df47
+Author: generyand <generyan.dep@gmail.com>
+Date:   Wed Jul 23 14:18:31 2025 +0800
+
+    Merge branch 'main' of https://github.com/generyand/vantage
+
+[33mcommit e9ae19184875a2b9107a56f7e3b59987f4650d58[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Wed Jul 23 14:18:27 2025 +0800
+
+    Remove Makefile and update package.json scripts for improved testing and linting
+    
+    - Deleted the Makefile to streamline project setup and commands.
+    - Updated package.json to include detailed test and linting scripts, enhancing developer experience.
+    - Added new scripts for coverage testing and code formatting.
+    - Expanded README with manual endpoint testing instructions and curl commands for better API interaction guidance.
+    - Removed outdated SUPABASE_SETUP.md and TESTING_GUIDE.md files to reduce clutter.
+
+[33mcommit dd06cf6097c2863c131b3731f62919e693861f6b[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Wed Jul 23 12:43:51 2025 +0800
+
+    UI Components
+
+[33mcommit c96df473e23840658123b123d46e65c66d73d051[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Tue Jul 22 08:46:29 2025 +0000
+
+    Task 5.1 up to 5.3 , replaced components to shadcn (#13)
+    
+    * Commit to Merge
+    
+    * pnpm build fixed
+    
+    * task 5.1 w/ pnpm build
+    
+    * task 5.2 w/ pnpm build
+    
+    * task 5.3 w/ pnpm build | also fixed user_management only for admin
+    
+    * Replaced components to Shadcn
+    
+    * minor changes
+
+[33mcommit 57e7874fd21a16e591d55703cba084550dbe9cff[m[33m ([m[1;31morigin/task-5[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 22 11:44:15 2025 +0800
+
+    minor changes
+
+[33mcommit b242d92c93604b0269f5dba0a87cd0e64252e42e[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Tue Jul 22 11:06:33 2025 +0800
+
+    Replaced components to Shadcn
+
+[33mcommit f0239c9b42420d2a1ddc9219fcc7d85dea920b56[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 21 23:28:53 2025 +0800
+
+    task 5.3 w/ pnpm build | also fixed user_management only for admin
+
+[33mcommit 3038342ac6f7121540907439c43a42664eb634db[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 21 17:50:28 2025 +0800
+
+    task 5.2 w/ pnpm build
+
+[33mcommit ac3be451d35794f37d3657e4b6cedb2d58868747[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 21 17:20:07 2025 +0800
+
+    task 5.1 w/ pnpm build
+
+[33mcommit 8f276ed8f0adc2d9e43032d26ac9479793b7a358[m[33m ([m[1;31morigin/fixer[m[33m)[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 21 17:11:42 2025 +0800
+
+    pnpm build fixed
+
+[33mcommit 3155ea791ebd8bc0e747e03e45c5a2358a815e33[m[33m ([m[1;32mmain[m[33m)[m
+Merge: 35b6137 1ef1891
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 21 16:49:35 2025 +0800
+
+    Merge branch 'main' of https://github.com/generyand/vantage
+
+[33mcommit 1ef18913b92f8e53e171ed7354e5a68c13761fd5[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Mon Jul 21 16:11:07 2025 +0800
+
+    Enhance GovernanceArea and User models with relationships
+    
+    - Added a relationship from GovernanceArea to User for assessors.
+    - Updated User model to reference GovernanceArea with a foreign key and established a relationship for better data integrity and access.
+    - Improved code formatting by ensuring consistent newline usage at the end of files.
+
+[33mcommit ea88254558b0b51f9a7f101c9b53f9ed1629a55e[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Mon Jul 21 15:41:44 2025 +0800
+
+    Enhance API mutator function to accept additional options
+    
+    - Updated the mutator function to merge provided options with the existing AxiosRequestConfig.
+    - This change allows for more flexible API request configurations, improving the overall functionality of the API handling.
+
+[33mcommit 35b6137fbe5a35924993ab20ca14f0cb15e313f9[m
+Merge: de2ff22 eeb42d7
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Mon Jul 21 10:18:18 2025 +0800
+
+    Merge branch 'main' of https://github.com/generyand/vantage
+
+[33mcommit eeb42d786c46a41535614334dd7ba089e7a66b86[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Mon Jul 21 10:07:56 2025 +0800
+
+    Refactor LoginForm component for improved readability and consistency
+    
+    - Standardized string quotes from double to single throughout the file.
+    - Cleaned up comments and console log statements for clarity.
+    - Removed unused logout functionality and related code.
+    - Enhanced error handling and user feedback in the login process.
+    - Improved overall formatting for better maintainability.
+
+[33mcommit 4718a2f27e934f4f1355555641e4aba60669c6bf[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Mon Jul 21 01:56:46 2025 +0000
+
+    LoginForm Fix (#11)
+    
+    * task 4.1
+    
+    * task 4.2
+    
+    * task 4.3
+    
+    * task 4.4
+    
+    * final 4.0
+    
+    * logout feature
+    
+    * Logout button added
+    
+    * Add logout button and improve user navigation
+    
+    * lib test
+    
+    * test
+    
+    * logout feature
+    
+    * Much Faster Login
+    
+    * LoginForm Fix
+    
+    * LoginForm Fix
+    
+    ---------
+    
+    Co-authored-by: Gene Ryan <110978525+generyand@users.noreply.github.com>
+
+[33mcommit 2b8dfd808a6e782b3c50a3f8efd38e04af761521[m
+Author: Gene Ryan <110978525+generyand@users.noreply.github.com>
+Date:   Mon Jul 21 08:45:33 2025 +0800
+
+    fix: modified LoginForm
+
+[33mcommit 58395617d33f11b7626b8b609871e66619d762e5[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Mon Jul 21 00:39:40 2025 +0000
+
+    Logout Feature & Much Faster Login Process (#9)
+    
+    * task 4.1
+    
+    * task 4.2
+    
+    * task 4.3
+    
+    * task 4.4
+    
+    * final 4.0
+    
+    * logout feature
+    
+    * Logout button added
+    
+    * Add logout button and improve user navigation
+    
+    * lib test
+    
+    * test
+    
+    * logout feature
+    
+    * Much Faster Login
+    
+    ---------
+    
+    Co-authored-by: Gene Ryan <110978525+generyand@users.noreply.github.com>
+
+[33mcommit de2ff220ea3977180512ef4ce2d3ad0d478fe701[m
+Merge: 2cf29b5 6d83b77
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sun Jul 20 18:40:22 2025 +0800
+
+    Merge branch 'main' of https://github.com/generyand/vantage
+
+[33mcommit 2cf29b5c7e1cb85b1ca28e01ebcf1456dd49889b[m
+Author: Kyaa-A <asnaripacalna@gmail.com>
+Date:   Sun Jul 20 18:40:08 2025 +0800
+
+    Commit to Merge
+
+[33mcommit 6d83b77df77ee036ffabd64001b2b4f2320c16b7[m
+Author: Asnari Pacalna <38740041+Kyaa-A@users.noreply.github.com>
+Date:   Sun Jul 20 10:35:37 2025 +0000
+
+    Task 4 (#7)
+    
+    * task 4.1
+    
+    * task 4.2
+    
+    * task 4.3
+    
+    * task 4.4
+    
+    * final 4.0
+    
+    * logout feature
+    
+    * Logout button added
+    
+    * Add logout button and improve user navigation
+    
+    * lib test
+
+[33mcommit ba86431bdcccc4447d33ced42e2ffbd16f0b3a73[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 20:56:40 2025 +0800
+
+    fix: update user role and ID types across user management schemas and endpoints
+    
+    - Changed user ID type from string to number in user-related schemas and API endpoints.
+    - Updated role fields to use the UserRole enum for better type safety.
+    - Added assessor_area field to UserAdminCreate and UserAdminUpdate interfaces.
+    - Ensured all relevant functions and options reflect the new number type for user IDs.
+    
+    This commit enhances type consistency and aligns with recent schema updates for user management.
+
+[33mcommit b4398ea62e0cfee000829888cdab849b4c29c3e9[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 20:24:39 2025 +0800
+
+    feat: implement backend user management API
+    
+    - Updated all user Pydantic schemas to use integer IDs and string enums.
+    
+    - Added assessor_area field to relevant schemas for role-specific logic.
+    
+    - Refactored UserService to enforce business rules for AREA_ASSESSOR roles.
+    
+    - Aligned all user-related API endpoints to use integer IDs in path parameters.
+    
+    - Ensured data integrity by handling role-specific fields (assessor_area vs. barangay_id).
+    
+    Related to Task 3.0 in PRD Core User Authentication & Management
+
+[33mcommit 1ba488f0318a9196c2794c6d9a1a516f33d3835b[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 20:15:09 2025 +0800
+
+    feat: align authentication endpoints with schema updates
+    
+    - Updated JWT creation to explicitly handle integer user IDs.
+    
+    - Cleaned up JWT payload by removing redundant user_id field.
+    
+    - Verified login endpoint correctly queries by email and works with new integer IDs.
+    
+    - Confirmed string-based role enum is correctly passed into the JWT payload.
+    
+    Related to Task 2.0 in PRD Core User Authentication & Management
+
+[33mcommit 71f3bca345d035ee3fa83357ca61c43c6fe7f70a[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 20:00:36 2025 +0800
+
+    refactor: implement string-based enums for roles and area types
+    
+    - Refactored UserRole and AreaType to be string-based enums for readability.
+    
+    - Updated User and GovernanceArea models to use the new string enums.
+    
+    - Modified seeding and startup services to align with the new enum values.
+    
+    - Updated dependency injection to check for SUPERADMIN string role.
+    
+    - Created a complex Alembic migration to safely transition data from integers to strings and create native PostgreSQL ENUM types.
+    
+    Related to Task 1.12 in PRD Core User Authentication & Management
+
+[33mcommit 37954ee2ac611bedfb5cadfaa7212ea3a5045722[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 19:38:19 2025 +0800
+
+    feat: implement enums for type safety and better code quality
+    
+    - Created UserRole and GovernanceAreaType IntEnum classes
+    
+    - Updated User model to use Enum(UserRole) instead of SmallInteger
+    
+    - Updated GovernanceArea model to use Enum(GovernanceAreaType)
+    
+    - Updated governance area seeding service to use enum values
+    
+    - Updated startup service to use UserRole.SYSTEM_ADMIN
+    
+    - Added database CHECK constraints for enum validation
+    
+    - Updated all code references from integer/string roles to enums
+    
+    - Enhanced type safety and code readability throughout codebase
+    
+    Related to Task 1.11 in PRD Core User Authentication & Management
+
+[33mcommit a6372c731cce3595296160f88360c9442f60a061[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 19:05:02 2025 +0800
+
+    feat: complete backend foundation and database schema updates
+    
+    - Changed User ID from String to Integer with auto-increment
+    
+    - Updated role column to SMALLINT with integer mapping (1=BLGU User, 2=Area Assessor, 3=System Admin)
+    
+    - Added nullable assessor_area SMALLINT column for Area Assessors
+    
+    - Created GovernanceArea model with 6 predefined SGLGB areas (Core/Essential types)
+    
+    - Added governance area seeding service for automatic data population
+    
+    - Created comprehensive database migration handling complex schema changes
+    
+    - Updated startup service to include governance area seeding
+    
+    - Fixed first superuser creation to use integer-based roles
+    
+    Related to Task 1.0 in PRD Core User Authentication & Management
+
+[33mcommit 592addec1f5c6c7afc012a4979d81a420631a441[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 17:56:36 2025 +0800
+
+    refactor(api): remove project schemas and related TypeScript files
+    
+    - Deleted Project-related schemas and TypeScript definitions to streamline the API.
+    - Updated imports in the API schema initialization to reflect the removal of project models.
+    - Adjusted generated schemas to exclude project-related types, ensuring a cleaner structure.
+    
+    This commit enhances the maintainability of the codebase by removing unused project components.
+
+[33mcommit 0bb750468dd59023334682e90179562ae5358d43[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 17:44:08 2025 +0800
+
+    feat(database): remove project and assessment models, update imports
+    
+    - Deleted Project and Assessment models along with their associated API endpoints and schemas.
+    - Updated Alembic migration to reflect the removal of these models from the database schema.
+    - Adjusted imports in the API router to remove references to the deleted models.
+    - Introduced Barangay model in place of the removed models to maintain functionality.
+    
+    This commit streamlines the database structure by eliminating unused models and ensuring the API remains functional with the updated schema.
+
+[33mcommit 68773a679334947597bf1fce91eee18f2e92ed19[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 17:10:07 2025 +0800
+
+    refactor(type-generation): modified the orval file for hook and endpoint generation
+
+[33mcommit b2b525ccd58e6a095b680dbb45e4f91282260a57[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 16:55:53 2025 +0800
+
+    docs: modify frontend section in core-user-authentication task and reconfigure orval
+
+[33mcommit a8469f09fac817f410ae07a30f357534a7c64e41[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 16:16:56 2025 +0800
+
+    docs: modified data-fetching and project-structure rules
+
+[33mcommit e519fa281344aee1f5616a5892a472840e679b3f[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 01:14:36 2025 +0800
+
+    feat(user): add barangay relationship and implement first superuser creation
+    
+    - Added Barangay model import to the models initialization.
+    - Updated User model to establish a back_populates relationship with Barangay.
+    - Implemented a method in StartupService to create the first superuser if it doesn't exist, including logging and error handling.
+    
+    This commit enhances user management by ensuring a superuser is created at startup and establishes necessary relationships in the database models.
+
+[33mcommit 6cee5eabc8a4e8d2b92db36f58a4d47b0c6313fe[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jul 19 00:42:56 2025 +0800
+
+    feat(system): enhance health check endpoint and update schemas
+    
+    - Updated health check endpoint to return a structured HealthCheck response model.
+    - Added new fields to HealthCheck schema: api, connections, and checks for comprehensive health status reporting.
+    - Updated TypeScript definitions to reflect changes in the health check API response.
+    - Enhanced user-related schemas with additional fields for better user management.
+    
+    This commit improves the API's health check functionality and aligns the schemas with the latest requirements.
+
+[33mcommit 1c92c0122c8e349c7e8a3b7bd3cbd40290a460e7[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Fri Jul 18 22:35:25 2025 +0800
+
+    feat: implement backend user management API with admin permissions
+    
+    - Enhanced user schemas with UserAdminCreate, UserAdminUpdate, and UserListResponse
+    - Created comprehensive UserService with CRUD operations, filtering, and pagination
+    - Implemented full users router with admin-only endpoints for user management
+    - Added get_current_admin_user dependency for MLGOO-DILG role restriction
+    - Added user statistics endpoint for admin dashboard
+    - Includes soft delete (deactivate), password reset, and user activation features
+    - All endpoints properly documented with OpenAPI specs
+    
+    Endpoints implemented:
+    - GET /api/v1/users/me - Get current user profile
+    - PUT /api/v1/users/me - Update current user profile
+    - GET /api/v1/users/ - List users with pagination/filtering (admin)
+    - POST /api/v1/users/ - Create new user (admin)
+    - GET /api/v1/users/{id} - Get user by ID (admin)
+    - PUT /api/v1/users/{id} - Update user by ID (admin)
+    - DELETE /api/v1/users/{id} - Deactivate user (admin)
+    - POST /api/v1/users/{id}/activate - Activate user (admin)
+    - POST /api/v1/users/{id}/reset-password - Reset password (admin)
+    - GET /api/v1/users/stats/dashboard - User statistics (admin)
+    
+    Task 3.0 completed: Backend User Management API (Admin)
+
+[33mcommit 48da31b6002e888a776262c0e288a348b0ee65e6[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Fri Jul 18 22:14:47 2025 +0800
+
+    docs: add TESTING_GUIDE file
+
+[33mcommit 6fdce2e78a2f701edeec09b41efe13c19e313beb[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Fri Jul 18 22:08:12 2025 +0800
+
+    feat(auth): implement enhanced authentication endpoints
+    
+    - Enhanced login endpoint to check user is_active status
+    
+    - Added role field to User model and JWT payload
+    
+    - JWT now includes user_id, role, and must_change_password
+    
+    - Added change-password endpoint with proper validation
+    
+    - Updated schemas and migration for new user fields
+    
+    Completes P2 of tasks-prd-core-user-authentication-and-management.md
+
+[33mcommit 0b682ce7b65a40fb89a30d968f97592737fbc5a3[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Fri Jul 18 22:01:37 2025 +0800
+
+    feature: Implement Backend Foundation & Database Schema
+
+[33mcommit cc760b798ac79a041de73f56b93cc9a2221b8f93[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Fri Jul 18 20:23:48 2025 +0800
+
+    feat(auth): add user fields and barangay model
+    
+    - Add phone_number and must_change_password to User model
+    
+    - Create Barangay model and establish relationship with User
+    
+    - Add Alembic migration and seeding for barangays
+    
+    Completes P1 of tasks-prd-core-user-authentication-and-management.md
+
+[33mcommit 316aba63784981bd1f73870dda7a7de35e0fee7a[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Fri Jul 18 19:15:55 2025 +0800
+
+    docs: edited epic 1 prd and added tasks
+
+[33mcommit 62472106cd6440aa75632d9969ad15c9aa4f59a7[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Fri Jul 18 17:58:51 2025 +0800
+
+    docs: update cursor rules
+    - add frontend rules
+
+[33mcommit 1d2771aab169b07a80c66222a84d2d695eeb3a3a[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jul 17 16:03:13 2025 +0800
+
+    docs: enhance Cursor rules index
+    
+    - Expand the Cursor rules index to include detailed guidelines for backend and frontend development.
+    - Introduce new sections for API implementation, feature management, and testing, improving overall clarity and organization.
+    - Update rule descriptions for better understanding and accessibility, ensuring comprehensive coverage of development practices.
+
+[33mcommit 454bdaf1d135ebe5ad48eae38c72b069fde192d5[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jul 17 15:05:26 2025 +0800
+
+    docs: update Vantage Rule Index
+    
+    - Revise the Vantage Rule Index to reflect updated project structure and guidelines.
+    - Consolidate and clarify rule descriptions for better understanding.
+    - Introduce new rules for task management and feature definition, enhancing the overall organization of development processes.
+
+[33mcommit 986c98e4ffab39e16069494fdd075fe054d1aa33[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jul 17 13:11:01 2025 +0800
+
+    docs: update task generation rules for VANTAGE features
+    
+    - Revise descriptions and glob patterns for task generation rules to specify VANTAGE project context.
+    - Enhance the process steps for generating task lists from PRDs, including clearer instructions and examples.
+    - Update relevant files section to reflect new file paths and testing guidelines for both backend and frontend components.
+    - Improve notes on testing to provide specific commands and directory navigation for running tests.
+
+[33mcommit f1d3b773890bd54df42d55ad32a528d559ff813e[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jul 17 11:59:38 2025 +0800
+
+    docs: edit Epic 1 PRD
+
+[33mcommit 6f7988b7c58b9ccfd7450b2fd0e673d09698c8b3[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Wed Jul 16 15:01:56 2025 +0800
+
+    docs: move Core User Authentication & Management PRD document
+    
+    - Move the entire PRD document outlining the requirements for the Core User Authentication & Management feature to docs/prds
+
+[33mcommit 75d94fa269f35ddd01f565613957a2c14c0a37ee[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Wed Jul 16 14:24:30 2025 +0800
+
+    docs: added project roadmap (epics) and 1st epic PRD
+
+[33mcommit b027754247502e526594445213444c0f524fcf4a[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sun Jun 29 21:30:58 2025 +0800
+
+    docs: enhance testing guidelines in README
+    
+    - Revise the testing section to provide a comprehensive overview of the testing setup using pytest with FastAPI integration.
+    - Include quick testing commands, test structure, configuration details, and best practices for writing tests.
+    - Add examples for basic, database, and authentication tests to guide developers in implementing effective tests.
+    - Outline available fixtures and troubleshooting tips to assist in debugging and performance testing.
+
+[33mcommit 5baaba3a7a6513efe782adca6b0fba4eb3143a7c[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sun Jun 29 21:25:48 2025 +0800
+
+    chore: remove SGLGB classification algorithm implementation
+    
+    - Delete the entire SGLGBClassifier class and its associated methods, including video analysis and scoring logic.
+    - Clean up the file to remove unused imports and comments related to video processing.
+    - This change simplifies the codebase by eliminating the classification logic that is no longer needed.
+
+[33mcommit b0ebd235bb7dc4b1a6ecf16947748dc39b367f31[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Fri Jun 27 19:59:12 2025 +0800
+
+    refactor: integrate startup service for application lifecycle management
+    
+    - Replace direct database connection validation with a dedicated startup service for improved modularity.
+    - Add a health check endpoint to monitor system component status.
+    - Update logging during startup and shutdown processes for better clarity and error handling.
+
+[33mcommit fbc996897b1e249f828370ad5a4ea2a6d2462666[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jun 26 21:18:04 2025 +0800
+
+    minor changes
+
+[33mcommit 6add520b20bdb11633174860b3bc7488b10cf90d[m
+Author: Rogenecarl <bajiglacostalesrosalijos2@gmail.com>
+Date:   Wed Jun 25 16:39:51 2025 +0800
+
+    Task rules
+
+[33mcommit 32fff4091c930d355b0ada9ed906bc1ea3f50f29[m
+Author: Rogenecarl <bajiglacostalesrosalijos2@gmail.com>
+Date:   Wed Jun 25 14:36:46 2025 +0800
+
+    fix: improve connection validation logging and update README for database connection options
+    
+    - Adjust logging in main.py to ensure accurate connection status reporting for PostgreSQL and Supabase.
+    - Enhance README.md with detailed connection types and network compatibility information, including direct and Supavisor connection modes.
+    - Update environment variable examples to reflect new connection string formats for better clarity.
+
+[33mcommit fa2001db8c55a1d129063f20544ab80fe22fc3fe[m
+Author: Rogenecarl <bajiglacostalesrosalijos2@gmail.com>
+Date:   Wed Jun 25 13:28:44 2025 +0800
+
+    feat: update connection validation and enhance database checks
+    
+    - Change 'alwaysApply' setting to true in commenting, cursor, and project structure rules for consistent application.
+    - Introduce a new function `validate_connections_startup` to enforce connection requirements during application startup.
+    - Update `check_all_connections` to ensure both PostgreSQL and Supabase connections are validated based on configuration settings.
+    - Enhance logging for connection status, providing detailed error messages for failed connections.
+
+[33mcommit 1a1298b92af717b9cff5949a61700fb83d8569ae[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Tue Jun 24 21:05:21 2025 +0800
+
+    feature: improve project-structure rules
+
+[33mcommit f0a808640e338243aa04f564edf449fd0f0e75bd[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Tue Jun 24 20:51:59 2025 +0800
+
+    feature: added commenting-guidelines rules
+
+[33mcommit f1c4e71e1a458c44e829756f826e6a2c94a8fa5d[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Mon Jun 23 22:32:04 2025 +0800
+
+    minor change to rules
+
+[33mcommit 40f26fa7ced61f5765031a79fa9022d0ec8db02e[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sun Jun 22 08:13:02 2025 +0800
+
+    feat: update API endpoints to v1 and enhance documentation
+    
+    - Refactor authentication, project, system, and user endpoints to follow v1 structure.
+    - Rename functions and update query/mutation options for consistency with new endpoint naming conventions.
+    - Enhance documentation comments for clarity on endpoint functionality and production behavior.
+    - Introduce new health check and database status endpoints for improved system monitoring.
+
+[33mcommit a58f685b6c38cab7234dca6ccaac7d9a4f9b8dc9[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jun 21 21:41:16 2025 +0800
+
+    feat: enhance README with comprehensive Alembic migration documentation
+    
+    - Update database operations section with detailed Alembic commands for managing migrations.
+    - Add a new section on database migrations, including initial setup, common commands, and best practices.
+    - Include troubleshooting tips and recovery commands for migration issues.
+    - Document the current database schema and migration workflow for clarity and ease of use.
+
+[33mcommit 2355e5d0992fe98af1faa89560fbe407aa9622b5[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jun 21 19:32:26 2025 +0800
+
+    feat: restructure API main application and enhance database connectivity checks
+    
+    - Refactor main.py to include a lifespan context manager for application startup and shutdown events.
+    - Integrate logging for better monitoring of database connection health during application lifecycle.
+    - Introduce a new API v1 router to consolidate endpoint management.
+    - Update environment configuration handling and remove deprecated Pydantic models.
+    - Implement database connection checks for both SQLAlchemy and Supabase, improving reliability and error handling.
+
+[33mcommit f6009540537de3d7137ef496901a8befb95af97c[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jun 21 14:48:41 2025 +0800
+
+    feat: refactor API models and enhance main application structure
+    
+    - Consolidate Pydantic models into main.py for improved organization and clarity.
+    - Remove deprecated model files to streamline the codebase.
+    - Update FastAPI app initialization to utilize settings for title, version, and description.
+    - Enhance README with detailed architecture layers and installation commands.
+    - Update dependencies in pyproject.toml to include new packages for improved functionality.
+
+[33mcommit 86305109c12b0f0815259e98d30ba82fee73fc7a[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jun 21 09:40:11 2025 +0800
+
+    refactor: reorganize directory structure of client-side
+
+[33mcommit b4a1e0a21f0faaa984b5da6e784275b5e27882fc[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sat Jun 21 09:09:55 2025 +0800
+
+    feat: integrate Axios for API requests and enhance Orval configuration
+    
+    - Update orval.config.ts to utilize a custom Axios instance for API requests, improving authentication and error handling.
+    - Modify generated API endpoint files to replace fetch with the Axios mutator, streamlining request handling.
+    - Add Axios as a dependency in package.json and update pnpm-lock.yaml to reflect the changes.
+    - Enhance documentation comments in generated files to clarify the use of Axios and its benefits.
+
+[33mcommit 1f2eccbc8984894d928348945e98f0583910ee20[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Fri Jun 20 23:43:48 2025 +0800
+
+    feat: add tree-node-cli and enhance package.json scripts
+    
+    - Introduce tree-node-cli as a new dependency for improved directory tree visualization.
+    - Update package.json scripts to include a new "tree" command for listing directories while excluding specified patterns.
+    - Ensure pnpm-lock.yaml reflects the addition of tree-node-cli and its dependencies.
+
+[33mcommit 25e13102721be03c3e6486dd10caaab230281296[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Thu Jun 19 21:29:56 2025 +0800
+
+    feat: group schemas by FastAPI tags and remove deprecated files
+    
+    - Implement schema grouping in the type generation process to organize TypeScript types by FastAPI tags.
+    - Update generated index file to reflect the new structure and export grouped schemas.
+    - Remove deprecated schema files to streamline the codebase and enhance maintainability.
+
+[33mcommit cf9f1cee6ac4d192874dc84e7cbc76c687c4d643[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Wed Jun 18 22:46:16 2025 +0800
+
+    feat: integrate @tanstack/react-query-devtools and update layout structure
+    
+    - Add @tanstack/react-query-devtools as a dependency in package.json.
+    - Update pnpm-lock.yaml to include new versions for @tanstack/react-query-devtools and related packages.
+    - Refactor layout.tsx to wrap children with Providers for improved context management.
+    - Redesign page.tsx to enhance UI with LoginForm and UserProfile components, improving user experience.
+
+[33mcommit fafa692145c16c9507a15c8cd3dbb3f7cf35ed66[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Wed Jun 18 22:25:19 2025 +0800
+
+    feat: implement tag-split mode for API type generation
+    
+    - Update orval.config.ts to enable tag-split mode for organizing API endpoints and schemas.
+    - Refactor generated index file to export hooks and types based on FastAPI tags for improved maintainability.
+    - Remove deprecated generated files to streamline the codebase.
+    - Enhance documentation comments in generated files to reflect the new structure and organization.
+
+[33mcommit da6079f7a7bf057615c5692ff57299444484b195[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Wed Jun 18 22:07:38 2025 +0800
+
+    feat: enhance API operation IDs and add utility functions
+    
+    - Introduce operation IDs for FastAPI endpoints to improve API documentation and client generation.
+    - Add a utility function in orval.config.ts to format operation IDs for PascalCase.
+    - Update generated API client types and hooks to reflect new naming conventions and improve consistency.
+    - Include lodash-es as a new dependency for utility functions in the project.
+
+[33mcommit ccd4b6162249182b10176dea0e2b7118a6d6b640[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Wed Jun 18 21:53:34 2025 +0800
+
+    feat: migrate from openapi-typescript-codegen to Orval for API type generation
+    
+    - Replace openapi-typescript-codegen with Orval in the type generation script.
+    - Update package.json and pnpm-lock.yaml to reflect the new dependency.
+    - Remove deprecated generated files and update the structure to include React Query hooks.
+    - Add peer dependencies for @tanstack/react-query in shared package.
+    - Enhance generated index file with new export structure and documentation comments.
+
+[33mcommit e0e4756a8b0050f176c685cc7d50dcd382ec6e24[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Tue Jun 17 20:27:59 2025 +0800
+
+    feat: added rules template
+
+[33mcommit 748034839c1669827f32b127e11478d91ece0a80[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Tue Jun 17 08:40:20 2025 +0800
+
+    feat: add environment configuration templates for monorepo apps
+    
+    - Add .env.example for NextJS frontend (apps/web)
+    - Add .env.example for FastAPI backend (apps/api)
+    - Establish separate env configs for security isolation
+    - Include documentation for required variables per app
+
+[33mcommit 6da7d43bb73088b0debb5141085592ece6ccb08b[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Mon Jun 16 21:19:18 2025 +0800
+
+    docs: add comprehensive README documentation for Vantage API and Web applications, including setup instructions, available commands, project structure, and development tools
+
+[33mcommit be7f90dd8092f430c59dcabd5165284a2fa17bef[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Mon Jun 16 19:51:13 2025 +0800
+
+    refactor: update .gitignore, enhance TypeScript configuration, remove deprecated api-types, and improve type generation script for better organization
+
+[33mcommit c066d92354b57294cc1aaac66998df0c99bbc82c[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Mon Jun 16 19:13:50 2025 +0800
+
+    feat: add type generation script
+
+[33mcommit fcc73c3e21b65dc757264f09f0b411ae397c6714[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Mon Jun 16 17:56:46 2025 +0800
+
+    chore: install shadcn
+
+[33mcommit 2d454a8ee43a8bbcf116fe809717a6b3ef2bcb41[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sun Jun 15 21:30:10 2025 +0800
+
+    docs: add Git workflow guidelines and .gitattributes for cross-platform compatibility
+
+[33mcommit 3709de4b0fe06d7092a255f904c07af111af0562[m
+Author: generyand <generyan.dep@gmail.com>
+Date:   Sun Jun 15 21:29:09 2025 +0800
+
+    Initial commit: Setup Vantage monorepo with NextJS + FastAPI + Turborepo
