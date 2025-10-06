@@ -1,34 +1,60 @@
 ---
-description: Guides the AI in creating a detailed, three-tier task list for a feature from a PRD with explicit PRD traceability and tech-stack alignment.
-globs: ["docs/prds/prd-*.md"]
+description:
+  Guides the AI in creating a detailed, three-tier task list for a feature from a VANTAGE PRD with
+  explicit traceability and full-stack alignment.
+globs: ['docs/prds/prd-*.md']
 alwaysApply: false
 ---
 
-# Rule: Generating a Three-Tier Feature Task List from a PRD
+# Rule: Generating a Three-Tier Feature Task List from a PRD for VANTAGE
 
 ## Goal
 
-To guide an AI assistant in creating a detailed, three-tier task list in Markdown format based on an existing Product Requirements Document (PRD). The task list uses Epic → Story → Atomic task hierarchy to ensure complete PRD traceability and tech-stack specificity for junior developers.
+To guide an AI assistant in creating a detailed, three-tier task list in Markdown format based on an
+existing Product Requirements Document (PRD). The task list uses an Epic → Story → Atomic task
+hierarchy to ensure complete PRD traceability and tech-stack specificity for junior developers
+working on the VANTAGE project.
 
 ## Tech Stack Context
 
-- **Monorepo:** Turborepo with pnpm workspaces
-- **Backend:** Python with FastAPI, SQLAlchemy (ORM), Alembic (migrations), and Pydantic (schemas). Located in `apps/api`.
-- **Frontend:** Next.js with App Router, TypeScript, Tailwind CSS, shadcn/ui (component library), and TanStack Query (server state). Located in `apps/web`.
-- **Shared Code:** Auto-generated API client and TypeScript types via Orval from the backend's OpenAPI spec. Located in `packages/shared`.
-- **Testing:** Pytest for backend unit/integration tests; Vitest/React Testing Library for frontend component tests.
+- **Repository:** Monorepo managed by **Turborepo** with **pnpm workspaces**.
+- **Backend (`apps/api`):**
+  - Framework: **FastAPI** (Python)
+  - Data Validation: **Pydantic**
+  - ORM: **SQLAlchemy** for PostgreSQL interaction.
+  - Migrations: **Alembic**.
+  - Password Hashing: **Passlib** with bcrypt
+  - JWT: **python-jose**
+  - Logging: **Loguru**
+- **Frontend (`apps/web`):**
+  - Framework: **Next.js** with App Router
+  - Language: **TypeScript**
+  - Styling: **Tailwind CSS**
+  - UI: **shadcn/ui** components, **Lucide React** icons, **CVA** for variants.
+  - API Client: **Orval** for type-safe client generation.
+  - State Management: **TanStack Query (React Query)** for server state, **Zustand** for client state.
+  - HTTP Client: **Axios**
+- **Shared Code (`packages/shared`):**
+  - Auto-generated API client and TypeScript types via **Orval** from the backend's OpenAPI spec.
+- **Background Jobs:**
+  - Queue: **Celery** with **Redis** as the broker.
+- **Databases:**
+  - Primary: **PostgreSQL** (via psycopg2).
+- **Testing:**
+  - Backend: **Pytest** for unit/integration tests.
+  - Frontend: **Vitest** and **React Testing Library** for component tests.
 
 ## Adherence to Project-Wide Rules
 
-To ensure all generated tasks align with our project's architecture, they must follow our established development guidelines. The main index of all rules can be found at `@index.mdc`.
+To ensure all generated tasks align with our project's architecture, they must follow our established development guidelines.
 
 For example, when creating tasks, you should consider our specific conventions for things like:
 
-- **Backend:** How we structure API endpoints (`@api-endpoint-creation.mdc`) and implement business logic (`@service-layer-pattern.mdc`).
-- **Frontend:** How we build pages (`@page-structure.mdc`), create components (`@ui-components.mdc`), and manage data (`@hooks.mdc`).
-- **Testing:** Our overall approach to writing tests (`@testing.mdc`).
+- **Backend:** How we structure API endpoints and implement business logic (service layer pattern).
+- **Frontend:** How we build pages (App Router structure), create components (feature/shared organization), and manage data (hooks with TanStack Query).
+- **Testing:** Our overall approach to writing tests.
 
-Consulting these rules is essential for creating tasks that are consistent with our codebase.
+Consulting the workspace rules is essential for creating tasks that are consistent with our codebase.
 
 ## Output
 
@@ -38,26 +64,20 @@ Consulting these rules is essential for creating tasks that are consistent with 
 
 ## Three-Tier Process
 
-1.  **Receive PRD Reference:** User points to a specific PRD file
-2.  **Analyze PRD:** Read and map functional requirements to implementation domains
-3.  **Phase 1: Generate Epic Tasks** - Create file with high-level epics (3-5 epics) directly mapped to PRD functional requirements
-4.  **Wait for Confirmation:** Pause for user approval with "Go"
-5.  **Phase 2: Generate Story Tasks** - Break epics into tech-stack specific implementation areas (Frontend, API, Database, etc.)
-6.  **Phase 3: Generate Atomic Tasks** - Create granular, file-specific tasks with explicit acceptance criteria
-7.  **PRD Traceability Mapping** - Create explicit mapping between PRD requirements and tasks
-8.  **Save Task List** - Save with complete three-tier structure
-9.  **Receive PRD Reference:** User points to a specific PRD file
-10. **Analyze PRD:** Read and map functional requirements to implementation domains
-11. **Phase 1: Generate Epic Tasks** - Create file with high-level epics (3-5 epics) directly mapped to PRD functional requirements
-12. **Wait for Confirmation:** Pause for user approval with "Go"
-13. **Phase 2: Generate Story Tasks** - Break epics into tech-stack specific implementation areas (Frontend, API, Database, etc.)
-14. **Phase 3: Generate Atomic Tasks** - Create granular, file-specific tasks with explicit acceptance criteria
-15. **PRD Traceability Mapping** - Create explicit mapping between PRD requirements and tasks
-16. **Save Task List** - Save with complete three-tier structure
+1.  **Receive PRD Reference:** User points to a specific PRD file.
+2.  **Analyze PRD:** Read and map functional requirements to implementation domains.
+3.  **Phase 1: Generate Epic Tasks** - Create file with high-level epics (3-5 epics) directly mapped
+    to PRD functional requirements.
+4.  **Wait for Confirmation:** Pause for user approval with "Go".
+5.  **Phase 2: Generate Story Tasks** - Break epics into tech-stack specific implementation areas
+    (Frontend, API, Database, etc.).
+6.  **Phase 3: Generate Atomic Tasks** - Create granular, file-specific tasks with explicit
+    acceptance criteria.
+7.  **PRD Traceability Mapping** - Create explicit mapping between PRD requirements and tasks.
+8.  **Save Task List** - Save with complete three-tier structure.
 
 ## Output Format
 
-The generated task list _must_ follow this three-tier structure:
 The generated task list _must_ follow this three-tier structure:
 
 ```markdown
@@ -65,123 +85,138 @@ The generated task list _must_ follow this three-tier structure:
 
 Map each functional requirement to specific tasks:
 
-- **FR-01** User Registration → Epic 1.0
-- **FR-02** Email Verification → Epic 2.0
-- **FR-03** Profile Management → Epic 3.0
+- **FR-01** User Registration & BLGU Management → Epic 1.0
+- **FR-02** Assessment Submission & Validation → Epic 2.0
+- **FR-03** Reports Generation → Epic 3.0
 
 ## Relevant Files
 
-A user registration feature would involve these files:
+Tech-stack specific file structure for a full-stack feature:
 
-- **Backend Model:** `apps/api/app/db/models/user.py`
-- **Backend Schema:** `apps/api/app/schemas/user.py`
-- **Backend Service:** `apps/api/app/services/user_service.py`
-- **Backend API Route:** `apps/api/app/api/v1/users.py`
-- **Database Migration:** `apps/api/alembic/versions/xxxxxxxxxxxx_add_user_registration_fields.py`
-- **Frontend Page:** `apps/web/src/app/(auth)/register/page.tsx`
-- **Frontend Component:** `apps/web/src/components/features/auth/RegisterForm.tsx`
-- **Frontend Hook:** `apps/web/src/hooks/useUsers.ts`
-- **Shared Types:** `packages/shared/src/generated/schemas/users/index.ts` (auto-generated)
+- `apps/api/app/db/models/user.py` - SQLAlchemy model for users.
+- `apps/api/app/schemas/user.py` - Pydantic schemas for user data.
+- `apps/api/app/services/user_service.py` - Business logic for user operations.
+- `apps/api/app/api/v1/users.py` - FastAPI endpoint for users.
+- `apps/api/alembic/versions/xxxx_add_user_fields.py` - Alembic migration file.
+- `apps/web/src/app/(auth)/register/page.tsx` - Registration page component.
+- `apps/web/src/components/features/auth/RegisterForm.tsx` - Reusable registration form.
+- `apps/web/src/hooks/useUsers.ts` - Custom hook for user data fetching.
+- `packages/shared/src/generated/schemas/users/index.ts` - Auto-generated TypeScript types.
 
 ### Testing Notes
 
-- **Backend Testing:** Place Pytest tests in `apps/api/tests/`. Test services and API endpoints separately.
-- **Frontend Testing:** Place component tests alongside the component (e.g., `RegisterForm.test.tsx`). Use Vitest and React Testing Library.
+- **Backend Testing:** Place Pytest tests in `apps/api/tests/`. Test services and API endpoints separately. Run with `pytest -vv --log-cli-level=DEBUG`.
+- **Frontend Testing:** Place test files alongside components (`.test.tsx`). Use Vitest and React Testing Library.
 - **Type Safety:** Import auto-generated types from `@vantage/shared` to ensure frontend and backend are in sync.
 - **Run Tests:** Use `pnpm test` from the root, which will run tests for all workspaces.
-  A user registration feature would involve these files:
-
-- **Backend Model:** `apps/api/app/db/models/user.py`
-- **Backend Schema:** `apps/api/app/schemas/user.py`
-- **Backend Service:** `apps/api/app/services/user_service.py`
-- **Backend API Route:** `apps/api/app/api/v1/users.py`
-- **Database Migration:** `apps/api/alembic/versions/xxxxxxxxxxxx_add_user_registration_fields.py`
-- **Frontend Page:** `apps/web/src/app/(auth)/register/page.tsx`
-- **Frontend Component:** `apps/web/src/components/features/auth/RegisterForm.tsx`
-- **Frontend Hook:** `apps/web/src/hooks/useUsers.ts`
-- **Shared Types:** `packages/shared/src/generated/schemas/users/index.ts` (auto-generated)
 
 ## Tasks
 
 ### Three-Tier Structure: Epic → Story → Atomic
 
-- [ ] **1.0 Epic: User Registration System** _(FR-01)_
+- [ ] **1.0 Epic: User Registration & BLGU Management System** _(FR-01)_
+  - [ ] **1.1 Story: Database Schema Setup**
+    - [ ] **1.1.1 Atomic:** Create Alembic migration for `users` and `barangays` tables.
+      - **Files:** `apps/api/alembic/versions/xxxx_create_initial_tables.py`
+      - **Dependencies:** None.
+      - **Acceptance:** Migration runs successfully, creating tables with correct columns (e.g.,
+        `barangay_id` for governance area linkage) and relationships.
+      - **Tech:** Alembic, SQLAlchemy models.
+  - [ ] **1.2 Story: Backend Registration API**
+    - [ ] **1.2.1 Atomic:** Implement `/auth/register` endpoint in FastAPI.
+      - **Files:** `apps/api/app/api/v1/auth.py`, `apps/api/app/services/user_service.py`
+      - **Dependencies:** Database schema (1.1) is complete.
+      - **Acceptance:** Endpoint accepts POST with user data, validates it using Pydantic,
+        hashes password using Passlib, creates records in `users` table, and returns a JWT
+        via python-jose. Returns appropriate 4xx errors on failure.
+      - **Tech:** FastAPI, SQLAlchemy, Pydantic, Passlib, python-jose.
+  - [ ] **1.3 Story: Frontend Registration Interface**
+    - [ ] **1.3.1 Atomic:** Create `RegisterForm.tsx` component.
+      - **Files:** `apps/web/src/components/features/auth/RegisterForm.tsx`
+      - **Dependencies:** None.
+      - **Acceptance:** Form includes fields for email, password, full name, and role. It performs
+        client-side validation for inputs.
+      - **Tech:** React Hook Form, Zod for validation, shadcn/ui components (`Input`, `Button`),
+        Tailwind CSS.
+    - [ ] **1.3.2 Atomic:** Build the registration page and wire up the API call.
+      - **Files:** `apps/web/src/app/(auth)/register/page.tsx`
+      - **Dependencies:** Backend API (1.2) is deployed; Orval client is generated.
+      - **Acceptance:** Page renders the `RegisterForm`. On submission, it uses a TanStack Query
+        mutation to call the Orval-generated function for the `/auth/register` endpoint. Handles
+        success (redirects to dashboard) and error states (displays error message).
+      - **Tech:** Next.js App Router, TanStack Query, Orval, Axios.
 
-  - [ ] **1.1 Story: Backend Registration API**
-    - [ ] **1.1.1 Atomic:** Update `User` model with `hashed_password`.
-      - **Files:** `apps/api/app/db/models/user.py`
-      - **Dependencies:** None
-      - **Acceptance:** `User` model in SQLAlchemy includes a `hashed_password` string field.
-      - **Tech:** SQLAlchemy ORM model definition.
-    - [ ] **1.1.2 Atomic:** Create `UserCreate` Pydantic schema.
-      - **Files:** `apps/api/app/schemas/user.py`
-      - **Dependencies:** None
-      - **Acceptance:** Schema includes `email`, `password` (plain text for input), `full_name`.
-      - **Tech:** Pydantic `BaseModel`.
-    - [ ] **1.1.3 Atomic:** Implement `create_user` method in `user_service`.
-      - **Files:** `apps/api/app/services/user_service.py`
-      - **Dependencies:** 1.1.1, 1.1.2. `core.security.get_password_hash` utility.
-      - **Acceptance:** Service method accepts a `UserCreate`
+- [ ] **2.0 Epic: Assessment Submission & Validation** _(FR-02)_
+  - [ ] **2.1 Story: Assessment Data Model & API**
+    - [ ] **2.1.1 Atomic:** [Detailed atomic task...]
+  - [ ] **2.2 Story: Assessment Form UI**
+    - [ ] **2.2.1 Atomic:** [Detailed atomic task...]
+
+- [ ] **3.0 Epic: Reports Generation** _(FR-03)_
+  - [ ] **3.1 Story: Backend Report Generation Service**
+    - [ ] **3.1.1 Atomic:** [Detailed atomic task...]
+  - [ ] **3.2 Story: Frontend Reports Dashboard**
+    - [ ] **3.2.1 Atomic:** [Detailed atomic task...]
 ```
 
 ## Task Specificity Requirements
 
 ### Epic Tasks (1.0, 2.0, 3.0...)
 
-- **Scope:** Maps 1:1 with PRD functional requirements
-- **Purpose:** High-level feature boundaries
-- **Duration:** Multiple days to weeks
-- **Example:** "User Authentication System" covering registration, login, logout
+- **Scope:** Maps 1:1 with PRD functional requirements.
+- **Purpose:** High-level feature boundaries.
+- **Duration:** Multiple days to weeks.
+- **Example:** "User Authentication System" covering registration, login, logout.
 
 ### Story Tasks (1.1, 1.2, 2.1, 2.2...)
 
-- **Scope:** Tech-stack specific implementation domains
-- **Purpose:** Logical grouping of related atomic tasks
-- **Duration:** 1-3 days
-- **Categories:** Frontend Components, API Endpoints, Database Schema, Utilities, Testing
-- **Example:** "Frontend Registration Interface" containing all UI components for registration
+- **Scope:** Tech-stack specific implementation domains.
+- **Purpose:** Logical grouping of related atomic tasks.
+- **Duration:** 1-3 days.
+- **Categories:** Frontend Components, API Endpoints, Database Schema, Services, Testing.
+- **Example:** "Frontend Registration Interface" containing all UI components for registration.
 
 ### Atomic Tasks (1.1.1, 1.1.2, 1.2.1...)
 
-- **Scope:** Single file or specific functionality
-- **Purpose:** Immediately actionable work items
-- **Duration:** 2-8 hours
+- **Scope:** Single file or specific functionality.
+- **Purpose:** Immediately actionable work items.
+- **Duration:** 2-8 hours.
 - **Requirements:**
-  - **Files:** Exact file paths to create/modify
-  - **Dependencies:** What must be complete first
-  - **Acceptance:** Specific, testable completion criteria
-  - **Tech:** Specific technologies and patterns to use
+  - **Files:** Exact file paths to create/modify within the monorepo structure.
+  - **Dependencies:** What must be complete first.
+  - **Acceptance:** Specific, testable completion criteria.
+  - **Tech:** Specific technologies and patterns to use from the VANTAGE stack.
 
 ## Quality Gates
 
 ### Epic Review Checklist
 
-- [ ] All PRD functional requirements are covered
-- [ ] No functional requirement spans multiple epics
-- [ ] Epic titles clearly indicate the feature boundary
+- [ ] All PRD functional requirements are covered.
+- [ ] No functional requirement spans multiple epics.
+- [ ] Epic titles clearly indicate the feature boundary.
 
 ### Story Review Checklist
 
-- [ ] Stories align with project's tech stack
-- [ ] Each story represents a cohesive implementation domain
-- [ ] Dependencies between stories are clearly identified
-- [ ] Stories can be worked on by different developers simultaneously
+- [ ] Stories align with the project's full-stack architecture (Frontend, Backend, DB).
+- [ ] Each story represents a cohesive implementation domain.
+- [ ] Dependencies between stories are clearly identified.
+- [ ] Stories can be worked on sequentially to build the feature.
 
 ### Atomic Review Checklist
 
-- [ ] Task can be completed by a junior developer in 2-8 hours
-- [ ] Specific file paths are provided
-- [ ] Acceptance criteria are testable and specific
-- [ ] Tech requirements specify exact tools/patterns from our stack
-- [ ] Dependencies are clearly stated
+- [ ] Task can be completed by a junior developer in 2-8 hours.
+- [ ] Specific file paths within the monorepo are provided.
+- [ ] Acceptance criteria are testable and specific.
+- [ ] Tech requirements specify exact tools/patterns from our stack.
+- [ ] Dependencies are clearly stated.
 
 ## Interaction Model
 
 **Three-Phase Generation:**
 
-1. **Phase 1:** Generate epics only, wait for "Go" confirmation
-2. **Phase 2:** Generate stories for each epic, wait for "Go" confirmation
-3. **Phase 3:** Generate atomic tasks for each story
+1. **Phase 1:** Generate epics only, wait for "Go" confirmation.
+2. **Phase 2:** Generate stories for each epic, wait for "Go" confirmation.
+3. **Phase 3:** Generate atomic tasks for each story.
 
 This staged approach ensures alignment at each level before adding complexity.
 
@@ -189,8 +224,8 @@ This staged approach ensures alignment at each level before adding complexity.
 
 Assume the primary reader is a **junior developer** who needs:
 
-- Explicit file paths and structures
-- Clear acceptance criteria for each task
-- Specific tech stack guidance
-- Obvious dependency ordering
-- Testable completion conditions
+- Explicit file paths and structures within the monorepo.
+- Clear acceptance criteria for each task.
+- Specific tech stack guidance for both frontend and backend.
+- Obvious dependency ordering.
+- Testable completion conditions.
