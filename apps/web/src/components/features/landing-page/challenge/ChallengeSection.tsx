@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { FileText, Search, BarChart3 } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 // Custom hook for scroll animations
 function useScrollAnimation() {
@@ -40,7 +40,8 @@ function useScrollAnimation() {
 interface ChallengeCard {
   id: string;
   title: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
+  imageSrc?: string;
   statistic: string;
   statisticLabel: string;
   description: string;
@@ -52,35 +53,38 @@ interface ChallengeCard {
 // Challenge cards data
 const challengeCards: ChallengeCard[] = [
   {
-    id: "inefficient-processes",
-    title: "Inefficient Manual Processes",
-    icon: <FileText className="w-8 h-8 text-black" aria-hidden="true" />,
+    id: "digitize-processes",
+    title: "Digitize Manual Processes",
+    imageSrc: "/Toolkit/manual.webp",
     statistic: "70%",
     statisticLabel: "Time lost on paperwork",
-    description: "Moving beyond paper-based checklists and physical document submissions to a secure, centralized digital workflow.",
-    solution: "Digital workflow solution",
+    description:
+      "Move beyond paper-based checklists and physical document submissions to a secure, centralized digital workflow.",
+    solution: "✓ Centralized Digital Workflow",
     color: "bg-[#fbbf24]",
     delay: 300,
   },
   {
-    id: "lack-of-tools",
-    title: "Lack of Proactive Tools",
-    icon: <Search className="w-8 h-8 text-black" aria-hidden="true" />,
+    id: "proactive-preparation",
+    title: "Empower Proactive Preparation",
+    imageSrc: "/Toolkit/empower.webp",
     statistic: "45%",
     statisticLabel: "Fail due to unpreparedness",
-    description: "Providing barangays with a powerful self-assessment tool to identify and rectify weaknesses before the official audit.",
-    solution: "Self-assessment tools",
+    description:
+      "Provide barangays with a powerful self-assessment tool to identify and rectify weaknesses before the official audit.",
+    solution: "✓ Guided Self-Assessment Tool",
     color: "bg-[#f59e0b]",
     delay: 400,
   },
   {
-    id: "pass-rates",
-    title: "Improving Pass Rates",
-    icon: <BarChart3 className="w-8 h-8 text-black" aria-hidden="true" />,
+    id: "improve-pass-rates",
+    title: "Improve SGLGB Pass Rates",
+    imageSrc: "/Toolkit/pass-rate.webp",
     statistic: "30%",
     statisticLabel: "Gap between local & national",
-    description: "Addressing the discrepancy between local and national validation results by ensuring submissions meet the highest standards of quality and completeness.",
-    solution: "Analytics & insights",
+    description:
+      "Address the discrepancy between local and national validation results by ensuring submissions meet the highest standards of quality.",
+    solution: "✓ Data-Driven Gap Analysis",
     color: "bg-[#d97706]",
     delay: 500,
   },
@@ -92,7 +96,7 @@ export function ChallengeSection() {
   return (
     <section
       ref={challengeAnimation.elementRef}
-      className={`w-full max-w-7xl mx-auto px-8 py-16 transition-all duration-1000 ${
+      className={`w-full max-w-7xl mx-auto min-h-screen px-8 py-12 flex flex-col justify-center transition-all duration-1000 ${
         challengeAnimation.isVisible
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-8"
@@ -100,22 +104,28 @@ export function ChallengeSection() {
       aria-labelledby="challenges-heading"
     >
       <div
-        className={`text-center mb-12 transition-all duration-1000 delay-200 ${
+        className={`text-left mb-8 transition-all duration-1000 delay-200 ${
           challengeAnimation.isVisible
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-4"
         }`}
       >
-        <h2 id="challenges-heading" className="text-3xl md:text-4xl font-bold text-black mb-8">
-          Bridging the Gap Between Pre-Assessment and Table Validation
+        <h2
+          id="challenges-heading"
+          className="text-3xl md:text-4xl lg:text-4xl font-extrabold text-black mb-2"
+        >
+          A Proactive Approach to Governance
         </h2>
+        <p className="text-sm md:text-base text-gray-500 max-w-3xl font-normal">
+          Bridging the gap between municipal preparation and national standards.
+        </p>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8" role="list">
         {challengeCards.map((card) => (
           <article
             key={card.id}
-            className={`group bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center border border-gray-100 transition-all duration-1000 delay-${card.delay} hover:shadow-2xl hover:-translate-y-2 hover:border-[#fbbf24]/20 relative overflow-hidden ${
+            className={`group bg-white rounded-2xl shadow-lg p-8 flex flex-col items-start text-left border border-gray-100 transition-all duration-300 relative overflow-hidden ${
               challengeAnimation.isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
@@ -123,40 +133,44 @@ export function ChallengeSection() {
             role="listitem"
             aria-labelledby={`challenge-${card.id}-title`}
           >
-            {/* Background accent */}
-            <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${card.color} to-[#f59e0b] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300`} aria-hidden="true"></div>
-            
-            {/* Problem Badge */}
-            <div className="absolute top-4 right-4 bg-red-100 text-red-600 text-xs font-semibold px-2 py-1 rounded-full">
-              PROBLEM
-            </div>
-            
-            {/* Icon */}
-            <div className="relative mb-6">
-              <div className={`w-16 h-16 bg-gradient-to-br ${card.color} to-[#f59e0b] rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
-                {card.icon}
+            {/* Background accent - red theme for problem */}
+            <div
+              className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-400 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300`}
+              aria-hidden="true"
+            ></div>
+
+            {/* Image container: subtle gray, small border, centered image */}
+            <div className="relative mb-6 w-full">
+              <div className="h-36 rounded-md border border-gray-200 bg-gray-50 flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg">
+                {card.imageSrc ? (
+                  <Image
+                    src={card.imageSrc}
+                    alt={`${card.title} icon`}
+                    width={88}
+                    height={88}
+                    className="object-contain"
+                  />
+                ) : null}
               </div>
             </div>
-            
-            <h3 id={`challenge-${card.id}-title`} className="text-xl font-bold text-black mb-4 group-hover:text-[#fbbf24] transition-colors duration-300">
+
+            <h3
+              id={`challenge-${card.id}-title`}
+              className="text-xl font-bold text-black mb-4"
+            >
               {card.title}
             </h3>
-            
-            {/* Statistics */}
-            <div className="bg-gray-50 rounded-lg p-3 mb-4 w-full">
-              <div className="text-2xl font-bold text-[#fbbf24] mb-1">{card.statistic}</div>
-              <div className="text-xs text-gray-600">{card.statisticLabel}</div>
-            </div>
-            
+
+            {/* Removed percentage/statistics pill for cleaner layout */}
+
             <p className="text-gray-600 leading-relaxed mb-4">
               {card.description}
             </p>
-            
-            {/* Solution Preview */}
+
+            {/* Solution Preview (subtle, descriptive outcome) */}
             <div className="mt-auto pt-4 border-t border-gray-100 w-full">
-              <div className="flex items-center justify-center gap-2 text-green-600 text-sm font-medium">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span>{card.solution}</span>
+              <div className="flex items-center gap-2 text-gray-600 text-sm font-medium">
+                <span className="text-green-600">{card.solution}</span>
               </div>
             </div>
           </article>
@@ -164,4 +178,4 @@ export function ChallengeSection() {
       </div>
     </section>
   );
-} 
+}

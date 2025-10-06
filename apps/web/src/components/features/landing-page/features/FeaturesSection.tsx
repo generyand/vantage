@@ -1,8 +1,8 @@
 "use client";
 
+import { BarChart3, FileText, Search } from "lucide-react";
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
-import { FileText, Search, BarChart3 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 // Custom hook for scroll animations
 function useScrollAnimation() {
@@ -61,10 +61,11 @@ const featureCards: FeatureCard[] = [
     icon: <FileText className="w-8 h-8 text-black" />,
     step: "STEP 1",
     stepColor: "bg-green-100 text-green-700",
-    description: "A step-by-step workflow for BLGUs to complete their Self-Evaluation Document (SED) and upload all required Means of Verification (MOVs) with confidence.",
+    description:
+      "A step-by-step workflow for BLGUs to complete their Self-Evaluation Document (SED) and upload all required Means of Verification (MOVs) with confidence.",
     bulletPoints: [
       { label: "5-10 minutes", color: "bg-[#fbbf24]" },
-      { label: "User-friendly", color: "bg-green-500" }
+      { label: "User-friendly", color: "bg-green-500" },
     ],
     progressBarColor: "from-[#fbbf24] to-[#f59e0b]",
     delay: 300,
@@ -75,10 +76,11 @@ const featureCards: FeatureCard[] = [
     icon: <Search className="w-8 h-8 text-black" />,
     step: "STEP 2",
     stepColor: "bg-blue-100 text-blue-700",
-    description: "An efficient interface for DILG Area Assessors to review submissions, provide consolidated feedback, and manage a single, streamlined rework cycle.",
+    description:
+      "An efficient interface for DILG Area Assessors to review submissions, provide consolidated feedback, and manage a single, streamlined rework cycle.",
     bulletPoints: [
       { label: "2-3 days", color: "bg-[#f59e0b]" },
-      { label: "Quality assured", color: "bg-blue-500" }
+      { label: "Quality assured", color: "bg-blue-500" },
     ],
     progressBarColor: "from-[#f59e0b] to-[#d97706]",
     delay: 400,
@@ -89,10 +91,11 @@ const featureCards: FeatureCard[] = [
     icon: <BarChart3 className="w-8 h-8 text-black" />,
     step: "ONGOING",
     stepColor: "bg-purple-100 text-purple-700",
-    description: "A high-level dashboard with cross-matching analysis and AI-generated CapDev recommendations to support strategic decision-making.",
+    description:
+      "A high-level dashboard with cross-matching analysis and AI-generated CapDev recommendations to support strategic decision-making.",
     bulletPoints: [
       { label: "Real-time", color: "bg-[#d97706]" },
-      { label: "AI-powered", color: "bg-purple-500" }
+      { label: "AI-powered", color: "bg-purple-500" },
     ],
     progressBarColor: "from-[#d97706] to-[#b45309]",
     delay: 500,
@@ -130,7 +133,7 @@ export function FeaturesSection() {
   return (
     <section
       ref={featuresAnimation.elementRef}
-      className={`w-full max-w-7xl mx-auto px-8 py-16 transition-all duration-1000 ${
+      className={`w-full max-w-7xl mx-auto min-h-screen px-8 py-12 flex flex-col justify-center transition-all duration-1000 ${
         featuresAnimation.isVisible
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-8"
@@ -139,22 +142,18 @@ export function FeaturesSection() {
     >
       {/* Enhanced Header */}
       <div
-        className={`text-center mb-16 transition-all duration-1000 delay-200 ${
+        className={`text-left mb-12 transition-all duration-1000 delay-200 ${
           featuresAnimation.isVisible
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-4"
         }`}
       >
-        <div className="inline-flex items-center gap-2 bg-[#fbbf24]/10 text-[#fbbf24] px-4 py-2 rounded-full text-sm font-semibold mb-4">
-          <div className="w-2 h-2 bg-[#fbbf24] rounded-full animate-pulse"></div>
-          <span>PLATFORM FEATURES</span>
-        </div>
-        <h2 id="features-heading" className="text-3xl md:text-4xl font-bold text-black mb-4">
-          A Modern Toolkit for Data-Driven Governance
+        <h2
+          id="features-heading"
+          className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-black"
+        >
+          Smart Governance Toolkit
         </h2>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Comprehensive tools designed to support SGLGB evaluation process
-        </p>
       </div>
 
       <div className="flex flex-col lg:flex-row lg:items-stretch gap-12">
@@ -176,17 +175,19 @@ export function FeaturesSection() {
               />
               {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
-              
+
               {/* Floating Stats Cards */}
-                             {statistics.map((stat) => (
-                 <div
-                   key={stat.label}
-                   className={`absolute ${stat.position} bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg transform group-hover:scale-105 transition-all duration-300 delay-${stat.delay}`}
-                 >
-                   <div className={`text-2xl font-bold ${stat.color} mb-1`}>{stat.value}</div>
-                   <div className="text-sm text-gray-600">{stat.label}</div>
-                 </div>
-               ))}
+              {statistics.map((stat) => (
+                <div
+                  key={stat.label}
+                  className={`absolute ${stat.position} bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg transform group-hover:scale-105 transition-all duration-300 delay-${stat.delay}`}
+                >
+                  <div className={`text-2xl font-bold ${stat.color} mb-1`}>
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-gray-600">{stat.label}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -206,9 +207,11 @@ export function FeaturesSection() {
             >
               {/* Progress Bar */}
               <div className="absolute top-0 left-0 w-full h-1 bg-gray-100">
-                <div className={`h-full bg-gradient-to-r ${card.progressBarColor} w-0 group-hover:w-full transition-all duration-700 delay-${card.delay}`}></div>
+                <div
+                  className={`h-full bg-gradient-to-r ${card.progressBarColor} w-0 group-hover:w-full transition-all duration-700 delay-${card.delay}`}
+                ></div>
               </div>
-              
+
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">
                   <div className="w-16 h-16 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
@@ -220,7 +223,9 @@ export function FeaturesSection() {
                     <h3 className="text-xl font-bold text-black group-hover:text-[#fbbf24] transition-colors duration-300">
                       {card.title}
                     </h3>
-                    <div className={`px-2 py-1 ${card.stepColor} text-xs font-semibold rounded-full`}>
+                    <div
+                      className={`px-2 py-1 ${card.stepColor} text-xs font-semibold rounded-full`}
+                    >
                       {card.step}
                     </div>
                   </div>
@@ -228,12 +233,14 @@ export function FeaturesSection() {
                     {card.description}
                   </p>
                   <div className="flex items-center gap-4 text-sm text-gray-500">
-                                      {card.bulletPoints.map((point, _index) => (
-                    <div key={_index} className="flex items-center gap-1">
-                      <div className={`w-2 h-2 ${point.color} rounded-full`}></div>
-                      <span>{point.label}</span>
-                    </div>
-                  ))}
+                    {card.bulletPoints.map((point, _index) => (
+                      <div key={_index} className="flex items-center gap-1">
+                        <div
+                          className={`w-2 h-2 ${point.color} rounded-full`}
+                        ></div>
+                        <span>{point.label}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -243,4 +250,4 @@ export function FeaturesSection() {
       </div>
     </section>
   );
-} 
+}

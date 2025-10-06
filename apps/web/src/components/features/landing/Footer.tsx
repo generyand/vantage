@@ -1,8 +1,6 @@
 "use client";
 
-import { Facebook, Instagram, Twitter } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { Facebook, Instagram, Mail, Shield, Twitter } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 // Custom hook for scroll animations
@@ -44,7 +42,7 @@ export function Footer() {
   return (
     <footer
       ref={footerAnimation.elementRef}
-      className={`relative z-20 w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white py-16 px-8 mt-16 transition-all duration-1000 overflow-hidden ${
+      className={`relative z-20 w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white py-16 px-8 transition-all duration-1000 overflow-hidden ${
         footerAnimation.isVisible
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-8"
@@ -61,61 +59,53 @@ export function Footer() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {/* Column 1: Organization Info */}
+          {/* Column 1: University Info */}
           <div className="space-y-6">
             <div>
               <div className="flex items-center gap-4 mb-4">
-                {/* DILG - white circular badge */}
-                <div className="w-14 h-14 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center">
-                  <Image
-                    src="/officialLogo/DILG.webp"
-                    alt="DILG Logo"
-                    width={50}
-                    height={50}
-                    className="object-contain rounded-full"
-                  />
+                <div className="relative group">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-full flex items-center justify-center shadow-lg border border-gray-600/30 group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                    <span className="text-black font-bold text-lg">UM</span>
+                  </div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-[#fbbf24]/20 to-[#f59e0b]/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
-                {/* LGU - white circular badge */}
-                <div className="w-14 h-14 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center">
-                  <Image
-                    src="/officialLogo/Sulop_Municipal_Government.webp"
-                    alt="Sulop Municipal Government Logo"
-                    width={50}
-                    height={50}
-                    className="object-contain rounded-full"
-                  />
+                <div className="relative group">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#fbbf24] to-[#f59e0b] rounded-full flex items-center justify-center shadow-lg border border-gray-600/30 group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                    <span className="text-black font-bold text-lg">DTP</span>
+                  </div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-[#fbbf24]/20 to-[#f59e0b]/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
               </div>
               <h3 className="text-xl font-bold text-white mb-3">
-                VANTAGE Platform
+                Department of Technical Program
               </h3>
               <p className="text-gray-400 text-sm leading-relaxed">
-                The official digital platform for Sulop&apos;s Seal of Good
-                Local Governance for Barangays program.
+                University of Mindanao Digos College - Digos City, Philippines
               </p>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-white/5 rounded-sm p-3 backdrop-blur-sm border border-white/10">
-                <div className="text-lg font-bold text-[#fbbf24]">25</div>
-                <div className="text-xs text-gray-400">Barangays</div>
+                <div className="text-lg font-bold text-[#fbbf24]">500+</div>
+                <div className="text-xs text-gray-400">Active Users</div>
               </div>
               <div className="bg-white/5 rounded-sm p-3 backdrop-blur-sm border border-white/10">
-                <div className="text-lg font-bold text-[#f59e0b]">100%</div>
-                <div className="text-xs text-gray-400">Coverage</div>
+                <div className="text-lg font-bold text-[#f59e0b]">99.9%</div>
+                <div className="text-xs text-gray-400">Uptime</div>
               </div>
             </div>
           </div>
 
           {/* Column 2: Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white mb-6">
+            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+              <div className="w-1 h-6 bg-gradient-to-b from-[#fbbf24] to-[#f59e0b] rounded-full"></div>
               Quick Navigation
             </h3>
             <div className="space-y-3">
               <a
-                href="#features"
+                href="#home"
                 className="flex items-center gap-3 text-gray-400 hover:text-[#fbbf24] transition-all duration-300 group hover:translate-x-1"
               >
                 <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-[#fbbf24]/20 transition-colors duration-300">
@@ -133,10 +123,10 @@ export function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="font-medium">Platform Features</span>
+                <span className="font-medium">Home</span>
               </a>
               <a
-                href="#process"
+                href="#problems"
                 className="flex items-center gap-3 text-gray-400 hover:text-[#fbbf24] transition-all duration-300 group hover:translate-x-1"
               >
                 <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-[#fbbf24]/20 transition-colors duration-300">
@@ -154,10 +144,10 @@ export function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="font-medium">Assessment Process</span>
+                <span className="font-medium">Problems</span>
               </a>
               <a
-                href="#challenges"
+                href="#how-it-works"
                 className="flex items-center gap-3 text-gray-400 hover:text-[#fbbf24] transition-all duration-300 group hover:translate-x-1"
               >
                 <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-[#fbbf24]/20 transition-colors duration-300">
@@ -175,10 +165,10 @@ export function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="font-medium">Why VANTAGE?</span>
+                <span className="font-medium">How It Works</span>
               </a>
-              <Link
-                href="/login"
+              <a
+                href="#faq"
                 className="flex items-center gap-3 text-gray-400 hover:text-[#fbbf24] transition-all duration-300 group hover:translate-x-1"
               >
                 <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-[#fbbf24]/20 transition-colors duration-300">
@@ -192,67 +182,46 @@ export function Footer() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                      d="M9 5l7 7-7 7"
                     />
                   </svg>
                 </div>
-                <span className="font-medium">Access Portal</span>
-              </Link>
+                <span className="font-medium">FAQ</span>
+              </a>
             </div>
           </div>
 
           {/* Column 3: Contact Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white mb-6">
+            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+              <div className="w-1 h-6 bg-gradient-to-b from-[#f59e0b] to-[#d97706] rounded-full"></div>
               Contact & Support
             </h3>
             <div className="space-y-4">
               <div className="bg-white/5 rounded-sm p-4 backdrop-blur-sm border border-white/10">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-8 h-8 bg-[#fbbf24]/20 rounded-lg flex items-center justify-center">
-                    <svg
-                      className="w-4 h-4 text-[#fbbf24]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
+                    <Mail className="w-4 h-4 text-[#fbbf24]" />
                   </div>
                   <div>
                     <div className="text-sm font-semibold text-white">
-                      System Administrator
+                      Email Support
                     </div>
-                    <div className="text-xs text-gray-400">MLGOO-DILG</div>
+                    <div className="text-xs text-gray-400">
+                      Department Contact
+                    </div>
                   </div>
                 </div>
                 <a
-                  href="mailto:sulop.mlgoo@dilg.gov.ph"
+                  href="mailto:dtp.dc@umindanao.edu.ph"
                   className="text-[#fbbf24] hover:text-[#f59e0b] font-medium text-sm transition-colors duration-300 hover:underline"
                 >
-                  sulop.mlgoo@dilg.gov.ph
+                  dtp.dc@umindanao.edu.ph
                 </a>
               </div>
 
               <div className="flex items-center gap-2 text-sm text-gray-400">
-                <svg
-                  className="w-4 h-4 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                  />
-                </svg>
+                <Shield className="w-4 h-4 text-green-500" />
                 <span>Secure & Verified Platform</span>
               </div>
             </div>
@@ -260,7 +229,8 @@ export function Footer() {
 
           {/* Column 4: Social Media & Updates */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white mb-6">
+            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+              <div className="w-1 h-6 bg-gradient-to-b from-[#d97706] to-[#b45309] rounded-full"></div>
               Stay Connected
             </h3>
 
@@ -334,12 +304,10 @@ export function Footer() {
               </div>
               <div>
                 <div className="font-medium text-white">
-                  © 2025 Municipality of Sulop
+                  © 2025 Department of Technical Program
                 </div>
                 <div className="text-xs">
-                  All Rights Reserved • Developed by{" "}
-                  <span className="text-[#fbbf24] font-semibold">VANTAGE</span>{" "}
-                  Team
+                  All Rights Reserved • Developed by GEVIAS
                 </div>
               </div>
             </div>
@@ -362,6 +330,7 @@ export function Footer() {
                 </svg>
                 <span>SSL Secured</span>
               </div>
+              <div className="hidden md:block w-px h-4 bg-gray-600"></div>
               <div className="flex items-center gap-2">
                 <svg
                   className="w-4 h-4 text-green-500"
@@ -376,7 +345,7 @@ export function Footer() {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span>Government Verified</span>
+                <span>University Verified</span>
               </div>
             </div>
           </div>
