@@ -1,65 +1,97 @@
-# Vantage Monorepo
+# VANTAGE
 
-A modern monorepo setup using **Turborepo** with **NextJS** frontend and **FastAPI** backend.
+A modern monorepo setup using **Turborepo** with **NextJS** frontend and **FastAPI** backend for governance assessment and management.
 
-## 🏗️ Project Structure
+## Table of Contents
 
-```
-/
-├── apps/
-│   ├── web/          # NextJS frontend (TypeScript)
-│   └── api/          # FastAPI backend (Python)
-├── packages/
-│   └── shared/       # Shared types and utilities (TypeScript)
-├── turbo.json        # Turborepo configuration
-├── package.json      # Root package.json
-└── pnpm-workspace.yaml
-```
+- [Introduction](#introduction)
+- [Table of Contents](#table-of-contents)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Features](#features)
+- [Configuration](#configuration)
+- [Contributing](#contributing)
+- [Tests](#tests)
+- [Deployment](#deployment)
+- [Built With](#built-with)
+- [Roadmap](#roadmap)
+- [License](#license)
+- [Author/Contact](#authorcontact)
+- [Acknowledgments](#acknowledgments)
 
-## 🛠️ Tech Stack
+## Introduction
 
-### Frontend (`apps/web`)
-- **Framework**: NextJS 15 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Package Manager**: pnpm
+VANTAGE is a comprehensive pre-assessment, preparation, and decision-support tool designed for the DILG's Seal of Good Local Governance for Barangays (SGLGB) process. It facilitates a digital workflow where Barangay Local Government Units (BLGUs) submit their self-assessment and Means of Verification (MOVs), which are then reviewed by DILG Area Assessors through a structured, one-time rework cycle. The application supports formal, in-person Table Validation by functioning as a live checklist where assessors record final compliance data, features a classification algorithm that automatically applies the official "3+1" SGLGB scoring logic, and integrates with Google's Gemini API to generate actionable CapDev recommendations. VANTAGE serves as a strategic gap analysis tool, comparing initial submissions against final validated results to provide insights for improving the governance assessment cycle.
 
-### Backend (`apps/api`)
-- **Framework**: FastAPI
-- **Language**: Python 3.13+
-- **Package Manager**: uv
-- **Server**: Uvicorn
+### Key Capabilities
 
-### Shared (`packages/shared`)
-- **Language**: TypeScript
-- **Purpose**: Common types, utilities, and constants
+- **SGLGB Assessment Workflow**: Digital submission and validation process for BLGUs
+- **Table Validation Support**: Live checklist for in-person compliance recording
+- **Automated Scoring**: "3+1" SGLGB scoring logic with classification algorithm
+- **AI-Powered Recommendations**: Gemini API integration for CapDev suggestions
+- **Gap Analysis**: Strategic comparison of initial vs. final assessment results
+- **Multi-role Support**: Admin, BLGU, and Assessor user management
+- **Type-safe Architecture**: End-to-end type safety between frontend and backend
 
-### Monorepo
-- **Tool**: Turborepo
-- **Package Manager**: pnpm (workspaces)
-
-## 🚀 Quick Start
+## Installation
 
 ### Prerequisites
-- Node.js (18+)
-- Python (3.13+)
-- pnpm (`npm install -g pnpm`)
-- uv (`pip install uv`)
 
-### Installation
+- **Node.js** (18+)
+- **Python** (3.13+)
+- **pnpm** (`npm install -g pnpm`)
+- **uv** (`pip install uv`)
+
+### Setup Instructions
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd vantage
+   ```
+
+2. **Install dependencies**
+   ```bash
+   # Install all dependencies across the monorepo
+   pnpm install
+   ```
+
+3. **Environment Configuration**
+   ```bash
+   # Copy environment files (if they exist)
+   cp apps/api/.env.example apps/api/.env
+   cp apps/web/.env.example apps/web/.env.local
+   ```
+
+4. **Database Setup**
+   ```bash
+   # Navigate to API directory
+   cd apps/api
+   
+   # Run database migrations
+   alembic upgrade head
+   
+   # Return to root
+   cd ../..
+   ```
+
+5. **Generate Type Definitions**
+   ```bash
+   # Generate shared types from OpenAPI spec
+   pnpm generate-types
+   ```
+
+## Usage
+
+### Development Mode
+
+#### Start All Applications
 ```bash
-# Install all dependencies
-pnpm install
-```
-
-### Development
-
-#### Start all applications
-```bash
+# Start both frontend and backend
 pnpm dev
 ```
 
-#### Start individual applications
+#### Start Individual Applications
 ```bash
 # Frontend only (http://localhost:3000)
 pnpm dev:web
@@ -68,7 +100,7 @@ pnpm dev:web
 pnpm dev:api
 ```
 
-### Building
+### Production Build
 
 ```bash
 # Build all applications
@@ -79,163 +111,277 @@ turbo build --filter=web
 turbo build --filter=api
 ```
 
-### Testing & Linting
-
-```bash
-# Run tests across all apps
-pnpm test
-
-# Run linting
-pnpm lint
-
-# Type checking
-pnpm type-check
-```
-
-## 📝 Available Scripts
+### Available Scripts
 
 - `pnpm dev` - Start all applications in development mode
-- `pnpm build` - Build all applications
+- `pnpm build` - Build all applications for production
 - `pnpm test` - Run tests across all applications
 - `pnpm lint` - Run linting across all applications
 - `pnpm type-check` - Run TypeScript type checking
 - `pnpm clean` - Clean build artifacts
+- `pnpm generate-types` - Generate TypeScript types from OpenAPI spec
+- `pnpm watch-types` - Watch for API changes and regenerate types
 
-## 🔗 API Endpoints
+## Features
 
-The FastAPI backend runs on `http://localhost:8000` and provides:
+### Core Functionality
 
-- `GET /` - Welcome message
-- `GET /health` - Health check endpoint
-- `GET /api/hello` - Hello world endpoint
-- `GET /api/users/me` - Get current user info
+- ✅ **Modern Monorepo Architecture** with Turborepo
+- ✅ **Type-safe API Integration** using Orval-generated clients
+- ✅ **Role-based Access Control** for different user types
+- ✅ **Assessment Management** with form validation and submission
+- ✅ **Real-time Dashboard** with KPIs and progress tracking
+- ✅ **Document Upload & Processing** with file validation
+- ✅ **Report Generation** with export capabilities
+- ✅ **Responsive Design** with Tailwind CSS and shadcn/ui
+- ✅ **Hot Reloading** for both frontend and backend development
+- ✅ **Database Migrations** with Alembic
+- ✅ **Background Job Processing** with Celery and Redis
 
-## 🔄 Type Sharing Between Frontend & Backend
+### User Roles
 
-This monorepo keeps TypeScript and Python types in sync using **tag-based organization** for maintainable, scalable type management:
+- **Admin**: Full system access, user management, system settings
+- **BLGU**: Assessment submission, progress tracking, report viewing
+- **Assessor**: Assessment evaluation and validation
 
-### 🏗️ **Tag-Based Type Organization**
+## Configuration
 
-Instead of one massive types file, we organize types by **feature areas** using OpenAPI tags:
+### Environment Variables
+
+#### Backend (`apps/api/.env`)
+```env
+#  VANTAGE API Environment Variables
+# Copy this file to .env and fill in your actual values
+
+# =============================================================================
+#  APPLICATION SETTINGS  
+# =============================================================================
+DEBUG=true
+ENVIRONMENT=development
+
+# =============================================================================
+#  SECURITY SETTINGS
+# =============================================================================
+SECRET_KEY=your-super-secret-key-here
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=10080
+
+# =============================================================================
+#  SUPABASE CONFIGURATION
+# =============================================================================
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+DATABASE_URL=
+```
+
+#### Frontend (`apps/web/.env.local`)
+```env
+# API Configuration
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_API_V1_URL=http://localhost:8000/api/v1
+```
+
+### Database Configuration
+
+The application uses PostgreSQL with the following key tables:
+- `users` - User accounts and authentication
+- `barangays` - Barangay/LGU information
+- `governance_areas` - Assessment area definitions
+- `assessments` - Assessment submissions and data
+- `reports` - Generated reports and analytics
+
+### Monorepo Structure
 
 ```
-packages/shared/src/generated/
-├── models/
-│   ├── AuthModels.ts      → Auth-related types
-│   ├── UserModels.ts      → User-related types  
-│   ├── ProjectModels.ts   → Project-related types
-│   └── SystemModels.ts    → System/health types
-├── services/
-│   ├── AuthService.ts     → Auth API calls
-│   ├── UserService.ts     → User API calls
-│   ├── ProjectService.ts  → Project API calls
-│   └── SystemService.ts   → System API calls
-└── index.ts               → Clean exports
+vantage/
+├── apps/
+│   ├── web/              # NextJS frontend (TypeScript)
+│   │   ├── src/
+│   │   │   ├── app/      # App Router pages
+│   │   │   ├── components/ # React components
+│   │   │   ├── hooks/    # Custom React hooks
+│   │   │   └── lib/      # Utilities and configurations
+│   │   └── package.json
+│   └── api/              # FastAPI backend (Python)
+│       ├── app/
+│       │   ├── api/      # API routes
+│       │   ├── db/       # Database models and migrations
+│       │   ├── schemas/  # Pydantic schemas
+│       │   └── services/ # Business logic
+│       └── pyproject.toml
+├── packages/
+│   └── shared/           # Shared types and utilities
+│       └── src/generated/ # Auto-generated API client
+├── docs/                 # Documentation and PRDs
+├── tasks/               # Task lists and project management
+└── scripts/             # Build and utility scripts
 ```
 
-### How It Works:
-1. **Organize Python models** by domain in proper FastAPI structure:
-   ```
-   apps/api/app/models/
-   ├── __init__.py       → Exports all models
-   ├── base.py          → Common models (ApiResponse)
-   ├── user.py          → User models
-   ├── auth.py          → Authentication models  
-   ├── project.py       → Project models
-   └── system.py        → System/health models
-   ```
+## Contributing
 
-2. **Tag API endpoints** in FastAPI by feature area:
-   ```python
-   @app.post("/api/auth/login", tags=["auth"])
-   @app.get("/api/users/me", tags=["users"])
-   @app.get("/api/projects", tags=["projects"])
-   ```
+### Development Workflow
 
-3. **Generate organized types** using advanced tooling:
+1. **Create a feature branch**
    ```bash
-   pnpm dev:api          # Start API
-   pnpm generate-types   # Generate organized types
+   git checkout -b feature/your-feature-name
    ```
 
-4. **Use clean, organized imports**:
-   ```typescript
-   import { User, AuthToken, Project } from '@vantage/shared';
+2. **Make your changes**
+   - Follow the established code structure
+   - Write tests for new functionality
+   - Update documentation as needed
+
+3. **Run tests and linting**
+   ```bash
+   pnpm test
+   pnpm lint
+   pnpm type-check
    ```
 
-### 📁 **Scalable Structure**
+4. **Commit your changes**
+   ```bash
+   git add .
+   git commit -m "feat: add new feature description"
+   ```
 
-✅ **Feature-based files** instead of one massive file  
-✅ **Logical organization** by domain/resource  
-✅ **Easy maintenance** - find types quickly  
-✅ **Auto-generated services** with proper typing  
-✅ **Clean imports** from `@vantage/shared`
+5. **Push and create a Pull Request**
+   ```bash
+   git push origin feature/your-feature-name
+   ```
 
-### Commands:
-- `pnpm generate-types` - Generate organized TypeScript types
-- Types are organized in `packages/shared/src/generated/`
-- Import from `@vantage/shared` for clean, typed API access
+### Code Standards
 
-## 🌟 Features
+- **Frontend**: Follow NextJS App Router conventions, use TypeScript, implement proper error handling
+- **Backend**: Follow FastAPI best practices, use Pydantic for validation, implement proper service layer pattern
+- **Testing**: Write unit tests for business logic, integration tests for API endpoints
+- **Documentation**: Update README and code comments for new features
 
-- ✅ **Modern monorepo** setup with Turborepo
-- ✅ **Fast builds** with intelligent caching
-- ✅ **Type safety** across frontend and backend
-- ✅ **Shared utilities** and types
-- ✅ **Hot reloading** for both frontend and backend
-- ✅ **CORS configured** for local development
-- ✅ **Simple architecture** following best practices
+## Tests
 
-## 🔧 Git Workflow
+### Running Tests
 
-This monorepo uses a **single Git repository** at the root level for all packages.
-
-### Initial Setup (Already Done)
 ```bash
-git init
-git add .
-git commit -m "Initial commit: Setup Vantage monorepo"
+# Run all tests
+pnpm test
+
+# Run tests for specific app
+turbo test --filter=web
+turbo test --filter=api
+
+# Run tests with verbose output
+pnpm test -- -vv --log-cli-level=DEBUG
 ```
 
-### Daily Workflow
+### Test Structure
+
+#### Backend Tests (`apps/api/tests/`)
+- Unit tests for services and business logic
+- Integration tests for API endpoints
+- Database migration tests
+- Authentication and authorization tests
+
+#### Frontend Tests (`apps/web/src/`)
+- Component tests with React Testing Library
+- Hook tests for custom React hooks
+- Integration tests for user workflows
+- API client tests
+
+### Test Coverage
+
+- Aim for >80% code coverage
+- Test critical business logic thoroughly
+- Include edge cases and error scenarios
+- Mock external dependencies appropriately
+
+## Deployment
+
+### Production Build
+
 ```bash
-# Check status across all packages
-git status
+# Build all applications
+pnpm build
 
-# Add changes across all packages
-git add .
-
-# Commit with descriptive message
-git commit -m "feat: add new API endpoint and update frontend"
-
-# Example of committing changes to specific apps
-git add apps/web/
-git commit -m "feat(web): add user dashboard component"
-
-git add apps/api/
-git commit -m "fix(api): handle user authentication edge case"
+# Verify builds
+turbo build --dry-run
 ```
 
-### Branch Strategy
+### Environment Setup
+
+1. **Configure production environment variables**
+2. **Set up PostgreSQL database**
+3. **Configure Redis for background jobs**
+4. **Set up reverse proxy (nginx)**
+5. **Configure SSL certificates**
+
+### Docker Deployment (Optional)
+
 ```bash
-# Create feature branch
-git checkout -b feature/user-auth
+# Build Docker images
+docker build -t vantage-web apps/web
+docker build -t vantage-api apps/api
 
-# Work on changes across multiple packages
-# ... make changes ...
-
-# Commit changes
-git add .
-git commit -m "feat: implement user authentication system"
-
-# Push and create PR
-git push origin feature/user-auth
+# Run with docker-compose
+docker-compose up -d
 ```
 
-## 📚 Learn More
+### Monitoring
 
-- [Turborepo Documentation](https://turbo.build/repo/docs)
-- [NextJS Documentation](https://nextjs.org/docs)
-- [FastAPI Documentation](https://fastapi.tiangolo.com/)
-- [pnpm Workspaces](https://pnpm.io/workspaces)
-- [uv Package Manager](https://github.com/astral-sh/uv) 
+- Set up application monitoring
+- Configure logging aggregation
+- Set up health check endpoints
+- Monitor database performance
+
+## Built With
+
+### Frontend Technologies
+- **[Next.js 15](https://nextjs.org/)** - React framework with App Router
+- **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
+- **[shadcn/ui](https://ui.shadcn.com/)** - Reusable component library
+- **[TanStack Query](https://tanstack.com/query)** - Server state management
+- **[Zustand](https://zustand-demo.pmnd.rs/)** - Client state management
+- **[Lucide React](https://lucide.dev/)** - Icon library
+
+### Backend Technologies
+- **[FastAPI](https://fastapi.tiangolo.com/)** - Modern Python web framework
+- **[SQLAlchemy](https://www.sqlalchemy.org/)** - Python ORM
+- **[Alembic](https://alembic.sqlalchemy.org/)** - Database migration tool
+- **[Pydantic](https://pydantic.dev/)** - Data validation and settings
+- **[Celery](https://docs.celeryq.dev/)** - Distributed task queue
+- **[Redis](https://redis.io/)** - Message broker and caching
+- **[Passlib](https://passlib.readthedocs.io/)** - Password hashing
+- **[python-jose](https://python-jose.readthedocs.io/)** - JWT implementation
+
+### Development Tools
+- **[Turborepo](https://turbo.build/repo)** - Monorepo build system
+- **[pnpm](https://pnpm.io/)** - Fast, disk space efficient package manager
+- **[uv](https://github.com/astral-sh/uv)** - Fast Python package manager
+- **[Orval](https://orval.dev/)** - OpenAPI client generator
+- **[Pytest](https://pytest.org/)** - Python testing framework
+- **[Vitest](https://vitest.dev/)** - Fast unit test framework
+
+## License
+
+This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
+
+## Author/Contact
+
+- **Project**: VANTAGE Governance Assessment Platform
+- **Repository**: [Vantage](https://github.com/generyand/vantage)
+- **Issues**: [Issues](https://github.com/generyand/vantage/issues)
+
+For questions, suggestions, or contributions, please:
+1. Check existing [Issues](https://github.com/generyand/vantage/issues)
+2. Create a new issue with detailed description
+3. Follow the contributing guidelines
+
+## Acknowledgments
+
+- **[Turborepo](https://turbo.build/repo)** for the excellent monorepo tooling
+- **[Next.js](https://nextjs.org/)** team for the powerful React framework
+- **[FastAPI](https://fastapi.tiangolo.com/)** for the modern Python web framework
+- **[shadcn/ui](https://ui.shadcn.com/)** for the beautiful component library
+- **[Tailwind CSS](https://tailwindcss.com/)** for the utility-first CSS approach
+- **[Orval](https://orval.dev/)** for seamless API client generation
+- The open-source community for the amazing tools and libraries that make this project possible
