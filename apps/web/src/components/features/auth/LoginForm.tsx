@@ -33,11 +33,11 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Entrance animation trigger
+  // Small entrance animation
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoaded(true);
-    }, 200);
+    }, 150);
     return () => clearTimeout(timer);
   }, []);
 
@@ -280,11 +280,7 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
     <div className="space-y-4">
       {Boolean(loginMutation.isPending) ? (
         <>
-          <div
-            className={`transition-all duration-800 ${
-              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-          >
+          <div className={`transition-colors duration-200`}>
             <Label
               className={`block text-sm font-medium mb-2 transition-colors duration-500 ${
                 isDarkMode ? "text-gray-300" : "text-gray-700"
@@ -292,18 +288,9 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
             >
               Email
             </Label>
-            <Skeleton
-              shape="rounded"
-              size="lg"
-              width="full"
-              className="mb-2 animate-pulse"
-            />
+            <Skeleton shape="rounded" size="lg" width="full" className="mb-2" />
           </div>
-          <div
-            className={`mt-4 transition-all duration-800 delay-200 ${
-              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-          >
+          <div className={`mt-4`}>
             <Label
               className={`block text-sm font-medium mb-2 transition-colors duration-500 ${
                 isDarkMode ? "text-gray-300" : "text-gray-700"
@@ -311,31 +298,17 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
             >
               Password
             </Label>
-            <Skeleton
-              shape="rounded"
-              size="lg"
-              width="full"
-              className="mb-2 animate-pulse"
-            />
+            <Skeleton shape="rounded" size="lg" width="full" className="mb-2" />
           </div>
-          <div
-            className={`transition-all duration-800 delay-400 ${
-              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-          >
-            <Skeleton
-              shape="rounded"
-              size="lg"
-              width="full"
-              className="mt-4 animate-pulse"
-            />
+          <div className={`mt-4`}>
+            <Skeleton shape="rounded" size="lg" width="full" className="mt-4" />
           </div>
         </>
       ) : (
         <>
           <div
-            className={`transition-all duration-800 ${
-              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            className={`transition-all duration-500 ${
+              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
           >
             <Label
@@ -357,10 +330,10 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loginMutation.isPending}
-                className={`pl-10 py-3 text-base transition-all duration-300 hover:border-[#fbbf24]/60 focus:border-[#fbbf24] focus:ring-[#fbbf24]/30 focus:ring-2 hover:shadow-lg focus:shadow-xl transform hover:scale-[1.01] focus:scale-[1.01] relative z-0 ${
+                className={`pl-10 py-3 text-base transition-all duration-300 focus:border-[#fbbf24] focus:ring-[#fbbf24]/30 focus:ring-2 hover:border-[#fbbf24]/60 relative z-0 ${
                   isDarkMode
-                    ? "bg-gray-700/80 border-gray-600/60 text-white placeholder-gray-400 hover:bg-gray-600/80 focus:bg-gray-600/80"
-                    : "bg-white border-gray-300/60 text-gray-900 placeholder-gray-500 hover:bg-white focus:bg-white"
+                    ? "bg-gray-700/80 border-gray-600/60 text-white placeholder-gray-400 focus:bg-gray-600/80"
+                    : "bg-white border-gray-300/60 text-gray-900 placeholder-gray-500 focus:bg-white"
                 }`}
                 shape="boxy"
                 placeholder="Enter your email address"
@@ -369,8 +342,8 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
             </div>
           </div>
           <div
-            className={`mt-4 transition-all duration-800 delay-200 ${
-              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            className={`mt-4 transition-all duration-500 delay-100 ${
+              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
           >
             <Label
@@ -392,10 +365,10 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loginMutation.isPending}
-                className={`pl-10 pr-10 py-3 text-base transition-all duration-300 hover:border-[#fbbf24]/60 focus:border-[#fbbf24] focus:ring-[#fbbf24]/30 focus:ring-2 hover:shadow-lg focus:shadow-xl transform hover:scale-[1.01] focus:scale-[1.01] relative z-0 ${
+                className={`pl-10 pr-10 py-3 text-base transition-all duration-300 focus:border-[#fbbf24] focus:ring-[#fbbf24]/30 focus:ring-2 hover:border-[#fbbf24]/60 relative z-0 ${
                   isDarkMode
-                    ? "bg-gray-700/80 border-gray-600/60 text-white placeholder-gray-400 hover:bg-gray-600/80 focus:bg-gray-600/80"
-                    : "bg-white border-gray-300/60 text-gray-900 placeholder-gray-500 hover:bg-white focus:bg-white"
+                    ? "bg-gray-700/80 border-gray-600/60 text-white placeholder-gray-400 focus:bg-gray-600/80"
+                    : "bg-white border-gray-300/60 text-gray-900 placeholder-gray-500 focus:bg-white"
                 }`}
                 shape="boxy"
                 placeholder="Enter your password"
@@ -404,7 +377,7 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className={`absolute inset-y-0 right-0 flex items-center justify-center w-10 bg-transparent border-none outline-none focus:outline-none transition-all duration-200 hover:scale-110 ${
+                className={`absolute inset-y-0 right-0 flex items-center justify-center w-10 bg-transparent border-none outline-none focus:outline-none transition-colors duration-200 ${
                   isDarkMode
                     ? "text-gray-500 hover:text-[#fbbf24]"
                     : "text-gray-400 hover:text-[#f59e0b]"
@@ -449,13 +422,7 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
             <div
               className={`
                 rounded-md p-4 mt-4 
-                transition-all duration-500 ease-in-out
-                transform 
-                ${
-                  isLoaded
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 -translate-y-2"
-                }
+                transition-colors duration-200
                 ${
                   isDarkMode
                     ? "bg-red-900/10 border border-red-500/20"
@@ -490,52 +457,34 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
           )}
           {/* Submit Button with Loading State */}
           <div
-            className={`transition-all duration-800 delay-400 ${
-              isLoaded
-                ? "opacity-100 translate-y-0 scale-100"
-                : "opacity-0 translate-y-4 scale-95"
+            className={`transition-all duration-500 delay-200 ${
+              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
             }`}
           >
             <Button
               type="button"
               disabled={loginMutation.isPending}
               onClick={handleSubmit}
-              className={`w-full mt-3 text-base h-12 text-white border-0 shadow-lg hover:shadow-2xl transform hover:scale-[1.02] active:scale-98 transition-all duration-500 font-semibold tracking-wide disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none ${
+              className={`w-full mt-3 text-base h-12 text-white border-0 shadow-lg transition-all duration-300 font-semibold tracking-wide disabled:opacity-70 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98] ${
                 loginSuccess
-                  ? "bg-gradient-to-r from-green-500 to-green-600 scale-105"
+                  ? "bg-gradient-to-r from-green-500 to-green-600"
                   : "bg-gradient-to-r from-[#fbbf24] to-[#f59e0b] hover:from-[#f59e0b] hover:to-[#d97706]"
               }`}
             >
               {loginMutation.isPending ? (
                 <div className="flex items-center justify-center gap-3">
-                  <div className="relative">
-                    <div className="w-5 h-5 border-2 border-white/30 rounded-full animate-spin"></div>
-                    <div className="absolute top-0 left-0 w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  </div>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   <span className="font-medium">Signing you in...</span>
                 </div>
               ) : loginSuccess ? (
                 <span className="flex items-center justify-center gap-2 font-semibold">
-                  <svg
-                    className="w-5 h-5 animate-bounce"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
                   Success! Redirecting...
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-2 font-semibold">
                   Sign in
                   <svg
-                    className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300"
+                    className="w-4 h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

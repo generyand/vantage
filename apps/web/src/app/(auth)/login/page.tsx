@@ -96,16 +96,7 @@ function useLoginTheme() {
 export default function LoginPage() {
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
-  const [isPageLoaded, setIsPageLoaded] = useState(false);
   const isDarkMode = useLoginTheme();
-
-  // Page entrance animation
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsPageLoaded(true);
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   // Redirect authenticated users to appropriate dashboard
   useEffect(() => {
@@ -137,7 +128,7 @@ export default function LoginPage() {
         }`}
       >
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#fbbf24] mx-auto mb-4"></div>
+          <div className="rounded-full h-6 w-6 border-2 border-[#fbbf24] border-t-transparent mx-auto mb-4 animate-spin"></div>
           <p
             className={`transition-colors duration-500 ${
               isDarkMode ? "text-gray-300" : "text-gray-600"
@@ -173,15 +164,9 @@ export default function LoginPage() {
             }}
           ></div>
           {/* Geometric shapes */}
-          <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-[#fbbf24] rounded-full animate-pulse"></div>
-          <div
-            className="absolute bottom-1/3 right-1/3 w-24 h-24 border border-[#f59e0b] rounded-full animate-pulse"
-            style={{ animationDelay: "1s" }}
-          ></div>
-          <div
-            className="absolute top-1/2 right-1/4 w-16 h-16 border border-[#d97706] rounded-full animate-pulse"
-            style={{ animationDelay: "2s" }}
-          ></div>
+          <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-[#fbbf24] rounded-full"></div>
+          <div className="absolute bottom-1/3 right-1/3 w-24 h-24 border border-[#f59e0b] rounded-full"></div>
+          <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-[#d97706] rounded-full"></div>
           <div
             className="absolute top-1/6 right-1/6 w-20 h-20 border border-[#fbbf24] transform rotate-45"
             style={{ animationDelay: "0.5s" }}
@@ -195,14 +180,14 @@ export default function LoginPage() {
         {/* Enhanced glowing blobs - Dynamic opacity based on theme */}
         {/* top right - Primary yellow glow */}
         <div
-          className={`absolute -top-40 -right-40 w-48 h-48 lg:w-60 lg:h-60 xl:w-80 xl:h-80 rounded-full filter blur-xl animate-fade-in-blob animation-delay-800 animate-blob transition-all duration-500 ${
+          className={`absolute -top-40 -right-40 w-48 h-48 lg:w-60 lg:h-60 xl:w-80 xl:h-80 rounded-full filter blur-xl transition-all duration-500 ${
             isDarkMode
               ? "bg-[#fbbf24]/60 mix-blend-screen"
               : "bg-[#fbbf24]/30 mix-blend-multiply"
           }`}
         ></div>
         <div
-          className={`absolute -top-20 -right-20 w-32 h-32 lg:w-40 lg:h-40 xl:w-48 xl:h-48 rounded-full filter blur-lg animate-fade-in-blob animation-delay-1000 animate-blob transition-all duration-500 ${
+          className={`absolute -top-20 -right-20 w-32 h-32 lg:w-40 lg:h-40 xl:w-48 xl:h-48 rounded-full filter blur-lg transition-all duration-500 ${
             isDarkMode
               ? "bg-[#fbbf24]/40 mix-blend-screen"
               : "bg-[#fbbf24]/20 mix-blend-multiply"
@@ -211,14 +196,14 @@ export default function LoginPage() {
 
         {/* bottom left - Secondary amber glow */}
         <div
-          className={`absolute -bottom-40 -left-40 w-48 h-48 lg:w-60 lg:h-60 xl:w-80 xl:h-80 rounded-full filter blur-xl animate-fade-in-blob animation-delay-2000 animate-blob transition-all duration-500 ${
+          className={`absolute -bottom-40 -left-40 w-48 h-48 lg:w-60 lg:h-60 xl:w-80 xl:h-80 rounded-full filter blur-xl transition-all duration-500 ${
             isDarkMode
               ? "bg-[#f59e0b]/60 mix-blend-screen"
               : "bg-[#f59e0b]/30 mix-blend-multiply"
           }`}
         ></div>
         <div
-          className={`absolute -bottom-20 -left-20 w-32 h-32 lg:w-40 lg:h-40 xl:w-48 xl:h-48 rounded-full filter blur-lg animate-fade-in-blob animation-delay-2200 animate-blob transition-all duration-500 ${
+          className={`absolute -bottom-20 -left-20 w-32 h-32 lg:w-40 lg:h-40 xl:w-48 xl:h-48 rounded-full filter blur-lg transition-all duration-500 ${
             isDarkMode
               ? "bg-[#f59e0b]/40 mix-blend-screen"
               : "bg-[#f59e0b]/20 mix-blend-multiply"
@@ -227,7 +212,7 @@ export default function LoginPage() {
 
         {/* top left - Tertiary orange accent */}
         <div
-          className={`absolute top-40 left-40 w-48 h-48 lg:w-60 lg:h-60 xl:w-80 xl:h-80 rounded-full filter blur-xl animate-fade-in-blob-light animation-delay-4000 animate-blob transition-all duration-500 ${
+          className={`absolute top-40 left-40 w-48 h-48 lg:w-60 lg:h-60 xl:w-80 xl:h-80 rounded-full filter blur-xl transition-all duration-500 ${
             isDarkMode
               ? "bg-[#d97706]/50 mix-blend-screen"
               : "bg-[#d97706]/25 mix-blend-multiply"
@@ -236,7 +221,7 @@ export default function LoginPage() {
 
         {/* Center accent glow */}
         <div
-          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full filter blur-3xl animate-fade-in-blob animation-delay-3000 transition-all duration-500 ${
+          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full filter blur-3xl transition-all duration-500 ${
             isDarkMode
               ? "bg-[#fbbf24]/10 mix-blend-screen"
               : "bg-[#fbbf24]/5 mix-blend-multiply"
@@ -246,20 +231,10 @@ export default function LoginPage() {
       {/* Main content */}
       <div className="relative z-10 w-full max-w-6xl mx-auto flex items-center justify-center gap-x-24 flex-1 py-2">
         {/* Left Panel */}
-        <div
-          className={`hidden lg:flex flex-col items-center justify-center transition-all duration-1000 ${
-            isPageLoaded
-              ? "opacity-100 translate-x-0"
-              : "opacity-0 -translate-x-8"
-          }`}
-        >
+        <div className="hidden lg:flex flex-col items-center justify-center">
           {/* Floating Logo */}
           <div className="relative z-10 flex flex-col items-center">
-            <div
-              className={`mb-6 animate-float transition-all duration-1000 delay-200 ${
-                isPageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
-              }`}
-            >
+            <div className="mb-6">
               <div className="relative">
                 {/* Elegant container with subtle styling */}
                 <div
@@ -316,20 +291,16 @@ export default function LoginPage() {
               </div>
             </div>
             <h1
-              className={`text-4xl font-extrabold mb-4 tracking-tight text-center transition-all duration-1000 delay-400 ${
-                isPageLoaded
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-4"
-              } ${isDarkMode ? "text-white" : "text-gray-900"}`}
+              className={`text-4xl font-extrabold mb-4 tracking-tight text-center ${
+                isDarkMode ? "text-white" : "text-gray-900"
+              }`}
             >
               VANTAGE
             </h1>
             <p
-              className={`text-base font-medium text-center max-w-md mb-8 leading-relaxed transition-all duration-1000 delay-600 ${
-                isPageLoaded
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-4"
-              } ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
+              className={`text-base font-medium text-center max-w-md mb-8 leading-relaxed ${
+                isDarkMode ? "text-gray-300" : "text-gray-600"
+              }`}
             >
               Validating Assessments and Nurturing Transparency for Advantaged
               Governance and Evaluation
@@ -337,18 +308,10 @@ export default function LoginPage() {
           </div>
         </div>
         {/* Right Panel (Login Card) */}
-        <div
-          className={`flex flex-col items-center justify-center min-w-[380px] max-w-md w-full px-4 py-2 sm:px-6 lg:px-0 transition-all duration-1000 delay-300 ${
-            isPageLoaded
-              ? "opacity-100 translate-x-0"
-              : "opacity-0 translate-x-8"
-          }`}
-        >
+        <div className="flex flex-col items-center justify-center min-w-[380px] max-w-md w-full px-4 py-2 sm:px-6 lg:px-0">
           {/* Single Card: Welcome, subtitle, LoginForm, and assistance text all in one */}
           <div
-            className={`w-full backdrop-blur-md rounded-2xl p-8 md:p-8 flex flex-col space-y-5 transition-all duration-1000 delay-500 hover:scale-[1.005] ${
-              isPageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
-            } ${
+            className={`w-full backdrop-blur-md rounded-2xl p-8 md:p-8 flex flex-col space-y-5 ${
               isDarkMode
                 ? "bg-gray-800/95 border border-gray-700/40"
                 : "bg-white/95 border border-white/50"
@@ -359,13 +322,7 @@ export default function LoginPage() {
                 : "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 40px 60px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(251, 191, 36, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 0 20px rgba(251, 191, 36, 0.02)",
             }}
           >
-            <div
-              className={`text-center transition-all duration-1000 delay-700 ${
-                isPageLoaded
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-4"
-              }`}
-            >
+            <div className="text-center">
               <h2
                 className={`text-2xl md:text-3xl font-extrabold mb-2 leading-tight tracking-tight transition-colors duration-500 ${
                   isDarkMode ? "text-white" : "text-gray-900"
@@ -385,11 +342,9 @@ export default function LoginPage() {
               <LoginForm isDarkMode={isDarkMode} />
             </div>
             <p
-              className={`text-sm text-center mt-4 transition-all duration-1000 delay-1000 ${
-                isPageLoaded
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-4"
-              } ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}
+              className={`text-sm text-center mt-4 ${
+                isDarkMode ? "text-gray-400" : "text-gray-500"
+              }`}
             >
               For account assistance, please contact your MLGRC Administrator.
             </p>

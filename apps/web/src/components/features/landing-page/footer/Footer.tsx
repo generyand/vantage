@@ -2,7 +2,6 @@
 
 import { Facebook, Instagram, Twitter } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 // Custom hook for scroll animations
@@ -60,7 +59,7 @@ export function Footer() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {/* Column 1: Organization Info */}
           <div className="space-y-6">
             <div>
@@ -105,99 +104,6 @@ export function Footer() {
                 <div className="text-lg font-bold text-[#f59e0b]">100%</div>
                 <div className="text-xs text-gray-400">Coverage</div>
               </div>
-            </div>
-          </div>
-
-          {/* Column 2: Quick Links */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white mb-6">
-              Quick Navigation
-            </h3>
-            <div className="space-y-3">
-              <a
-                href="#features"
-                className="flex items-center gap-3 text-gray-400 hover:text-[#fbbf24] transition-all duration-300 group hover:translate-x-1"
-              >
-                <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-[#fbbf24]/20 transition-colors duration-300">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
-                <span className="font-medium">Platform Features</span>
-              </a>
-              <a
-                href="#process"
-                className="flex items-center gap-3 text-gray-400 hover:text-[#fbbf24] transition-all duration-300 group hover:translate-x-1"
-              >
-                <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-[#fbbf24]/20 transition-colors duration-300">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
-                <span className="font-medium">Assessment Process</span>
-              </a>
-              <a
-                href="#challenges"
-                className="flex items-center gap-3 text-gray-400 hover:text-[#fbbf24] transition-all duration-300 group hover:translate-x-1"
-              >
-                <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-[#fbbf24]/20 transition-colors duration-300">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
-                <span className="font-medium">Why VANTAGE?</span>
-              </a>
-              <Link
-                href="/login"
-                className="flex items-center gap-3 text-gray-400 hover:text-[#fbbf24] transition-all duration-300 group hover:translate-x-1"
-              >
-                <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-[#fbbf24]/20 transition-colors duration-300">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                    />
-                  </svg>
-                </div>
-                <span className="font-medium">Access Portal</span>
-              </Link>
             </div>
           </div>
 
