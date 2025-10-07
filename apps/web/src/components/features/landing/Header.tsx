@@ -52,13 +52,11 @@ export function Header() {
           >
             <div className="relative">
               <Image
-                src="/officialLogo/VANTAGE.webp"
-                alt="VANTAGE official logo"
-                width={64}
-                height={64}
-                sizes="32px"
-                className="w-8 h-8 object-contain hover:scale-110 transition-transform duration-300"
-                priority
+                src="/officialLogo/MLGRC.webp"
+                alt="MLGRC Davao del Sur official logo"
+                width={32}
+                height={32}
+                className="object-contain hover:scale-110 transition-transform duration-300"
               />
               {isLoginHovered && (
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
