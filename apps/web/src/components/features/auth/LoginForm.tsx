@@ -26,6 +26,7 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isCapsLockOn, setIsCapsLockOn] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [shouldFetchUser, setShouldFetchUser] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -363,6 +364,20 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  // Show hint when Caps Lock is active
+                  // getModifierState works across browsers
+                  const caps = (
+                    e as unknown as KeyboardEvent
+                  ).getModifierState?.("CapsLock");
+                  if (typeof caps === "boolean") setIsCapsLockOn(caps);
+                }}
+                onKeyUp={(e) => {
+                  const caps = (
+                    e as unknown as KeyboardEvent
+                  ).getModifierState?.("CapsLock");
+                  if (typeof caps === "boolean") setIsCapsLockOn(caps);
+                }}
                 required
                 disabled={loginMutation.isPending}
                 className={`pl-10 pr-10 py-3 text-base transition-all duration-300 focus:border-[#fbbf24] focus:ring-[#fbbf24]/30 focus:ring-2 hover:border-[#fbbf24]/60 relative z-0 ${
@@ -374,6 +389,18 @@ export default function LoginForm({ isDarkMode = false }: LoginFormProps) {
                 placeholder="Enter your password"
                 autoComplete="current-password"
               />
+              {isCapsLockOn && (
+                <span
+                  className={`absolute right-12 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded border text-[10px] font-semibold select-none pointer-events-none ${
+                    isDarkMode
+                      ? "bg-amber-500/20 text-amber-200 border-amber-400/40"
+                      : "bg-amber-100 text-amber-700 border-amber-300"
+                  }`}
+                  aria-live="polite"
+                >
+                  CAPS
+                </span>
+              )}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}

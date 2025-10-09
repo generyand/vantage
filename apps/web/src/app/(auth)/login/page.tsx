@@ -236,58 +236,18 @@ export default function LoginPage() {
           <div className="relative z-10 flex flex-col items-center">
             <div className="mb-6">
               <div className="relative">
-                {/* Elegant container with subtle styling */}
-                <div
-                  className={`relative overflow-hidden transition-all duration-500 ${
-                    isDarkMode
-                      ? "bg-gradient-to-br from-gray-800/95 via-gray-900/90 to-gray-800/95 border border-gray-600/40"
-                      : "bg-gradient-to-br from-white/95 via-gray-100/90 to-white/95 border border-gray-300/50"
-                  } rounded-3xl shadow-2xl`}
-                >
-                  {/* Inner padding and logo */}
-                  <div className="p-6">
-                    <Image
-                      src="/officialLogo/MLGRC.webp"
-                      alt="MLGRC Davao del Sur Logo"
-                      width={180}
-                      height={180}
-                      priority
-                      className="drop-shadow-lg"
-                    />
-                  </div>
-                  {/* Subtle accent border */}
-                  <div
-                    className={`absolute inset-0 rounded-3xl border border-transparent bg-gradient-to-br from-amber-400/20 via-orange-400/10 to-transparent pointer-events-none`}
-                  ></div>
-                  {/* Subtle inner glow */}
-                  <div
-                    className={`absolute inset-2 rounded-2xl bg-gradient-to-br from-amber-200/5 via-transparent to-orange-200/5 pointer-events-none`}
-                  ></div>
-                  {/* Additional dark accent for light mode */}
-                  <div
-                    className={`absolute inset-0 rounded-3xl border border-transparent bg-gradient-to-br from-gray-400/10 via-gray-500/5 to-transparent pointer-events-none ${
-                      !isDarkMode ? "block" : "hidden"
-                    }`}
-                  ></div>
+                {/* Logo only - no box */}
+                <div className="flex items-center justify-center p-0">
+                  <Image
+                    src="/officialLogo/VANTAGE.webp"
+                    alt="VANTAGE official logo"
+                    width={240}
+                    height={240}
+                    sizes="180px"
+                    priority
+                    className="w-[180px] h-[180px] object-contain"
+                  />
                 </div>
-                {/* Enhanced glow effect */}
-                <div
-                  className={`absolute -inset-6 rounded-3xl bg-gradient-to-br from-amber-300/20 via-orange-300/15 to-transparent blur-3xl -z-10 transition-all duration-500 ${
-                    isDarkMode ? "opacity-70" : "opacity-60"
-                  }`}
-                ></div>
-                {/* Additional subtle glow layers */}
-                <div
-                  className={`absolute -inset-8 rounded-3xl bg-gradient-to-br from-amber-200/10 via-transparent to-orange-200/10 blur-2xl -z-20 transition-all duration-700 ${
-                    isDarkMode ? "opacity-40" : "opacity-40"
-                  }`}
-                ></div>
-                {/* Dark shadow for light mode */}
-                <div
-                  className={`absolute -inset-4 rounded-3xl bg-gradient-to-br from-gray-400/15 via-gray-500/10 to-transparent blur-xl -z-15 transition-all duration-500 ${
-                    !isDarkMode ? "block" : "hidden"
-                  }`}
-                ></div>
               </div>
             </div>
             <h1
