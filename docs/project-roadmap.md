@@ -1,12 +1,12 @@
 ### **VANTAGE Application Feature Epics**
 
-#### **Epic 1: Core User Authentication & Management**
+#### **Phase 1: Core User Authentication & Management**
 *   **Status:** In Progress
 *   **Description:** The foundational security layer. Includes user login/logout, a User Management dashboard for the Supervisor (CRUD operations), and a secure, role-based access control system. This is the gateway to all other features.
 
 ---
 
-#### **Epic 2: The BLGU Pre-Assessment Workflow**
+#### **Phase 2: The BLGU Pre-Assessment Workflow**
 *   **Status:** Not Started
 *   **Description:** This epic focuses entirely on the BLGU user's journey. It's the core "data input" part of the application.
 *   **Key Features:**
@@ -18,7 +18,7 @@
 
 ---
 
-#### **Epic 3: The Assessor Validation & Rework Workflow**
+#### **Phase 3: The Assessor Validation & Rework Workflow**
 *   **Status:** Not Started
 *   **Description:** This epic builds the tools for the DILG Area Assessors to perform their validation tasks. This is the "human review" part of the application.
 *   **Key Features:**
@@ -31,7 +31,7 @@
 
 ---
 
-#### **Epic 4: The Core Intelligence Layer**
+#### **Phase 4: The Core Intelligence Layer**
 *   **Status:** Not Started
 *   **Description:** This epic implements the "smart" features that provide the core analytical value of VANTAGE.
 *   **Key Features:**
@@ -41,7 +41,7 @@
 
 ---
 
-#### **Epic 5: High-Level Analytics & Reporting**
+#### **Phase 5: High-Level Analytics & Reporting**
 *   **Status:** Not Started
 *   **Description:** This epic focuses on providing the DILG Supervisor and other stakeholders with high-level data visualizations and reports.
 *   **Key Features:**
@@ -54,7 +54,7 @@
 
 ---
 
-#### **Epic 6: General UI Polish & Notifications**
+#### **Phase 6: General UI Polish & Notifications**
 *   **Status:** Not Started
 *   **Description:** This is a cross-cutting epic that covers final polish and essential user experience features.
 *   **Key Features:**
