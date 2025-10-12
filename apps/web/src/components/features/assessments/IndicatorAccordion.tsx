@@ -12,7 +12,7 @@ import {
   useUpdateResponse,
   useUploadMOV,
 } from "@/hooks/useAssessment";
-import { Indicator } from "@/types/assessment";
+import { Assessment, ComplianceAnswer, Indicator } from "@/types/assessment";
 import { AlertCircle, CheckCircle, Circle } from "lucide-react";
 import { useState } from "react";
 import { DynamicIndicatorForm } from "./DynamicIndicatorForm";
@@ -20,7 +20,7 @@ import { DynamicIndicatorForm } from "./DynamicIndicatorForm";
 interface IndicatorAccordionProps {
   indicator: Indicator;
   isLocked: boolean;
-  updateAssessmentData?: (updater: (data: any) => any) => void;
+  updateAssessmentData?: (updater: (data: Assessment) => Assessment) => void;
 }
 
 export function IndicatorAccordion({
@@ -104,8 +104,8 @@ export function IndicatorAccordion({
               formSchema={indicator.formSchema}
               initialData={indicator.responseData}
               isDisabled={isLocked}
-              onChange={(data) => {
-                if (!isLocked && indicator.id) {
+              onChange={(data: { compliance?: ComplianceAnswer }) => {
+                if (!isLocked && indicator.id && updateAssessmentData) {
                   // Update the assessment data using the reactive state
                   updateAssessmentData((prevData) => {
                     const updatedData = { ...prevData };
@@ -133,7 +133,9 @@ export function IndicatorAccordion({
                   });
 
                   // Call the update response hook
-                  updateResponse(indicator.id, { response_data: data });
+                  updateResponse(parseInt(indicator.id), {
+                    response_data: data,
+                  });
                 }
               }}
             />
@@ -168,18 +170,20 @@ export function IndicatorAccordion({
 
                       // Then create the MOV record
                       await uploadMOV({
-                        responseId: indicator.id,
+                        responseId: parseInt(indicator.id),
                         data: {
-                          name: file.name,
-                          size: file.size,
-                          url: fileUrl,
-                          response_id: indicator.id,
+                          filename: file.name,
+                          original_filename: file.name,
+                          file_size: file.size,
+                          content_type: file.type,
+                          storage_path: fileUrl,
+                          response_id: parseInt(indicator.id),
                         },
                       });
 
                       // Update the indicator's movFiles array
                       indicator.movFiles.push({
-                        id: Date.now(), // Temporary ID for demo
+                        id: Date.now().toString(), // Temporary ID for demo
                         name: file.name,
                         size: file.size,
                         url: fileUrl,
@@ -192,23 +196,18 @@ export function IndicatorAccordion({
                 }}
                 onDeleteFile={async (fileId) => {
                   try {
-                    await deleteMOV({ movId: fileId });
+                    await deleteMOV({
+                      movId:
+                        typeof fileId === "string" ? parseInt(fileId) : fileId,
+                    });
 
                     // Remove the file from the indicator's movFiles array
                     const index = indicator.movFiles.findIndex(
                       (file) => file.id === fileId
                     );
                     if (index !== -1) {
-                      // Get the file name before removing it
-                      const deletedFileName = indicator.movFiles[index].name;
-
                       // Remove from movFiles
                       indicator.movFiles.splice(index, 1);
-
-                      // Also remove from uploadedFiles if it exists there
-                      setUploadedFiles((prev) =>
-                        prev.filter((file) => file.name !== deletedFileName)
-                      );
 
                       // Force a re-render
                       setIsOpen(isOpen);

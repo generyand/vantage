@@ -17,7 +17,7 @@ export default function BLGUDashboardPage() {
   const router = useRouter();
   const { user, setUser, isAuthenticated } = useAuthStore();
   const { barangayName, isLoading: barangayLoading } = useUserBarangay();
-  const { data, loading, error } = useDashboard(barangayName);
+  const { data, loading, error } = useDashboard();
 
   // Auto-generated hook to fetch current user data
   const userQuery = useGetUsersMe();
@@ -36,7 +36,7 @@ export default function BLGUDashboardPage() {
       console.log("Dashboard data loaded:", data);
       console.log("Status:", data.status);
       console.log("Feedback length:", data.feedback.length);
-      console.log("Should show feedback:", data.status === "needs-rework");
+      console.log("Should show feedback:", data.status === "Needs Rework");
       console.log("User barangay:", barangayName);
     }
   }, [data, barangayName]);
@@ -242,7 +242,7 @@ export default function BLGUDashboardPage() {
                     <span className="text-xl font-bold text-amber-500">
                       {
                         data.governanceAreas.filter(
-                          (area) => area.status === "needs-rework"
+                          (area) => area.status === "Needs Rework"
                         ).length
                       }
                     </span>

@@ -29,7 +29,10 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
 
   const handleAnswerChange = (answer: ComplianceAnswer) => {
     if (isLocked) return;
-    updateAnswerMutation.mutate({ indicatorId: indicator.id, answer });
+    updateAnswerMutation.mutate({
+      responseId: parseInt(indicator.id),
+      data: { response_data: { compliance: answer } },
+    });
   };
 
   const handleFileUpload = (files: FileList | null) => {
@@ -55,13 +58,25 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
         return;
       }
 
-      uploadMOVMutation.mutate({ indicatorId: indicator.id, file });
+      uploadMOVMutation.mutate({
+        responseId: parseInt(indicator.id),
+        data: {
+          filename: file.name,
+          original_filename: file.name,
+          file_size: file.size,
+          content_type: file.type,
+          storage_path: URL.createObjectURL(file),
+          response_id: parseInt(indicator.id),
+        },
+      });
     });
   };
 
   const handleDeleteFile = (fileId: string) => {
     if (isLocked) return;
-    deleteMOVMutation.mutate({ indicatorId: indicator.id, fileId });
+    deleteMOVMutation.mutate({
+      movId: typeof fileId === "string" ? parseInt(fileId) : fileId,
+    });
   };
 
   const handleDrag = (e: React.DragEvent) => {
@@ -258,11 +273,11 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
                       <FileText className="h-5 w-5 text-[var(--text-secondary)]" />
                       <div>
                         <p className="text-sm font-medium text-[var(--foreground)]">
-                          {file.filename}
+                          {file.name}
                         </p>
                         <p className="text-xs text-[var(--text-secondary)]">
                           {formatFileSize(file.size)} • Uploaded{" "}
-                          {formatDate(file.uploadedAt)}
+                          {file.uploadedAt ? formatDate(file.uploadedAt) : 'Just now'}
                         </p>
                       </div>
                     </div>

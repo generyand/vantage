@@ -9,11 +9,13 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+import { FormField, FormSchema } from "@/types/form-schema";
+
 interface DynamicIndicatorFormProps {
-  formSchema: any; // We'll type this properly once we have the actual schema structure
-  initialData?: any;
-  onSubmit?: (data: any) => void;
-  onChange?: (data: any) => void;
+  formSchema: FormSchema;
+  initialData?: Record<string, unknown>;
+  onSubmit?: (data: Record<string, unknown>) => void;
+  onChange?: (data: Record<string, unknown>) => void;
   isDisabled?: boolean;
 }
 
@@ -26,11 +28,11 @@ export function DynamicIndicatorForm({
 }: DynamicIndicatorFormProps) {
   // Create a dynamic Zod schema based on the form schema
   const zodSchema = React.useMemo(() => {
-    const schemaObj: Record<string, any> = {};
+    const schemaObj: Record<string, z.ZodType> = {};
 
     // Convert form schema fields to Zod validations
     Object.entries(formSchema.properties || {}).forEach(
-      ([key, field]: [string, any]) => {
+      ([key, field]: [string, FormField]) => {
         switch (field.type) {
           case "string":
             schemaObj[key] = field.required
@@ -76,7 +78,7 @@ export function DynamicIndicatorForm({
   }, [form, onChange]);
 
   // Render form fields based on schema
-  const renderField = (name: string, field: any) => {
+  const renderField = (name: string, field: FormField) => {
     switch (field.type) {
       case "string":
         if (field.enum) {
@@ -87,7 +89,7 @@ export function DynamicIndicatorForm({
               </Label>
               <RadioGroup
                 onValueChange={(value) => form.setValue(name, value)}
-                defaultValue={form.getValues(name)}
+                defaultValue={String(form.getValues(name) || "")}
                 disabled={isDisabled}
                 className="space-y-3"
               >
@@ -136,7 +138,7 @@ export function DynamicIndicatorForm({
         className="space-y-6 bg-[var(--card)] p-6 rounded-lg border border-[var(--border)] shadow-sm"
       >
         {Object.entries(formSchema.properties || {}).map(
-          ([name, field]: [string, any]) => renderField(name, field)
+          ([name, field]: [string, FormField]) => renderField(name, field)
         )}
       </form>
     </Form>

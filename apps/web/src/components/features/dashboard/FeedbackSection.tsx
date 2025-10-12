@@ -35,7 +35,7 @@ export function FeedbackSection({ feedback }: FeedbackSectionProps) {
         <div className="space-y-3">
           {feedback.slice(0, 3).map((item) => (
             <div
-              key={item.id}
+              key={String(item.id)}
               className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-4 border border-[var(--border)] shadow-sm hover:shadow-md transition-all duration-200"
             >
               <div className="flex items-start gap-3">
@@ -45,15 +45,15 @@ export function FeedbackSection({ feedback }: FeedbackSectionProps) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
                     <span className="inline-flex items-center px-2 py-1 rounded-sm bg-[var(--cityscape-yellow)]/20 text-[var(--cityscape-yellow)] text-xs font-medium font-mono border border-[var(--cityscape-yellow)]/30">
-                      {item.indicator}
+                      {String(item.indicator)}
                     </span>
                     <span className="text-xs text-[var(--text-secondary)]">•</span>
                     <span className="text-xs text-[var(--text-secondary)] font-medium">
-                      {item.governanceArea}
+                      {String(item.governance_area)}
                     </span>
                   </div>
                   <p className="text-sm text-[var(--foreground)] leading-relaxed">
-                    {truncateComment(item.comment)}
+                    {truncateComment(String(item.comment))}
                   </p>
                 </div>
               </div>

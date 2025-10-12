@@ -2,12 +2,13 @@
  * Assessment system types for BLGU pre-assessment workflow
  */
 
+import { FormSchema } from "./form-schema";
+
 export type AssessmentStatus =
-  | "in_progress"
-  | "needs_rework"
-  | "submitted"
-  | "validated"
-  | "finalized";
+  | "Draft"
+  | "Submitted for Review"
+  | "Validated"
+  | "Needs Rework";
 
 export type ComplianceAnswer = "yes" | "no" | "na";
 
@@ -33,14 +34,16 @@ export interface Indicator {
   complianceAnswer?: ComplianceAnswer;
   movFiles: MOVFile[];
   assessorComment?: string; // Only present when status is 'needs_rework'
+  formSchema: FormSchema; // Dynamic form schema for the indicator
+  responseData?: Record<string, unknown>; // Form response data
 }
 
 export interface MOVFile {
   id: string;
-  filename: string;
+  name: string; // API returns name instead of filename
   size: number;
-  uploadedAt: string;
   url: string;
+  uploadedAt?: string; // Make uploadedAt optional since API doesn't always return it
 }
 
 export interface Assessment {
@@ -84,6 +87,17 @@ export const MOCK_GOVERNANCE_AREAS: GovernanceArea[] = [
         governanceAreaId: "financial-admin",
         status: "not_started",
         movFiles: [],
+        formSchema: {
+          properties: {
+            compliance: {
+              type: "string" as const,
+              title: "Compliance",
+              description: "Is this indicator compliant?",
+              required: true,
+              enum: ["yes", "no", "na"],
+            },
+          },
+        },
       },
       {
         id: "fa-2",
@@ -96,6 +110,17 @@ export const MOCK_GOVERNANCE_AREAS: GovernanceArea[] = [
         governanceAreaId: "financial-admin",
         status: "not_started",
         movFiles: [],
+        formSchema: {
+          properties: {
+            compliance: {
+              type: "string" as const,
+              title: "Compliance",
+              description: "Is this indicator compliant?",
+              required: true,
+              enum: ["yes", "no", "na"],
+            },
+          },
+        },
       },
     ],
   },
@@ -117,6 +142,17 @@ export const MOCK_GOVERNANCE_AREAS: GovernanceArea[] = [
         governanceAreaId: "disaster-preparedness",
         status: "not_started",
         movFiles: [],
+        formSchema: {
+          properties: {
+            compliance: {
+              type: "string" as const,
+              title: "Compliance",
+              description: "Is this indicator compliant?",
+              required: true,
+              enum: ["yes", "no", "na"],
+            },
+          },
+        },
       },
     ],
   },
@@ -138,6 +174,17 @@ export const MOCK_GOVERNANCE_AREAS: GovernanceArea[] = [
         governanceAreaId: "peace-order",
         status: "not_started",
         movFiles: [],
+        formSchema: {
+          properties: {
+            compliance: {
+              type: "string" as const,
+              title: "Compliance",
+              description: "Is this indicator compliant?",
+              required: true,
+              enum: ["yes", "no", "na"],
+            },
+          },
+        },
       },
     ],
   },
@@ -159,6 +206,17 @@ export const MOCK_GOVERNANCE_AREAS: GovernanceArea[] = [
         governanceAreaId: "social-protection",
         status: "not_started",
         movFiles: [],
+        formSchema: {
+          properties: {
+            compliance: {
+              type: "string" as const,
+              title: "Compliance",
+              description: "Is this indicator compliant?",
+              required: true,
+              enum: ["yes", "no", "na"],
+            },
+          },
+        },
       },
     ],
   },
@@ -180,6 +238,17 @@ export const MOCK_GOVERNANCE_AREAS: GovernanceArea[] = [
         governanceAreaId: "business-friendliness",
         status: "not_started",
         movFiles: [],
+        formSchema: {
+          properties: {
+            compliance: {
+              type: "string" as const,
+              title: "Compliance",
+              description: "Is this indicator compliant?",
+              required: true,
+              enum: ["yes", "no", "na"],
+            },
+          },
+        },
       },
     ],
   },
@@ -201,6 +270,17 @@ export const MOCK_GOVERNANCE_AREAS: GovernanceArea[] = [
         governanceAreaId: "environmental-management",
         status: "not_started",
         movFiles: [],
+        formSchema: {
+          properties: {
+            compliance: {
+              type: "string" as const,
+              title: "Compliance",
+              description: "Is this indicator compliant?",
+              required: true,
+              enum: ["yes", "no", "na"],
+            },
+          },
+        },
       },
     ],
   },
@@ -210,7 +290,7 @@ export const MOCK_ASSESSMENT: Assessment = {
   id: "assessment-1",
   barangayId: "barangay-1",
   barangayName: "Barangay Sulop",
-  status: "in_progress",
+  status: "Draft",
   createdAt: "2024-01-15T00:00:00Z",
   updatedAt: "2024-01-20T00:00:00Z",
   governanceAreas: MOCK_GOVERNANCE_AREAS,

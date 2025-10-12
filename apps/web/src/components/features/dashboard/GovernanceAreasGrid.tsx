@@ -238,7 +238,7 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
     return { ...baseConfig, statusIcon, trendIcon };
   };
 
-  const handleAreaClick = (areaId: string) => {
+  const handleAreaClick = (areaId: number) => {
     router.push(`/blgu/assessments?area=${areaId}`);
   };
 
@@ -262,7 +262,7 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {areas.map((area) => {
-          const config = getAreaConfig(area.name, area.status, area.percentage);
+          const config = getAreaConfig(area.name, area.status, area.completion_percentage);
           const mockChartData = generateMockData();
 
           return (
@@ -293,7 +293,7 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
                     </div>
                   </div>
                   <CircularProgressRing
-                    percentage={area.percentage}
+                    percentage={area.completion_percentage}
                     color={config.color}
                     size={50}
                     strokeWidth={3}
@@ -315,19 +315,19 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
                       className="text-xs px-2 py-1 rounded-sm bg-[var(--card)]/80 border-0"
                       style={{ color: config.accentColor }}
                     >
-                      {area.current}/{area.total} Compliant
+                      {area.completed_indicators}/{area.total_indicators} Compliant
                     </Badge>
                   </div>
 
                   <div className="space-y-2">
                     <Progress
-                      value={area.percentage}
+                      value={area.completion_percentage}
                       className="h-2 bg-[var(--border)]/60"
                       progressColor={config.color}
                     />
                     <div className="flex justify-between text-xs text-[var(--text-secondary)]">
-                      <span>{Math.round(area.percentage)}% Complete</span>
-                      <span>{area.total - area.current} Remaining</span>
+                      <span>{Math.round(area.completion_percentage)}% Complete</span>
+                      <span>{area.total_indicators - area.completed_indicators} Remaining</span>
                     </div>
                   </div>
                 </div>
@@ -350,7 +350,7 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
                 <div className="grid grid-cols-3 gap-2">
                   <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-2 text-center border border-[var(--border)]">
                     <div className="text-lg font-bold text-[var(--foreground)]">
-                      {area.current}
+                      {area.completed_indicators}
                     </div>
                     <div className="text-xs text-[var(--text-secondary)]">
                       Done
@@ -358,7 +358,7 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
                   </div>
                   <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-2 text-center border border-[var(--border)]">
                     <div className="text-lg font-bold text-[var(--foreground)]">
-                      {area.total - area.current}
+                      {area.total_indicators - area.completed_indicators}
                     </div>
                     <div className="text-xs text-[var(--text-secondary)]">
                       Todo
@@ -366,7 +366,7 @@ export function GovernanceAreasGrid({ areas }: GovernanceAreasGridProps) {
                   </div>
                   <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-2 text-center border border-[var(--border)]">
                     <div className="text-lg font-bold text-[var(--foreground)]">
-                      {area.total}
+                      {area.total_indicators}
                     </div>
                     <div className="text-xs text-[var(--text-secondary)]">
                       Total

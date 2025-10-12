@@ -1,22 +1,8 @@
-import { AssessmentStatus, useGetAssessmentsDashboard } from "@vantage/shared";
+import { useGetAssessmentsDashboard } from "@vantage/shared";
 
-// Map API status to frontend status
-const mapStatus = (apiStatus: AssessmentStatus) => {
-  switch (apiStatus) {
-    case AssessmentStatus.Draft:
-      return "in-progress";
-    case AssessmentStatus.Submitted_for_Review:
-      return "submitted";
-    case AssessmentStatus.Validated:
-      return "validated";
-    case AssessmentStatus.Needs_Rework:
-      return "needs-rework";
-    default:
-      return "in-progress"; // Default to in-progress if unknown status
-  }
-};
+// No need to map status anymore since we're using the API status directly
 
-export function useDashboard(barangayName?: string) {
+export function useDashboard() {
   const {
     data: dashboardData,
     isLoading,
@@ -30,7 +16,7 @@ export function useDashboard(barangayName?: string) {
         barangayName: dashboardData.barangay_name,
         performanceYear: dashboardData.performance_year,
         assessmentYear: dashboardData.assessment_year,
-        status: mapStatus(dashboardData.stats.assessment_status),
+        status: dashboardData.stats.assessment_status,
         progress: {
           current: dashboardData.stats.completed_indicators,
           total: dashboardData.stats.total_indicators,

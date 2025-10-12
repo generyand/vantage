@@ -16,7 +16,7 @@ import { IndicatorAccordion } from "./IndicatorAccordion";
 interface AssessmentTabsProps {
   assessment: Assessment;
   isLocked: boolean;
-  updateAssessmentData?: (updater: (data: any) => any) => void;
+  updateAssessmentData?: (updater: (data: Assessment) => Assessment) => void;
 }
 
 export function AssessmentTabs({

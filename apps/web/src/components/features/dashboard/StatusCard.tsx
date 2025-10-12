@@ -123,9 +123,9 @@ export function StatusCard({ status, progress }: StatusCardProps) {
 
   const getStatusConfig = (status: AssessmentStatus) => {
     switch (status) {
-      case "in-progress":
+      case "Draft":
         return {
-          badgeText: "In Progress",
+          badgeText: "Draft",
           title: "Your assessment is currently in progress.",
           buttonText: "Continue Assessment",
           buttonAction: () => router.push("/blgu/assessments"),
@@ -138,7 +138,7 @@ export function StatusCard({ status, progress }: StatusCardProps) {
             />
           ),
         };
-      case "needs-rework":
+      case "Needs Rework":
         return {
           badgeText: "NEEDS REWORK",
           title: "Your assessment requires rework.",
@@ -153,7 +153,7 @@ export function StatusCard({ status, progress }: StatusCardProps) {
             />
           ),
         };
-      case "submitted":
+      case "Submitted for Review":
         return {
           badgeText: "Submitted for Review",
           title: "Your assessment has been submitted and is awaiting review.",
@@ -168,7 +168,7 @@ export function StatusCard({ status, progress }: StatusCardProps) {
             />
           ),
         };
-      case "validated":
+      case "Validated":
         return {
           badgeText: "Validated",
           title: "Congratulations! Your pre-assessment has been validated.",

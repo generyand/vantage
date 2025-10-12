@@ -5,10 +5,10 @@
 // - GET /api/v1/assessments/{assessment_id}/feedback -> AssessorFeedback[]
 
 export type AssessmentStatus =
-  | "in-progress"
-  | "needs-rework"
-  | "submitted"
-  | "validated";
+  | "Draft"
+  | "Submitted for Review"
+  | "Validated"
+  | "Needs Rework";
 
 export interface AssessmentProgress {
   current: number;
@@ -17,20 +17,18 @@ export interface AssessmentProgress {
 }
 
 export interface GovernanceAreaProgress {
-  id: string;
+  id: number;
   name: string;
-  current: number;
-  total: number;
-  percentage: number;
-  status: "completed" | "in-progress" | "needs-rework" | "not-started";
+  area_type: string;
+  status: string;
+  total_indicators: number;
+  completed_indicators: number;
+  completion_percentage: number;
+  requires_rework_count: number;
 }
 
-export interface AssessorFeedback {
-  id: string;
-  indicator: string;
-  comment: string;
-  governanceArea: string;
-  createdAt: string;
+export type AssessorFeedback = {
+  [key: string]: unknown;
 }
 
 export interface DashboardData {

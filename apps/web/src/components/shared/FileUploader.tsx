@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { uploadWithProgress } from "../../lib/api";
 
 interface UploadedFile {
-  id: number;
+  id: string | number;
   name: string;
   size: number;
   url: string;
@@ -17,7 +17,7 @@ interface FileUploaderProps {
   maxSize?: number; // in MB
   onUploadComplete?: (files: File[]) => void;
   onUploadError?: (error: string) => void;
-  onDeleteFile?: (fileId: number) => void;
+  onDeleteFile?: (fileId: string | number) => void;
   uploadUrl: string;
   disabled?: boolean;
   existingFiles?: UploadedFile[];

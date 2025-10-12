@@ -64,7 +64,9 @@ export default function BLGUAssessmentsPage() {
           <h3 className="text-xl font-semibold text-[var(--foreground)] mb-2">
             Error Loading Assessment
           </h3>
-          <p className="text-red-600 mb-4">{error.message}</p>
+          <p className="text-red-600 mb-4">
+            {error instanceof Error ? error.message : "An error occurred"}
+          </p>
           <button
             onClick={() => window.location.reload()}
             className="px-6 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700 transition-colors duration-200"
@@ -115,9 +117,8 @@ export default function BLGUAssessmentsPage() {
 
   // Show locked banner if assessment is not editable
   const isLocked =
-    assessment.status === "submitted" ||
-    assessment.status === "validated" ||
-    assessment.status === "finalized";
+    assessment.status === "Submitted for Review" ||
+    assessment.status === "Validated";
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
