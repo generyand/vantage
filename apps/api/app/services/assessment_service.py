@@ -14,11 +14,14 @@ from app.db.models import (
 )
 from app.schemas.assessment import (
     AssessmentCreate,
+    AssessmentDashboardResponse,
+    AssessmentDashboardStats,
     AssessmentResponseCreate,
     AssessmentResponseUpdate,
     AssessmentSubmissionValidation,
     FeedbackCommentCreate,
     FormSchemaValidation,
+    GovernanceAreaProgress,
     MOVCreate,
 )
 from fastapi import HTTPException, status
@@ -322,7 +325,7 @@ class AssessmentService:
             # Additional business logic validations
             self._validate_business_rules(response_data, form_schema, warnings)
 
-        except Exception as e:
+        except (ValueError, TypeError, KeyError) as e:
             errors.append(f"Validation error: {str(e)}")
 
         return FormSchemaValidation(
@@ -365,7 +368,6 @@ class AssessmentService:
         """Apply business-specific validation rules."""
         # Example: Check if "YES" answers have corresponding MOVs
         # This would be implemented based on specific business requirements
-        pass
 
     def submit_assessment(
         self, db: Session, assessment_id: int
@@ -526,6 +528,153 @@ class AssessmentService:
         db.commit()
         db.refresh(db_comment)
         return db_comment
+
+    def get_assessment_dashboard_data(
+        self, db: Session, blgu_user_id: int
+    ) -> Optional[AssessmentDashboardResponse]:
+        """
+        Get dashboard data for a BLGU user's assessment.
+
+        Args:
+            db: Database session
+            blgu_user_id: ID of the BLGU user
+
+        Returns:
+            AssessmentDashboardResponse with dashboard data or None if not found
+        """
+        # Get or create assessment
+        assessment = self.get_assessment_for_blgu(db, blgu_user_id)
+        if not assessment:
+            assessment = self.create_assessment(
+                db, AssessmentCreate(blgu_user_id=blgu_user_id)
+            )
+
+        # Get all governance areas with their indicators
+        governance_areas = (
+            db.query(GovernanceArea)
+            .options(joinedload(GovernanceArea.indicators))
+            .all()
+        )
+
+        # Get all responses for this assessment
+        responses = (
+            db.query(AssessmentResponse)
+            .options(
+                joinedload(AssessmentResponse.indicator),
+                joinedload(AssessmentResponse.movs),
+                joinedload(AssessmentResponse.feedback_comments),
+            )
+            .filter(AssessmentResponse.assessment_id == assessment.id)
+            .all()
+        )
+
+        # Create response lookup by indicator_id
+        response_lookup = {r.indicator_id: r for r in responses}
+
+        # Calculate overall statistics
+        total_indicators = sum(len(area.indicators) for area in governance_areas)
+        completed_indicators = sum(1 for response in responses if response.is_completed)
+        completion_percentage = (
+            (completed_indicators / total_indicators * 100)
+            if total_indicators > 0
+            else 0
+        )
+
+        # Count responses requiring rework
+        responses_requiring_rework = sum(
+            1 for response in responses if response.requires_rework
+        )
+
+        # Count responses with feedback
+        responses_with_feedback = sum(
+            1 for response in responses if len(response.feedback_comments) > 0
+        )
+
+        # Count responses with MOVs
+        responses_with_movs = sum(1 for response in responses if len(response.movs) > 0)
+
+        # Build governance area progress
+        governance_area_progress = []
+        for area in governance_areas:
+            area_responses = [
+                response_lookup.get(indicator.id)
+                for indicator in area.indicators
+                if response_lookup.get(indicator.id)
+            ]
+
+            completed_in_area = sum(
+                1 for response in area_responses if response and response.is_completed
+            )
+            rework_in_area = sum(
+                1
+                for response in area_responses
+                if response and response.requires_rework
+            )
+
+            area_completion_percentage = (
+                (completed_in_area / len(area.indicators) * 100)
+                if len(area.indicators) > 0
+                else 0
+            )
+
+            governance_area_progress.append(
+                GovernanceAreaProgress(
+                    id=getattr(area, "id"),
+                    name=getattr(area, "name"),
+                    area_type=area.area_type.value,
+                    total_indicators=len(area.indicators),
+                    completed_indicators=completed_in_area,
+                    completion_percentage=area_completion_percentage,
+                    requires_rework_count=rework_in_area,
+                )
+            )
+
+        # Get recent feedback (last 5 comments)
+        recent_feedback = (
+            db.query(FeedbackComment)
+            .join(AssessmentResponse)
+            .filter(AssessmentResponse.assessment_id == assessment.id)
+            .order_by(FeedbackComment.created_at.desc())
+            .limit(5)
+            .all()
+        )
+
+        # Format recent feedback
+        recent_feedback_data = []
+        for comment in recent_feedback:
+            recent_feedback_data.append(
+                {
+                    "id": comment.id,
+                    "comment": comment.comment,
+                    "comment_type": comment.comment_type,
+                    "indicator_name": comment.response.indicator.name,
+                    "assessor_name": f"{comment.assessor.first_name} {comment.assessor.last_name}",
+                    "created_at": comment.created_at.isoformat(),
+                }
+            )
+
+        # Build dashboard stats
+        dashboard_stats = AssessmentDashboardStats(
+            total_indicators=total_indicators,
+            completed_indicators=completed_indicators,
+            completion_percentage=completion_percentage,
+            responses_requiring_rework=responses_requiring_rework,
+            responses_with_feedback=responses_with_feedback,
+            responses_with_movs=responses_with_movs,
+            governance_areas=governance_area_progress,
+            assessment_status=assessment.status,
+            created_at=assessment.created_at,
+            updated_at=assessment.updated_at,
+            submitted_at=assessment.submitted_at,
+        )
+
+        return AssessmentDashboardResponse(
+            assessment_id=assessment.id,
+            blgu_user_id=blgu_user_id,
+            stats=dashboard_stats,
+            recent_feedback=recent_feedback_data,
+            upcoming_deadlines=[],  # TODO: Implement deadline logic if needed
+        )
 
     def get_assessment_stats(self, db: Session) -> Dict[str, Any]:
         """

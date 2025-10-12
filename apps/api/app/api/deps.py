@@ -2,15 +2,16 @@
 # Reusable dependency injection functions for authentication, database sessions, etc.
 
 from typing import Generator, Optional
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.orm import Session
-from supabase import Client
 
 from app.core.security import verify_token
-from app.db.base import SessionLocal, get_supabase, get_supabase_admin
-from app.db.models.user import User
+from app.db.base import get_db as get_db_session
+from app.db.base import get_supabase, get_supabase_admin
 from app.db.enums import UserRole
+from app.db.models.user import User
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy.orm import Session
+from supabase import Client
 
 # Security scheme for JWT tokens
 security = HTTPBearer()
@@ -21,11 +22,7 @@ def get_db() -> Generator[Session, None, None]:
     Database session dependency.
     Creates a new database session for each request and closes it when done.
     """
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    yield from get_db_session()
 
 
 async def get_current_user(
@@ -83,7 +80,7 @@ async def get_current_active_user(
     Raises:
         HTTPException: If user is inactive
     """
-    if not current_user.is_active:
+    if not getattr(current_user, "is_active"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
         )
