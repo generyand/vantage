@@ -1,2 +1,2 @@
 # 🧠 Workers Package
-# Background tasks and classification algorithms 
+# Background tasks and classification algorithms

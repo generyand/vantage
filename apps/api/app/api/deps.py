@@ -30,18 +30,18 @@ def get_db() -> Generator[Session, None, None]:
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> User:
     """
     Get the current authenticated user from JWT token.
-    
+
     Args:
         credentials: JWT token from Authorization header
         db: Database session
-        
+
     Returns:
         User: Current authenticated user
-        
+
     Raises:
         HTTPException: If token is invalid or user not found
     """
@@ -50,7 +50,7 @@ async def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    
+
     try:
         # Verify and decode the JWT token
         payload = verify_token(credentials.credentials)
@@ -59,59 +59,58 @@ async def get_current_user(
             raise credentials_exception
     except Exception:
         raise credentials_exception
-    
+
     # Get user from database
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise credentials_exception
-    
+
     return user
 
 
 async def get_current_active_user(
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ) -> User:
     """
     Get the current authenticated and active user.
-    
+
     Args:
         current_user: Current user from get_current_user dependency
-        
+
     Returns:
         User: Current active user
-        
+
     Raises:
         HTTPException: If user is inactive
     """
     if not current_user.is_active:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, 
-            detail="Inactive user"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
         )
     return current_user
 
 
 async def get_current_admin_user(
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ) -> User:
     """
     Get the current authenticated admin user.
-    
+
     Restricts access to users with SUPERADMIN or MLGOO_DILG role.
-    
+
     Args:
         current_user: Current active user from get_current_active_user dependency
-        
+
     Returns:
         User: Current admin user
-        
+
     Raises:
         HTTPException: If user doesn't have admin privileges
     """
     if current_user.role not in [UserRole.SUPERADMIN, UserRole.MLGOO_DILG]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not enough permissions. Admin access required."
+            detail="Not enough permissions. Admin access required.",
         )
     return current_user
 
@@ -119,7 +118,7 @@ async def get_current_admin_user(
 def get_supabase_client() -> Client:
     """
     Get Supabase client dependency.
-    
+
     Returns:
         Client: Supabase client for real-time operations and auth
     """
@@ -129,8 +128,8 @@ def get_supabase_client() -> Client:
 def get_supabase_admin_client() -> Client:
     """
     Get Supabase admin client dependency.
-    
+
     Returns:
         Client: Supabase admin client for server-side operations
     """
-    return get_supabase_admin() 
+    return get_supabase_admin()

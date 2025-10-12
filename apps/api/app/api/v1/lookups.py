@@ -39,4 +39,4 @@ def get_all_barangays(
     Retrieve all barangays.
     Accessible by all authenticated users.
     """
-    return barangay_service.get_all_barangays(db) 
+    return barangay_service.get_all_barangays(db)

@@ -1,2 +1,2 @@
 # ⚙️ Core Package
-# Core application configuration and security 
+# Core application configuration and security

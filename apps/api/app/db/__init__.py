@@ -1,2 +1,2 @@
 # 🗄️ Database Package
-# Database models, sessions, and utilities 
+# Database models, sessions, and utilities

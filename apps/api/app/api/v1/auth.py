@@ -17,7 +17,7 @@ router = APIRouter()
 async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     """
     Login endpoint - authenticate user and return JWT token.
-    
+
     This endpoint:
     1. Validates user credentials against the database
     2. Checks if the user account is active
@@ -26,7 +26,7 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     """
     # Find user by email
     user = db.query(User).filter(User.email == login_data.email).first()
-    
+
     # Check if user exists and password is correct
     if not user or not verify_password(login_data.password, user.hashed_password):
         raise HTTPException(
@@ -34,25 +34,22 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     # Check if user account is active
     if not user.is_active:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Inactive user account"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user account"
         )
-    
+
     # Generate JWT token with user data
     access_token = create_access_token(
-        subject=user.id,
-        role=user.role,
-        must_change_password=user.must_change_password
+        subject=user.id, role=user.role, must_change_password=user.must_change_password
     )
-    
+
     return AuthToken(
         access_token=access_token,
         token_type="bearer",
-        expires_in=60 * 24 * 8 * 60  # 8 days in seconds
+        expires_in=60 * 24 * 8 * 60,  # 8 days in seconds
     )
 
 
@@ -64,11 +61,11 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
 async def change_password(
     password_data: ChangePasswordRequest,
     current_user: User = Depends(get_current_active_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Change user password endpoint.
-    
+
     This endpoint:
     1. Verifies the current password
     2. Updates the user's password
@@ -76,20 +73,21 @@ async def change_password(
     4. Returns success message
     """
     # Verify current password
-    if not verify_password(password_data.current_password, current_user.hashed_password):
+    if not verify_password(
+        password_data.current_password, current_user.hashed_password
+    ):
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Incorrect current password"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect current password"
         )
-    
+
     # Update password and reset must_change_password flag
     current_user.hashed_password = get_password_hash(password_data.new_password)
     current_user.must_change_password = False
-    
+
     # Save changes to database
     db.commit()
     db.refresh(current_user)
-    
+
     return ApiResponse(message="Password changed successfully")
 
 
@@ -97,7 +95,7 @@ async def change_password(
 async def logout():
     """
     Logout endpoint - invalidate user session.
-    
+
     In production, this will:
     1. Blacklist the JWT token
     2. Clear any session data
@@ -108,4 +106,4 @@ async def logout():
     # - Clear Redis session if using sessions
     # - Log security event
 
-    return ApiResponse(message="Successfully logged out") 
+    return ApiResponse(message="Successfully logged out")

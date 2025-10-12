@@ -10,8 +10,9 @@ from app.db.enums import UserRole
 
 class User(BaseModel):
     """User response model for API endpoints."""
+
     model_config = ConfigDict(from_attributes=True)
-    
+
     id: int
     email: str
     name: str
@@ -28,6 +29,7 @@ class User(BaseModel):
 
 class UserCreate(BaseModel):
     """Schema for creating a new user."""
+
     email: str
     name: str
     password: str
@@ -40,6 +42,7 @@ class UserCreate(BaseModel):
 
 class UserUpdate(BaseModel):
     """Schema for updating user information."""
+
     email: Optional[str] = None
     name: Optional[str] = None
     role: Optional[UserRole] = None
@@ -51,6 +54,7 @@ class UserUpdate(BaseModel):
 
 class UserAdminCreate(BaseModel):
     """Schema for admin creating a new user with all permissions."""
+
     email: str
     name: str
     password: str
@@ -65,6 +69,7 @@ class UserAdminCreate(BaseModel):
 
 class UserAdminUpdate(BaseModel):
     """Schema for admin updating user information with all permissions."""
+
     email: Optional[str] = None
     name: Optional[str] = None
     role: Optional[UserRole] = None
@@ -78,8 +83,9 @@ class UserAdminUpdate(BaseModel):
 
 class UserListResponse(BaseModel):
     """Schema for paginated user list response."""
+
     model_config = ConfigDict(from_attributes=True)
-    
+
     users: list[User]
     total: int
     page: int
@@ -89,6 +95,7 @@ class UserListResponse(BaseModel):
 
 class UserInDB(User):
     """User model as stored in database (includes sensitive fields)."""
+
     hashed_password: str
-    is_superuser: bool = False 
-    updated_at: Optional[datetime] = None 
+    is_superuser: bool = False
+    updated_at: Optional[datetime] = None

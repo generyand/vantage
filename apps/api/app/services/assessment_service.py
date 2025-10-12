@@ -4,6 +4,9 @@
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
+from sqlalchemy import and_, func
+from sqlalchemy.orm import Session, joinedload
+
 from app.db.enums import AssessmentStatus, MOVStatus
 from app.db.models import (
     MOV,
@@ -22,8 +25,6 @@ from app.schemas.assessment import (
     MOVCreate,
 )
 from fastapi import HTTPException, status
-from sqlalchemy import and_, func
-from sqlalchemy.orm import Session, joinedload
 
 
 class AssessmentService:
@@ -297,7 +298,7 @@ class AssessmentService:
             FormSchemaValidation with validation results
         """
         errors = []
-        warnings = []
+        warnings: list[Dict[str, Any]] = []
 
         try:
             # Basic validation - check if response_data matches schema structure
@@ -360,7 +361,7 @@ class AssessmentService:
         self,
         response_data: Dict[str, Any],
         form_schema: Dict[str, Any],
-        warnings: List[str],
+        warnings: List[Dict[str, Any]],
     ) -> None:
         """Apply business-specific validation rules."""
         # Example: Check if "YES" answers have corresponding MOVs
@@ -425,7 +426,7 @@ class AssessmentService:
             AssessmentSubmissionValidation with validation results
         """
         errors = []
-        warnings = []
+        warnings: list[Dict[str, Any]] = []
 
         for response in assessment.responses:
             if not response.response_data:
@@ -559,7 +560,7 @@ class AssessmentService:
 
         return {
             "total_assessments": total_assessments,
-            "assessments_by_status": dict(status_stats),
+            "assessments_by_status": {status: count for status, count in status_stats},
             "total_responses": total_responses,
             "completed_responses": completed_responses,
             "responses_requiring_rework": responses_requiring_rework,

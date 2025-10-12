@@ -18,4 +18,4 @@ class BarangayService:
 
 
 # Create a single instance to be used across the application
-barangay_service = BarangayService() 
+barangay_service = BarangayService()
