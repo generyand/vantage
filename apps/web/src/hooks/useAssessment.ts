@@ -1,44 +1,193 @@
-/**
- * Assessment hooks for BLGU pre-assessment workflow
- */
-
-import { useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  Assessment, 
-  ComplianceAnswer, 
-  AssessmentValidation,
-  MOCK_ASSESSMENT 
-} from '@/types/assessment';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  AssessmentResponseUpdate,
+  deleteAssessmentsMovs$MovId,
+  MOVCreate,
+  postAssessmentsResponses$ResponseIdMovs,
+  postAssessmentsSubmit,
+  putAssessmentsResponses$ResponseId,
+} from "@vantage/shared";
+import { useMemo } from "react";
 
 // Query keys for assessment data
 const assessmentKeys = {
-  all: ['assessment'] as const,
-  current: () => [...assessmentKeys.all, 'current'] as const,
-  validation: () => [...assessmentKeys.all, 'validation'] as const,
+  all: ["assessment"] as const,
+  current: () => [...assessmentKeys.all, "current"] as const,
+  validation: () => [...assessmentKeys.all, "validation"] as const,
 };
 
 /**
  * Hook to fetch the current assessment data
  */
 export function useCurrentAssessment() {
-  return useQuery({
-    queryKey: assessmentKeys.current(),
-    queryFn: async (): Promise<Assessment> => {
-      // TODO: Replace with actual API call
-      // For now, return mock data
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
-      return MOCK_ASSESSMENT;
+  // For now, return mock data until the API is properly implemented
+  return {
+    data: {
+      id: 1,
+      status: "in_progress",
+      totalIndicators: 12,
+      completedIndicators: 6,
+      governanceAreas: [
+        {
+          id: "1",
+          name: "Financial Administration and Sustainability",
+          code: "1",
+          isCore: true,
+          indicators: [
+            {
+              id: "1.1",
+              code: "1.1",
+              name: "Financial Planning and Budgeting",
+              description:
+                "The barangay has a comprehensive financial plan that includes annual budget preparation, revenue projections, and expenditure planning.",
+              complianceAnswer: "yes",
+              movFiles: [],
+              status: "completed",
+            },
+            {
+              id: "1.2",
+              code: "1.2",
+              name: "Revenue Generation",
+              description:
+                "The barangay implements various revenue generation activities and programs to increase local income.",
+              complianceAnswer: "yes",
+              movFiles: [],
+              status: "completed",
+            },
+          ],
+        },
+        {
+          id: "2",
+          name: "Disaster Preparedness and Climate Change Action",
+          code: "2",
+          isCore: true,
+          indicators: [
+            {
+              id: "2.1",
+              code: "2.1",
+              name: "Disaster Risk Reduction Plan",
+              description:
+                "The barangay has developed and implemented a comprehensive disaster risk reduction and management plan.",
+              complianceAnswer: "yes",
+              movFiles: [],
+              status: "completed",
+            },
+            {
+              id: "2.2",
+              code: "2.2",
+              name: "Climate Change Adaptation",
+              description:
+                "The barangay implements climate change adaptation measures and environmental protection programs.",
+              complianceAnswer: null,
+              movFiles: [],
+              status: "not_started",
+            },
+          ],
+        },
+        {
+          id: "3",
+          name: "Safety, Peace and Order",
+          code: "3",
+          isCore: true,
+          indicators: [
+            {
+              id: "3.1",
+              code: "3.1",
+              name: "Peace and Order Program",
+              description:
+                "The barangay implements programs to maintain peace and order in the community.",
+              complianceAnswer: "yes",
+              movFiles: [],
+              status: "completed",
+            },
+            {
+              id: "3.2",
+              code: "3.2",
+              name: "Crime Prevention",
+              description:
+                "The barangay has crime prevention programs and community safety initiatives.",
+              complianceAnswer: null,
+              movFiles: [],
+              status: "not_started",
+            },
+          ],
+        },
+        {
+          id: "4",
+          name: "Social Protection and Sensitivity",
+          code: "4",
+          isCore: false,
+          indicators: [
+            {
+              id: "4.1",
+              code: "4.1",
+              name: "Social Services Program",
+              description:
+                "The barangay provides social services and assistance to vulnerable sectors.",
+              complianceAnswer: "yes",
+              movFiles: [],
+              status: "completed",
+            },
+          ],
+        },
+        {
+          id: "5",
+          name: "Business Friendliness and Competitiveness",
+          code: "5",
+          isCore: false,
+          indicators: [
+            {
+              id: "5.1",
+              code: "5.1",
+              name: "Business Support Services",
+              description:
+                "The barangay provides support services to local businesses and entrepreneurs.",
+              complianceAnswer: null,
+              movFiles: [],
+              status: "not_started",
+            },
+          ],
+        },
+        {
+          id: "6",
+          name: "Environmental Management",
+          code: "6",
+          isCore: false,
+          indicators: [
+            {
+              id: "6.1",
+              code: "6.1",
+              name: "Waste Management Program",
+              description:
+                "The barangay implements comprehensive waste management and environmental protection programs.",
+              complianceAnswer: "yes",
+              movFiles: [],
+              status: "completed",
+            },
+            {
+              id: "6.2",
+              code: "6.2",
+              name: "Environmental Protection",
+              description:
+                "The barangay has programs for environmental protection and conservation.",
+              complianceAnswer: null,
+              movFiles: [],
+              status: "not_started",
+            },
+          ],
+        },
+      ],
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+    isLoading: false,
+    error: null,
+  };
 }
 
 /**
  * Hook to validate assessment completion
  */
-export function useAssessmentValidation(assessment: Assessment | undefined) {
-  return useMemo((): AssessmentValidation => {
+export function useAssessmentValidation(assessment: any) {
+  return useMemo(() => {
     if (!assessment) {
       return {
         isComplete: false,
@@ -52,18 +201,26 @@ export function useAssessmentValidation(assessment: Assessment | undefined) {
     const missingMOVs: string[] = [];
 
     // Check all indicators across all governance areas
-    assessment.governanceAreas.forEach(area => {
-      area.indicators.forEach(indicator => {
-        if (!indicator.complianceAnswer) {
-          missingIndicators.push(`${indicator.code} - ${indicator.name}`);
-        } else if (indicator.complianceAnswer === 'yes' && indicator.movFiles.length === 0) {
-          missingMOVs.push(`${indicator.code} - ${indicator.name}`);
+    if (assessment.governanceAreas) {
+      assessment.governanceAreas.forEach((area: any) => {
+        if (area.indicators) {
+          area.indicators.forEach((indicator: any) => {
+            if (!indicator.complianceAnswer) {
+              missingIndicators.push(`${indicator.code} - ${indicator.name}`);
+            } else if (
+              indicator.complianceAnswer === "yes" &&
+              indicator.movFiles?.length === 0
+            ) {
+              missingMOVs.push(`${indicator.code} - ${indicator.name}`);
+            }
+          });
         }
       });
-    });
+    }
 
-    const isComplete = missingIndicators.length === 0 && missingMOVs.length === 0;
-    const canSubmit = isComplete && assessment.status === 'in_progress';
+    const isComplete =
+      missingIndicators.length === 0 && missingMOVs.length === 0;
+    const canSubmit = isComplete && assessment.status === "in_progress";
 
     return {
       isComplete,
@@ -81,57 +238,17 @@ export function useUpdateIndicatorAnswer() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ 
-      indicatorId, 
-      answer 
-    }: { 
-      indicatorId: string; 
-      answer: ComplianceAnswer;
-    }): Promise<void> => {
-      // TODO: Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      // Update local state for now
-      queryClient.setQueryData(assessmentKeys.current(), (oldData: Assessment | undefined) => {
-        if (!oldData) return oldData;
-        
-        const updatedAssessment = {
-          ...oldData,
-          governanceAreas: oldData.governanceAreas.map(area => ({
-            ...area,
-            indicators: area.indicators.map(indicator => {
-              if (indicator.id === indicatorId) {
-                const newStatus = answer ? 'completed' : 'not_started';
-                return {
-                  ...indicator,
-                  complianceAnswer: answer,
-                  status: newStatus,
-                  // Clear MOV files if answer is not 'yes'
-                  movFiles: answer === 'yes' ? indicator.movFiles : [],
-                };
-              }
-              return indicator;
-            }),
-          })),
-        };
-
-        // Update completion counts
-        const totalIndicators = updatedAssessment.governanceAreas.reduce(
-          (sum, area) => sum + area.indicators.length, 0
-        );
-        const completedIndicators = updatedAssessment.governanceAreas.reduce(
-          (sum, area) => sum + area.indicators.filter(i => i.status === 'completed').length, 0
-        );
-
-        return {
-          ...updatedAssessment,
-          totalIndicators,
-          completedIndicators,
-        };
-      });
+    mutationFn: async ({
+      responseId,
+      data,
+    }: {
+      responseId: number;
+      data: AssessmentResponseUpdate;
+    }) => {
+      return putAssessmentsResponses$ResponseId(responseId, data);
     },
     onSuccess: () => {
-      // Invalidate validation query to recalculate completion status
+      queryClient.invalidateQueries({ queryKey: assessmentKeys.current() });
       queryClient.invalidateQueries({ queryKey: assessmentKeys.validation() });
     },
   });
@@ -144,47 +261,17 @@ export function useUploadMOV() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ 
-      indicatorId, 
-      file 
-    }: { 
-      indicatorId: string; 
-      file: File;
-    }): Promise<void> => {
-      // TODO: Replace with actual file upload API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Simulate file upload response
-      const mockFile = {
-        id: `mov-${Date.now()}`,
-        filename: file.name,
-        size: file.size,
-        uploadedAt: new Date().toISOString(),
-        url: URL.createObjectURL(file),
-      };
-
-      // Update local state
-      queryClient.setQueryData(assessmentKeys.current(), (oldData: Assessment | undefined) => {
-        if (!oldData) return oldData;
-        
-        return {
-          ...oldData,
-          governanceAreas: oldData.governanceAreas.map(area => ({
-            ...area,
-            indicators: area.indicators.map(indicator => {
-              if (indicator.id === indicatorId) {
-                return {
-                  ...indicator,
-                  movFiles: [...indicator.movFiles, mockFile],
-                };
-              }
-              return indicator;
-            }),
-          })),
-        };
-      });
+    mutationFn: async ({
+      responseId,
+      data,
+    }: {
+      responseId: number;
+      data: MOVCreate;
+    }) => {
+      return postAssessmentsResponses$ResponseIdMovs(responseId, data);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: assessmentKeys.current() });
       queryClient.invalidateQueries({ queryKey: assessmentKeys.validation() });
     },
   });
@@ -197,38 +284,11 @@ export function useDeleteMOV() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ 
-      indicatorId, 
-      fileId 
-    }: { 
-      indicatorId: string; 
-      fileId: string;
-    }): Promise<void> => {
-      // TODO: Replace with actual file deletion API call
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      // Update local state
-      queryClient.setQueryData(assessmentKeys.current(), (oldData: Assessment | undefined) => {
-        if (!oldData) return oldData;
-        
-        return {
-          ...oldData,
-          governanceAreas: oldData.governanceAreas.map(area => ({
-            ...area,
-            indicators: area.indicators.map(indicator => {
-              if (indicator.id === indicatorId) {
-                return {
-                  ...indicator,
-                  movFiles: indicator.movFiles.filter(file => file.id !== fileId),
-                };
-              }
-              return indicator;
-            }),
-          })),
-        };
-      });
+    mutationFn: async ({ movId }: { movId: number }) => {
+      return deleteAssessmentsMovs$MovId(movId);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: assessmentKeys.current() });
       queryClient.invalidateQueries({ queryKey: assessmentKeys.validation() });
     },
   });
@@ -241,20 +301,8 @@ export function useSubmitAssessment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (): Promise<void> => {
-      // TODO: Replace with actual submission API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Update local state to mark as submitted
-      queryClient.setQueryData(assessmentKeys.current(), (oldData: Assessment | undefined) => {
-        if (!oldData) return oldData;
-        
-        return {
-          ...oldData,
-          status: 'submitted',
-          submittedAt: new Date().toISOString(),
-        };
-      });
+    mutationFn: async () => {
+      return postAssessmentsSubmit();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: assessmentKeys.current() });
@@ -268,15 +316,24 @@ export function useSubmitAssessment() {
  */
 export function useIndicator(indicatorId: string) {
   const { data: assessment } = useCurrentAssessment();
-  
+
   return useMemo(() => {
     if (!assessment) return null;
-    
-    for (const area of assessment.governanceAreas) {
-      const indicator = area.indicators.find(i => i.id === indicatorId);
-      if (indicator) return indicator;
+
+    if (
+      assessment.governanceAreas &&
+      Array.isArray(assessment.governanceAreas)
+    ) {
+      for (const area of assessment.governanceAreas) {
+        if (area.indicators && Array.isArray(area.indicators)) {
+          const indicator = area.indicators.find(
+            (i: any) => i.id === indicatorId
+          );
+          if (indicator) return indicator;
+        }
+      }
     }
-    
+
     return null;
   }, [assessment, indicatorId]);
 }
@@ -286,10 +343,19 @@ export function useIndicator(indicatorId: string) {
  */
 export function useGovernanceArea(areaId: string) {
   const { data: assessment } = useCurrentAssessment();
-  
+
   return useMemo(() => {
-    if (!assessment) return null;
-    
-    return assessment.governanceAreas.find(area => area.id === areaId) || null;
+    if (
+      !assessment ||
+      !assessment.governanceAreas ||
+      !Array.isArray(assessment.governanceAreas)
+    )
+      return null;
+
+    return (
+      (assessment.governanceAreas as any[]).find(
+        (area: any) => area.id === areaId
+      ) || null
+    );
   }, [assessment, areaId]);
-} 
+}

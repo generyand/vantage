@@ -1,14 +1,18 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Indicator, ComplianceAnswer } from "@/types/assessment";
-import { useUpdateIndicatorAnswer, useUploadMOV, useDeleteMOV } from "@/hooks/useAssessment";
-import { AlertTriangle, Upload, FileText, Trash2 } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  useDeleteMOV,
+  useUpdateIndicatorAnswer,
+  useUploadMOV,
+} from "@/hooks/useAssessment";
 import { cn } from "@/lib/utils";
+import { ComplianceAnswer, Indicator } from "@/types/assessment";
+import { AlertTriangle, FileText, Trash2, Upload } from "lucide-react";
+import { useRef, useState } from "react";
 
 interface IndicatorFormProps {
   indicator: Indicator;
@@ -18,7 +22,7 @@ interface IndicatorFormProps {
 export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const updateAnswerMutation = useUpdateIndicatorAnswer();
   const uploadMOVMutation = useUploadMOV();
   const deleteMOVMutation = useDeleteMOV();
@@ -31,17 +35,23 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
   const handleFileUpload = (files: FileList | null) => {
     if (!files || files.length === 0 || isLocked) return;
 
-    Array.from(files).forEach(file => {
+    Array.from(files).forEach((file) => {
       // Validate file type
-      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
+      const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "image/jpeg",
+        "image/png",
+      ];
       if (!allowedTypes.includes(file.type)) {
-        alert('Please upload only PDF, DOC, DOCX, JPG, or PNG files.');
+        alert("Please upload only PDF, DOC, DOCX, JPG, or PNG files.");
         return;
       }
 
       // Validate file size (10MB limit)
       if (file.size > 10 * 1024 * 1024) {
-        alert('File size must be less than 10MB.');
+        alert("File size must be less than 10MB.");
         return;
       }
 
@@ -68,27 +78,27 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFileUpload(e.dataTransfer.files);
     }
   };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return "0 Bytes";
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -96,14 +106,20 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
     <div className="space-y-6">
       {/* Indicator Description */}
       <div className="bg-[var(--card)] border border-[var(--border)] rounded-sm p-4 mt-5">
-        <h3 className="font-semibold text-[var(--foreground)] mb-2">Indicator Description</h3>
+        <h3 className="font-semibold text-[var(--foreground)] mb-2">
+          Indicator Description
+        </h3>
         <p className="text-[var(--text-secondary)]">{indicator.description}</p>
       </div>
 
       {/* Technical Notes */}
       <div className="bg-[var(--cityscape-yellow)]/10 border border-[var(--cityscape-yellow)]/20 rounded-sm p-4">
-        <h3 className="font-semibold text-[var(--foreground)] mb-2">Technical Notes</h3>
-        <p className="text-[var(--text-secondary)] text-sm">{indicator.technicalNotes}</p>
+        <h3 className="font-semibold text-[var(--foreground)] mb-2">
+          Technical Notes
+        </h3>
+        <p className="text-[var(--text-secondary)] text-sm">
+          {indicator.technicalNotes}
+        </p>
       </div>
 
       {/* Assessor's Remarks (Conditional) */}
@@ -116,7 +132,9 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
                 <h3 className="font-semibold text-[var(--foreground)] mb-2">
                   Assessor&apos;s Comment for Rework
                 </h3>
-                <p className="text-[var(--text-secondary)]">{indicator.assessorComment}</p>
+                <p className="text-[var(--text-secondary)]">
+                  {indicator.assessorComment}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -125,7 +143,9 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
 
       {/* Compliance Input */}
       <div className="space-y-4">
-        <h3 className="font-semibold text-[var(--foreground)]">Compliance Assessment</h3>
+        <h3 className="font-semibold text-[var(--foreground)]">
+          Compliance Assessment
+        </h3>
         <RadioGroup
           value={indicator.complianceAnswer || ""}
           onValueChange={handleAnswerChange}
@@ -134,19 +154,28 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="yes" id={`${indicator.id}-yes`} />
-            <Label htmlFor={`${indicator.id}-yes`} className="text-sm font-medium text-[var(--foreground)]">
+            <Label
+              htmlFor={`${indicator.id}-yes`}
+              className="text-sm font-medium text-[var(--foreground)]"
+            >
               Yes - We comply with this requirement
             </Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="no" id={`${indicator.id}-no`} />
-            <Label htmlFor={`${indicator.id}-no`} className="text-sm font-medium text-[var(--foreground)]">
+            <Label
+              htmlFor={`${indicator.id}-no`}
+              className="text-sm font-medium text-[var(--foreground)]"
+            >
               No - We do not comply with this requirement
             </Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="na" id={`${indicator.id}-na`} />
-            <Label htmlFor={`${indicator.id}-na`} className="text-sm font-medium text-[var(--foreground)]">
+            <Label
+              htmlFor={`${indicator.id}-na`}
+              className="text-sm font-medium text-[var(--foreground)]"
+            >
               N/A - This requirement is not applicable to our barangay
             </Label>
           </div>
@@ -154,11 +183,13 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
       </div>
 
       {/* MOV Uploader (Conditional) */}
-      {indicator.complianceAnswer === 'yes' && (
+      {indicator.complianceAnswer === "yes" && (
         <div className="space-y-4">
-          <h3 className="font-semibold text-[var(--foreground)]">Means of Verification (MOV)</h3>
+          <h3 className="font-semibold text-[var(--foreground)]">
+            Means of Verification (MOV)
+          </h3>
           <p className="text-sm text-[var(--text-secondary)]">
-            Please upload supporting documents to verify your compliance. 
+            Please upload supporting documents to verify your compliance.
             Accepted formats: PDF, DOC, DOCX, JPG, PNG (Max 10MB per file)
           </p>
 
@@ -166,8 +197,8 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
           <div
             className={cn(
               "border-2 border-dashed rounded-sm p-6 text-center transition-colors",
-              dragActive 
-                ? "border-[var(--cityscape-yellow)] bg-[var(--cityscape-yellow)]/5" 
+              dragActive
+                ? "border-[var(--cityscape-yellow)] bg-[var(--cityscape-yellow)]/5"
                 : "border-[var(--border)] hover:border-[var(--cityscape-yellow)]/60",
               isLocked && "opacity-50 cursor-not-allowed"
             )}
@@ -185,10 +216,10 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
               className="hidden"
               disabled={isLocked}
             />
-            
+
             <Upload className="h-8 w-8 text-[var(--text-secondary)] mx-auto mb-2" />
             <p className="text-sm text-[var(--text-secondary)] mb-2">
-              Drag and drop files here, or{' '}
+              Drag and drop files here, or{" "}
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
@@ -214,7 +245,9 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
           {/* Uploaded Files List */}
           {indicator.movFiles.length > 0 && (
             <div className="space-y-2">
-              <h4 className="font-medium text-[var(--foreground)]">Uploaded Files</h4>
+              <h4 className="font-medium text-[var(--foreground)]">
+                Uploaded Files
+              </h4>
               <div className="space-y-2">
                 {indicator.movFiles.map((file) => (
                   <div
@@ -228,7 +261,8 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
                           {file.filename}
                         </p>
                         <p className="text-xs text-[var(--text-secondary)]">
-                          {formatFileSize(file.size)} • Uploaded {formatDate(file.uploadedAt)}
+                          {formatFileSize(file.size)} • Uploaded{" "}
+                          {formatDate(file.uploadedAt)}
                         </p>
                       </div>
                     </div>
@@ -236,7 +270,7 @@ export function IndicatorForm({ indicator, isLocked }: IndicatorFormProps) {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.open(file.url, '_blank')}
+                        onClick={() => window.open(file.url, "_blank")}
                         disabled={isLocked}
                         className="border-[var(--border)] hover:bg-[var(--hover)]"
                       >

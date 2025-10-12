@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/store/useAuthStore";
-import { useGetUsersMe } from "@vantage/shared";
-import { useDashboard } from "@/hooks/useDashboard";
-import { useUserBarangay } from "@/hooks/useUserBarangay";
 import {
-  StatusCard,
+  DashboardSkeleton,
   FeedbackSection,
   GovernanceAreasGrid,
-  DashboardSkeleton,
+  StatusCard,
 } from "@/components/features/dashboard";
+import { useDashboard } from "@/hooks/useDashboard";
+import { useUserBarangay } from "@/hooks/useUserBarangay";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useGetUsersMe } from "@vantage/shared";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function BLGUDashboardPage() {
   const router = useRouter();

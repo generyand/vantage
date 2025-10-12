@@ -72,29 +72,29 @@
       - **Files:** `apps/api/app/api/v1/assessments.py`
       - **Acceptance:** Endpoint accepts a payload with `response_data` and updates the corresponding `AssessmentResponse` in the database after validation in the service layer.
 
-- [ ] **2.0 Epic: BLGU Dashboard & Assessment Page UI** _(FR 4.1, 4.2)_
+- [x] **2.0 Epic: BLGU Dashboard & Assessment Page UI** _(FR 4.1, 4.2)_
 
-  - [ ] **2.1 Story: Implement BLGU "Mission Control" Dashboard**
-    - [ ] **2.1.1 Atomic:** Create the main BLGU dashboard page component.
+  - [x] **2.1 Story: Implement BLGU "Mission Control" Dashboard**
+    - [x] **2.1.1 Atomic:** Create the main BLGU dashboard page component.
       - **Files:** `apps/web/src/app/(app)/blgu/dashboard/page.tsx`
       - **Acceptance:** The page is created within the correct route group and serves as the container for all dashboard widgets.
-    - [ ] **2.1.2 Atomic:** Create a `useDashboard` hook to fetch all necessary data for the dashboard.
+    - [x] **2.1.2 Atomic:** Create a `useDashboard` hook to fetch all necessary data for the dashboard.
       - **Files:** `apps/web/src/hooks/useDashboard.ts`
       - **Acceptance:** Hook uses TanStack Query to fetch assessment status, progress, and governance area list from the backend.
-    - [ ] **2.1.3 Atomic:** Build dashboard components for progress bar, status badge, and governance area links.
+    - [x] **2.1.3 Atomic:** Build dashboard components for progress bar, status badge, and governance area links.
       - **Files:** `apps/web/src/components/features/dashboard/`
       - **Acceptance:** Reusable components are created to display key dashboard information fetched by the `useDashboard` hook.
-  - [ ] **2.2 Story: Build the Main Assessment Interface**
-    - [ ] **2.2.1 Atomic:** Create the main "My Assessment" page component.
+  - [x] **2.2 Story: Build the Main Assessment Interface**
+    - [x] **2.2.1 Atomic:** Create the main "My Assessment" page component.
       - **Files:** `apps/web/src/app/(app)/blgu/assessments/page.tsx`
       - **Acceptance:** The page component is set up to display the assessment interface.
-    - [ ] **2.2.2 Atomic:** Create a `useAssessment` hook to fetch the full assessment data structure.
+    - [x] **2.2.2 Atomic:** Create a `useAssessment` hook to fetch the full assessment data structure.
       - **Files:** `apps/web/src/hooks/useAssessment.ts`
       - **Acceptance:** The hook fetches all governance areas, indicators, `form_schema`, and existing responses for the BLGU user.
-    - [ ] **2.2.3 Atomic:** Implement the tabbed navigation for Governance Areas.
+    - [x] **2.2.3 Atomic:** Implement the tabbed navigation for Governance Areas.
       - **Files:** `apps/web/src/components/features/assessments/AssessmentTabs.tsx`
       - **Acceptance:** A user can click through tabs, each corresponding to a governance area.
-    - [ ] **2.2.4 Atomic:** Implement the accordion UI for indicators within each tab.
+    - [x] **2.2.4 Atomic:** Implement the accordion UI for indicators within each tab.
       - **Files:** `apps/web/src/components/features/assessments/IndicatorAccordion.tsx`
       - **Acceptance:** Each indicator is displayed in an accordion item that can be expanded to show the form.
 

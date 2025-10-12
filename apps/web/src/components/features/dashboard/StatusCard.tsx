@@ -1,15 +1,15 @@
-import { AssessmentStatus, AssessmentProgress } from "@/types/dashboard";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { AssessmentProgress, AssessmentStatus } from "@/types/dashboard";
 import {
-  AlertTriangle,
-  TrendingUp,
-  CheckCircle2,
   Activity,
+  AlertTriangle,
+  CheckCircle2,
+  TrendingUp,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface StatusCardProps {
   status: AssessmentStatus;
@@ -131,7 +131,12 @@ export function StatusCard({ status, progress }: StatusCardProps) {
           buttonAction: () => router.push("/blgu/assessments"),
           primaryColor: "#3b82f6",
           accentColor: "text-blue-500",
-          icon: <TrendingUp className="h-5 w-5" style={{ color: 'var(--kpi-blue-text)' }} />,
+          icon: (
+            <TrendingUp
+              className="h-5 w-5"
+              style={{ color: "var(--kpi-blue-text)" }}
+            />
+          ),
         };
       case "needs-rework":
         return {
@@ -141,7 +146,12 @@ export function StatusCard({ status, progress }: StatusCardProps) {
           buttonAction: () => router.push("/blgu/assessments"),
           primaryColor: "#f59e0b",
           accentColor: "text-amber-500",
-          icon: <AlertTriangle className="h-5 w-5" style={{ color: 'var(--analytics-warning-text)' }} />,
+          icon: (
+            <AlertTriangle
+              className="h-5 w-5"
+              style={{ color: "var(--analytics-warning-text)" }}
+            />
+          ),
         };
       case "submitted":
         return {
@@ -151,7 +161,12 @@ export function StatusCard({ status, progress }: StatusCardProps) {
           buttonAction: () => router.push("/blgu/assessments"),
           primaryColor: "#8b5cf6",
           accentColor: "text-purple-500",
-          icon: <CheckCircle2 className="h-5 w-5" style={{ color: 'var(--kpi-purple-text)' }} />,
+          icon: (
+            <CheckCircle2
+              className="h-5 w-5"
+              style={{ color: "var(--kpi-purple-text)" }}
+            />
+          ),
         };
       case "validated":
         return {
@@ -161,7 +176,12 @@ export function StatusCard({ status, progress }: StatusCardProps) {
           buttonAction: () => router.push("/blgu/assessments"),
           primaryColor: "#10b981",
           accentColor: "text-emerald-500",
-          icon: <CheckCircle2 className="h-5 w-5" style={{ color: 'var(--analytics-success-text)' }} />,
+          icon: (
+            <CheckCircle2
+              className="h-5 w-5"
+              style={{ color: "var(--analytics-success-text)" }}
+            />
+          ),
         };
     }
   };
@@ -174,9 +194,7 @@ export function StatusCard({ status, progress }: StatusCardProps) {
   return (
     <div className="space-y-6">
       {/* Main Status Card */}
-      <Card
-        className="relative overflow-hidden bg-[var(--card)] border border-[var(--border)] shadow-lg hover:shadow-xl transition-all duration-300 rounded-sm"
-      >
+      <Card className="relative overflow-hidden bg-[var(--card)] border border-[var(--border)] shadow-lg hover:shadow-xl transition-all duration-300 rounded-sm">
         {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--cityscape-yellow)]/5 rounded-full -translate-y-16 translate-x-16"></div>
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-[var(--cityscape-yellow)]/3 rounded-full translate-y-12 -translate-x-12"></div>
@@ -213,19 +231,25 @@ export function StatusCard({ status, progress }: StatusCardProps) {
                   <div className="text-xl font-bold text-[var(--foreground)]">
                     {progress.current}
                   </div>
-                  <div className="text-xs text-[var(--text-secondary)]">Compliant</div>
+                  <div className="text-xs text-[var(--text-secondary)]">
+                    Compliant
+                  </div>
                 </div>
                 <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3 border border-[var(--border)]">
                   <div className="text-xl font-bold text-[var(--foreground)]">
                     {progress.total - progress.current}
                   </div>
-                  <div className="text-xs text-[var(--text-secondary)]">Remaining</div>
+                  <div className="text-xs text-[var(--text-secondary)]">
+                    Remaining
+                  </div>
                 </div>
                 <div className="bg-[var(--hover)] backdrop-blur-sm rounded-sm p-3 border border-[var(--border)]">
                   <div className="text-xl font-bold text-[var(--foreground)]">
                     {progress.total}
                   </div>
-                  <div className="text-xs text-[var(--text-secondary)]">Total</div>
+                  <div className="text-xs text-[var(--text-secondary)]">
+                    Total
+                  </div>
                 </div>
               </div>
             </div>
