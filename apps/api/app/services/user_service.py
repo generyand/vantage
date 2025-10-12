@@ -148,7 +148,7 @@ class UserService:
         if role == UserRole.AREA_ASSESSOR:
             if (
                 "governance_area_id" not in update_data
-                and not db_user.governance_area_id
+                and db_user.governance_area_id is None
             ):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -181,7 +181,7 @@ class UserService:
         if not db_user:
             return None
 
-        db_user.is_active = False
+        setattr(db_user, "is_active", False)
         db.commit()
         db.refresh(db_user)
         return db_user
@@ -192,7 +192,7 @@ class UserService:
         if not db_user:
             return None
 
-        db_user.is_active = True
+        setattr(db_user, "is_active", True)
         db.commit()
         db.refresh(db_user)
         return db_user
@@ -206,12 +206,12 @@ class UserService:
             return False
 
         # Verify current password
-        if not verify_password(current_password, db_user.hashed_password):
+        if not verify_password(current_password, str(db_user.hashed_password)):
             return False
 
         # Update password
-        db_user.hashed_password = get_password_hash(new_password)
-        db_user.must_change_password = False
+        setattr(db_user, "hashed_password", get_password_hash(new_password))
+        setattr(db_user, "must_change_password", False)
         db.commit()
         return True
 
@@ -223,8 +223,8 @@ class UserService:
         if not db_user:
             return None
 
-        db_user.hashed_password = get_password_hash(new_password)
-        db_user.must_change_password = True
+        setattr(db_user, "hashed_password", get_password_hash(new_password))
+        setattr(db_user, "must_change_password", True)
         db.commit()
         db.refresh(db_user)
         return db_user
@@ -239,14 +239,14 @@ class UserService:
         )
 
         # Users by role
-        role_stats = db.query(User.role, func.count(User.id)).group_by(User.role).all()
+        role_stats = db.query(User.role, func.count(User.id)).group_by(User.role).all()  # type: ignore
 
         return {
             "total_users": total_users,
             "active_users": active_users,
             "inactive_users": inactive_users,
             "users_need_password_change": users_need_password_change,
-            "users_by_role": dict(role_stats),
+            "users_by_role": {role: count for role, count in role_stats},
         }
 
 

@@ -4,9 +4,6 @@
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from sqlalchemy import and_, func
-from sqlalchemy.orm import Session, joinedload
-
 from app.db.enums import AssessmentStatus, MOVStatus
 from app.db.models import (
     MOV,
@@ -25,6 +22,8 @@ from app.schemas.assessment import (
     MOVCreate,
 )
 from fastapi import HTTPException, status
+from sqlalchemy import and_, func
+from sqlalchemy.orm import Session, joinedload
 
 
 class AssessmentService:
@@ -327,7 +326,7 @@ class AssessmentService:
             errors.append(f"Validation error: {str(e)}")
 
         return FormSchemaValidation(
-            is_valid=len(errors) == 0, errors=errors, warnings=warnings
+            is_valid=len(errors) == 0, errors=errors, warnings=[]
         )
 
     def _validate_field(
@@ -542,7 +541,7 @@ class AssessmentService:
 
         # Assessments by status
         status_stats = (
-            db.query(Assessment.status, func.count(Assessment.id))
+            db.query(Assessment.status, func.count(Assessment.id))  # type: ignore
             .group_by(Assessment.status)
             .all()
         )
