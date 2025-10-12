@@ -1,7 +1,7 @@
 {
-  "buildCommand": "pnpm generate-types && cd apps/web && pnpm build",
-  "outputDirectory": "apps/web/.next",
-  "installCommand": "pnpm install --frozen-lockfile",
-  "devCommand": "cd apps/web && pnpm dev",
+  "buildCommand": "cd ../.. && pnpm generate-types && pnpm build:web",
+  "outputDirectory": ".next",
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "devCommand": "pnpm dev",
   "framework": "nextjs"
 }
