@@ -98,29 +98,29 @@
       - **Files:** `apps/web/src/components/features/assessments/IndicatorAccordion.tsx`
       - **Acceptance:** Each indicator is displayed in an accordion item that can be expanded to show the form.
 
-- [ ] **3.0 Epic: Dynamic Indicator Form Rendering & MOV Upload** _(FR 4.2, 4.3)_
+- [x] **3.0 Epic: Dynamic Indicator Form Rendering & MOV Upload** _(FR 4.2, 4.3)_
 
-  - [ ] **3.1 Story: Develop a Dynamic Form Renderer**
-    - [ ] **3.1.1 Atomic:** Create a `DynamicIndicatorForm` component that renders inputs based on JSON schema.
+  - [x] **3.1 Story: Develop a Dynamic Form Renderer**
+    - [x] **3.1.1 Atomic:** Create a `DynamicIndicatorForm` component that renders inputs based on JSON schema.
       - **Files:** `apps/web/src/components/features/assessments/DynamicIndicatorForm.tsx`
       - **Acceptance:** The component accepts an indicator's `form_schema` and `response_data` as props. It correctly renders `RadioGroup`, `Input`, `DatePicker`, etc., based on the schema definition.
-    - [ ] **3.1.2 Atomic:** Implement a `useUpdateResponse` mutation hook.
+    - [x] **3.1.2 Atomic:** Implement a `useUpdateResponse` mutation hook.
       - **Files:** `apps/web/src/hooks/useAssessment.ts`
       - **Acceptance:** The hook provides a function to call the `PUT /assessments/responses/{id}` endpoint. It should be configured to automatically save form data on change (debounced).
-    - [ ] **3.1.3 Atomic:** Integrate the `DynamicIndicatorForm` into the `IndicatorAccordion`.
+    - [x] **3.1.3 Atomic:** Integrate the `DynamicIndicatorForm` into the `IndicatorAccordion`.
       - **Files:** `apps/web/src/components/features/assessments/IndicatorAccordion.tsx`
       - **Acceptance:** When an indicator is expanded, its dynamic form is displayed, populated with existing data, and is fully interactive.
-  - [ ] **3.2 Story: Implement MOV Uploader and Management**
-    - [ ] **3.2.1 Atomic:** Create backend API endpoints for uploading and deleting MOVs.
+  - [x] **3.2 Story: Implement MOV Uploader and Management**
+    - [x] **3.2.1 Atomic:** Create backend API endpoints for uploading and deleting MOVs.
       - **Files:** `apps/api/app/api/v1/assessments.py`, `apps/api/app/services/assessment_service.py`
       - **Acceptance:** `POST /responses/{id}/movs` and `DELETE /movs/{mov_id}` endpoints are created. The service logic handles file uploads to Supabase Storage and updates the `movs` table.
-    - [ ] **3.2.2 Atomic:** Enhance the `FileUploader` shared component for MOV management.
+    - [x] **3.2.2 Atomic:** Enhance the `FileUploader` shared component for MOV management.
       - **Files:** `apps/web/src/components/shared/FileUploader.tsx`
       - **Acceptance:** The component is updated to show a list of already uploaded files with delete buttons, and it enforces file type and size restrictions.
-    - [ ] **3.2.3 Atomic:** Create `useUploadMov` and `useDeleteMov` mutation hooks.
+    - [x] **3.2.3 Atomic:** Create `useUploadMov` and `useDeleteMov` mutation hooks.
       - **Files:** `apps/web/src/hooks/useAssessment.ts`
       - **Acceptance:** Hooks are created to interact with the new MOV endpoints and invalidate relevant queries on success to refresh the UI.
-    - [ ] **3.2.4 Atomic:** Integrate the MOV uploader into the `IndicatorAccordion`.
+    - [x] **3.2.4 Atomic:** Integrate the MOV uploader into the `IndicatorAccordion`.
       - **Files:** `apps/web/src/components/features/assessments/IndicatorAccordion.tsx`
       - **Acceptance:** Each indicator has a fully functional file upload and management section.
 

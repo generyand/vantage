@@ -1,13 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useAuthStore } from "@/store/useAuthStore";
 import UserNav from "@/components/shared/UserNav";
-import { X, Bell } from "lucide-react";
 import { useAssessorGovernanceArea } from "@/hooks/useAssessorGovernanceArea";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Bell, X } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 // Navigation items for different user roles
 const mlgooNavigation = [
@@ -26,7 +26,11 @@ const blguNavigation = [
 ];
 
 const assessorNavigation = [
-  { name: "Submissions Queue", href: "/assessor/submissions", icon: "clipboard" },
+  {
+    name: "Submissions Queue",
+    href: "/assessor/submissions",
+    icon: "clipboard",
+  },
   { name: "Analytics", href: "/assessor/analytics", icon: "chart" },
   { name: "Profile", href: "/assessor/profile", icon: "user" },
 ];
@@ -147,36 +151,42 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [isUserDataLoaded, setIsUserDataLoaded] = useState(false);
-  
+
   // Get assessor's governance area
   const { governanceAreaName } = useAssessorGovernanceArea();
 
   // Determine navigation based on user role - only when user data is loaded
   const isAdmin = user?.role === "SUPERADMIN" || user?.role === "MLGOO_DILG";
   const isAssessor = user?.role === "AREA_ASSESSOR";
-  const navigation = user ? (isAdmin ? mlgooNavigation : isAssessor ? assessorNavigation : blguNavigation) : blguNavigation;
+  const navigation = user
+    ? isAdmin
+      ? mlgooNavigation
+      : isAssessor
+      ? assessorNavigation
+      : blguNavigation
+    : blguNavigation;
 
   // Track when user data is loaded
   useEffect(() => {
-    console.log('User Data Loading State:', {
+    console.log("User Data Loading State:", {
       isAuthenticated,
       hasUser: !!user,
       userRole: user?.role,
-      isUserDataLoaded
+      isUserDataLoaded,
     });
-    
+
     if (isAuthenticated && user) {
-      console.log('Setting user data as loaded');
+      console.log("Setting user data as loaded");
       setIsUserDataLoaded(true);
     } else {
-      console.log('Setting user data as not loaded');
+      console.log("Setting user data as not loaded");
       setIsUserDataLoaded(false);
     }
   }, [isAuthenticated, user, isUserDataLoaded]);
 
   // Debug logging for routing issues
   useEffect(() => {
-    console.log('Layout Debug:', {
+    console.log("Layout Debug:", {
       user,
       userRole: user?.role,
       isAdmin,
@@ -184,9 +194,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       pathname,
       isAuthenticated,
       mustChangePassword,
-      isUserDataLoaded
+      isUserDataLoaded,
     });
-  }, [user, isAdmin, isAssessor, pathname, isAuthenticated, mustChangePassword, isUserDataLoaded]);
+  }, [
+    user,
+    isAdmin,
+    isAssessor,
+    pathname,
+    isAuthenticated,
+    mustChangePassword,
+    isUserDataLoaded,
+  ]);
 
   // Redirect unauthenticated users to login
   useEffect(() => {
@@ -215,18 +233,22 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       const isAdmin = user.role === "SUPERADMIN" || user.role === "MLGOO_DILG";
       const currentPath = pathname;
 
-      console.log('Routing Debug:', {
+      console.log("Routing Debug:", {
         currentPath,
         userRole: user.role,
         isAdmin,
         isAssessor,
-        willRedirect: currentPath === "/"
+        willRedirect: currentPath === "/",
       });
 
       // If user is on root path, redirect to appropriate dashboard
       if (currentPath === "/") {
-        const dashboardPath = isAdmin ? "/mlgoo/dashboard" : isAssessor ? "/assessor/submissions" : "/blgu/dashboard";
-        console.log('Redirecting from root to:', dashboardPath);
+        const dashboardPath = isAdmin
+          ? "/mlgoo/dashboard"
+          : isAssessor
+          ? "/assessor/submissions"
+          : "/blgu/dashboard";
+        console.log("Redirecting from root to:", dashboardPath);
         router.replace(dashboardPath);
         return;
       }
@@ -237,29 +259,35 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       const isAssessorRoute = currentPath.startsWith("/assessor");
       const isUserManagementRoute = currentPath.startsWith("/user-management");
 
-      console.log('Route Check:', {
+      console.log("Route Check:", {
         isAdminRoute,
         isBLGURoute,
         isAssessorRoute,
-        isUserManagementRoute
+        isUserManagementRoute,
       });
 
       if (isAdmin) {
         // Admin users should not access BLGU or assessor routes
         if (isBLGURoute || isAssessorRoute) {
-          console.log('Admin accessing wrong route, redirecting to /mlgoo/dashboard');
+          console.log(
+            "Admin accessing wrong route, redirecting to /mlgoo/dashboard"
+          );
           router.replace("/mlgoo/dashboard");
         }
       } else if (isAssessor) {
         // Assessor users should not access admin, BLGU routes or user management
         if (isAdminRoute || isBLGURoute || isUserManagementRoute) {
-          console.log('Assessor accessing wrong route, redirecting to /assessor/submissions');
+          console.log(
+            "Assessor accessing wrong route, redirecting to /assessor/submissions"
+          );
           router.replace("/assessor/submissions");
         }
       } else {
         // BLGU users should not access admin, assessor routes or user management
         if (isAdminRoute || isAssessorRoute || isUserManagementRoute) {
-          console.log('BLGU accessing wrong route, redirecting to /blgu/dashboard');
+          console.log(
+            "BLGU accessing wrong route, redirecting to /blgu/dashboard"
+          );
           router.replace("/blgu/dashboard");
         }
       }
@@ -333,21 +361,23 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
             <div className="flex-shrink-0 flex items-center px-6 mb-8">
               <div className="flex items-center">
-                <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-sm bg-white border-2 border-gray-300/70 shadow-md flex items-center justify-center backdrop-blur-sm flex-shrink-0">
-                  <Image
-                    src="/officialLogo/MLGRC.png"
-                    alt="MLGRC Davao del Sur Logo"
-                    width={28}
-                    height={28}
-                    className="lg:w-8 lg:h-8 object-contain"
-                  />
-                </div>
+                <Image
+                  src="/officialLogo/VANTAGE.webp"
+                  alt="VANTAGE Logo"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 lg:w-10 lg:h-10 object-contain flex-shrink-0"
+                />
                 <div className="ml-3">
                   <h1 className="text-lg font-bold text-[var(--foreground)]">
                     VANTAGE
                   </h1>
                   <p className="text-sm text-[var(--text-secondary)]">
-                    {isAdmin ? "Admin Portal" : isAssessor ? "Area Assessor Portal" : "Barangay Submission Portal"}
+                    {isAdmin
+                      ? "Admin Portal"
+                      : isAssessor
+                      ? "Area Assessor Portal"
+                      : "Barangay Portal"}
                   </p>
                 </div>
               </div>
@@ -379,21 +409,23 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
             <div className="flex items-center flex-shrink-0 px-6 mb-8">
               <div className="flex items-center">
-                <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-sm bg-white border-2 border-gray-300/70 shadow-md flex items-center justify-center backdrop-blur-sm flex-shrink-0">
-                  <Image
-                    src="/officialLogo/MLGRC.png"
-                    alt="MLGRC Davao del Sur Logo"
-                    width={28}
-                    height={28}
-                    className="lg:w-8 lg:h-8 object-contain"
-                  />
-                </div>
+                <Image
+                  src="/officialLogo/VANTAGE.webp"
+                  alt="VANTAGE Logo"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 lg:w-10 lg:h-10 object-contain flex-shrink-0"
+                />
                 <div className="ml-3">
                   <h1 className="text-lg font-bold text-[var(--foreground)]">
                     VANTAGE
                   </h1>
                   <p className="text-sm text-[var(--text-secondary)]">
-                    {isAdmin ? "Admin Portal" : isAssessor ? "Area Assessor Portal" : "Barangay Submission Portal"}
+                    {isAdmin
+                      ? "Admin Portal"
+                      : isAssessor
+                      ? "Area Assessor Portal"
+                      : "Barangay Portal"}
                   </p>
                 </div>
               </div>
@@ -465,7 +497,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                         pathname === "/assessor/submissions"
                         ? "Submissions Dashboard"
                         : pathname === "/assessor/analytics"
-                        ? `Analytics: ${governanceAreaName || 'Loading...'}`
+                        ? `Analytics: ${governanceAreaName || "Loading..."}`
                         : pathname === "/assessor/profile"
                         ? "Profile"
                         : navigation.find((item) => pathname === item.href)
@@ -494,7 +526,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   {isAssessor && pathname.startsWith("/assessor") && (
                     <p className="mt-1 text-sm text-[var(--text-secondary)]">
                       {pathname === "/assessor/submissions" &&
-                        `Governance Area: ${governanceAreaName || 'Loading...'}`}
+                        `Governance Area: ${
+                          governanceAreaName || "Loading..."
+                        }`}
                       {pathname === "/assessor/analytics" &&
                         "Performance trends for all 25 barangays in your assigned area"}
                       {pathname === "/assessor/profile" &&
