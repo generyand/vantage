@@ -306,6 +306,16 @@ class GovernanceAreaProgress(BaseModel):
     requires_rework_count: int
 
 
+class ProgressSummary(BaseModel):
+    """Progress summary with current, total, and percentage."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    current: int
+    total: int
+    percentage: float
+
+
 class AssessmentDashboardStats(BaseModel):
     """Dashboard statistics for assessment progress."""
 
@@ -315,6 +325,9 @@ class AssessmentDashboardStats(BaseModel):
     total_indicators: int
     completed_indicators: int
     completion_percentage: float
+
+    # Progress object
+    progress: ProgressSummary
 
     # Status breakdown
     responses_requiring_rework: int
@@ -338,8 +351,13 @@ class AssessmentDashboardResponse(BaseModel):
 
     assessment_id: int
     blgu_user_id: int
+    barangay_name: str
+    performance_year: int
+    assessment_year: int
     stats: AssessmentDashboardStats
-    recent_feedback: List[Dict[str, Any]] = []  # Recent feedback comments
+    feedback: List[
+        Dict[str, Any]
+    ] = []  # Enhanced feedback array with assessor comments
     upcoming_deadlines: List[Dict[str, Any]] = []  # Any upcoming deadlines
 
 

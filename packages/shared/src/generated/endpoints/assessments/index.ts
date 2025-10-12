@@ -20,6 +20,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AssessmentDashboardResponse,
   AssessmentResponse,
   AssessmentResponseCreate,
   AssessmentResponseUpdate,
@@ -39,6 +40,80 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
+
+/**
+ * Get dashboard data for the logged-in BLGU user's assessment.
+
+Returns dashboard-specific data optimized for overview and progress tracking:
+- Progress statistics (completed/total indicators)
+- Governance area progress summaries
+- Performance metrics (responses requiring rework, with feedback, with MOVs)
+- Recent feedback summaries
+- Assessment status and metadata
+
+This endpoint automatically creates an assessment if one doesn't exist
+for the BLGU user.
+ * @summary Get Assessment Dashboard
+ */
+export const getAssessmentsDashboard = (
+    
+ options?: SecondParameter<typeof mutator>,signal?: AbortSignal
+) => {
+      
+      
+      return mutator<AssessmentDashboardResponse>(
+      {url: `http://localhost:8000/api/v1/assessments/dashboard`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+export const getGetAssessmentsDashboardQueryKey = () => {
+    return [`http://localhost:8000/api/v1/assessments/dashboard`] as const;
+    }
+
+    
+export const getGetAssessmentsDashboardQueryOptions = <TData = Awaited<ReturnType<typeof getAssessmentsDashboard>>, TError = unknown>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAssessmentsDashboard>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAssessmentsDashboardQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAssessmentsDashboard>>> = ({ signal }) => getAssessmentsDashboard(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAssessmentsDashboard>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAssessmentsDashboardQueryResult = NonNullable<Awaited<ReturnType<typeof getAssessmentsDashboard>>>
+export type GetAssessmentsDashboardQueryError = unknown
+
+
+/**
+ * @summary Get Assessment Dashboard
+ */
+
+export function useGetAssessmentsDashboard<TData = Awaited<ReturnType<typeof getAssessmentsDashboard>>, TError = unknown>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAssessmentsDashboard>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+  
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAssessmentsDashboardQueryOptions(options)
+
+  const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
 
 
 

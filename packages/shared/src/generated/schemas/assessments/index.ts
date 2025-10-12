@@ -3,6 +3,61 @@
 // 📁 Assessments-related types
 // 🏷️  Based on FastAPI tag: "assessments"
 
+import type { ProgressSummary } from '../common';
+import type { GovernanceAreaProgress } from '../common';
+
+/**
+ * AssessmentDashboardResponse
+ */
+export interface AssessmentDashboardResponse {
+  assessment_id: number;
+  blgu_user_id: number;
+  barangay_name: string;
+  performance_year: number;
+  assessment_year: number;
+  stats: AssessmentDashboardStats;
+  feedback?: AssessmentDashboardResponseFeedbackItem[];
+  upcoming_deadlines?: AssessmentDashboardResponseUpcomingDeadlinesItem[];
+}
+
+
+/**
+ * AssessmentDashboardResponseFeedbackItem
+ */
+export type AssessmentDashboardResponseFeedbackItem = { [key: string]: unknown };
+
+
+/**
+ * AssessmentDashboardResponseUpcomingDeadlinesItem
+ */
+export type AssessmentDashboardResponseUpcomingDeadlinesItem = { [key: string]: unknown };
+
+
+/**
+ * AssessmentDashboardStats
+ */
+export interface AssessmentDashboardStats {
+  total_indicators: number;
+  completed_indicators: number;
+  completion_percentage: number;
+  progress: ProgressSummary;
+  responses_requiring_rework: number;
+  responses_with_feedback: number;
+  responses_with_movs: number;
+  governance_areas: GovernanceAreaProgress[];
+  assessment_status: AssessmentStatus;
+  created_at: string;
+  updated_at: string;
+  submitted_at?: AssessmentDashboardStatsSubmittedAt;
+}
+
+
+/**
+ * AssessmentDashboardStatsSubmittedAt
+ */
+export type AssessmentDashboardStatsSubmittedAt = string | null;
+
+
 /**
  * AssessmentResponse
  */
@@ -84,6 +139,21 @@ export type AssessmentResponseUpdateResponseData = AssessmentResponseUpdateRespo
  * AssessmentResponseUpdateResponseDataAnyOf
  */
 export type AssessmentResponseUpdateResponseDataAnyOf = { [key: string]: unknown };
+
+
+/**
+ * AssessmentStatus
+ */
+export type AssessmentStatus = typeof AssessmentStatus[keyof typeof AssessmentStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const AssessmentStatus = {
+  Draft: 'Draft',
+  Submitted_for_Review: 'Submitted for Review',
+  Validated: 'Validated',
+  Needs_Rework: 'Needs Rework',
+} as const;
 
 
 /**

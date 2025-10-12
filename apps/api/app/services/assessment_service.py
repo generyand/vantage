@@ -23,6 +23,7 @@ from app.schemas.assessment import (
     FormSchemaValidation,
     GovernanceAreaProgress,
     MOVCreate,
+    ProgressSummary,
 )
 from fastapi import HTTPException, status
 from sqlalchemy import and_, func
@@ -400,7 +401,7 @@ class AssessmentService:
             )
 
         # Run preliminary compliance check
-        validation_result = self._run_preliminary_compliance_check(db, assessment)
+        validation_result = self._run_preliminary_compliance_check(assessment)
 
         if validation_result.is_valid:
             # Update assessment status
@@ -412,7 +413,7 @@ class AssessmentService:
         return validation_result
 
     def _run_preliminary_compliance_check(
-        self, db: Session, assessment: Assessment
+        self, assessment: Assessment
     ) -> AssessmentSubmissionValidation:
         """
         Run preliminary compliance check on assessment.
@@ -529,6 +530,677 @@ class AssessmentService:
         db.refresh(db_comment)
         return db_comment
 
+    def get_dashboard_data(self, db: Session, blgu_user_id: int) -> Dict[str, Any]:
+        """
+        Get dashboard-specific data with progress calculations.
+
+        Args:
+            db: Database session
+            blgu_user_id: ID of the BLGU user
+
+        Returns:
+            Dictionary with dashboard-specific data
+        """
+        # Get user information with barangay details
+        from app.db.models.user import User
+
+        user = (
+            db.query(User)
+            .options(joinedload(User.barangay))
+            .filter(User.id == blgu_user_id)
+            .first()
+        )
+
+        if not user:
+            return {"error": "User not found"}
+
+        # Get assessment
+        assessment = self.get_assessment_for_blgu(db, blgu_user_id)
+        if not assessment:
+            assessment = self.create_assessment(
+                db, AssessmentCreate(blgu_user_id=blgu_user_id)
+            )
+
+        # Calculate progress metrics
+        progress_metrics = self.calculate_progress_metrics(assessment.id, db)
+
+        # Get governance area progress
+        governance_area_progress = self.get_governance_area_progress(db, assessment.id)
+
+        # Get barangay information
+        barangay_name = (
+            getattr(user.barangay, "name", "Unknown") if user.barangay else "Unknown"
+        )
+
+        # Get current year settings
+        year_config = self.get_year_configuration()
+        current_year = year_config["current_year"]
+        performance_year = year_config["performance_year"]
+        assessment_year = year_config["assessment_year"]
+
+        return {
+            "user": {
+                "id": getattr(user, "id"),
+                "name": getattr(user, "name", "Unknown"),
+                "barangay_name": barangay_name,
+                "role": user.role.value
+                if hasattr(user.role, "value")
+                else str(user.role),
+            },
+            "assessment": {
+                "id": assessment.id,
+                "status": assessment.status.value
+                if hasattr(assessment.status, "value")
+                else str(assessment.status),
+                "created_at": assessment.created_at.isoformat(),
+                "updated_at": assessment.updated_at.isoformat(),
+                "submitted_at": assessment.submitted_at.isoformat()
+                if assessment.submitted_at
+                else None,
+            },
+            "years": {
+                "current_year": current_year,
+                "performance_year": performance_year,
+                "assessment_year": assessment_year,
+            },
+            "year_configuration": year_config,
+            "progress_metrics": progress_metrics,
+            "governance_area_progress": governance_area_progress,
+        }
+
+    def calculate_progress_metrics(
+        self, assessment_id: int, db: Session
+    ) -> Dict[str, Any]:
+        """
+        Calculate progress statistics for dashboard.
+
+        Args:
+            assessment_id: ID of the assessment
+            db: Database session
+
+        Returns:
+            Dictionary with progress metrics
+        """
+        # Get assessment with responses
+        assessment = self.get_assessment_with_responses(db, assessment_id)
+        if not assessment:
+            return {
+                "total_indicators": 0,
+                "completed_indicators": 0,
+                "completion_percentage": 0.0,
+                "responses_requiring_rework": 0,
+                "responses_with_feedback": 0,
+                "responses_with_movs": 0,
+                "progress": {
+                    "current": 0,
+                    "total": 0,
+                    "percentage": 0.0,
+                },
+            }
+
+        # Get all governance areas to count total indicators
+        governance_areas = (
+            db.query(GovernanceArea)
+            .options(joinedload(GovernanceArea.indicators))
+            .all()
+        )
+
+        # Calculate total indicators
+        total_indicators = sum(len(area.indicators) for area in governance_areas)
+
+        # Calculate completed indicators
+        completed_indicators = sum(
+            1 for response in assessment.responses if response.is_completed
+        )
+
+        # Calculate completion percentage
+        completion_percentage = (
+            (completed_indicators / total_indicators * 100)
+            if total_indicators > 0
+            else 0
+        )
+
+        # Count responses requiring rework
+        responses_requiring_rework = sum(
+            1 for response in assessment.responses if response.requires_rework
+        )
+
+        # Count responses with feedback
+        responses_with_feedback = sum(
+            1
+            for response in assessment.responses
+            if len(response.feedback_comments) > 0
+        )
+
+        # Count responses with MOVs
+        responses_with_movs = sum(
+            1 for response in assessment.responses if len(response.movs) > 0
+        )
+
+        return {
+            "total_indicators": total_indicators,
+            "completed_indicators": completed_indicators,
+            "completion_percentage": completion_percentage,
+            "responses_requiring_rework": responses_requiring_rework,
+            "responses_with_feedback": responses_with_feedback,
+            "responses_with_movs": responses_with_movs,
+            "progress": {
+                "current": completed_indicators,
+                "total": total_indicators,
+                "percentage": completion_percentage,
+            },
+        }
+
+    def get_governance_area_progress(
+        self, db: Session, assessment_id: int
+    ) -> List[Dict]:
+        """
+        Get progress data for each governance area.
+
+        Args:
+            db: Database session
+            assessment_id: ID of the assessment
+
+        Returns:
+            List of dictionaries with governance area progress data
+        """
+        # Get assessment with responses
+        assessment = self.get_assessment_with_responses(db, assessment_id)
+        if not assessment:
+            return []
+
+        # Get all governance areas with indicators
+        governance_areas = (
+            db.query(GovernanceArea)
+            .options(joinedload(GovernanceArea.indicators))
+            .all()
+        )
+
+        # Create response lookup
+        response_lookup = {r.indicator_id: r for r in assessment.responses}
+
+        # Build governance area progress
+        governance_area_progress = []
+        for area in governance_areas:
+            area_responses = [
+                response_lookup.get(indicator.id)
+                for indicator in area.indicators
+                if response_lookup.get(indicator.id)
+            ]
+
+            completed_in_area = sum(
+                1 for response in area_responses if response and response.is_completed
+            )
+            rework_in_area = sum(
+                1
+                for response in area_responses
+                if response and response.requires_rework
+            )
+
+            area_completion_percentage = (
+                (completed_in_area / len(area.indicators) * 100)
+                if len(area.indicators) > 0
+                else 0
+            )
+
+            governance_area_progress.append(
+                {
+                    "id": getattr(area, "id"),
+                    "name": getattr(area, "name"),
+                    "area_type": area.area_type.value,
+                    "total_indicators": len(area.indicators),
+                    "completed_indicators": completed_in_area,
+                    "completion_percentage": area_completion_percentage,
+                    "requires_rework_count": rework_in_area,
+                    "indicators": [
+                        {
+                            "id": getattr(indicator, "id"),
+                            "name": indicator.name,
+                            "description": indicator.description,
+                            "has_response": indicator.id in response_lookup,
+                            "is_completed": response_lookup.get(
+                                indicator.id, {}
+                            ).is_completed
+                            if indicator.id in response_lookup
+                            else False,
+                            "requires_rework": response_lookup.get(
+                                indicator.id, {}
+                            ).requires_rework
+                            if indicator.id in response_lookup
+                            else False,
+                        }
+                        for indicator in area.indicators
+                    ],
+                }
+            )
+
+        return governance_area_progress
+
+    def get_user_barangay_info(self, db: Session, user_id: int) -> Dict[str, Any]:
+        """
+        Get user barangay information with performance and assessment year configuration.
+
+        Args:
+            db: Database session
+            user_id: ID of the user
+
+        Returns:
+            Dictionary with user barangay information and year settings
+        """
+        from app.db.models.user import User
+
+        user = (
+            db.query(User)
+            .options(joinedload(User.barangay))
+            .filter(User.id == user_id)
+            .first()
+        )
+
+        if not user:
+            return {"error": "User not found"}
+
+        # Get barangay information
+        barangay_name = (
+            getattr(user.barangay, "name", "Unknown") if user.barangay else "Unknown"
+        )
+        barangay_id = getattr(user.barangay, "id", None) if user.barangay else None
+
+        # Get current year for configuration
+        current_year = datetime.now().year
+
+        # TODO: In the future, these could be configurable settings from a system settings table
+        # For now, we'll use the current year
+        performance_year = current_year
+        assessment_year = current_year
+
+        return {
+            "user": {
+                "id": getattr(user, "id"),
+                "name": getattr(user, "name", "Unknown"),
+                "email": getattr(user, "email", "Unknown"),
+                "role": user.role.value
+                if hasattr(user.role, "value")
+                else str(user.role),
+                "is_active": getattr(user, "is_active", True),
+            },
+            "barangay": {
+                "id": barangay_id,
+                "name": barangay_name,
+            },
+            "years": {
+                "current_year": current_year,
+                "performance_year": performance_year,
+                "assessment_year": assessment_year,
+            },
+            "configuration": {
+                "auto_create_assessment": True,  # TODO: Make configurable
+                "allow_multiple_assessments": False,  # TODO: Make configurable
+                "assessment_deadline": None,  # TODO: Implement deadline system
+            },
+        }
+
+    def get_user_profile_with_barangay(
+        self, db: Session, user_id: int
+    ) -> Dict[str, Any]:
+        """
+        Get comprehensive user profile with barangay information and settings.
+
+        Args:
+            db: Database session
+            user_id: ID of the user
+
+        Returns:
+            Dictionary with complete user profile and barangay information
+        """
+        from app.db.models.user import User
+
+        user = (
+            db.query(User)
+            .options(joinedload(User.barangay))
+            .filter(User.id == user_id)
+            .first()
+        )
+
+        if not user:
+            return {"error": "User not found"}
+
+        # Get barangay information
+        barangay_info = {}
+        if user.barangay:
+            barangay_info = {
+                "id": getattr(user.barangay, "id"),
+                "name": getattr(user.barangay, "name", "Unknown"),
+            }
+        else:
+            barangay_info = {
+                "id": None,
+                "name": "No Barangay Assigned",
+            }
+
+        # Get year configuration
+        year_config = self.get_year_configuration()
+
+        # Get user's assessment information
+        assessment = self.get_assessment_for_blgu(db, user_id)
+        assessment_info = {}
+        if assessment:
+            assessment_info = {
+                "id": assessment.id,
+                "status": assessment.status.value
+                if hasattr(assessment.status, "value")
+                else str(assessment.status),
+                "created_at": assessment.created_at.isoformat(),
+                "updated_at": assessment.updated_at.isoformat(),
+                "submitted_at": assessment.submitted_at.isoformat()
+                if assessment.submitted_at
+                else None,
+            }
+
+        return {
+            "user_profile": {
+                "id": getattr(user, "id"),
+                "name": getattr(user, "name", "Unknown"),
+                "email": getattr(user, "email", "Unknown"),
+                "role": user.role.value
+                if hasattr(user.role, "value")
+                else str(user.role),
+                "is_active": getattr(user, "is_active", True),
+                "is_superuser": getattr(user, "is_superuser", False),
+                "must_change_password": getattr(user, "must_change_password", True),
+                "created_at": user.created_at.isoformat(),
+                "updated_at": user.updated_at.isoformat(),
+            },
+            "barangay": barangay_info,
+            "assessment": assessment_info,
+            "year_settings": {
+                "performance_year": year_config["performance_year"],
+                "assessment_year": year_config["assessment_year"],
+                "current_year": year_config["current_year"],
+            },
+            "configuration": {
+                "auto_create_assessment": True,
+                "allow_multiple_assessments": False,
+                "assessment_deadline": None,
+            },
+        }
+
+    def get_year_configuration(self) -> Dict[str, Any]:
+        """
+        Get performance year and assessment year configuration from system settings.
+
+        Returns:
+            Dictionary with year configuration
+        """
+        # TODO: In the future, this could query a system_settings table
+        # For now, we'll return default configuration based on current year
+        current_year = datetime.now().year
+
+        return {
+            "current_year": current_year,
+            "performance_year": current_year,
+            "assessment_year": current_year,
+            "fiscal_year_start": 1,  # January
+            "fiscal_year_end": 12,  # December
+            "assessment_period_start": datetime(current_year, 1, 1).isoformat(),
+            "assessment_period_end": datetime(current_year, 12, 31).isoformat(),
+            "deadline_extensions": [],  # TODO: Implement deadline extension system
+            "configuration_source": "default",  # Could be "database" or "config_file"
+        }
+
+    def get_all_assessor_feedback(
+        self, db: Session, assessment_id: int
+    ) -> List[Dict[str, Any]]:
+        """
+        Collect and format all assessor feedback comments for an assessment.
+
+        Args:
+            db: Database session
+            assessment_id: ID of the assessment
+
+        Returns:
+            List of dictionaries with formatted feedback comments
+        """
+        # Get all feedback comments for the assessment
+        feedback_comments = (
+            db.query(FeedbackComment)
+            .join(AssessmentResponse)
+            .options(
+                joinedload(FeedbackComment.assessor),
+                joinedload(FeedbackComment.response).joinedload(
+                    AssessmentResponse.indicator
+                ),
+            )
+            .filter(AssessmentResponse.assessment_id == assessment_id)
+            .order_by(FeedbackComment.created_at.desc())
+            .all()
+        )
+
+        # Format feedback comments
+        formatted_feedback = []
+        for comment in feedback_comments:
+            formatted_feedback.append(
+                {
+                    "id": comment.id,
+                    "comment": comment.comment,
+                    "comment_type": comment.comment_type,
+                    "created_at": comment.created_at.isoformat(),
+                    "updated_at": comment.created_at.isoformat(),  # Using created_at as updated_at for now
+                    "assessor": {
+                        "id": getattr(comment.assessor, "id"),
+                        "name": f"{getattr(comment.assessor, 'first_name', '')} {getattr(comment.assessor, 'last_name', '')}".strip(),
+                        "role": comment.assessor.role.value
+                        if hasattr(comment.assessor.role, "value")
+                        else str(comment.assessor.role),
+                        "email": getattr(comment.assessor, "email", "Unknown"),
+                    },
+                    "indicator": {
+                        "id": getattr(comment.response.indicator, "id"),
+                        "name": comment.response.indicator.name,
+                        "description": comment.response.indicator.description,
+                        "governance_area": comment.response.indicator.governance_area.name,
+                    },
+                    "response": {
+                        "id": comment.response.id,
+                        "is_completed": comment.response.is_completed,
+                        "requires_rework": comment.response.requires_rework,
+                        "response_data": comment.response.response_data,
+                    },
+                }
+            )
+
+        return formatted_feedback
+
+    def get_feedback_by_governance_area(
+        self, db: Session, assessment_id: int
+    ) -> Dict[str, Dict[str, Any]]:
+        """
+        Get feedback comments organized by governance area.
+
+        Args:
+            db: Database session
+            assessment_id: ID of the assessment
+
+        Returns:
+            Dictionary with governance area names as keys and feedback lists as values
+        """
+        # Get all feedback comments
+        all_feedback = self.get_all_assessor_feedback(db, assessment_id)
+
+        # Group feedback by governance area
+        feedback_by_area = {}
+        for feedback in all_feedback:
+            area_name = feedback["indicator"]["governance_area"]
+            if area_name not in feedback_by_area:
+                feedback_by_area[area_name] = []
+            feedback_by_area[area_name].append(feedback)
+
+        # Add summary statistics for each area
+        area_summary = {}
+        for area_name, feedback_list in feedback_by_area.items():
+            area_summary[area_name] = {
+                "area_name": area_name,
+                "total_feedback": len(feedback_list),
+                "feedback_by_type": self._count_feedback_by_type(feedback_list),
+                "recent_feedback": sorted(
+                    feedback_list, key=lambda x: x["created_at"], reverse=True
+                )[:3],
+                "all_feedback": feedback_list,
+            }
+
+        return area_summary
+
+    def get_recent_feedback_with_timestamps(
+        self, db: Session, assessment_id: int, limit: int = 10
+    ) -> List[Dict[str, Any]]:
+        """
+        Get recent feedback comments with detailed timestamps.
+
+        Args:
+            db: Database session
+            assessment_id: ID of the assessment
+            limit: Maximum number of recent feedback to return
+
+        Returns:
+            List of dictionaries with recent feedback and timestamp details
+        """
+        # Get recent feedback comments
+        recent_feedback = (
+            db.query(FeedbackComment)
+            .join(AssessmentResponse)
+            .options(
+                joinedload(FeedbackComment.assessor),
+                joinedload(FeedbackComment.response).joinedload(
+                    AssessmentResponse.indicator
+                ),
+            )
+            .filter(AssessmentResponse.assessment_id == assessment_id)
+            .order_by(FeedbackComment.created_at.desc())
+            .limit(limit)
+            .all()
+        )
+
+        # Format with detailed timestamps
+        formatted_recent_feedback = []
+        for comment in recent_feedback:
+            created_at = comment.created_at
+            formatted_recent_feedback.append(
+                {
+                    "id": comment.id,
+                    "comment": comment.comment,
+                    "comment_type": comment.comment_type,
+                    "timestamps": {
+                        "created_at": created_at.isoformat(),
+                        "created_at_human": self._format_human_timestamp(created_at),
+                        "created_at_relative": self._format_relative_timestamp(
+                            created_at
+                        ),
+                        "day_of_week": created_at.strftime("%A"),
+                        "time_of_day": created_at.strftime("%I:%M %p"),
+                    },
+                    "assessor": {
+                        "id": getattr(comment.assessor, "id"),
+                        "name": f"{getattr(comment.assessor, 'first_name', '')} {getattr(comment.assessor, 'last_name', '')}".strip(),
+                        "role": comment.assessor.role.value
+                        if hasattr(comment.assessor.role, "value")
+                        else str(comment.assessor.role),
+                    },
+                    "indicator": {
+                        "id": getattr(comment.response.indicator, "id"),
+                        "name": comment.response.indicator.name,
+                        "governance_area": comment.response.indicator.governance_area.name,
+                    },
+                    "response": {
+                        "id": comment.response.id,
+                        "is_completed": comment.response.is_completed,
+                        "requires_rework": comment.response.requires_rework,
+                    },
+                }
+            )
+
+        return formatted_recent_feedback
+
+    def _count_feedback_by_type(
+        self, feedback_list: List[Dict[str, Any]]
+    ) -> Dict[str, int]:
+        """Helper method to count feedback by comment type."""
+        type_counts = {}
+        for feedback in feedback_list:
+            comment_type = feedback["comment_type"]
+            type_counts[comment_type] = type_counts.get(comment_type, 0) + 1
+        return type_counts
+
+    def _format_human_timestamp(self, timestamp: datetime) -> str:
+        """Helper method to format timestamp in human-readable format."""
+        return timestamp.strftime("%B %d, %Y at %I:%M %p")
+
+    def _format_relative_timestamp(self, timestamp: datetime) -> str:
+        """Helper method to format timestamp as relative time."""
+        now = datetime.now()
+        diff = now - timestamp
+
+        if diff.days > 0:
+            return f"{diff.days} day{'s' if diff.days != 1 else ''} ago"
+        elif diff.seconds > 3600:
+            hours = diff.seconds // 3600
+            return f"{hours} hour{'s' if hours != 1 else ''} ago"
+        elif diff.seconds > 60:
+            minutes = diff.seconds // 60
+            return f"{minutes} minute{'s' if minutes != 1 else ''} ago"
+        else:
+            return "Just now"
+
+    def get_comprehensive_feedback_summary(
+        self, db: Session, assessment_id: int
+    ) -> Dict[str, Any]:
+        """
+        Get comprehensive feedback summary including all feedback data.
+
+        Args:
+            db: Database session
+            assessment_id: ID of the assessment
+
+        Returns:
+            Dictionary with comprehensive feedback summary
+        """
+        # Get all feedback data
+        all_feedback = self.get_all_assessor_feedback(db, assessment_id)
+        feedback_by_area = self.get_feedback_by_governance_area(db, assessment_id)
+        recent_feedback = self.get_recent_feedback_with_timestamps(
+            db, assessment_id, limit=10
+        )
+
+        # Calculate feedback statistics
+        total_feedback = len(all_feedback)
+        feedback_by_type = self._count_feedback_by_type(all_feedback)
+
+        # Get unique assessors
+        assessors = set()
+        for feedback in all_feedback:
+            assessors.add(feedback["assessor"]["name"])
+
+        # Get feedback by governance area summary
+        area_summary = {}
+        for area_name, area_data in feedback_by_area.items():
+            area_summary[area_name] = {
+                "total_feedback": area_data["total_feedback"],
+                "feedback_by_type": area_data["feedback_by_type"],
+                "has_recent_feedback": len(area_data["recent_feedback"]) > 0,
+            }
+
+        return {
+            "summary": {
+                "total_feedback": total_feedback,
+                "unique_assessors": len(assessors),
+                "assessor_names": list(assessors),
+                "feedback_by_type": feedback_by_type,
+                "governance_areas_with_feedback": len(feedback_by_area),
+            },
+            "recent_feedback": recent_feedback,
+            "feedback_by_area": area_summary,
+            "all_feedback": all_feedback,
+            "detailed_feedback_by_area": feedback_by_area,
+        }
+
     def get_assessment_dashboard_data(
         self, db: Session, blgu_user_id: int
     ) -> Optional[AssessmentDashboardResponse]:
@@ -542,6 +1214,26 @@ class AssessmentService:
         Returns:
             AssessmentDashboardResponse with dashboard data or None if not found
         """
+        # Get user information to access barangay name
+        from app.db.models.user import User
+
+        user = (
+            db.query(User)
+            .options(joinedload(User.barangay))
+            .filter(User.id == blgu_user_id)
+            .first()
+        )
+        if not user:
+            return None
+
+        # Get barangay name
+        barangay_name = (
+            getattr(user.barangay, "name", "Unknown") if user.barangay else "Unknown"
+        )
+
+        # Get current year for performance and assessment years
+        current_year = datetime.now().year
+
         # Get or create assessment
         assessment = self.get_assessment_for_blgu(db, blgu_user_id)
         if not assessment:
@@ -629,35 +1321,27 @@ class AssessmentService:
                 )
             )
 
-        # Get recent feedback (last 5 comments)
-        recent_feedback = (
-            db.query(FeedbackComment)
-            .join(AssessmentResponse)
-            .filter(AssessmentResponse.assessment_id == assessment.id)
-            .order_by(FeedbackComment.created_at.desc())
-            .limit(5)
-            .all()
+        # Get recent feedback with enhanced formatting
+        recent_feedback_data = self.get_recent_feedback_with_timestamps(
+            db, assessment.id, limit=5
         )
 
-        # Format recent feedback
-        recent_feedback_data = []
-        for comment in recent_feedback:
-            recent_feedback_data.append(
-                {
-                    "id": comment.id,
-                    "comment": comment.comment,
-                    "comment_type": comment.comment_type,
-                    "indicator_name": comment.response.indicator.name,
-                    "assessor_name": f"{comment.assessor.first_name} {comment.assessor.last_name}",
-                    "created_at": comment.created_at.isoformat(),
-                }
-            )
+        # Get comprehensive feedback summary (for future use)
+        # feedback_summary = self.get_comprehensive_feedback_summary(db, assessment.id)
+
+        # Create progress object
+        progress = ProgressSummary(
+            current=completed_indicators,
+            total=total_indicators,
+            percentage=completion_percentage,
+        )
 
         # Build dashboard stats
         dashboard_stats = AssessmentDashboardStats(
             total_indicators=total_indicators,
             completed_indicators=completed_indicators,
             completion_percentage=completion_percentage,
+            progress=progress,
             responses_requiring_rework=responses_requiring_rework,
             responses_with_feedback=responses_with_feedback,
             responses_with_movs=responses_with_movs,
@@ -671,8 +1355,11 @@ class AssessmentService:
         return AssessmentDashboardResponse(
             assessment_id=assessment.id,
             blgu_user_id=blgu_user_id,
+            barangay_name=barangay_name,
+            performance_year=current_year,
+            assessment_year=current_year,
             stats=dashboard_stats,
-            recent_feedback=recent_feedback_data,
+            feedback=recent_feedback_data,
             upcoming_deadlines=[],  # TODO: Implement deadline logic if needed
         )
 
@@ -690,7 +1377,7 @@ class AssessmentService:
 
         # Assessments by status
         status_stats = (
-            db.query(Assessment.status, func.count(Assessment.id))  # type: ignore
+            db.query(Assessment.status, func.count())  # type: ignore
             .group_by(Assessment.status)
             .all()
         )

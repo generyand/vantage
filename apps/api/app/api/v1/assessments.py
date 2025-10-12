@@ -5,9 +5,9 @@ from typing import Any, Dict
 
 from app.api import deps
 from app.db.enums import UserRole
-from app.db.models.assessment import MOV
 from app.db.models.user import User
 from app.schemas.assessment import (
+    MOV,
     AssessmentDashboardResponse,
     AssessmentResponse,
     AssessmentResponseCreate,
