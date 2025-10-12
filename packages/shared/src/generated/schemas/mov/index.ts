@@ -3,7 +3,7 @@
 // 📁 Mov-related types
 // 🏷️  Based on FastAPI tag: "mov"
 
-import type { MOVStatus } from '../common';
+import type { MOVStatus } from './mOVStatus';
 
 /**
  * MOVCreate
