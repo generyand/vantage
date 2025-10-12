@@ -10,16 +10,16 @@
 ## Relevant Files
 
 - **Backend Models:**
-  - `apps/api/app/db/models/governance_area.py` (for `Indicator` model)
-  - `apps/api/app/db/models/assessment.py` (new file for `Assessment`, `AssessmentResponse`, `MOV`, `FeedbackComment` models)
+  - `apps/api/app/db/models/governance_area.py` (updated with `Indicator` model including `form_schema` JSON field)
+  - `apps/api/app/db/models/assessment.py` (created with `Assessment`, `AssessmentResponse`, `MOV`, `FeedbackComment` models)
 - **Database Migration:**
-  - `apps/api/alembic/versions/xxxxxxxx_add_dynamic_assessment_schema.py` (new migration file)
+  - `apps/api/alembic/versions/de8ece1d7614_add_dynamic_assessment_schema_with_.py` (generated migration file)
 - **Backend Schemas:**
-  - `apps/api/app/schemas/assessment.py` (new file for assessment-related Pydantic schemas)
+  - `apps/api/app/schemas/assessment.py` (created with comprehensive assessment-related Pydantic schemas)
 - **Backend Services:**
-  - `apps/api/app/services/assessment_service.py` (new file for business logic)
+  - `apps/api/app/services/assessment_service.py` (created with comprehensive business logic for assessment management)
 - **Backend API Routes:**
-  - `apps/api/app/api/v1/assessments.py` (new file for assessment endpoints)
+  - `apps/api/app/api/v1/assessments.py` (created with comprehensive assessment endpoints)
 - **Frontend Pages:**
   - `apps/web/src/app/(app)/blgu/dashboard/page.tsx`
   - `apps/web/src/app/(app)/blgu/assessments/page.tsx`
@@ -45,30 +45,30 @@
 
 - [ ] **1.0 Epic: Backend Foundation for Dynamic Assessments** _(FR 7)_
 
-  - [ ] **1.1 Story: Database Schema for Dynamic Assessments**
-    - [ ] **1.1.1 Atomic:** Update `Indicator` model in `governance_area.py` to include `form_schema: Mapped[dict] = mapped_column(JSONB, nullable=False)`.
+  - [x] **1.1 Story: Database Schema for Dynamic Assessments**
+    - [x] **1.1.1 Atomic:** Update `Indicator` model in `governance_area.py` to include `form_schema: Mapped[dict] = mapped_column(JSONB, nullable=False)`.
       - **Files:** `apps/api/app/db/models/governance_area.py`
       - **Acceptance:** The `Indicator` model has a non-nullable `form_schema` column of type `JSONB`.
-    - [ ] **1.1.2 Atomic:** Create new models for `Assessment`, `AssessmentResponse`, `MOV`, and `FeedbackComment` in a new file.
+    - [x] **1.1.2 Atomic:** Create new models for `Assessment`, `AssessmentResponse`, `MOV`, and `FeedbackComment` in a new file.
       - **Files:** `apps/api/app/db/models/assessment.py`
-      - **Acceptance:** `AssessmentResponse` model must include a `response_data: Mapped[dict] = mapped_column(JSONB, nullable=True)` to store dynamic form data. Models for tracking overall assessment status, file uploads (MOVs), and feedback are created with correct relationships.
-    - [ ] **1.1.3 Atomic:** Generate a new Alembic migration script for the database changes.
-      - **Files:** `apps/api/alembic/versions/`
+      - **Acceptance:** `AssessmentResponse` model must include a `response_data: Mapped[dict] = mapped_column(JSON, nullable=True)` to store dynamic form data. Models for tracking overall assessment status, file uploads (MOVs), and feedback are created with correct relationships.
+    - [x] **1.1.3 Atomic:** Generate a new Alembic migration script for the database changes.
+      - **Files:** `apps/api/alembic/versions/de8ece1d7614_add_dynamic_assessment_schema_with_.py`
       - **Acceptance:** The auto-generated migration script correctly reflects the changes to the `Indicator` model and the creation of the new assessment-related tables.
-    - [ ] **1.1.4 Atomic:** Apply the migration to the local database.
+    - [x] **1.1.4 Atomic:** Apply the migration to the local database.
       - **Command:** `cd apps/api && alembic upgrade head`
       - **Acceptance:** The database schema is successfully updated.
-  - [ ] **1.2 Story: API Endpoints for Managing Assessments**
-    - [ ] **1.2.1 Atomic:** Create Pydantic schemas for assessment data in a new file.
+  - [x] **1.2 Story: API Endpoints for Managing Assessments**
+    - [x] **1.2.1 Atomic:** Create Pydantic schemas for assessment data in a new file.
       - **Files:** `apps/api/app/schemas/assessment.py`
       - **Acceptance:** Schemas for `AssessmentResponseCreate`, `AssessmentResponseUpdate`, and a main `Assessment` schema (including indicators with their `form_schema`) are defined.
-    - [ ] **1.2.2 Atomic:** Implement `assessment_service.py` with core business logic.
+    - [x] **1.2.2 Atomic:** Implement `assessment_service.py` with core business logic.
       - **Files:** `apps/api/app/services/assessment_service.py`
       - **Acceptance:** Service contains functions like `get_assessment_for_blgu`, `update_assessment_response`, and `submit_assessment`. The `update` function must validate the incoming `response_data` JSON against the indicator's `form_schema`.
-    - [ ] **1.2.3 Atomic:** Create the `GET /api/v1/assessments/my-assessment` endpoint.
+    - [x] **1.2.3 Atomic:** Create the `GET /api/v1/assessments/my-assessment` endpoint.
       - **Files:** `apps/api/app/api/v1/assessments.py`
       - **Acceptance:** Endpoint returns the full assessment data for the logged-in BLGU user, including all governance areas, indicators, `form_schema` for each indicator, and any existing `response_data`.
-    - [ ] **1.2.4 Atomic:** Create the `PUT /api/v1/assessments/responses/{response_id}` endpoint.
+    - [x] **1.2.4 Atomic:** Create the `PUT /api/v1/assessments/responses/{response_id}` endpoint.
       - **Files:** `apps/api/app/api/v1/assessments.py`
       - **Acceptance:** Endpoint accepts a payload with `response_data` and updates the corresponding `AssessmentResponse` in the database after validation in the service layer.
 
