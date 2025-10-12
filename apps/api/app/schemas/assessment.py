@@ -1,0 +1,296 @@
+# 📋 Assessment Schemas
+# Pydantic models for assessment-related API requests and responses
+
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+from app.db.enums import AssessmentStatus, MOVStatus
+from pydantic import BaseModel, ConfigDict
+
+# ============================================================================
+# Indicator Schemas
+# ============================================================================
+
+
+class Indicator(BaseModel):
+    """Indicator response model for API endpoints."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    description: Optional[str] = None
+    form_schema: Dict[str, Any]
+    governance_area_id: int
+
+
+# ============================================================================
+# Assessment Schemas
+# ============================================================================
+
+
+class Assessment(BaseModel):
+    """Assessment response model for API endpoints."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    status: AssessmentStatus
+    blgu_user_id: int
+    created_at: datetime
+    updated_at: datetime
+    submitted_at: Optional[datetime] = None
+    validated_at: Optional[datetime] = None
+
+
+class AssessmentCreate(BaseModel):
+    """Schema for creating a new assessment."""
+
+    blgu_user_id: int
+
+
+class AssessmentUpdate(BaseModel):
+    """Schema for updating assessment information."""
+
+    status: Optional[AssessmentStatus] = None
+
+
+class AssessmentWithResponses(Assessment):
+    """Assessment model including all responses."""
+
+    responses: List["AssessmentResponse"] = []
+
+
+# ============================================================================
+# Assessment Response Schemas
+# ============================================================================
+
+
+class AssessmentResponse(BaseModel):
+    """AssessmentResponse response model for API endpoints."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    response_data: Optional[Dict[str, Any]] = None
+    is_completed: bool
+    requires_rework: bool
+    assessment_id: int
+    indicator_id: int
+    created_at: datetime
+    updated_at: datetime
+
+
+class AssessmentResponseCreate(BaseModel):
+    """Schema for creating a new assessment response."""
+
+    response_data: Optional[Dict[str, Any]] = None
+    assessment_id: int
+    indicator_id: int
+
+
+class AssessmentResponseUpdate(BaseModel):
+    """Schema for updating assessment response data."""
+
+    response_data: Optional[Dict[str, Any]] = None
+    is_completed: Optional[bool] = None
+    requires_rework: Optional[bool] = None
+
+
+class AssessmentResponseWithDetails(AssessmentResponse):
+    """AssessmentResponse model including related data."""
+
+    indicator: Optional[Indicator] = None
+    movs: List["MOV"] = []
+    feedback_comments: List["FeedbackComment"] = []
+
+
+# ============================================================================
+# MOV Schemas
+# ============================================================================
+
+
+class MOV(BaseModel):
+    """MOV (Means of Verification) response model for API endpoints."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    filename: str
+    original_filename: str
+    file_size: int
+    content_type: str
+    storage_path: str
+    status: MOVStatus
+    response_id: int
+    uploaded_at: datetime
+
+
+class MOVCreate(BaseModel):
+    """Schema for creating a new MOV."""
+
+    filename: str
+    original_filename: str
+    file_size: int
+    content_type: str
+    storage_path: str
+    response_id: int
+
+
+class MOVUpdate(BaseModel):
+    """Schema for updating MOV information."""
+
+    status: Optional[MOVStatus] = None
+
+
+# ============================================================================
+# Feedback Comment Schemas
+# ============================================================================
+
+
+class FeedbackComment(BaseModel):
+    """FeedbackComment response model for API endpoints."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    comment: str
+    comment_type: str
+    response_id: int
+    assessor_id: int
+    created_at: datetime
+
+
+class FeedbackCommentCreate(BaseModel):
+    """Schema for creating a new feedback comment."""
+
+    comment: str
+    comment_type: str = "general"
+    response_id: int
+    assessor_id: int
+
+
+class FeedbackCommentUpdate(BaseModel):
+    """Schema for updating feedback comment."""
+
+    comment: Optional[str] = None
+    comment_type: Optional[str] = None
+
+
+# ============================================================================
+# Comprehensive Assessment Schemas
+# ============================================================================
+
+
+class AssessmentWithIndicators(BaseModel):
+    """Complete assessment data including all governance areas and indicators."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    assessment: Assessment
+    governance_areas: List[Dict[str, Any]]  # Will include indicators and responses
+
+
+class IndicatorWithResponse(BaseModel):
+    """Indicator with its corresponding response data."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    indicator: Indicator
+    response: Optional[AssessmentResponse] = None
+    movs: List[MOV] = []
+    feedback_comments: List[FeedbackComment] = []
+
+
+class GovernanceAreaWithIndicators(BaseModel):
+    """Governance area with all its indicators and responses."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    area_type: str
+    indicators: List[IndicatorWithResponse] = []
+
+
+# ============================================================================
+# API Response Schemas
+# ============================================================================
+
+
+class AssessmentListResponse(BaseModel):
+    """Schema for paginated assessment list response."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    assessments: List[Assessment]
+    total: int
+    page: int
+    size: int
+    total_pages: int
+
+
+class AssessmentResponseListResponse(BaseModel):
+    """Schema for paginated assessment response list response."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    responses: List[AssessmentResponseWithDetails]
+    total: int
+    page: int
+    size: int
+    total_pages: int
+
+
+class MOVListResponse(BaseModel):
+    """Schema for paginated MOV list response."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    movs: List[MOV]
+    total: int
+    page: int
+    size: int
+    total_pages: int
+
+
+class FeedbackCommentListResponse(BaseModel):
+    """Schema for paginated feedback comment list response."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    comments: List[FeedbackComment]
+    total: int
+    page: int
+    size: int
+    total_pages: int
+
+
+# ============================================================================
+# Validation Schemas
+# ============================================================================
+
+
+class AssessmentSubmissionValidation(BaseModel):
+    """Schema for assessment submission validation response."""
+
+    is_valid: bool
+    errors: List[Dict[str, Any]] = []
+    warnings: List[Dict[str, Any]] = []
+
+
+class FormSchemaValidation(BaseModel):
+    """Schema for form schema validation."""
+
+    is_valid: bool
+    errors: List[str] = []
+    warnings: List[str] = []
+
+
+# ============================================================================
+# Update forward references for nested models
+# ============================================================================
+
+AssessmentWithResponses.model_rebuild()
+AssessmentResponseWithDetails.model_rebuild()
+IndicatorWithResponse.model_rebuild()
