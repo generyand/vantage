@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd ../.. && pnpm generate-types && pnpm build:web",
+  "buildCommand": "cd ../.. && pnpm build:web",
   "outputDirectory": ".next",
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
   "devCommand": "pnpm dev",
