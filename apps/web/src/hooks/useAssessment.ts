@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   AssessmentResponseUpdate,
-  deleteAssessmentsMovs$MovId,
   MOVCreate,
+  deleteAssessmentsMovs$MovId,
   postAssessmentsResponses$ResponseIdMovs,
   postAssessmentsSubmit,
   putAssessmentsResponses$ResponseId,
@@ -29,12 +29,47 @@ export function useCurrentAssessment() {
     refetch,
   } = useGetAssessmentsMyAssessment();
 
-  // Calculate progress based on completed indicators
+  // Transform API response to match frontend expectations
+  const transformedData = assessmentData ? {
+    id: (assessmentData as any).assessment.id.toString(),
+    barangayId: "1", // TODO: Get from user context
+    barangayName: "New Cebu", // TODO: Get from user context
+    status: (assessmentData as any).assessment.status.toLowerCase().replace('_', '-') as any,
+    createdAt: (assessmentData as any).assessment.created_at,
+    updatedAt: (assessmentData as any).assessment.updated_at,
+    submittedAt: (assessmentData as any).assessment.submitted_at,
+    governanceAreas: (assessmentData as any).governance_areas.map((area: any) => ({
+      id: area.id.toString(),
+      name: area.name,
+      code: area.name.substring(0, 2).toUpperCase(),
+      description: `${area.name} governance area`,
+      isCore: area.area_type === "Core",
+      indicators: area.indicators.map((indicator: any) => ({
+        id: indicator.id.toString(),
+        code: `${area.id}.${indicator.id}.1`, // Generate code
+        name: indicator.name,
+        description: indicator.description,
+        technicalNotes: "See form schema for requirements",
+        governanceAreaId: area.id.toString(),
+        status: indicator.response ? "completed" : "not_started",
+        complianceAnswer: indicator.response?.response_data?.has_budget_plan ? "yes" : "no",
+        movFiles: indicator.movs || [],
+        assessorComment: indicator.feedback_comments?.[0]?.comment,
+      })),
+    })),
+    totalIndicators: (assessmentData as any).governance_areas.reduce((total: number, area: any) => total + area.indicators.length, 0),
+    completedIndicators: (assessmentData as any).governance_areas.reduce((total: number, area: any) => 
+      total + area.indicators.filter((ind: any) => ind.response).length, 0),
+    needsReworkIndicators: (assessmentData as any).governance_areas.reduce((total: number, area: any) => 
+      total + area.indicators.filter((ind: any) => ind.feedback_comments?.length > 0).length, 0),
+  } : null;
+
   return {
-    data: assessmentData,
+    data: transformedData,
     isLoading,
     error,
     refetch,
+    updateAssessmentData: () => {}, // Placeholder for update function
   };
 }
 

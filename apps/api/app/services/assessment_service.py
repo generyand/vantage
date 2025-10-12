@@ -89,19 +89,34 @@ class AssessmentService:
         Returns:
             Dictionary with assessment and governance areas data
         """
-        # Get or create assessment
-        assessment = self.get_assessment_for_blgu(db, blgu_user_id)
-        if not assessment:
-            assessment = self.create_assessment(
-                db, AssessmentCreate(blgu_user_id=blgu_user_id)
+        try:
+            # Get or create assessment
+            assessment = self.get_assessment_for_blgu(db, blgu_user_id)
+            if not assessment:
+                assessment = self.create_assessment(
+                    db, AssessmentCreate(blgu_user_id=blgu_user_id)
+                )
+
+            # Get all governance areas with their indicators
+            governance_areas = (
+                db.query(GovernanceArea)
+                .options(joinedload(GovernanceArea.indicators))
+                .all()
             )
 
-        # Get all governance areas with their indicators
-        governance_areas = (
-            db.query(GovernanceArea)
-            .options(joinedload(GovernanceArea.indicators))
-            .all()
-        )
+            # If no indicators exist, create some sample indicators for development
+            if all(len(area.indicators) == 0 for area in governance_areas):
+                self._create_sample_indicators(db)
+                # Re-query governance areas with indicators
+                governance_areas = (
+                    db.query(GovernanceArea)
+                    .options(joinedload(GovernanceArea.indicators))
+                    .all()
+                )
+
+        except Exception as e:
+            print(f"Error in get_assessment_for_blgu_with_full_data: {e}")
+            raise
 
         # Get all responses for this assessment
         responses = (
@@ -143,10 +158,169 @@ class AssessmentService:
 
             governance_areas_data.append(area_data)
 
+        # Convert SQLAlchemy models to dictionaries for JSON serialization
+        assessment_dict = {
+            "id": assessment.id,
+            "status": assessment.status.value,
+            "blgu_user_id": assessment.blgu_user_id,
+            "created_at": assessment.created_at.isoformat(),
+            "updated_at": assessment.updated_at.isoformat(),
+            "submitted_at": assessment.submitted_at.isoformat()
+            if assessment.submitted_at
+            else None,
+            "validated_at": assessment.validated_at.isoformat()
+            if assessment.validated_at
+            else None,
+        }
+
         return {
-            "assessment": assessment,
+            "assessment": assessment_dict,
             "governance_areas": governance_areas_data,
         }
+
+    def _create_sample_indicators(self, db: Session) -> None:
+        """Create sample indicators for development/testing purposes."""
+        from app.db.models import Indicator
+
+        # Sample indicators for each governance area
+        sample_indicators = [
+            # Financial Administration and Sustainability
+            {
+                "name": "Budget Planning and Execution",
+                "description": "The barangay has a comprehensive budget plan that is properly executed and monitored.",
+                "form_schema": {
+                    "type": "object",
+                    "properties": {
+                        "has_budget_plan": {
+                            "type": "boolean",
+                            "title": "Has Budget Plan",
+                        },
+                        "budget_amount": {"type": "number", "title": "Budget Amount"},
+                        "notes": {"type": "string", "title": "Additional Notes"},
+                    },
+                    "required": ["has_budget_plan"],
+                },
+                "governance_area_id": 1,
+            },
+            # Disaster Preparedness
+            {
+                "name": "Disaster Risk Reduction Plan",
+                "description": "The barangay has a comprehensive disaster risk reduction and management plan.",
+                "form_schema": {
+                    "type": "object",
+                    "properties": {
+                        "has_drr_plan": {"type": "boolean", "title": "Has DRR Plan"},
+                        "plan_year": {"type": "string", "title": "Plan Year"},
+                        "evacuation_centers": {
+                            "type": "number",
+                            "title": "Number of Evacuation Centers",
+                        },
+                    },
+                    "required": ["has_drr_plan"],
+                },
+                "governance_area_id": 2,
+            },
+            # Safety, Peace and Order
+            {
+                "name": "Peace and Order Committee",
+                "description": "The barangay has an active peace and order committee with regular activities.",
+                "form_schema": {
+                    "type": "object",
+                    "properties": {
+                        "has_committee": {
+                            "type": "boolean",
+                            "title": "Has Peace and Order Committee",
+                        },
+                        "meetings_per_year": {
+                            "type": "number",
+                            "title": "Meetings per Year",
+                        },
+                        "activities": {"type": "string", "title": "Key Activities"},
+                    },
+                    "required": ["has_committee"],
+                },
+                "governance_area_id": 3,
+            },
+            # Social Protection and Sensitivity
+            {
+                "name": "Social Welfare Programs",
+                "description": "The barangay implements social welfare programs for vulnerable sectors.",
+                "form_schema": {
+                    "type": "object",
+                    "properties": {
+                        "has_programs": {
+                            "type": "boolean",
+                            "title": "Has Social Welfare Programs",
+                        },
+                        "program_count": {
+                            "type": "number",
+                            "title": "Number of Programs",
+                        },
+                        "beneficiaries": {
+                            "type": "number",
+                            "title": "Number of Beneficiaries",
+                        },
+                    },
+                    "required": ["has_programs"],
+                },
+                "governance_area_id": 4,
+            },
+            # Business-Friendliness and Competitiveness
+            {
+                "name": "Business Support Services",
+                "description": "The barangay provides support services for local businesses and entrepreneurs.",
+                "form_schema": {
+                    "type": "object",
+                    "properties": {
+                        "has_services": {
+                            "type": "boolean",
+                            "title": "Has Business Support Services",
+                        },
+                        "service_types": {
+                            "type": "string",
+                            "title": "Types of Services",
+                        },
+                        "businesses_served": {
+                            "type": "number",
+                            "title": "Number of Businesses Served",
+                        },
+                    },
+                    "required": ["has_services"],
+                },
+                "governance_area_id": 5,
+            },
+            # Environmental Management
+            {
+                "name": "Environmental Programs",
+                "description": "The barangay implements environmental protection and sustainability programs.",
+                "form_schema": {
+                    "type": "object",
+                    "properties": {
+                        "has_programs": {
+                            "type": "boolean",
+                            "title": "Has Environmental Programs",
+                        },
+                        "program_types": {
+                            "type": "string",
+                            "title": "Types of Programs",
+                        },
+                        "trees_planted": {
+                            "type": "number",
+                            "title": "Trees Planted This Year",
+                        },
+                    },
+                    "required": ["has_programs"],
+                },
+                "governance_area_id": 6,
+            },
+        ]
+
+        for indicator_data in sample_indicators:
+            indicator = Indicator(**indicator_data)
+            db.add(indicator)
+
+        db.commit()
+        print(f"Created {len(sample_indicators)} sample indicators")
 
     def create_assessment(
         self, db: Session, assessment_create: AssessmentCreate
@@ -1377,7 +1551,7 @@ class AssessmentService:
 
         # Assessments by status
         status_stats = (
-            db.query(Assessment.status, func.count())  # type: ignore
+            db.query(Assessment.status, func.count(Assessment.id))
             .group_by(Assessment.status)
             .all()
         )
