@@ -45,6 +45,20 @@ export interface GovernanceArea {
 
 
 /**
+ * GovernanceAreaProgress
+ */
+export interface GovernanceAreaProgress {
+  id: number;
+  name: string;
+  area_type: string;
+  total_indicators: number;
+  completed_indicators: number;
+  completion_percentage: number;
+  requires_rework_count: number;
+}
+
+
+/**
  * MOVStatus
  */
 export type MOVStatus = typeof MOVStatus[keyof typeof MOVStatus];
@@ -56,3 +70,13 @@ export const MOVStatus = {
   Uploaded: 'Uploaded',
   Deleted: 'Deleted',
 } as const;
+
+
+/**
+ * ProgressSummary
+ */
+export interface ProgressSummary {
+  current: number;
+  total: number;
+  percentage: number;
+}

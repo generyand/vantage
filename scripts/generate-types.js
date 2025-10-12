@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { generate } from 'orval';
 import fs from 'fs';
+import { generate } from 'orval';
 import path from 'path';
 
 const API_URL = 'http://localhost:8000/openapi.json';
@@ -356,7 +356,16 @@ function groupSchemas() {
               const [, importedType, importFile] = importMatch;
               // Only add imports for types not in current group
               if (!groupSchemas.includes(importedType)) {
-                imports.add(`import type { ${importedType} } from './${importFile}';`);
+                // Check if the imported type is in another group
+                const targetGroup = Object.keys(groups).find(group => 
+                  groups[group].includes(importedType)
+                );
+                
+                if (targetGroup) {
+                  imports.add(`import type { ${importedType} } from '../${targetGroup}';`);
+                } else {
+                  imports.add(`import type { ${importedType} } from './${importFile}';`);
+                }
               }
             }
           }

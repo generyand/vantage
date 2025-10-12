@@ -288,6 +288,80 @@ class FormSchemaValidation(BaseModel):
 
 
 # ============================================================================
+# Dashboard Schemas
+# ============================================================================
+
+
+class GovernanceAreaProgress(BaseModel):
+    """Progress summary for a governance area."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    area_type: str
+    total_indicators: int
+    completed_indicators: int
+    completion_percentage: float
+    requires_rework_count: int
+
+
+class ProgressSummary(BaseModel):
+    """Progress summary with current, total, and percentage."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    current: int
+    total: int
+    percentage: float
+
+
+class AssessmentDashboardStats(BaseModel):
+    """Dashboard statistics for assessment progress."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    # Overall progress
+    total_indicators: int
+    completed_indicators: int
+    completion_percentage: float
+
+    # Progress object
+    progress: ProgressSummary
+
+    # Status breakdown
+    responses_requiring_rework: int
+    responses_with_feedback: int
+    responses_with_movs: int
+
+    # Governance area progress
+    governance_areas: List[GovernanceAreaProgress]
+
+    # Assessment metadata
+    assessment_status: AssessmentStatus
+    created_at: datetime
+    updated_at: datetime
+    submitted_at: Optional[datetime] = None
+
+
+class AssessmentDashboardResponse(BaseModel):
+    """Complete dashboard response for assessment overview."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    assessment_id: int
+    blgu_user_id: int
+    barangay_name: str
+    performance_year: int
+    assessment_year: int
+    stats: AssessmentDashboardStats
+    feedback: List[
+        Dict[str, Any]
+    ] = []  # Enhanced feedback array with assessor comments
+    upcoming_deadlines: List[Dict[str, Any]] = []  # Any upcoming deadlines
+
+
+# ============================================================================
 # Update forward references for nested models
 # ============================================================================
 

@@ -8,6 +8,7 @@ from app.db.enums import UserRole
 from app.db.models.user import User
 from app.schemas.assessment import (
     MOV,
+    AssessmentDashboardResponse,
     AssessmentResponse,
     AssessmentResponseCreate,
     AssessmentResponseUpdate,
@@ -38,12 +39,52 @@ async def get_current_blgu_user(
     Raises:
         HTTPException: If user doesn't have BLGU privileges
     """
-    if current_user.role != UserRole.BLGU_USER:
+    if current_user.role.value != UserRole.BLGU_USER.value:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions. BLGU user access required.",
         )
     return current_user
+
+
+@router.get(
+    "/dashboard", response_model=AssessmentDashboardResponse, tags=["assessments"]
+)
+async def get_assessment_dashboard(
+    db: Session = Depends(deps.get_db),
+    current_user: User = Depends(get_current_blgu_user),
+):
+    """
+    Get dashboard data for the logged-in BLGU user's assessment.
+
+    Returns dashboard-specific data optimized for overview and progress tracking:
+    - Progress statistics (completed/total indicators)
+    - Governance area progress summaries
+    - Performance metrics (responses requiring rework, with feedback, with MOVs)
+    - Recent feedback summaries
+    - Assessment status and metadata
+
+    This endpoint automatically creates an assessment if one doesn't exist
+    for the BLGU user.
+    """
+    try:
+        dashboard_data = assessment_service.get_assessment_dashboard_data(
+            db, getattr(current_user, "id")
+        )
+
+        if not dashboard_data:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to retrieve dashboard data",
+            )
+
+        return dashboard_data
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving dashboard data: {str(e)}",
+        ) from e
 
 
 @router.get("/my-assessment", response_model=Dict[str, Any], tags=["assessments"])
@@ -67,7 +108,7 @@ async def get_my_assessment(
     """
     try:
         assessment_data = assessment_service.get_assessment_for_blgu_with_full_data(
-            db, current_user.id
+            db, getattr(current_user, "id")
         )
 
         if not assessment_data:
@@ -82,7 +123,7 @@ async def get_my_assessment(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error retrieving assessment data: {str(e)}",
-        )
+        ) from e
 
 
 @router.get(
@@ -111,8 +152,10 @@ async def get_assessment_response(
         )
 
     # Verify that the response belongs to the current user's assessment
-    assessment = assessment_service.get_assessment_for_blgu(db, current_user.id)
-    if not assessment or response.assessment_id != assessment.id:
+    assessment = assessment_service.get_assessment_for_blgu(
+        db, getattr(current_user, "id")
+    )
+    if assessment is None or response.assessment_id != assessment.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied. Response does not belong to your assessment",
@@ -151,8 +194,10 @@ async def update_assessment_response(
         )
 
     # Verify ownership
-    assessment = assessment_service.get_assessment_for_blgu(db, current_user.id)
-    if not assessment or response.assessment_id != assessment.id:
+    assessment = assessment_service.get_assessment_for_blgu(
+        db, getattr(current_user, "id")
+    )
+    if assessment is None or response.assessment_id != assessment.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied. Response does not belong to your assessment",
@@ -187,7 +232,7 @@ async def update_assessment_response(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error updating response: {str(e)}",
-        )
+        ) from e
 
 
 @router.post("/responses", response_model=AssessmentResponse, tags=["assessments"])
@@ -203,7 +248,9 @@ async def create_assessment_response(
     The response data is validated against the indicator's form schema.
     """
     # Verify the assessment belongs to the current user
-    assessment = assessment_service.get_assessment_for_blgu(db, current_user.id)
+    assessment = assessment_service.get_assessment_for_blgu(
+        db, getattr(current_user, "id")
+    )
     if not assessment:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -225,7 +272,7 @@ async def create_assessment_response(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error creating response: {str(e)}",
-        )
+        ) from e
 
 
 @router.post(
@@ -245,7 +292,9 @@ async def submit_assessment(
 
     Returns validation results with any errors or warnings.
     """
-    assessment = assessment_service.get_assessment_for_blgu(db, current_user.id)
+    assessment = assessment_service.get_assessment_for_blgu(
+        db, getattr(current_user, "id")
+    )
     if not assessment:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -260,7 +309,7 @@ async def submit_assessment(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error submitting assessment: {str(e)}",
-        )
+        ) from e
 
 
 @router.post("/responses/{response_id}/movs", response_model=MOV, tags=["assessments"])
@@ -285,8 +334,10 @@ async def upload_mov(
             detail="Assessment response not found",
         )
 
-    assessment = assessment_service.get_assessment_for_blgu(db, current_user.id)
-    if not assessment or response.assessment_id != assessment.id:
+    assessment = assessment_service.get_assessment_for_blgu(
+        db, getattr(current_user, "id")
+    )
+    if assessment is None or response.assessment_id != assessment.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied. Response does not belong to your assessment",
@@ -305,7 +356,7 @@ async def upload_mov(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error creating MOV: {str(e)}",
-        )
+        ) from e
 
 
 @router.delete("/movs/{mov_id}", response_model=Dict[str, str], tags=["assessments"])
@@ -322,7 +373,7 @@ async def delete_mov(
     """
     # First get the MOV to verify ownership
     mov = db.query(MOV).filter(MOV.id == mov_id).first()
-    if not mov:
+    if mov is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="MOV not found"
         )
@@ -335,8 +386,10 @@ async def delete_mov(
             detail="Assessment response not found",
         )
 
-    assessment = assessment_service.get_assessment_for_blgu(db, current_user.id)
-    if not assessment or response.assessment_id != assessment.id:
+    assessment = assessment_service.get_assessment_for_blgu(
+        db, getattr(current_user, "id")
+    )
+    if assessment is None or response.assessment_id != assessment.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied. MOV does not belong to your assessment",
@@ -357,4 +410,4 @@ async def delete_mov(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error deleting MOV: {str(e)}",
-        )
+        ) from e
