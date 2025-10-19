@@ -4,8 +4,8 @@
 from datetime import datetime
 
 from app.db.base import Base
-from app.db.enums import AssessmentStatus, MOVStatus
-from sqlalchemy import JSON, DateTime, Enum, ForeignKey, Integer, String, Text
+from app.db.enums import AssessmentStatus, MOVStatus, ValidationStatus
+from sqlalchemy import JSON, Boolean, DateTime, Enum, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
@@ -68,6 +68,12 @@ class AssessmentResponse(Base):
     # Completion status
     is_completed: Mapped[bool] = mapped_column(default=False, nullable=False)
     requires_rework: Mapped[bool] = mapped_column(default=False, nullable=False)
+
+    # Validation status (set by assessor)
+    validation_status: Mapped[ValidationStatus] = mapped_column(
+        Enum(ValidationStatus, name="validation_status_enum", create_constraint=True),
+        nullable=True,
+    )
 
     # Foreign keys
     assessment_id: Mapped[int] = mapped_column(
@@ -154,6 +160,11 @@ class FeedbackComment(Base):
 
     # Comment type (general feedback, specific issue, etc.)
     comment_type: Mapped[str] = mapped_column(String, nullable=False, default="general")
+
+    # Internal note flag - distinguishes internal assessor notes from public feedback
+    is_internal_note: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False
+    )
 
     # Foreign keys
     response_id: Mapped[int] = mapped_column(

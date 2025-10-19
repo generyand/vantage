@@ -45,3 +45,13 @@ class MOVStatus(str, enum.Enum):
     PENDING = "Pending"
     UPLOADED = "Uploaded"
     DELETED = "Deleted"
+
+
+class ValidationStatus(str, enum.Enum):
+    """
+    Enum for individual assessment response validation status.
+    """
+
+    PASS = "Pass"
+    FAIL = "Fail"
+    CONDITIONAL = "Conditional"

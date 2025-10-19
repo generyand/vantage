@@ -3,6 +3,7 @@
 // 📁 Barrel file for all endpoint modules.
 
 export * from './assessments';
+export * from './assessor';
 export * from './auth';
 export * from './default';
 export * from './lookups';

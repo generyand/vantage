@@ -7,7 +7,7 @@
 # 📦 Imports
 from fastapi import APIRouter
 
-from . import assessments, auth, lookups, system, users
+from . import assessments, assessor, auth, lookups, system, users
 
 # Create the main API router for V1
 api_router = APIRouter()
@@ -20,3 +20,4 @@ api_router.include_router(
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(system.router, prefix="/system", tags=["system"])
 api_router.include_router(lookups.router, prefix="/lookups", tags=["lookups"])
+api_router.include_router(assessor.router, prefix="/assessor", tags=["assessor"])

@@ -25,3 +25,29 @@ export interface ValidationError {
  * ValidationErrorLocItem
  */
 export type ValidationErrorLocItem = string | number;
+
+
+/**
+ * ValidationRequestInternalNote
+ */
+export type ValidationRequestInternalNote = string | null;
+
+
+/**
+ * ValidationRequestPublicComment
+ */
+export type ValidationRequestPublicComment = string | null;
+
+
+/**
+ * ValidationStatus
+ */
+export type ValidationStatus = typeof ValidationStatus[keyof typeof ValidationStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ValidationStatus = {
+  Pass: 'Pass',
+  Fail: 'Fail',
+  Conditional: 'Conditional',
+} as const;

@@ -2,13 +2,13 @@
 
 This document outlines the high-level feature epics for the development of the VANTAGE web application. Epics are listed in the general order of implementation.
 
-## Epic 1: Core User Authentication & Management
+## Phase 1: Core User Authentication & Management
 **Status:** ✅ Completed  
 **Description:** The foundational security layer. Includes user login/logout, a User Management dashboard for the MLGOO-DILG (CRUD operations), and a secure, role-based access control system. This is the gateway to all other features.
 
 ---
 
-## Epic 2: The BLGU Pre-Assessment Workflow
+## Phase 2: The BLGU Pre-Assessment Workflow
 **Status:** ✅ Completed  
 **Description:** This epic focuses entirely on the BLGU user's journey. It's the core "data input" part of the application, where the initial self-assessment data is captured.
 
@@ -21,7 +21,7 @@ This document outlines the high-level feature epics for the development of the V
 
 ---
 
-## Epic 3: The Assessor Validation & Rework Cycle
+## Phase 3: The Assessor Validation & Rework Cycle
 **Status:** Not Started  
 **Description:** This epic builds the tools for the DILG Area Assessors. It covers both the initial review for the rework cycle and the final validation that occurs during the in-person Table Assessment.
 
@@ -34,7 +34,7 @@ This document outlines the high-level feature epics for the development of the V
 
 ---
 
-## Epic 4: The Core Intelligence Layer
+## Phase 4: The Core Intelligence Layer
 **Status:** Not Started  
 **Description:** This epic implements the "smart" features that automate scoring and generate insights based on the final, validated data.
 
@@ -44,7 +44,7 @@ This document outlines the high-level feature epics for the development of the V
 
 ---
 
-## Epic 5: High-Level Analytics & Reporting
+## Phase 5: High-Level Analytics & Reporting
 **Status:** Not Started  
 **Description:** This epic focuses on providing the MLGOO-DILG and other stakeholders with high-level data visualizations and reports.
 
@@ -57,7 +57,7 @@ This document outlines the high-level feature epics for the development of the V
 
 ---
 
-## Epic 6: Administrative Features (MLGOO-DILG)
+## Phase 6: Administrative Features (MLGOO-DILG)
 **Status:** Not Started  
 **Description:** A dedicated epic for high-level administrative functions required by the MLGOO-DILG to manage the system over time.
 
@@ -68,7 +68,7 @@ This document outlines the high-level feature epics for the development of the V
 
 ---
 
-## Epic 7: General UI Polish & Notifications
+## Phase 7: General UI Polish & Notifications
 **Status:** Not Started  
 **Description:** This is a cross-cutting epic that covers final polish and essential user experience features.
 

@@ -3,7 +3,7 @@
 
 from app.db.base import Base
 from app.db.enums import AreaType
-from sqlalchemy import JSON, Column, Enum, ForeignKey, SmallInteger, String
+from sqlalchemy import JSON, Column, Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
@@ -18,7 +18,7 @@ class GovernanceArea(Base):
     __tablename__ = "governance_areas"
 
     # Primary key
-    id = Column(SmallInteger, primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
 
     # Area information
     name = Column(String, nullable=False, unique=True)

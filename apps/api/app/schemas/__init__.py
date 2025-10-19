@@ -30,6 +30,13 @@ from .assessment import (
     MOVListResponse,
     MOVUpdate,
 )
+from .assessor import (
+    AssessmentDetailsResponse,
+    AssessorQueueItem,
+    MOVUploadResponse,
+    ValidationRequest,
+    ValidationResponse,
+)
 from .system import ApiResponse, ErrorResponse, HealthCheck, SuccessResponse
 from .token import AuthToken, LoginRequest, Token, TokenPayload
 from .user import User, UserCreate, UserInDB, UserUpdate
@@ -75,4 +82,10 @@ __all__ = [
     "HealthCheck",
     "ErrorResponse",
     "SuccessResponse",
+    # Assessor schemas
+    "AssessorQueueItem",
+    "AssessmentDetailsResponse",
+    "ValidationRequest",
+    "ValidationResponse",
+    "MOVUploadResponse",
 ]

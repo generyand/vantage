@@ -18,6 +18,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
   1. When you finish a **sub‑task**, immediately mark it as completed by changing `[ ]` to `[x]`.
   2. If **all** subtasks underneath a parent task are now `[x]`, follow this sequence:
     - **First**: Run the full test suite (`pytest`, `npm test`, `bin/rails test`, etc.)
+    - **Testing Protocol**: If completing a **Story** or **Epic**, immediately follow the testing prompt from `@feature-test-prompt.mdc` to ensure comprehensive validation
     - **Only if all tests pass**: Stage changes (`git add .`)
     - **Clean up**: Remove any temporary files and temporary code before committing
     - **Commit**: Use a descriptive commit message that:

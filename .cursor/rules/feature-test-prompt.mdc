@@ -1,0 +1,74 @@
+---
+description: |
+  When a checklist item is marked complete in a three-tier task list (Epic/Story/Task),
+  immediately prompt with a minimal test checklist and concrete commands to verify the change.
+globs:
+  - "docs/**/*.md"
+alwaysApply: false
+---
+
+# Automatic Test Prompt on Task Completion
+
+This rule ensures that every completed Epic/Story/Task in markdown checklists is followed by a concise, actionable test prompt with copy-pastable commands.
+
+## Trigger Conditions
+
+When you perform an edit that turns a markdown checklist item from `[ ]` to `[x]` in a document describing three-tier tasks (e.g., `Epic`, `Story`, `Atomic Task`), immediately output the "Testing Prompt" below.
+
+Heuristics to classify the completion level:
+
+- If the completed item header mentions "Epic" or is the top-level completion of a group of stories → Level: Epic
+- If it’s a story item whose atomic tasks are all `[x]` → Level: Story
+- If it’s a single atomic task under a story → Level: Task
+
+## Testing Prompt (emit exactly after marking complete)
+
+Use this structure; replace bracketed fields with concrete values.
+
+```text
+Level: [Epic|Story|Task]
+Area: [API|Web|Worker]  
+Feature: [short title]  
+Risk areas: [affected endpoints/pages/jobs]
+
+Minimal Test Checklist
+- Unit/Route-Level: [yes/no]
+- Integration/E2E: [yes/no]
+- Manual Smoke: [yes]
+
+Commands
+- API (if applicable):
+  pnpm --filter api exec uv run pytest -vv --log-cli-level=DEBUG -q
+
+- Web (if applicable):
+  pnpm --filter web type-check && pnpm --filter web lint
+
+- E2E (optional, if configured):
+  pnpm --filter web exec playwright test
+
+Manual Smoke Steps
+1) [API] Method/URL: [GET|POST] http://localhost:8000/[path]
+   Payload: { ... }
+   Expect: [status], [key fields]
+2) [Web] Navigate to: http://localhost:3000/[path]
+   Action: [click/type]
+   Expect: [visible text/state change]
+3) [Worker] Trigger: [command/event]
+   Expect: [side effect in DB/logs]
+
+Evidence
+- Paste terminal output or attach screenshot(s) here.
+```
+
+## Behavior Notes
+
+- Keep the prompt concise; aim for 5 minutes to execute.
+- Prefer a single focused test over exhaustive coverage for Task-level; add breadth only at Story/Epic.
+- If a change spans multiple areas, include only the relevant command blocks.
+- Do not block the flow: emit the prompt immediately after toggling `[ ]` → `[x]` before proceeding.
+
+## Scope-Specific Hints (optional to include inline)
+
+- API: prefer `TestClient` for route-level checks; use small fixtures and assert status/code + key fields.
+- Web: type-check and lint; manual UI click-through for the changed page; watch browser console for errors.
+- Worker: run against a tiny fixture; confirm idempotency and core side effect once.

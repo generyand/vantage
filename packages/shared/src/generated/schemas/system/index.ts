@@ -39,3 +39,19 @@ export type HealthCheckChecks = { [key: string]: unknown };
  * HealthCheckConnections
  */
 export type HealthCheckConnections = { [key: string]: unknown };
+
+
+/**
+ * MOVUploadResponse
+ */
+export interface MOVUploadResponse {
+  success: boolean;
+  message: string;
+  mov_id: MOVUploadResponseMovId;
+}
+
+
+/**
+ * MOVUploadResponseMovId
+ */
+export type MOVUploadResponseMovId = number | null;

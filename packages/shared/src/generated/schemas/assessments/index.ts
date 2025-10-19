@@ -59,6 +59,41 @@ export type AssessmentDashboardStatsSubmittedAt = string | null;
 
 
 /**
+ * AssessmentDetailsResponse
+ */
+export interface AssessmentDetailsResponse {
+  success: boolean;
+  message?: AssessmentDetailsResponseMessage;
+  assessment_id?: AssessmentDetailsResponseAssessmentId;
+  assessment?: AssessmentDetailsResponseAssessment;
+}
+
+
+/**
+ * AssessmentDetailsResponseAssessment
+ */
+export type AssessmentDetailsResponseAssessment = AssessmentDetailsResponseAssessmentAnyOf | null;
+
+
+/**
+ * AssessmentDetailsResponseAssessmentAnyOf
+ */
+export type AssessmentDetailsResponseAssessmentAnyOf = { [key: string]: unknown };
+
+
+/**
+ * AssessmentDetailsResponseAssessmentId
+ */
+export type AssessmentDetailsResponseAssessmentId = number | null;
+
+
+/**
+ * AssessmentDetailsResponseMessage
+ */
+export type AssessmentDetailsResponseMessage = string | null;
+
+
+/**
  * AssessmentResponse
  */
 export interface AssessmentResponse {

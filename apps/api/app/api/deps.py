@@ -10,7 +10,7 @@ from app.db.enums import UserRole
 from app.db.models.user import User
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from supabase import Client
 
 # Security scheme for JWT tokens
@@ -130,3 +130,49 @@ def get_supabase_admin_client() -> Client:
         Client: Supabase admin client for server-side operations
     """
     return get_supabase_admin()
+
+
+async def get_current_area_assessor_user(
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db),
+) -> User:
+    """
+    Get the current authenticated Area Assessor user with governance area loaded.
+
+    - Requires role to be AREA_ASSESSOR
+    - Ensures an assigned governance_area exists
+    - Returns the user with governance_area eagerly loaded
+
+    Raises:
+        HTTPException: 403 if role is not AREA_ASSESSOR or governance area missing
+    """
+    user_with_area = (
+        db.query(User)
+        .options(joinedload(User.governance_area))
+        .filter(User.id == current_user.id)
+        .first()
+    )
+
+    if not user_with_area:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    if (
+        getattr(user_with_area, "role", None) is None
+        or user_with_area.role != UserRole.AREA_ASSESSOR
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions. Area Assessor access required.",
+        )
+
+    if user_with_area.governance_area is None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Assessor must be assigned to a governance area.",
+        )
+
+    return user_with_area
