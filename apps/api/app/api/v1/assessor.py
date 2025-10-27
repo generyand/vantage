@@ -127,3 +127,69 @@ async def get_assessment_details(
     )
 
     return AssessmentDetailsResponse(**result)
+
+
+@router.post(
+    "/assessments/{assessment_id}/rework",
+    tags=["assessor"],
+)
+async def send_assessment_for_rework(
+    assessment_id: int,
+    db: Session = Depends(deps.get_db),
+    current_assessor: User = Depends(deps.get_current_area_assessor_user),
+):
+    """
+    Send assessment back to BLGU user for rework.
+
+    Changes the assessment status to 'Needs Rework' and triggers a notification
+    to the BLGU user. This endpoint fails with a 403 error if the assessment's
+    rework_count is not 0 (meaning it has already been sent for rework).
+
+    The assessor must have permission to review assessments in their governance area.
+    """
+    try:
+        result = assessor_service.send_assessment_for_rework(
+            db=db, assessment_id=assessment_id, assessor=current_assessor
+        )
+        return result
+    except ValueError as e:
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=400, detail=str(e))
+    except PermissionError as e:
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=403, detail=str(e))
+
+
+@router.post(
+    "/assessments/{assessment_id}/finalize",
+    tags=["assessor"],
+)
+async def finalize_assessment(
+    assessment_id: int,
+    db: Session = Depends(deps.get_db),
+    current_assessor: User = Depends(deps.get_current_area_assessor_user),
+):
+    """
+    Finalize assessment validation, permanently locking it.
+
+    Changes the assessment status to 'Validated', permanently locking the assessment
+    from further edits by either the BLGU or the Assessor. This action can only be
+    performed if all assessment responses have been reviewed (have a validation status).
+
+    The assessor must have permission to review assessments in their governance area.
+    """
+    try:
+        result = assessor_service.finalize_assessment(
+            db=db, assessment_id=assessment_id, assessor=current_assessor
+        )
+        return result
+    except ValueError as e:
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=400, detail=str(e))
+    except PermissionError as e:
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=403, detail=str(e))

@@ -1,15 +1,17 @@
+'use client';
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { GovernanceAreaProgress } from "@/types/dashboard";
 import {
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  Minus,
-  TrendingDown,
-  TrendingUp,
-  XCircle,
+    AlertCircle,
+    CheckCircle,
+    Clock,
+    Minus,
+    TrendingDown,
+    TrendingUp,
+    XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

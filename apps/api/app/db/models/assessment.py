@@ -29,6 +29,9 @@ class Assessment(Base):
         default=AssessmentStatus.DRAFT,
     )
 
+    # Rework tracking
+    rework_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
     # Foreign key to BLGU user
     blgu_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
 

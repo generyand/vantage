@@ -1,13 +1,15 @@
+'use client';
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { AssessmentProgress, AssessmentStatus } from "@/types/dashboard";
 import {
-  Activity,
-  AlertTriangle,
-  CheckCircle2,
-  TrendingUp,
+    Activity,
+    AlertTriangle,
+    CheckCircle2,
+    TrendingUp,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 

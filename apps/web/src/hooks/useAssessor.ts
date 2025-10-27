@@ -1,6 +1,14 @@
 "use client";
 
-import { useGetAssessorAssessmentsAssessmentId, useGetAssessorQueue, usePostAssessorAssessmentResponsesResponseIdMovs, usePostAssessorAssessmentResponsesResponseIdValidate } from "@vantage/shared";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  useGetAssessorAssessmentsAssessmentId,
+  useGetAssessorQueue,
+  usePostAssessorAssessmentResponsesResponseIdMovs,
+  usePostAssessorAssessmentResponsesResponseIdValidate,
+  usePostAssessorAssessmentsAssessmentIdFinalize,
+  usePostAssessorAssessmentsAssessmentIdRework
+} from "@vantage/shared";
 
 const assessorKeys = {
   all: ["assessor"] as const,
@@ -33,6 +41,44 @@ export function useAssessorMOVUploadMutation(assessmentId: string) {
       onSuccess: () => {
         // Invalidate the assessment details query to refresh the data
         // This will be handled by the component using the mutation
+      },
+    },
+  });
+}
+
+export function useAssessorReworkMutation(assessmentId: string) {
+  const queryClient = useQueryClient();
+  
+  return usePostAssessorAssessmentsAssessmentIdRework({
+    mutation: {
+      onSuccess: () => {
+        // Invalidate the assessment details query to refresh the data
+        queryClient.invalidateQueries({ 
+          queryKey: assessorKeys.assessmentDetails(assessmentId) 
+        });
+        // Also invalidate the queue to reflect status changes
+        queryClient.invalidateQueries({ 
+          queryKey: assessorKeys.queue() 
+        });
+      },
+    },
+  });
+}
+
+export function useAssessorFinalizeMutation(assessmentId: string) {
+  const queryClient = useQueryClient();
+  
+  return usePostAssessorAssessmentsAssessmentIdFinalize({
+    mutation: {
+      onSuccess: () => {
+        // Invalidate the assessment details query to refresh the data
+        queryClient.invalidateQueries({ 
+          queryKey: assessorKeys.assessmentDetails(assessmentId) 
+        });
+        // Also invalidate the queue to reflect status changes
+        queryClient.invalidateQueries({ 
+          queryKey: assessorKeys.queue() 
+        });
       },
     },
   });

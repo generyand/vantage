@@ -323,3 +323,142 @@ export function useGetAssessorAssessmentsAssessmentId<TData = Awaited<ReturnType
 
 
 
+/**
+ * Send assessment back to BLGU user for rework.
+
+Changes the assessment status to 'Needs Rework' and triggers a notification
+to the BLGU user. This endpoint fails with a 403 error if the assessment's
+rework_count is not 0 (meaning it has already been sent for rework).
+
+The assessor must have permission to review assessments in their governance area.
+ * @summary Send Assessment For Rework
+ */
+export const postAssessorAssessments$AssessmentIdRework = (
+    assessmentId: number,
+ options?: SecondParameter<typeof mutator>,signal?: AbortSignal
+) => {
+      
+      
+      return mutator<unknown>(
+      {url: `http://localhost:8000/api/v1/assessor/assessments/${assessmentId}/rework`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostAssessorAssessmentsAssessmentIdReworkMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdRework>>, TError,{assessmentId: number}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdRework>>, TError,{assessmentId: number}, TContext> => {
+
+const mutationKey = ['postAssessorAssessmentsAssessmentIdRework'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdRework>>, {assessmentId: number}> = (props) => {
+          const {assessmentId} = props ?? {};
+
+          return  postAssessorAssessments$AssessmentIdRework(assessmentId,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostAssessorAssessmentsAssessmentIdReworkMutationResult = NonNullable<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdRework>>>
+    
+    export type PostAssessorAssessmentsAssessmentIdReworkMutationError = HTTPValidationError
+
+    /**
+ * @summary Send Assessment For Rework
+ */
+export const usePostAssessorAssessmentsAssessmentIdRework = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdRework>>, TError,{assessmentId: number}, TContext>, request?: SecondParameter<typeof mutator>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdRework>>,
+        TError,
+        {assessmentId: number},
+        TContext
+      > => {
+
+      const mutationOptions = getPostAssessorAssessmentsAssessmentIdReworkMutationOptions(options);
+
+      return useMutation(mutationOptions );
+    }
+    /**
+ * Finalize assessment validation, permanently locking it.
+
+Changes the assessment status to 'Validated', permanently locking the assessment
+from further edits by either the BLGU or the Assessor. This action can only be
+performed if all assessment responses have been reviewed (have a validation status).
+
+The assessor must have permission to review assessments in their governance area.
+ * @summary Finalize Assessment
+ */
+export const postAssessorAssessments$AssessmentIdFinalize = (
+    assessmentId: number,
+ options?: SecondParameter<typeof mutator>,signal?: AbortSignal
+) => {
+      
+      
+      return mutator<unknown>(
+      {url: `http://localhost:8000/api/v1/assessor/assessments/${assessmentId}/finalize`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostAssessorAssessmentsAssessmentIdFinalizeMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdFinalize>>, TError,{assessmentId: number}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdFinalize>>, TError,{assessmentId: number}, TContext> => {
+
+const mutationKey = ['postAssessorAssessmentsAssessmentIdFinalize'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdFinalize>>, {assessmentId: number}> = (props) => {
+          const {assessmentId} = props ?? {};
+
+          return  postAssessorAssessments$AssessmentIdFinalize(assessmentId,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostAssessorAssessmentsAssessmentIdFinalizeMutationResult = NonNullable<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdFinalize>>>
+    
+    export type PostAssessorAssessmentsAssessmentIdFinalizeMutationError = HTTPValidationError
+
+    /**
+ * @summary Finalize Assessment
+ */
+export const usePostAssessorAssessmentsAssessmentIdFinalize = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdFinalize>>, TError,{assessmentId: number}, TContext>, request?: SecondParameter<typeof mutator>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdFinalize>>,
+        TError,
+        {assessmentId: number},
+        TContext
+      > => {
+
+      const mutationOptions = getPostAssessorAssessmentsAssessmentIdFinalizeMutationOptions(options);
+
+      return useMutation(mutationOptions );
+    }
+    

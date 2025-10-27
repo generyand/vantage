@@ -1,8 +1,10 @@
-import { AssessorFeedback } from '@/types/dashboard';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+'use client';
+
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AssessorFeedback } from '@/types/dashboard';
 import { AlertTriangle, ArrowRight, MessageSquare } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface FeedbackSectionProps {
   feedback: AssessorFeedback[];

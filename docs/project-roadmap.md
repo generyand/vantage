@@ -22,7 +22,7 @@ This document outlines the high-level feature epics for the development of the V
 ---
 
 ## Phase 3: The Assessor Validation & Rework Cycle
-**Status:** Not Started  
+**Status:** In Progress
 **Description:** This epic builds the tools for the DILG Area Assessors. It covers both the initial review for the rework cycle and the final validation that occurs during the in-person Table Assessment.
 
 **Key Features:**

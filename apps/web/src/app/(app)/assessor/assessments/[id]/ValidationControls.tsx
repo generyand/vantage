@@ -1,5 +1,6 @@
 "use client";
 
+import { FilePreviewerModal } from "@/components/shared";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,11 +8,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { useAssessorValidationMutation, useAssessorMOVUploadMutation } from "@/hooks/useAssessor";
+import { useAssessorMOVUploadMutation, useAssessorValidationMutation } from "@/hooks/useAssessor";
 import { useQueryClient } from "@tanstack/react-query";
-import { ValidationStatus, MOVCreate } from "@vantage/shared";
-import { AlertTriangle, CheckCircle, FileText, MessageSquare, Save, XCircle, Upload, X } from "lucide-react";
-import { useState, useRef } from "react";
+import { MOVCreate, ValidationStatus } from "@vantage/shared";
+import { AlertTriangle, CheckCircle, Eye, FileText, MessageSquare, Save, Upload, X, XCircle } from "lucide-react";
+import { useRef, useState } from "react";
 
 interface ValidationControlsProps {
   responseId: number;
@@ -39,6 +40,8 @@ export function ValidationControls({
   const [internalNote, setInternalNote] = useState(currentInternalNote || "");
   const [isInternalNote, setIsInternalNote] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
   const validationMutation = useAssessorValidationMutation(assessmentId);
@@ -111,6 +114,24 @@ export function ValidationControls({
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      // Create a preview URL for the selected file
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    }
+  };
+
+  const handlePreviewFile = () => {
+    if (selectedFile && previewUrl) {
+      setIsPreviewOpen(true);
+    }
+  };
+
+  const handleClosePreview = () => {
+    setIsPreviewOpen(false);
+    // Clean up the preview URL when closing
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
     }
   };
 
@@ -159,8 +180,29 @@ export function ValidationControls({
 
   const removeSelectedFile = () => {
     setSelectedFile(null);
+    // Clean up preview URL
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+  };
+
+  const getFileType = (file: File) => {
+    if (file.type.startsWith('image/')) {
+      return file.type.split('/')[1]; // e.g., 'jpeg', 'png'
+    } else if (file.type === 'application/pdf') {
+      return 'pdf';
+    } else if (file.type.startsWith('video/')) {
+      return file.type.split('/')[1]; // e.g., 'mp4', 'webm'
+    } else if (file.type.startsWith('text/')) {
+      return 'txt';
+    } else {
+      // Extract extension from filename as fallback
+      const extension = file.name.split('.').pop()?.toLowerCase();
+      return extension || 'unknown';
     }
   };
 
@@ -389,15 +431,27 @@ export function ValidationControls({
                     </p>
                   </div>
                 </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={removeSelectedFile}
-                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePreviewFile}
+                    className="flex items-center gap-1"
+                  >
+                    <Eye className="h-4 w-4" />
+                    Preview
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={removeSelectedFile}
+                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             )}
 
@@ -428,6 +482,17 @@ export function ValidationControls({
           </Button>
         </div>
       </CardContent>
+
+      {/* File Preview Modal */}
+      {selectedFile && previewUrl && (
+        <FilePreviewerModal
+          isOpen={isPreviewOpen}
+          onClose={handleClosePreview}
+          fileUrl={previewUrl}
+          fileName={selectedFile.name}
+          fileType={getFileType(selectedFile)}
+        />
+      )}
     </Card>
   );
 }

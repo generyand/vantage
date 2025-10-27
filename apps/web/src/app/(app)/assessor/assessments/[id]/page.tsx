@@ -4,13 +4,13 @@ import { PageHeader } from "@/components/shared";
 import { useAssessorAssessmentDetails } from "@/hooks/useAssessor";
 import { AlertCircle, CheckCircle, Clock, FileText, MessageSquare, Upload } from "lucide-react";
 import { useParams } from "next/navigation";
-import { AssessmentDetailsSkeleton, AssessmentResponseCard } from "./";
+import { AssessmentDetailsSkeleton, AssessmentResponseCard, AssessmentWorkflowButtons } from "./";
 
 export default function AssessmentValidationPage() {
   const params = useParams();
   const assessmentId = params.id as string;
 
-  const { data, isLoading, error } = useAssessorAssessmentDetails(assessmentId);
+  const { data, isLoading, error, refetch } = useAssessorAssessmentDetails(assessmentId);
 
   if (isLoading) {
     return <AssessmentDetailsSkeleton />;
@@ -122,6 +122,16 @@ export default function AssessmentValidationPage() {
             <p><strong>Validated:</strong> {new Date(assessment.validated_at).toLocaleDateString()}</p>
           )}
         </div>
+      </div>
+
+      {/* Assessment Workflow Buttons */}
+      <div className="mb-8">
+        <AssessmentWorkflowButtons
+          assessmentId={assessmentId}
+          assessmentStatus={assessment.status}
+          responses={assessment.responses}
+          onStatusChange={() => refetch()}
+        />
       </div>
 
       {/* Assessment Responses */}

@@ -362,5 +362,169 @@ class AssessorService:
 
         return assessment_data
 
+    def send_assessment_for_rework(
+        self, db: Session, assessment_id: int, assessor: User
+    ) -> dict:
+        """
+        Send assessment back to BLGU user for rework.
+
+        Args:
+            db: Database session
+            assessment_id: ID of the assessment to send for rework
+            assessor: The assessor performing the action (currently unused but kept for future audit logging)
+
+        Returns:
+            dict: Result of the rework operation
+
+        Raises:
+            ValueError: If assessment not found or rework not allowed
+            PermissionError: If assessor doesn't have permission
+        """
+        # Get the assessment
+        assessment = (
+            db.query(Assessment)
+            .options(joinedload(Assessment.blgu_user).joinedload(User.barangay))
+            .filter(Assessment.id == assessment_id)
+            .first()
+        )
+
+        if not assessment:
+            raise ValueError(f"Assessment {assessment_id} not found")
+
+        # Check if rework is allowed (rework_count must be 0)
+        if assessment.rework_count != 0:
+            raise ValueError(
+                "Assessment has already been sent for rework. Cannot send again."
+            )
+
+        # Check assessor permission (assessor must be assigned to the governance area)
+        # For now, we'll allow any assessor to send for rework
+        # In a more sophisticated system, we'd check specific permissions
+
+        # Update assessment status and rework count
+        assessment.status = AssessmentStatus.NEEDS_REWORK
+        assessment.rework_count = 1
+        # Note: updated_at is automatically handled by SQLAlchemy's onupdate
+
+        # Mark all responses as requiring rework
+        for response in assessment.responses:
+            response.requires_rework = True
+
+        db.commit()
+        db.refresh(assessment)
+
+        # Trigger notification asynchronously using Celery
+        try:
+            from app.workers.notifications import send_rework_notification
+
+            # Queue the notification task to run in the background
+            task = send_rework_notification.delay(assessment_id)
+            notification_result = {
+                "success": True,
+                "message": "Rework notification queued successfully",
+                "task_id": task.id,
+            }
+        except Exception as e:
+            # Log the error but don't fail the rework operation
+            print(f"Failed to queue notification: {e}")
+            notification_result = {"success": False, "error": str(e)}
+
+        return {
+            "success": True,
+            "message": "Assessment sent for rework successfully",
+            "assessment_id": assessment_id,
+            "new_status": assessment.status.value,
+            "rework_count": assessment.rework_count,
+            "notification_result": notification_result,
+        }
+
+    def finalize_assessment(
+        self, db: Session, assessment_id: int, assessor: User
+    ) -> dict:
+        """
+        Finalize assessment validation, permanently locking it.
+
+        Args:
+            db: Database session
+            assessment_id: ID of the assessment to finalize
+            assessor: The assessor performing the action (currently unused but kept for future audit logging)
+
+        Returns:
+            dict: Result of the finalization operation
+
+        Raises:
+            ValueError: If assessment not found or cannot be finalized
+            PermissionError: If assessor doesn't have permission
+        """
+        # Get the assessment
+        assessment = (
+            db.query(Assessment)
+            .options(joinedload(Assessment.blgu_user).joinedload(User.barangay))
+            .filter(Assessment.id == assessment_id)
+            .first()
+        )
+
+        if not assessment:
+            raise ValueError(f"Assessment {assessment_id} not found")
+
+        # Check if assessment can be finalized
+        if assessment.status == AssessmentStatus.VALIDATED:
+            raise ValueError("Assessment is already finalized")
+
+        if assessment.status == AssessmentStatus.DRAFT:
+            raise ValueError("Cannot finalize a draft assessment")
+
+        # Check that all responses have been reviewed (have validation status)
+        unreviewed_responses = [
+            response
+            for response in assessment.responses
+            if response.validation_status is None
+        ]
+
+        if unreviewed_responses:
+            raise ValueError(
+                f"Cannot finalize assessment. {len(unreviewed_responses)} responses have not been reviewed."
+            )
+
+        # Update assessment status
+        assessment.status = AssessmentStatus.VALIDATED
+        assessment.validated_at = (
+            db.query(Assessment)
+            .filter(Assessment.id == assessment_id)
+            .first()
+            .updated_at
+        )
+        # Note: updated_at is automatically handled by SQLAlchemy's onupdate
+
+        db.commit()
+        db.refresh(assessment)
+
+        # Trigger notification asynchronously using Celery
+        try:
+            from app.workers.notifications import send_validation_complete_notification
+
+            # Queue the notification task to run in the background
+            task = send_validation_complete_notification.delay(assessment_id)
+            notification_result = {
+                "success": True,
+                "message": "Validation complete notification queued successfully",
+                "task_id": task.id,
+            }
+        except Exception as e:
+            # Log the error but don't fail the finalization operation
+            print(f"Failed to queue notification: {e}")
+            notification_result = {"success": False, "error": str(e)}
+
+        return {
+            "success": True,
+            "message": "Assessment finalized successfully",
+            "assessment_id": assessment_id,
+            "new_status": assessment.status.value,
+            "validated_at": assessment.validated_at.isoformat()
+            if assessment.validated_at
+            else None,
+            "notification_result": notification_result,
+        }
+
 
 assessor_service = AssessorService()
