@@ -2,12 +2,12 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  useGetAssessorAssessmentsAssessmentId,
-  useGetAssessorQueue,
-  usePostAssessorAssessmentResponsesResponseIdMovs,
-  usePostAssessorAssessmentResponsesResponseIdValidate,
-  usePostAssessorAssessmentsAssessmentIdFinalize,
-  usePostAssessorAssessmentsAssessmentIdRework
+    useGetAssessorAssessmentsAssessmentId,
+    useGetAssessorQueue,
+    usePostAssessorAssessmentResponsesResponseIdMovs,
+    usePostAssessorAssessmentResponsesResponseIdValidate,
+    usePostAssessorAssessmentsAssessmentIdFinalize,
+    usePostAssessorAssessmentsAssessmentIdRework
 } from "@vantage/shared";
 
 const assessorKeys = {
@@ -24,7 +24,7 @@ export function useAssessorAssessmentDetails(assessmentId: string) {
   return useGetAssessorAssessmentsAssessmentId(parseInt(assessmentId));
 }
 
-export function useAssessorValidationMutation(assessmentId: string) {
+export function useAssessorValidationMutation(_assessmentId: string) {
   return usePostAssessorAssessmentResponsesResponseIdValidate({
     mutation: {
       onSuccess: () => {
@@ -35,7 +35,7 @@ export function useAssessorValidationMutation(assessmentId: string) {
   });
 }
 
-export function useAssessorMOVUploadMutation(assessmentId: string) {
+export function useAssessorMOVUploadMutation(_assessmentId: string) {
   return usePostAssessorAssessmentResponsesResponseIdMovs({
     mutation: {
       onSuccess: () => {

@@ -6,14 +6,8 @@
  */
 
 import { useQueryClient } from '@tanstack/react-query';
-import { usePostAssessmentsIdGenerateInsights } from '@vantage/shared';
+import { usePostAssessmentsIdGenerateInsights } from '@vantage/shared/src/generated/endpoints/assessments';
 import { useEffect, useRef } from 'react';
-
-interface GenerateInsightsOptions {
-  assessmentId: number;
-  onSuccess?: () => void;
-  onError?: (error: unknown) => void;
-}
 
 interface UseIntelligenceResult {
   generateInsights: (assessmentId: number) => Promise<void>;
@@ -95,7 +89,7 @@ export function useIntelligence(): UseIntelligenceResult {
             // Start polling
             pollingIntervalRef.current = setInterval(pollForResults, 5000); // Poll every 5 seconds
           },
-          onError: (error) => {
+          onError: (error: unknown) => {
             reject(error);
           },
         }

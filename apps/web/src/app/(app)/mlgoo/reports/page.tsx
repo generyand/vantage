@@ -4,14 +4,13 @@ import { ComplianceBadge } from '@/components/features/reports';
 import { ReportsSkeleton } from '@/components/features/reports/ReportsSkeleton';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useGetAssessmentsList } from '@vantage/shared';
-import { AssessmentStatus } from '@vantage/shared/src/generated/schemas/common';
+import { AssessmentStatus, useGetAssessmentsList, type GetAssessmentsListQueryResult } from '@vantage/shared';
 import {
-    Activity,
-    Brain,
-    Filter,
-    Target,
-    Zap
+  Activity,
+  Brain,
+  Filter,
+  Target,
+  Zap
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -20,9 +19,12 @@ export default function ReportsPage() {
   const [selectedBarangay, setSelectedBarangay] = useState('');
   
   // Fetch validated assessments with compliance data
-  const { data: assessments, isLoading } = useGetAssessmentsList({
+  const { data: assessments, isLoading } = useGetAssessmentsList<GetAssessmentsListQueryResult>({
     status: AssessmentStatus.Validated,
   });
+
+  // Ensure we only render arrays in JSX to avoid unknown -> ReactNode errors
+  const safeAssessments: GetAssessmentsListQueryResult = Array.isArray(assessments) ? assessments : [];
 
   // Mock data matching the design from the image
   const analyticsData = {
@@ -267,17 +269,26 @@ export default function ReportsPage() {
                     </div>
                     
                     {/* Show real assessment data when available, fallback to mock data */}
-                    {assessments && assessments.length > 0 ? (
-                      assessments.map((assessment) => {
+                    {safeAssessments.length > 0 ? (
+                      safeAssessments.map((raw) => {
+                        const assessment = raw as unknown as {
+                          id: number | string;
+                          barangay_name?: string;
+                          final_compliance_status?: string;
+                        };
                         // Convert compliance status to display format
-                        const displayStatus = assessment.final_compliance_status === 'Passed' ? 'Passed' : 
-                                             assessment.final_compliance_status === 'Failed' ? 'Failed' : 'Pending';
+                        const complianceStatus: 'Passed' | 'Failed' | null =
+                          assessment.final_compliance_status === 'Passed'
+                            ? 'Passed'
+                            : assessment.final_compliance_status === 'Failed'
+                            ? 'Failed'
+                            : null;
                         
                         // Mock score for now - could be calculated from area_results
                         const mockScore = 85;
                         
                         return (
-                          <div key={assessment.id} className="grid grid-cols-3 gap-4 items-center py-2 hover:bg-[var(--hover)] rounded-sm transition-colors">
+                          <div key={String(assessment.id)} className="grid grid-cols-3 gap-4 items-center py-2 hover:bg-[var(--hover)] rounded-sm transition-colors">
                             <div className="text-sm font-medium text-[var(--foreground)]">
                               {assessment.barangay_name || 'Unknown'}
                             </div>
@@ -294,10 +305,10 @@ export default function ReportsPage() {
                               <span className="text-sm font-medium text-[var(--foreground)] w-8">{mockScore}%</span>
                             </div>
                             <div>
-                              {assessment.final_compliance_status && (
+                              {complianceStatus && (
                                 <ComplianceBadge 
-                                  status={displayStatus}
-                                  assessmentId={assessment.id}
+                                  status={complianceStatus}
+                                  assessmentId={typeof assessment.id === 'number' ? assessment.id : undefined}
                                 />
                               )}
                             </div>
