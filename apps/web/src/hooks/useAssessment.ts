@@ -10,7 +10,7 @@ import {
   putAssessmentsResponses$ResponseId,
   useGetAssessmentsMyAssessment,
 } from "@vantage/shared";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 // Custom debounce implementation
 function debounce<TArgs extends unknown[], TReturn>(
   func: (...args: TArgs) => TReturn,
@@ -145,8 +145,20 @@ export function useCurrentAssessment() {
           isCore: area.area_type === "Core",
           indicators: area.indicators.map((indicator) => ({
             id: indicator.id.toString(),
-            code: `${area.id}.${indicator.id}.1`, // Generate code
-            name: indicator.name,
+            // Display parent section first (e.g., 1.1 - 1.1.1)
+            // Extract parent like 1.1 from names that start with 1.1.1 / 1.2.1 / 1.3.1
+            code: (() => {
+              const full = indicator.name.match(/^(\d+(?:\.\d+)+)/)?.[1];
+              if (full) {
+                const parent = full.match(/^(\d+\.\d+)/)?.[1];
+                if (parent) return `${parent} - ${full}`;
+                return full;
+              }
+              return `${area.id}.${indicator.id}.1`;
+            })(),
+            // Strip any leading numeric code from the name since we already
+            // render `code` separately (avoids redundancy like "1.1 - 1.1.1 – 1.1.1 – ...").
+            name: indicator.name.replace(/^(\d+(?:\.\d+)+)\s*[-–]\s*/u, ""),
             description: indicator.description,
             technicalNotes: "See form schema for requirements",
             governanceAreaId: area.id.toString(),
@@ -158,6 +170,8 @@ export function useCurrentAssessment() {
               : ("no" as const),
             movFiles: indicator.movs || [],
             assessorComment: indicator.feedback_comments?.[0]?.comment,
+            // Capture real response id if present so uploads can use it
+            responseId: (indicator as any).response?.id ?? null,
             formSchema: {
               properties: {
                 compliance: {
@@ -198,12 +212,26 @@ export function useCurrentAssessment() {
       }
     : null;
 
+  // Keep a local editable copy so components can update progress immediately
+  const [localAssessment, setLocalAssessment] = useState<Assessment | null>(
+    transformedData as unknown as Assessment | null
+  );
+
+  // Sync when server data changes
+  useEffect(() => {
+    if (transformedData) {
+      setLocalAssessment(transformedData as unknown as Assessment);
+    }
+  }, [JSON.stringify(transformedData)]);
+
   return {
-    data: transformedData,
+    data: localAssessment,
     isLoading,
     error,
     refetch,
-    updateAssessmentData: () => {}, // Placeholder for update function
+    updateAssessmentData: (updater: (data: Assessment) => Assessment) => {
+      setLocalAssessment((prev) => (prev ? updater({ ...prev }) : prev));
+    },
   };
 }
 
