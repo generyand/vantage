@@ -18,6 +18,7 @@ This matrix maps each functional requirement from the PRD to the corresponding E
 - `apps/api/app/db/models/assessment.py` - Add new columns to Assessment model
 - `apps/api/alembic/versions/` - Database migration
 - `apps/api/app/services/intelligence_service.py` - New intelligence service
+- `apps/api/app/workers/intelligence_worker.py` - New Celery worker for background processing
 - `apps/api/app/api/v1/assessments.py` - New API endpoints
 - `apps/api/app/core/config.py` - Environment variables for Gemini API
 
@@ -225,10 +226,10 @@ This matrix maps each functional requirement from the PRD to the corresponding E
 
   - [ ] **4.5 Story: API Endpoint for Insights Generation**
 
-    - [ ] **4.5.1 Atomic:** Create API endpoint `POST /api/v1/assessments/{id}/generate-insights`
+    - [ ] **4.5.1 Atomic:** Create API endpoint `POST /api/v1/assessments/{id}/generate-insights` that dispatches a Celery task
       - **Files:** `apps/api/app/api/v1/assessments.py`
-      - **Dependencies:** 4.3.1, 4.4.1
-      - **Acceptance:** Endpoint requires authentication, validates assessment status, and calls intelligence service
+      - **Dependencies:** 4.8.1
+      - **Acceptance:** Endpoint requires authentication, validates assessment status, dispatches Celery task using `generate_insights_task.delay(assessment_id)`, and immediately returns `202 Accepted` HTTP status
 
   - [ ] **4.6 Story: Frontend Insights Generator**
 
@@ -238,10 +239,10 @@ This matrix maps each functional requirement from the PRD to the corresponding E
       - **Dependencies:** None
       - **Acceptance:** Component displays button that is enabled only when assessment is validated
 
-    - [ ] **4.6.2 Atomic:** Create API hook for generating insights
+    - [ ] **4.6.2 Atomic:** Create API hook for generating insights with polling support
       - **Files:** `apps/web/src/hooks/useIntelligence.ts`
       - **Dependencies:** 4.5.1
-      - **Acceptance:** Hook provides `generateInsights` function and loading/error states
+      - **Acceptance:** Hook provides `generateInsights` function that expects 202 Accepted response, initiates polling every 5 seconds using a query refetch mechanism to check for ai_recommendations field, automatically stops polling when data appears
 
   - [ ] **4.7 Story: Display AI Insights**
 
@@ -254,26 +255,45 @@ This matrix maps each functional requirement from the PRD to the corresponding E
     - [ ] **4.7.2 Atomic:** Integrate AIInsightsDisplay into report page with loading and error states
       - **Files:** `apps/web/src/app/(app)/reports/[id]/page.tsx`
       - **Dependencies:** 4.6.1, 4.6.2, 4.7.1
-      - **Acceptance:** Report page shows loading spinner during API call, displays insights when ready, shows error message on failure
+      - **Acceptance:** Report page shows persistent "Generating..." state during polling, displays insights when ready, shows error message on failure
 
-  - [ ] **4.8 Story: Testing Gemini Integration**
+  - [ ] **4.8 Story: Background Worker for Insight Generation**
 
-    - [ ] **4.8.1 Atomic:** Create unit tests for Gemini prompt building
+    - [ ] **4.8.1 Atomic:** Create Celery task `generate_insights_task` that calls intelligence_service and saves results
+
+      - **Files:** `apps/api/app/workers/intelligence_worker.py` (new file)
+      - **Dependencies:** 4.3.1, 4.4.1
+      - **Acceptance:** Celery task accepts assessment_id, calls Gemini API via intelligence_service, handles errors/retries, and saves to ai_recommendations column
+
+    - [ ] **4.8.2 Atomic:** Register Celery task with decorator and implement error handling with retries
+      - **Files:** `apps/api/app/workers/intelligence_worker.py`
+      - **Dependencies:** 4.8.1
+      - **Acceptance:** Task has retry logic (max 3 attempts with exponential backoff) and logs errors appropriately
+
+  - [ ] **4.9 Story: Testing Gemini Integration**
+
+    - [ ] **4.9.1 Atomic:** Create unit tests for Gemini prompt building
 
       - **Files:** `apps/api/tests/test_gemini_prompt.py`
       - **Dependencies:** 4.2.1
       - **Acceptance:** Tests verify prompt structure and content
 
-    - [ ] **4.8.2 Atomic:** Create integration tests for Gemini API calls (mocked)
+    - [ ] **4.9.2 Atomic:** Create integration tests for Gemini API calls (mocked)
 
       - **Files:** `apps/api/tests/test_gemini_service.py`
       - **Dependencies:** 4.3.1
       - **Acceptance:** Tests verify API call, response parsing, and caching logic
 
-    - [ ] **4.8.3 Atomic:** Create frontend tests for InsightsGenerator component
+    - [ ] **4.9.3 Atomic:** Create tests for Celery background task
+
+      - **Files:** `apps/api/tests/test_intelligence_worker.py`
+      - **Dependencies:** 4.8.1, 4.8.2
+      - **Acceptance:** Tests verify task dispatch, execution, error handling, and retry logic
+
+    - [ ] **4.9.4 Atomic:** Create frontend tests for InsightsGenerator component and polling behavior
       - **Files:** `apps/web/src/components/features/reports/InsightsGenerator.test.tsx`
-      - **Dependencies:** 4.6.1
-      - **Acceptance:** Tests verify button states and error handling
+      - **Dependencies:** 4.6.1, 4.6.2
+      - **Acceptance:** Tests verify button states, polling logic, and error handling
 
 ---
 
@@ -289,9 +309,11 @@ This matrix maps each functional requirement from the PRD to the corresponding E
 ### Key Considerations
 
 - **Performance:** The classification algorithm must complete in under 5 seconds to ensure real-time user experience
+- **Asynchronous Processing:** The Gemini API integration uses Celery background tasks for resilience. The API endpoint dispatches a task and immediately returns `202 Accepted`, while the frontend polls for results.
 - **Cost Management:** Always check if `ai_recommendations` exists before calling Gemini API to avoid duplicate API calls
-- **Error Handling:** Both classification and Gemini integration must handle failures gracefully without breaking the user workflow
-- **Testing:** Create comprehensive test coverage for the "3+1" logic to verify 100% accuracy across all possible combinations
+- **Error Handling:** Both classification and Gemini integration must handle failures gracefully without breaking the user workflow. Celery tasks include retry logic (max 3 attempts with exponential backoff).
+- **User Experience:** The frontend must provide persistent "Generating..." feedback during polling, allowing users to navigate away and return later to see results.
+- **Testing:** Create comprehensive test coverage for the "3+1" logic to verify 100% accuracy across all possible combinations. Include tests for Celery task dispatch and polling behavior.
 - **Type Safety:** Ensure all database changes are reflected in the OpenAPI spec and regenerated TypeScript types using `pnpm generate`
 
 ### Environment Variables Required
