@@ -499,6 +499,19 @@ class AssessorService:
         db.commit()
         db.refresh(assessment)
 
+        # Run classification algorithm synchronously
+        # This must complete in <5 seconds to ensure real-time user experience
+        from app.services.intelligence_service import intelligence_service
+
+        try:
+            classification_result = intelligence_service.classify_assessment(
+                db, assessment_id
+            )
+        except Exception as e:
+            # Log the error but don't fail the finalization operation
+            print(f"Failed to run classification: {e}")
+            classification_result = {"success": False, "error": str(e)}
+
         # Trigger notification asynchronously using Celery
         try:
             from app.workers.notifications import send_validation_complete_notification
@@ -523,6 +536,7 @@ class AssessorService:
             "validated_at": assessment.validated_at.isoformat()
             if assessment.validated_at
             else None,
+            "classification_result": classification_result,
             "notification_result": notification_result,
         }
 

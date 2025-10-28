@@ -55,3 +55,12 @@ class ValidationStatus(str, enum.Enum):
     PASS = "Pass"
     FAIL = "Fail"
     CONDITIONAL = "Conditional"
+
+
+class ComplianceStatus(str, enum.Enum):
+    """
+    Enum for final SGLGB compliance status of an assessment.
+    """
+
+    PASSED = "Passed"
+    FAILED = "Failed"

@@ -13,7 +13,7 @@ from app.schemas import (
     ValidationRequest,
     ValidationResponse,
 )
-from app.services import assessor_service
+from app.services import assessor_service, intelligence_service
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -193,3 +193,36 @@ async def finalize_assessment(
         from fastapi import HTTPException
 
         raise HTTPException(status_code=403, detail=str(e))
+
+
+@router.post(
+    "/assessments/{assessment_id}/classify",
+    tags=["assessor"],
+)
+async def classify_assessment(
+    assessment_id: int,
+    db: Session = Depends(deps.get_db),
+    current_assessor: User = Depends(deps.get_current_area_assessor_user),
+):
+    """
+    Manually trigger the classification algorithm for an assessment.
+
+    Applies the "3+1" SGLGB compliance rule to determine if the barangay
+    has passed or failed the assessment. This endpoint is primarily for
+    testing purposes - classification automatically runs during finalization.
+
+    The assessor must have permission to review assessments in their governance area.
+    """
+    try:
+        result = intelligence_service.classify_assessment(
+            db=db, assessment_id=assessment_id
+        )
+        return result
+    except ValueError as e:
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=500, detail=f"Classification failed: {str(e)}")

@@ -4,7 +4,7 @@
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from app.db.enums import AssessmentStatus, MOVStatus
+from app.db.enums import AssessmentStatus, ComplianceStatus, MOVStatus
 from pydantic import BaseModel, ConfigDict
 
 # ============================================================================
@@ -41,6 +41,9 @@ class Assessment(BaseModel):
     updated_at: datetime
     submitted_at: Optional[datetime] = None
     validated_at: Optional[datetime] = None
+    final_compliance_status: Optional[ComplianceStatus] = None
+    area_results: Optional[Dict[str, Any]] = None
+    ai_recommendations: Optional[Dict[str, Any]] = None
 
 
 class AssessmentCreate(BaseModel):

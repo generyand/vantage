@@ -4,7 +4,7 @@
 from datetime import datetime
 
 from app.db.base import Base
-from app.db.enums import AssessmentStatus, MOVStatus, ValidationStatus
+from app.db.enums import AssessmentStatus, ComplianceStatus, MOVStatus, ValidationStatus
 from sqlalchemy import JSON, Boolean, DateTime, Enum, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -31,6 +31,14 @@ class Assessment(Base):
 
     # Rework tracking
     rework_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    # Intelligence layer fields
+    final_compliance_status: Mapped[ComplianceStatus | None] = mapped_column(
+        Enum(ComplianceStatus, name="compliance_status_enum", create_constraint=True),
+        nullable=True,
+    )
+    area_results: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    ai_recommendations: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     # Foreign key to BLGU user
     blgu_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)

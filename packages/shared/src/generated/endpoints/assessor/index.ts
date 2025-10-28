@@ -461,4 +461,73 @@ export const usePostAssessorAssessmentsAssessmentIdFinalize = <TError = HTTPVali
 
       return useMutation(mutationOptions );
     }
+    /**
+ * Manually trigger the classification algorithm for an assessment.
+
+Applies the "3+1" SGLGB compliance rule to determine if the barangay
+has passed or failed the assessment. This endpoint is primarily for
+testing purposes - classification automatically runs during finalization.
+
+The assessor must have permission to review assessments in their governance area.
+ * @summary Classify Assessment
+ */
+export const postAssessorAssessments$AssessmentIdClassify = (
+    assessmentId: number,
+ options?: SecondParameter<typeof mutator>,signal?: AbortSignal
+) => {
+      
+      
+      return mutator<unknown>(
+      {url: `http://localhost:8000/api/v1/assessor/assessments/${assessmentId}/classify`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostAssessorAssessmentsAssessmentIdClassifyMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdClassify>>, TError,{assessmentId: number}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdClassify>>, TError,{assessmentId: number}, TContext> => {
+
+const mutationKey = ['postAssessorAssessmentsAssessmentIdClassify'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdClassify>>, {assessmentId: number}> = (props) => {
+          const {assessmentId} = props ?? {};
+
+          return  postAssessorAssessments$AssessmentIdClassify(assessmentId,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostAssessorAssessmentsAssessmentIdClassifyMutationResult = NonNullable<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdClassify>>>
+    
+    export type PostAssessorAssessmentsAssessmentIdClassifyMutationError = HTTPValidationError
+
+    /**
+ * @summary Classify Assessment
+ */
+export const usePostAssessorAssessmentsAssessmentIdClassify = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdClassify>>, TError,{assessmentId: number}, TContext>, request?: SecondParameter<typeof mutator>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof postAssessorAssessments$AssessmentIdClassify>>,
+        TError,
+        {assessmentId: number},
+        TContext
+      > => {
+
+      const mutationOptions = getPostAssessorAssessmentsAssessmentIdClassifyMutationOptions(options);
+
+      return useMutation(mutationOptions );
+    }
     
