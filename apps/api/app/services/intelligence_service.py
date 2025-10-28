@@ -1,13 +1,16 @@
 # 🧠 Intelligence Service
 # Business logic for SGLGB compliance classification and AI-powered insights
 
+import json
 from datetime import UTC, datetime
 from typing import Any
 
+import google.generativeai as genai
+from app.core.config import settings
 from app.db.enums import ComplianceStatus, ValidationStatus
 from app.db.models.assessment import Assessment, AssessmentResponse
 from app.db.models.governance_area import GovernanceArea, Indicator
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 # Core governance areas (must all pass for compliance)
 CORE_AREAS = [
@@ -248,6 +251,290 @@ class IntelligenceService:
             "final_compliance_status": compliance_status.value,
             "area_results": area_results,
         }
+
+    def build_gemini_prompt(self, db: Session, assessment_id: int) -> str:
+        """
+        Build a structured prompt for Gemini API from failed indicators.
+
+        Creates a comprehensive prompt that includes:
+        - Barangay name and assessment year
+        - Failed indicators with governance area context
+        - Assessor comments and feedback
+        - Overall compliance status
+
+        Args:
+            db: Database session
+            assessment_id: ID of the assessment
+
+        Returns:
+            Formatted prompt string for Gemini API
+
+        Raises:
+            ValueError: If assessment not found
+        """
+        # Get assessment with all relationships
+        from app.db.models.user import User
+
+        assessment = (
+            db.query(Assessment)
+            .options(
+                joinedload(Assessment.blgu_user).joinedload(User.barangay),
+                joinedload(Assessment.responses)
+                .joinedload(AssessmentResponse.indicator)
+                .joinedload(Indicator.governance_area),
+                joinedload(Assessment.responses).joinedload(
+                    AssessmentResponse.feedback_comments
+                ),
+            )
+            .filter(Assessment.id == assessment_id)
+            .first()
+        )
+
+        if not assessment:
+            raise ValueError(f"Assessment {assessment_id} not found")
+
+        # Get barangay name
+        barangay_name = "Unknown"
+        if assessment.blgu_user and assessment.blgu_user.barangay:
+            barangay_name = assessment.blgu_user.barangay.name
+
+        # Get assessment year
+        assessment_year = "2024"  # Default
+        if assessment.validated_at:
+            assessment_year = str(assessment.validated_at.year)
+
+        # Get failed indicators with feedback
+        failed_indicators = []
+        for response in assessment.responses:
+            if response.validation_status != ValidationStatus.PASS:
+                indicator = response.indicator
+                governance_area = indicator.governance_area
+
+                # Get assessor comments
+                comments = []
+                for comment in response.feedback_comments:
+                    comments.append(
+                        f"{comment.assessor.name if comment.assessor else 'Assessor'}: {comment.comment}"
+                    )
+
+                failed_indicators.append(
+                    {
+                        "indicator_name": indicator.name,
+                        "description": indicator.description,
+                        "governance_area": governance_area.name,
+                        "area_type": governance_area.area_type.value,
+                        "assessor_comments": comments,
+                    }
+                )
+
+        # Get overall compliance status
+        compliance_status = (
+            assessment.final_compliance_status.value
+            if assessment.final_compliance_status
+            else "Not yet classified"
+        )
+
+        # Build the prompt
+        prompt = f"""You are an expert consultant analyzing SGLGB (Seal of Good Local Governance - Barangay) compliance assessment results.
+
+BARANGAY INFORMATION:
+- Name: {barangay_name}
+- Assessment Year: {assessment_year}
+- Overall Compliance Status: {compliance_status}
+
+FAILED INDICATORS:
+"""
+
+        for idx, indicator in enumerate(failed_indicators, 1):
+            prompt += f"""
+{idx}. {indicator["indicator_name"]}
+   - Governance Area: {indicator["governance_area"]} ({indicator["area_type"]})
+   - Description: {indicator["description"]}
+"""
+
+            if indicator["assessor_comments"]:
+                prompt += "   - Assessor Feedback:\n"
+                for comment in indicator["assessor_comments"]:
+                    prompt += f"     • {comment}\n"
+
+        prompt += """
+
+TASK:
+Based on the failed indicators and assessor feedback above, provide a comprehensive analysis in the following JSON structure:
+
+{
+  "summary": "A brief 2-3 sentence summary of the barangay's compliance status and key issues",
+  "recommendations": [
+    "Specific actionable recommendation 1",
+    "Specific actionable recommendation 2",
+    "..."
+  ],
+  "capacity_development_needs": [
+    "Identified capacity building need 1",
+    "Identified capacity building need 2",
+    "..."
+  ]
+}
+
+Focus on:
+1. Identifying root causes of non-compliance
+2. Providing actionable recommendations for improvement
+3. Identifying specific capacity development needs for barangay officials and staff
+"""
+
+        return prompt
+
+    def call_gemini_api(self, db: Session, assessment_id: int) -> dict[str, Any]:
+        """
+        Call Gemini API with the prompt and parse the JSON response.
+
+        Builds the prompt from failed indicators, calls Gemini API,
+        and returns the structured JSON response.
+
+        Args:
+            db: Database session
+            assessment_id: ID of the assessment
+
+        Returns:
+            Dictionary with 'summary', 'recommendations', and 'capacity_development_needs' keys
+
+        Raises:
+            ValueError: If assessment not found or API key not configured
+            Exception: If API call fails or response parsing fails
+        """
+        # Check if API key is configured
+        if not settings.GEMINI_API_KEY:
+            raise ValueError("GEMINI_API_KEY not configured in environment")
+
+        # Build the prompt
+        prompt = self.build_gemini_prompt(db, assessment_id)
+
+        # Configure Gemini
+        genai.configure(api_key=settings.GEMINI_API_KEY)  # type: ignore
+
+        # Initialize the model
+        # Using Gemini 2.5 Flash (latest stable as of Oct 2025)
+        # Supports up to 1M input tokens and 65K output tokens
+        model = genai.GenerativeModel("gemini-2.5-flash")  # type: ignore
+
+        try:
+            # Call the API with generation configuration
+            # Using type: ignore due to incomplete type stubs in google-generativeai
+            generation_config = {
+                "temperature": 0.7,
+                "max_output_tokens": 8192,
+            }
+
+            response = model.generate_content(
+                prompt,
+                generation_config=generation_config,  # type: ignore
+            )
+
+            # Parse the response text
+            if not response or not hasattr(response, "text") or not response.text:
+                raise Exception("Gemini API returned empty or invalid response")
+
+            response_text = response.text
+
+            # Try to extract JSON from the response
+            # The response might be wrapped in markdown code blocks
+            if "```json" in response_text:
+                # Extract JSON from code block
+                start = response_text.find("```json") + 7
+                end = response_text.find("```", start)
+                json_str = response_text[start:end].strip()
+            elif "```" in response_text:
+                # Extract JSON from code block (without json tag)
+                start = response_text.find("```") + 3
+                end = response_text.find("```", start)
+                json_str = response_text[start:end].strip()
+            else:
+                # Assume the entire response is JSON
+                json_str = response_text.strip()
+
+            # Parse the JSON
+            parsed_response = json.loads(json_str)
+
+            # Validate the response structure
+            required_keys = ["summary", "recommendations", "capacity_development_needs"]
+            if not all(key in parsed_response for key in required_keys):
+                raise ValueError(
+                    f"Gemini API response missing required keys. Got: {list(parsed_response.keys())}"
+                )
+
+            return parsed_response
+
+        except json.JSONDecodeError as e:
+            raise Exception(
+                f"Failed to parse Gemini API response as JSON: {response_text}"
+            ) from e
+        except TimeoutError as e:
+            raise Exception(
+                "Gemini API request timed out after waiting for response"
+            ) from e
+        except ValueError:
+            # Re-raise ValueError as-is (for invalid response structure)
+            raise
+        except Exception as e:
+            # Handle various API errors
+            error_message = str(e).lower()
+            if "quota" in error_message or "rate limit" in error_message:
+                raise Exception(
+                    "Gemini API quota exceeded or rate limit hit. Please try again later."
+                ) from e
+            elif "network" in error_message or "connection" in error_message:
+                raise Exception(
+                    "Network error connecting to Gemini API. Please check your internet connection."
+                ) from e
+            elif "permission" in error_message or "unauthorized" in error_message:
+                raise Exception(
+                    "Gemini API authentication failed. Please check your API key."
+                ) from e
+            else:
+                raise Exception(f"Gemini API call failed: {str(e)}") from e
+
+    def get_insights_with_caching(
+        self, db: Session, assessment_id: int
+    ) -> dict[str, Any]:
+        """
+        Get AI-powered insights for an assessment with caching.
+
+        First checks if ai_recommendations already exists in the database.
+        If cached data exists, returns it immediately without calling Gemini API.
+        If not, calls Gemini API, stores the result, and returns it.
+
+        This method implements cost-saving logic by avoiding duplicate API calls.
+
+        Args:
+            db: Database session
+            assessment_id: ID of the assessment
+
+        Returns:
+            Dictionary with 'summary', 'recommendations', and 'capacity_development_needs' keys
+
+        Raises:
+            ValueError: If assessment not found
+            Exception: If API call fails or response parsing fails
+        """
+        # Get assessment to check for cached recommendations
+        assessment = db.query(Assessment).filter(Assessment.id == assessment_id).first()
+        if not assessment:
+            raise ValueError(f"Assessment {assessment_id} not found")
+
+        # Check if ai_recommendations already exists (caching)
+        if assessment.ai_recommendations:
+            return assessment.ai_recommendations
+
+        # No cached data, call Gemini API
+        insights = self.call_gemini_api(db, assessment_id)
+
+        # Store the recommendations in the database for future use
+        assessment.ai_recommendations = insights
+        assessment.updated_at = datetime.now(UTC)
+        db.commit()
+        db.refresh(assessment)
+
+        return insights
 
 
 intelligence_service = IntelligenceService()

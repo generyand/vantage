@@ -26,10 +26,13 @@ import type {
   AssessmentResponseUpdate,
   AssessmentSubmissionValidation,
   DeleteAssessmentsMovsMovId200,
+  GetAssessmentsList200Item,
+  GetAssessmentsListParams,
   GetAssessmentsMyAssessment200,
   HTTPValidationError,
   MOVCreate,
-  Mov
+  Mov,
+  PostAssessmentsIdGenerateInsights202
 } from '../../schemas';
 
 import { mutator } from '../../../../../../apps/web/src/lib/api';
@@ -606,6 +609,167 @@ export const useDeleteAssessmentsMovsMovId = <TError = HTTPValidationError,
       > => {
 
       const mutationOptions = getDeleteAssessmentsMovsMovIdMutationOptions(options);
+
+      return useMutation(mutationOptions );
+    }
+    /**
+ * Get all validated assessments with compliance status.
+
+Returns a list of all validated assessments with their compliance status,
+area results, and barangay information. Used for MLGOO reports dashboard.
+
+Args:
+    status: Filter by assessment status (defaults to VALIDATED)
+    db: Database session
+    current_user: Current admin/MLGOO user
+
+Returns:
+    List of assessment dictionaries with compliance data
+ * @summary Get All Validated Assessments
+ */
+export const getAssessmentsList = (
+    params?: GetAssessmentsListParams,
+ options?: SecondParameter<typeof mutator>,signal?: AbortSignal
+) => {
+      
+      
+      return mutator<GetAssessmentsList200Item[]>(
+      {url: `http://localhost:8000/api/v1/assessments/list`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getGetAssessmentsListQueryKey = (params?: GetAssessmentsListParams,) => {
+    return [`http://localhost:8000/api/v1/assessments/list`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetAssessmentsListQueryOptions = <TData = Awaited<ReturnType<typeof getAssessmentsList>>, TError = HTTPValidationError>(params?: GetAssessmentsListParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAssessmentsList>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAssessmentsListQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAssessmentsList>>> = ({ signal }) => getAssessmentsList(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: 300000, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAssessmentsList>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAssessmentsListQueryResult = NonNullable<Awaited<ReturnType<typeof getAssessmentsList>>>
+export type GetAssessmentsListQueryError = HTTPValidationError
+
+
+/**
+ * @summary Get All Validated Assessments
+ */
+
+export function useGetAssessmentsList<TData = Awaited<ReturnType<typeof getAssessmentsList>>, TError = HTTPValidationError>(
+ params?: GetAssessmentsListParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAssessmentsList>>, TError, TData>, request?: SecondParameter<typeof mutator>}
+  
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAssessmentsListQueryOptions(params,options)
+
+  const query = useQuery(queryOptions ) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
+ * Generate AI-powered insights for a validated assessment.
+
+This endpoint dispatches a background Celery task to generate AI insights
+using the Gemini API. The task runs asynchronously and results are stored
+in the ai_recommendations field.
+
+**Business Rules:**
+- Only works for assessments with VALIDATED status
+- Returns 202 Accepted immediately (asynchronous processing)
+- Task includes automatic retry logic (max 3 attempts with exponential backoff)
+- Results are cached to avoid duplicate API calls
+
+**Response:**
+- Immediately returns 202 Accepted with task information
+- Frontend should poll assessment endpoint to check for ai_recommendations field
+
+Args:
+    id: Assessment ID
+    db: Database session
+    current_user: Current authenticated user
+
+Returns:
+    dict: Task dispatch confirmation
+ * @summary Generate Insights
+ */
+export const postAssessments$IdGenerateInsights = (
+    id: number,
+ options?: SecondParameter<typeof mutator>,signal?: AbortSignal
+) => {
+      
+      
+      return mutator<PostAssessmentsIdGenerateInsights202>(
+      {url: `http://localhost:8000/api/v1/assessments/${id}/generate-insights`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostAssessmentsIdGenerateInsightsMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAssessments$IdGenerateInsights>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postAssessments$IdGenerateInsights>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['postAssessmentsIdGenerateInsights'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAssessments$IdGenerateInsights>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  postAssessments$IdGenerateInsights(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostAssessmentsIdGenerateInsightsMutationResult = NonNullable<Awaited<ReturnType<typeof postAssessments$IdGenerateInsights>>>
+    
+    export type PostAssessmentsIdGenerateInsightsMutationError = HTTPValidationError
+
+    /**
+ * @summary Generate Insights
+ */
+export const usePostAssessmentsIdGenerateInsights = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAssessments$IdGenerateInsights>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof mutator>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof postAssessments$IdGenerateInsights>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getPostAssessmentsIdGenerateInsightsMutationOptions(options);
 
       return useMutation(mutationOptions );
     }

@@ -220,6 +220,29 @@ export type DeleteAssessmentsMovsMovId200 = {[key: string]: string};
 
 
 /**
+ * GetAssessmentsList200Item
+ */
+export type GetAssessmentsList200Item = { [key: string]: unknown };
+
+
+/**
+ * GetAssessmentsListParams
+ */
+export type GetAssessmentsListParams = {
+/**
+ * Filter by assessment status
+ */
+status?: AssessmentStatus;
+};
+
+
+/**
  * GetAssessmentsMyAssessment200
  */
 export type GetAssessmentsMyAssessment200 = { [key: string]: unknown };
+
+
+/**
+ * PostAssessmentsIdGenerateInsights202
+ */
+export type PostAssessmentsIdGenerateInsights202 = { [key: string]: unknown };

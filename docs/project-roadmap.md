@@ -41,7 +41,7 @@ This document outlines the high-level feature epics for the development of the V
 
 ## Phase 4: The Core Intelligence Layer
 
-**Status:** Not Started  
+**Status:** In Progress  
 **Description:** This epic implements the "smart" features that automate scoring and generate insights based on the final, validated data.
 
 **Key Features:**

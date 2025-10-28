@@ -1,23 +1,28 @@
 'use client';
 
-import { useState } from 'react';
-import { 
-  Target,
-  Activity,
-  Filter,
-  Zap,
-  Brain
-} from 'lucide-react';
+import { ComplianceBadge } from '@/components/features/reports';
+import { ReportsSkeleton } from '@/components/features/reports/ReportsSkeleton';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ReportsSkeleton } from '@/components/features/reports/ReportsSkeleton';
+import { useGetAssessmentsList } from '@vantage/shared';
+import { AssessmentStatus } from '@vantage/shared/src/generated/schemas/common';
+import {
+    Activity,
+    Brain,
+    Filter,
+    Target,
+    Zap
+} from 'lucide-react';
+import { useState } from 'react';
 
 export default function ReportsPage() {
   const [selectedPeriod, setSelectedPeriod] = useState('sglgb-2024');
   const [selectedBarangay, setSelectedBarangay] = useState('');
   
-  // Mock loading state - in real app this would come from API
-  const [isLoading] = useState(false);
+  // Fetch validated assessments with compliance data
+  const { data: assessments, isLoading } = useGetAssessmentsList({
+    status: AssessmentStatus.Validated,
+  });
 
   // Mock data matching the design from the image
   const analyticsData = {
@@ -261,31 +266,72 @@ export default function ReportsPage() {
                       <div>Status</div>
                     </div>
                     
-                    {analyticsData.officialPerformance.barangays.map((barangay, index) => (
-                      <div key={index} className="grid grid-cols-3 gap-4 items-center py-2 hover:bg-[var(--hover)] rounded-sm transition-colors">
-                        <div className="text-sm font-medium text-[var(--foreground)]">{barangay.name}</div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 bg-[var(--border)] rounded-sm h-2">
-                            <div 
-                              className="h-2 rounded-sm"
-                              style={{ 
-                                backgroundColor: getScoreBarColor(barangay.score),
-                                width: `${barangay.score}%` 
-                              }}
-                            ></div>
+                    {/* Show real assessment data when available, fallback to mock data */}
+                    {assessments && assessments.length > 0 ? (
+                      assessments.map((assessment) => {
+                        // Convert compliance status to display format
+                        const displayStatus = assessment.final_compliance_status === 'Passed' ? 'Passed' : 
+                                             assessment.final_compliance_status === 'Failed' ? 'Failed' : 'Pending';
+                        
+                        // Mock score for now - could be calculated from area_results
+                        const mockScore = 85;
+                        
+                        return (
+                          <div key={assessment.id} className="grid grid-cols-3 gap-4 items-center py-2 hover:bg-[var(--hover)] rounded-sm transition-colors">
+                            <div className="text-sm font-medium text-[var(--foreground)]">
+                              {assessment.barangay_name || 'Unknown'}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="flex-1 bg-[var(--border)] rounded-sm h-2">
+                                <div 
+                                  className="h-2 rounded-sm"
+                                  style={{ 
+                                    backgroundColor: getScoreBarColor(mockScore),
+                                    width: `${mockScore}%` 
+                                  }}
+                                ></div>
+                              </div>
+                              <span className="text-sm font-medium text-[var(--foreground)] w-8">{mockScore}%</span>
+                            </div>
+                            <div>
+                              {assessment.final_compliance_status && (
+                                <ComplianceBadge 
+                                  status={displayStatus}
+                                  assessmentId={assessment.id}
+                                />
+                              )}
+                            </div>
                           </div>
-                          <span className="text-sm font-medium text-[var(--foreground)] w-8">{barangay.score}%</span>
+                        );
+                      })
+                    ) : (
+                      // Fallback to mock data if no real assessments
+                      analyticsData.officialPerformance.barangays.map((barangay, index) => (
+                        <div key={index} className="grid grid-cols-3 gap-4 items-center py-2 hover:bg-[var(--hover)] rounded-sm transition-colors">
+                          <div className="text-sm font-medium text-[var(--foreground)]">{barangay.name}</div>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 bg-[var(--border)] rounded-sm h-2">
+                              <div 
+                                className="h-2 rounded-sm"
+                                style={{ 
+                                  backgroundColor: getScoreBarColor(barangay.score),
+                                  width: `${barangay.score}%` 
+                                }}
+                              ></div>
+                            </div>
+                            <span className="text-sm font-medium text-[var(--foreground)] w-8">{barangay.score}%</span>
+                          </div>
+                          <div>
+                            <span 
+                              className="px-2 py-1 rounded-sm text-xs font-medium"
+                              style={getStatusColor(barangay.status)}
+                            >
+                              {barangay.status === 'passed' ? '✓' : '✗'}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          <span 
-                            className="px-2 py-1 rounded-sm text-xs font-medium"
-                            style={getStatusColor(barangay.status)}
-                          >
-                            {barangay.status === 'passed' ? '✓' : '✗'}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </div>
                 </div>
               </div>

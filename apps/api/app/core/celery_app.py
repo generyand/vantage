@@ -12,6 +12,7 @@ celery_app = Celery(
     include=[
         "app.workers.notifications",
         "app.workers.sglgb_classifier",
+        "app.workers.intelligence_worker",
     ],
 )
 
@@ -33,6 +34,7 @@ celery_app.conf.update(
 celery_app.conf.task_routes = {
     "app.workers.notifications.*": {"queue": "notifications"},
     "app.workers.sglgb_classifier.*": {"queue": "classification"},
+    "app.workers.intelligence.*": {"queue": "intelligence"},
 }
 
 if __name__ == "__main__":

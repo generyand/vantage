@@ -96,6 +96,9 @@ class Settings(BaseSettings):
     CELERY_BROKER_URL: str = "redis://localhost:6379/0"
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/0"
 
+    # Gemini AI Configuration
+    GEMINI_API_KEY: Optional[str] = None
+
     # Environment
     ENVIRONMENT: str = "development"
     DEBUG: bool = True

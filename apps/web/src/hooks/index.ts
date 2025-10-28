@@ -7,36 +7,30 @@ export { useThemeToggle } from './useThemeToggle';
 export { useUsers } from './useUsers';
 
 // Assessment hooks
-export { 
-  useCurrentAssessment, 
-  useAssessmentValidation,
-  useUpdateIndicatorAnswer,
-  useUploadMOV,
-  useDeleteMOV,
-  useSubmitAssessment,
-  useIndicator,
-  useGovernanceArea
+export {
+    useAssessmentValidation, useCurrentAssessment, useDeleteMOV, useGovernanceArea, useIndicator, useSubmitAssessment, useUpdateIndicatorAnswer,
+    useUploadMOV
 } from './useAssessment';
+
+// Intelligence hooks
+export { useIntelligence } from './useIntelligence';
 
 // Submissions hooks
 export { useSubmissions } from './useSubmissions';
 
 // Analytics hooks
-export { 
-  useOfficialPerformance,
-  useCrossMatching,
-  useSystemicWeakness,
-  useBarangays as useAnalyticsBarangays
+export {
+    useBarangays as useAnalyticsBarangays, useCrossMatching, useOfficialPerformance, useSystemicWeakness
 } from './useAnalytics';
 
 // Dashboard hooks
-export { useDashboard } from './useDashboard';
 export { useAdminDashboard } from './useAdminDashboard';
+export { useDashboard } from './useDashboard';
 
 // Lookup data hooks
-export { useGovernanceAreas } from './useGovernanceAreas';
 export { useAssessorGovernanceArea } from './useAssessorGovernanceArea';
 export { useBarangays } from './useBarangays';
+export { useGovernanceAreas } from './useGovernanceAreas';
 export { useUserBarangay } from './useUserBarangay';
 
 // System settings hooks

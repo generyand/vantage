@@ -6,9 +6,10 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "alembic>=1.16.2",
-    "bcrypt>=4.0.1,<5.0.0",             # Pin bcrypt version for compatibility with passlib
+    "bcrypt>=4.0.1,<5.0.0", # Pin bcrypt version for compatibility with passlib
     "celery>=5.5.3",
     "fastapi>=0.115.12",
+    "google-generativeai>=0.8.5",
     "loguru>=0.7.3",
     "passlib[bcrypt]>=1.7.4",
     "psycopg2-binary>=2.9.10",

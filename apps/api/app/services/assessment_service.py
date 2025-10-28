@@ -1575,6 +1575,75 @@ class AssessmentService:
             "responses_requiring_rework": responses_requiring_rework,
         }
 
+    def get_all_validated_assessments(
+        self, db: Session, status: Optional[AssessmentStatus] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Get all validated assessments with compliance status and area results.
+
+        Used for MLGOO reports page to display all barangay compliance statuses.
+
+        Args:
+            db: Database session
+            status: Optional filter by assessment status (defaults to VALIDATED)
+
+        Returns:
+            List of dictionaries with assessment details including compliance status
+        """
+        from app.db.models.user import User
+
+        # Query assessments with related user and barangay data
+        query = (
+            db.query(Assessment)
+            .join(User, Assessment.blgu_user_id == User.id)
+            .options(joinedload(Assessment.blgu_user).joinedload(User.barangay))
+        )
+
+        # Filter by status if provided
+        filter_status = status or AssessmentStatus.VALIDATED
+        query = query.filter(Assessment.status == filter_status)
+
+        # Order by updated_at descending
+        query = query.order_by(Assessment.updated_at.desc())
+
+        assessments = query.all()
+
+        # Build response list
+        assessment_list = []
+        for assessment in assessments:
+            # Get barangay name from relationship
+            barangay_name = "Unknown"
+            if assessment.blgu_user:
+                if (
+                    hasattr(assessment.blgu_user, "barangay")
+                    and assessment.blgu_user.barangay
+                ):
+                    barangay_name = assessment.blgu_user.barangay.name
+
+            assessment_list.append(
+                {
+                    "id": assessment.id,
+                    "status": assessment.status.value if assessment.status else None,
+                    "final_compliance_status": assessment.final_compliance_status.value
+                    if assessment.final_compliance_status
+                    else None,
+                    "area_results": assessment.area_results,
+                    "ai_recommendations": assessment.ai_recommendations,
+                    "barangay_name": barangay_name,
+                    "blgu_user_name": assessment.blgu_user.name
+                    if assessment.blgu_user
+                    else "Unknown",
+                    "validated_at": assessment.validated_at.isoformat()
+                    if assessment.validated_at
+                    else None,
+                    "updated_at": assessment.updated_at.isoformat()
+                    if assessment.updated_at
+                    else None,
+                }
+            )
+
+        return assessment_list
+
 
 # Create service instance
 assessment_service = AssessmentService()

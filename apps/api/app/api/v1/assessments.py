@@ -1,10 +1,10 @@
 # 📋 Assessments API Routes
 # Endpoints for assessment management and assessment data
 
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from app.api import deps
-from app.db.enums import UserRole
+from app.db.enums import AssessmentStatus, UserRole
 from app.db.models.user import User
 from app.schemas.assessment import (
     MOV,
@@ -16,7 +16,7 @@ from app.schemas.assessment import (
     MOVCreate,
 )
 from app.services.assessment_service import assessment_service
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 router = APIRouter()
@@ -411,3 +411,139 @@ async def delete_mov(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error deleting MOV: {str(e)}",
         ) from e
+
+
+async def get_current_admin_user(
+    current_user: User = Depends(deps.get_current_active_user),
+) -> User:
+    """
+    Get the current authenticated admin/MLGOO user.
+
+    Restricts access to users with SUPERADMIN or MLGOO_DILG role.
+
+    Args:
+        current_user: Current active user from get_current_active_user dependency
+
+    Returns:
+        User: Current admin/MLGOO user
+
+    Raises:
+        HTTPException: If user doesn't have admin privileges
+    """
+    if current_user.role.value not in [
+        UserRole.SUPERADMIN.value,
+        UserRole.MLGOO_DILG.value,
+    ]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions. Admin/MLGOO access required.",
+        )
+    return current_user
+
+
+@router.get("/list", response_model=List[Dict[str, Any]], tags=["assessments"])
+async def get_all_validated_assessments(
+    status: AssessmentStatus = Query(
+        AssessmentStatus.VALIDATED, description="Filter by assessment status"
+    ),
+    db: Session = Depends(deps.get_db),
+    current_user: User = Depends(get_current_admin_user),
+):
+    """
+    Get all validated assessments with compliance status.
+
+    Returns a list of all validated assessments with their compliance status,
+    area results, and barangay information. Used for MLGOO reports dashboard.
+
+    Args:
+        status: Filter by assessment status (defaults to VALIDATED)
+        db: Database session
+        current_user: Current admin/MLGOO user
+
+    Returns:
+        List of assessment dictionaries with compliance data
+    """
+    try:
+        assessments = assessment_service.get_all_validated_assessments(
+            db, status=status
+        )
+        return assessments
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving assessments: {str(e)}",
+        ) from e
+
+
+@router.post(
+    "/{id}/generate-insights",
+    response_model=Dict[str, Any],
+    status_code=status.HTTP_202_ACCEPTED,
+    tags=["assessments"],
+)
+async def generate_insights(
+    id: int,
+    db: Session = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_active_user),
+):
+    """
+    Generate AI-powered insights for a validated assessment.
+
+    This endpoint dispatches a background Celery task to generate AI insights
+    using the Gemini API. The task runs asynchronously and results are stored
+    in the ai_recommendations field.
+
+    **Business Rules:**
+    - Only works for assessments with VALIDATED status
+    - Returns 202 Accepted immediately (asynchronous processing)
+    - Task includes automatic retry logic (max 3 attempts with exponential backoff)
+    - Results are cached to avoid duplicate API calls
+
+    **Response:**
+    - Immediately returns 202 Accepted with task information
+    - Frontend should poll assessment endpoint to check for ai_recommendations field
+
+    Args:
+        id: Assessment ID
+        db: Database session
+        current_user: Current authenticated user
+
+    Returns:
+        dict: Task dispatch confirmation
+    """
+    from app.db.models import Assessment
+    from app.workers.intelligence_worker import generate_insights_task
+
+    # Verify assessment exists
+    assessment = db.query(Assessment).filter(Assessment.id == id).first()
+
+    if not assessment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Assessment not found"
+        )
+
+    # Verify assessment is validated (required for insights)
+    if assessment.status != AssessmentStatus.VALIDATED:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Assessment must be validated to generate insights. Current status: {assessment.status.value}",
+        )
+
+    # Check if insights already exist (cached)
+    if assessment.ai_recommendations:
+        return {
+            "message": "AI insights already generated",
+            "assessment_id": id,
+            "insights_cached": True,
+            "status": "completed",
+        }
+
+    # Dispatch Celery task for background processing
+    task = generate_insights_task.delay(id)
+
+    return {
+        "message": "AI insight generation started",
+        "assessment_id": id,
+        "task_id": task.id,
+        "status": "processing",
+    }
