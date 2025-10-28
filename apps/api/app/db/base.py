@@ -13,14 +13,31 @@ from supabase import Client, create_client
 logger = logging.getLogger(__name__)
 
 # Supabase client for real-time features, auth, and storage
-supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_ANON_KEY)
+# Initialize only if credentials are provided
+supabase: Client | None = None
+try:
+    if settings.SUPABASE_URL and settings.SUPABASE_ANON_KEY:
+        supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_ANON_KEY)
+    else:
+        logger.warning("Supabase client not configured (missing URL or ANON_KEY)")
+except Exception as e:
+    logger.error(f"Failed to initialize Supabase client: {str(e)}")
+    supabase = None
 
 # Admin Supabase client for server-side operations
-supabase_admin: Client | None = (
-    create_client(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_ROLE_KEY)
-    if settings.SUPABASE_SERVICE_ROLE_KEY
-    else None
-)  # noqa: E701
+supabase_admin: Client | None = None
+try:
+    if settings.SUPABASE_URL and settings.SUPABASE_SERVICE_ROLE_KEY:
+        supabase_admin = create_client(
+            settings.SUPABASE_URL, settings.SUPABASE_SERVICE_ROLE_KEY
+        )
+    else:
+        logger.warning(
+            "Supabase admin client not configured (missing URL or SERVICE_ROLE_KEY)"
+        )
+except Exception as e:
+    logger.error(f"Failed to initialize Supabase admin client: {str(e)}")
+    supabase_admin = None
 
 # SQLAlchemy engine for direct database operations
 engine = None
@@ -75,7 +92,14 @@ def get_supabase() -> Client:
 
     Returns:
         Client: Supabase client instance
+
+    Raises:
+        RuntimeError: If Supabase client is not configured
     """
+    if supabase is None:
+        raise RuntimeError(
+            "Supabase client not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY."
+        )
     return supabase
 
 
@@ -149,11 +173,11 @@ async def check_supabase_connection() -> Dict[str, Any]:
     Returns:
         Dict containing connection status and details
     """
-    if not settings.SUPABASE_URL or not settings.SUPABASE_ANON_KEY:
+    if supabase is None:
         return {
             "connected": False,
             "error": "Supabase not configured",
-            "details": "SUPABASE_URL or SUPABASE_ANON_KEY not set",
+            "details": "SUPABASE_URL or SUPABASE_ANON_KEY not set or initialization failed",
         }
 
     try:

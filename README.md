@@ -45,18 +45,21 @@ VANTAGE is a comprehensive pre-assessment, preparation, and decision-support too
 ### Setup Instructions
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd vantage
    ```
 
 2. **Install dependencies**
+
    ```bash
    # Install all dependencies across the monorepo
    pnpm install
    ```
 
 3. **Environment Configuration**
+
    ```bash
    # Copy environment files (if they exist)
    cp apps/api/.env.example apps/api/.env
@@ -64,13 +67,14 @@ VANTAGE is a comprehensive pre-assessment, preparation, and decision-support too
    ```
 
 4. **Database Setup**
+
    ```bash
    # Navigate to API directory
    cd apps/api
-   
+
    # Run database migrations
    alembic upgrade head
-   
+
    # Return to root
    cd ../..
    ```
@@ -86,12 +90,14 @@ VANTAGE is a comprehensive pre-assessment, preparation, and decision-support too
 ### Development Mode
 
 #### Start All Applications
+
 ```bash
 # Start both frontend and backend
 pnpm dev
 ```
 
 #### Start Individual Applications
+
 ```bash
 # Frontend only (http://localhost:3000)
 pnpm dev:web
@@ -149,12 +155,13 @@ turbo build --filter=api
 ### Environment Variables
 
 #### Backend (`apps/api/.env`)
+
 ```env
 #  VANTAGE API Environment Variables
 # Copy this file to .env and fill in your actual values
 
 # =============================================================================
-#  APPLICATION SETTINGS  
+#  APPLICATION SETTINGS
 # =============================================================================
 DEBUG=true
 ENVIRONMENT=development
@@ -176,6 +183,7 @@ DATABASE_URL=
 ```
 
 #### Frontend (`apps/web/.env.local`)
+
 ```env
 # API Configuration
 NEXT_PUBLIC_API_URL=http://localhost:8000
@@ -185,6 +193,7 @@ NEXT_PUBLIC_API_V1_URL=http://localhost:8000/api/v1
 ### Database Configuration
 
 The application uses PostgreSQL with the following key tables:
+
 - `users` - User accounts and authentication
 - `barangays` - Barangay/LGU information
 - `governance_areas` - Assessment area definitions
@@ -223,16 +232,19 @@ vantage/
 ### Development Workflow
 
 1. **Create a feature branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
 2. **Make your changes**
+
    - Follow the established code structure
    - Write tests for new functionality
    - Update documentation as needed
 
 3. **Run tests and linting**
+
    ```bash
    pnpm test
    pnpm lint
@@ -240,6 +252,7 @@ vantage/
    ```
 
 4. **Commit your changes**
+
    ```bash
    git add .
    git commit -m "feat: add new feature description"
@@ -276,12 +289,14 @@ pnpm test -- -vv --log-cli-level=DEBUG
 ### Test Structure
 
 #### Backend Tests (`apps/api/tests/`)
+
 - Unit tests for services and business logic
 - Integration tests for API endpoints
 - Database migration tests
 - Authentication and authorization tests
 
 #### Frontend Tests (`apps/web/src/`)
+
 - Component tests with React Testing Library
 - Hook tests for custom React hooks
 - Integration tests for user workflows
@@ -314,14 +329,136 @@ turbo build --dry-run
 4. **Set up reverse proxy (nginx)**
 5. **Configure SSL certificates**
 
-### Docker Deployment (Optional)
+### Docker Development
+
+VANTAGE includes comprehensive Docker support for local development with dual-stack IPv4/IPv6 networking.
+
+#### Prerequisites
+
+- **Docker Desktop** (or Docker Engine + Docker Compose)
+- **Supabase Account** (for database connection)
+- Local Supabase credentials
+
+#### Quick Start with Docker
+
+1. **Copy environment files**
+
+   ```bash
+   cp apps/api/.env.docker.example apps/api/.env
+   cp apps/web/.env.docker.example apps/web/.env.local
+   ```
+
+2. **Configure your Supabase connection**
+   Edit `apps/api/.env` and add your Supabase credentials:
+
+   ```env
+   SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_ANON_KEY=your-anon-key
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+   DATABASE_URL=postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
+   ```
+
+3. **Start all services**
+
+   ```bash
+   ./scripts/docker-dev.sh up
+   # Or manually:
+   # docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+   ```
+
+4. **Access your services**
+   - **Frontend (Web App)**: http://localhost:3000
+   - **Backend API**: http://localhost:8000
+   - **API Documentation**: http://localhost:8000/docs
+   - **API ReDoc**: http://localhost:8000/redoc
+   - **Health Check**: http://localhost:8000/health
+   - **Redis**: localhost:6379 (internal use only)
+
+#### Helper Scripts
 
 ```bash
-# Build Docker images
-docker build -t vantage-web apps/web
-docker build -t vantage-api apps/api
+# Start services
+./scripts/docker-dev.sh up
 
-# Run with docker-compose
+# View logs
+./scripts/docker-dev.sh logs
+
+# Stop services
+./scripts/docker-dev.sh down
+
+# Restart services
+./scripts/docker-dev.sh restart
+
+# Open shell in API container
+./scripts/docker-dev.sh shell
+
+# Check service status
+./scripts/docker-dev.sh status
+
+# Clean everything (removes volumes and images)
+./scripts/docker-dev.sh clean
+```
+
+#### Docker Architecture
+
+- **api**: FastAPI backend with hot-reload
+- **web**: Next.js frontend with fast refresh
+- **redis**: Redis instance for Celery tasks
+- **celery-worker**: Background task processor
+
+All services run on a custom Docker network with dual-stack IPv4/IPv6 support.
+
+#### Troubleshooting
+
+**Ports already in use:**
+
+```bash
+# Check what's using the ports
+lsof -i :3000  # Frontend
+lsof -i :8000  # Backend
+lsof -i :6379  # Redis
+
+# Or stop services and restart
+./scripts/docker-dev.sh down
+./scripts/docker-dev.sh up
+```
+
+**Services not connecting:**
+
+- Verify Supabase credentials in `apps/api/.env`
+- Check logs: `./scripts/docker-dev.sh logs`
+- Ensure DATABASE_URL uses pooler endpoint (port 6543)
+
+**Need to reset:**
+
+```bash
+# WARNING: This removes all data
+./scripts/docker-dev.sh clean
+./scripts/docker-dev.sh up
+```
+
+#### IPv6 Verification
+
+To verify IPv6 is working:
+
+```bash
+# Check network configuration
+docker network inspect vantage_vantage-network
+
+# Test IPv6 connectivity from container
+docker exec vantage-api ping6 google.com
+```
+
+#### Production Build (Optional)
+
+For production deployment:
+
+```bash
+# Build production images
+docker build -t vantage-web:latest apps/web
+docker build -t vantage-api:latest apps/api
+
+# Run with docker-compose (production config)
 docker-compose up -d
 ```
 
@@ -335,6 +472,7 @@ docker-compose up -d
 ## Built With
 
 ### Frontend Technologies
+
 - **[Next.js 15](https://nextjs.org/)** - React framework with App Router
 - **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
 - **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
@@ -344,6 +482,7 @@ docker-compose up -d
 - **[Lucide React](https://lucide.dev/)** - Icon library
 
 ### Backend Technologies
+
 - **[FastAPI](https://fastapi.tiangolo.com/)** - Modern Python web framework
 - **[SQLAlchemy](https://www.sqlalchemy.org/)** - Python ORM
 - **[Alembic](https://alembic.sqlalchemy.org/)** - Database migration tool
@@ -354,6 +493,7 @@ docker-compose up -d
 - **[python-jose](https://python-jose.readthedocs.io/)** - JWT implementation
 
 ### Development Tools
+
 - **[Turborepo](https://turbo.build/repo)** - Monorepo build system
 - **[pnpm](https://pnpm.io/)** - Fast, disk space efficient package manager
 - **[uv](https://github.com/astral-sh/uv)** - Fast Python package manager
@@ -372,6 +512,7 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 - **Issues**: [Issues](https://github.com/generyand/vantage/issues)
 
 For questions, suggestions, or contributions, please:
+
 1. Check existing [Issues](https://github.com/generyand/vantage/issues)
 2. Create a new issue with detailed description
 3. Follow the contributing guidelines

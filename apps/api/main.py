@@ -27,10 +27,11 @@ async def lifespan(app: FastAPI):
     # Startup
     try:
         await startup_service.perform_startup_checks()
-    except Exception:
-        # Startup service already logs the detailed error
-        # Re-raise to prevent server startup
-        raise
+    except Exception as e:
+        # Log error but allow server to start anyway
+        # This is important for development where connections might not be fully configured
+        logger.warning(f"⚠️ Startup checks failed but continuing: {str(e)}")
+        logger.warning("⚠️ Some features may be unavailable")
 
     # Application is running
     yield

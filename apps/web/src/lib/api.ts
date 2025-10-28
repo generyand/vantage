@@ -2,17 +2,35 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { useAuthStore } from "../store/useAuthStore";
 
-// Create axios instance with base configuration
+// Get the appropriate API base URL based on environment
+const getBaseURL = () => {
+  const isServer = typeof window === 'undefined';
+  
+  // Server-side (Next.js SSR/API Routes running in Docker)
+  if (isServer) {
+    // In Docker, use the internal service name
+    // This comes from docker-compose.yml environment variable
+    return process.env.API_BASE_URL || 'http://api:8000';
+  }
+  
+  // Client-side (browser) - use the public environment variable
+  // This is exposed by NEXT_PUBLIC_ prefix and accessible to the browser
+  // Browser needs localhost because it runs on the host machine, not in Docker
+  return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+};
+
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Request interceptor to add auth token
+// Request interceptor to add auth token and set dynamic base URL
 axiosInstance.interceptors.request.use(
   (config) => {
+    // Set base URL dynamically based on environment (server vs browser)
+    config.baseURL = getBaseURL();
+    
     // Get token directly from Zustand store
     const token = useAuthStore.getState().token;
     if (token) {

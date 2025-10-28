@@ -64,6 +64,7 @@ def create_test_data_for_finalize(db_session: Session) -> dict:
         role=UserRole.BLGU_USER,
         barangay_id=barangay.id,
         hashed_password="hashed_password",
+        is_active=True,  # Required for authentication to work
     )
     db_session.add(blgu_user)
     db_session.commit()
@@ -76,6 +77,7 @@ def create_test_data_for_finalize(db_session: Session) -> dict:
         role=UserRole.AREA_ASSESSOR,
         governance_area_id=governance_area.id,
         hashed_password="hashed_password",
+        is_active=True,  # Required for authentication to work
     )
     db_session.add(assessor)
     db_session.commit()
@@ -233,9 +235,6 @@ def test_finalize_assessment_draft(db_session: Session):
 
 def test_finalize_assessment_unreviewed_responses(db_session: Session):
     """Test finalization request when responses haven't been reviewed."""
-    # Clear any existing dependency overrides
-    app_instance.dependency_overrides.clear()
-
     test_data = create_test_data_for_finalize(db_session)
     assessment = test_data["assessment"]
     assessor = test_data["assessor"]
@@ -245,19 +244,28 @@ def test_finalize_assessment_unreviewed_responses(db_session: Session):
     response.validation_status = None
     db_session.commit()
 
-    # Create auth token for assessor
-    from app.core.security import create_access_token
+    # Override dependencies
+    def _override_current_area_assessor_user():
+        return assessor
 
-    token = create_access_token(subject=assessor.id)
-    headers = {"Authorization": f"Bearer {token}"}
+    def _override_get_db():
+        try:
+            yield db_session
+        finally:
+            pass
+
+    app_instance.dependency_overrides[deps.get_current_area_assessor_user] = (
+        _override_current_area_assessor_user
+    )
+    app_instance.dependency_overrides[deps.get_db] = _override_get_db
 
     response_client = client.post(
-        f"/api/v1/assessor/assessments/{assessment.id}/finalize", headers=headers
+        f"/api/v1/assessor/assessments/{assessment.id}/finalize"
     )
 
-    assert (
-        response_client.status_code == 403
-    )  # JWT token is valid but user doesn't have permission
+    assert response_client.status_code == 400  # Unreviewed responses should return 400
+    data = response_client.json()
+    assert "not been reviewed" in data["detail"]
 
     # Clear dependency overrides
     app_instance.dependency_overrides.clear()

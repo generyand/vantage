@@ -2,8 +2,9 @@
 # Pydantic settings management for environment variables and app configuration
 
 import secrets
-from typing import Optional, List
-from pydantic import field_validator, ValidationInfo, ConfigDict
+from typing import List, Optional
+
+from pydantic import ConfigDict, ValidationInfo, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -32,6 +33,9 @@ class Settings(BaseSettings):
         "http://localhost:3001",
         "https://localhost:3000",
         "https://localhost:3001",
+        # Docker internal network access
+        "http://vantage-web:3000",
+        "http://172.25.0.40:3000",
     ]
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")

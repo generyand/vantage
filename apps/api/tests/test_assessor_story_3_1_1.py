@@ -64,6 +64,7 @@ def create_test_data_for_rework(db_session: Session) -> dict:
         role=UserRole.BLGU_USER,
         barangay_id=barangay.id,
         hashed_password="hashed_password",
+        is_active=True,  # Required for authentication to work
     )
     db_session.add(blgu_user)
     db_session.commit()
@@ -76,6 +77,7 @@ def create_test_data_for_rework(db_session: Session) -> dict:
         role=UserRole.AREA_ASSESSOR,
         governance_area_id=governance_area.id,
         hashed_password="hashed_password",
+        is_active=True,  # Required for authentication to work
     )
     db_session.add(assessor)
     db_session.commit()
@@ -211,19 +213,26 @@ def test_send_assessment_for_rework_not_found(db_session: Session):
     test_data = create_test_data_for_rework(db_session)
     assessor = test_data["assessor"]
 
-    # Create auth token for assessor
-    from app.core.security import create_access_token
+    # Override dependencies
+    def _override_current_area_assessor_user():
+        return assessor
 
-    token = create_access_token(subject=assessor.id)
-    headers = {"Authorization": f"Bearer {token}"}
+    def _override_get_db():
+        try:
+            yield db_session
+        finally:
+            pass
 
-    response = client.post("/api/v1/assessor/assessments/99999/rework", headers=headers)
+    app_instance.dependency_overrides[deps.get_current_area_assessor_user] = (
+        _override_current_area_assessor_user
+    )
+    app_instance.dependency_overrides[deps.get_db] = _override_get_db
 
-    assert (
-        response.status_code == 403
-    )  # JWT token is valid but user doesn't have permission
+    response = client.post("/api/v1/assessor/assessments/99999/rework")
+
+    assert response.status_code == 400  # Assessment not found should return 400
     data = response.json()
-    assert "Not enough permissions" in data["detail"]
+    assert "not found" in data["detail"].lower()
 
     # Clear dependency overrides
     app_instance.dependency_overrides.clear()

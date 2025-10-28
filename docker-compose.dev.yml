@@ -1,0 +1,40 @@
+# Development-specific overrides
+# Use with: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  api:
+    build:
+      context: apps/api
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./apps/api:/app
+      - ./packages/shared:/packages/shared
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      target: development
+    volumes:
+      - ./apps/web:/app/apps/web
+      - ./packages/shared:/app/packages/shared
+      - web-node-modules:/app/node_modules
+      - web-next-cache:/app/apps/web/.next
+      - web-turbo-cache:/app/apps/web/.turbo
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+    command: pnpm --filter web dev --turbopack
+
+  celery-worker:
+    volumes:
+      - ./apps/api:/app
+      - ./packages/shared:/packages/shared
+    command: celery -A app.core.celery_app worker --loglevel=info --reload --queues=notifications,classification
+
+volumes:
+  web-node-modules:
+  web-next-cache:
+  web-turbo-cache:

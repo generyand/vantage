@@ -1,0 +1,46 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+docs/
+README.md
+
+# Dependencies
+node_modules/
+.pnp/
+.venv/
+venv/
+
+# Build artifacts
+dist/
+build/
+.next/
+.turbo/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+.env.*
+*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary
+tmp/
+temp/
+*.log
+
+# Scripts
+scripts/
+
