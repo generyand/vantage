@@ -42,7 +42,7 @@ This matrix maps each functional requirement from the PRD to the corresponding E
 
 ### Three-Tier Structure: Epic → Story → Atomic
 
-- [x] **1.0 Epic: Assessor Dashboard & Secure Queue** *(FR 4.1)*
+- [x] **1.0 Epic: Assessor Dashboard & Secure Queue** _(FR 4.1)_
   - [x] **1.1 Story: Backend API for Secure Queue**
     - [x] **1.1.1 Atomic:** Enhance FastAPI security dependency to enforce `assessor_area` firewall.
       - **Files:** `apps/api/app/api/deps.py`
@@ -65,14 +65,14 @@ This matrix maps each functional requirement from the PRD to the corresponding E
       - **Dependencies:** Backend API (1.1.2), Orval client generation must be run.
       - **Acceptance:** The `useAssessor` hook uses TanStack Query's `useQuery` to fetch data from the `/api/v1/assessor/queue` endpoint via the generated Orval client. It provides loading, error, and data states to the `SubmissionsQueue` component.
       - **Tech:** TanStack Query, Orval, Axios.
-- [ ] **2.0 Epic: Interactive Assessment Validation Interface** *(FR 4.2)*
-  - [ ] **2.1 Story: Database Schema for Internal Notes**
+- [x] **2.0 Epic: Interactive Assessment Validation Interface** _(FR 4.2)_
+  - [x] **2.1 Story: Database Schema for Internal Notes**
     - [x] **2.1.1 Atomic:** Create Alembic migration to add `is_internal_note` to `feedback_comments` table.
       - **Files:** `apps/api/alembic/versions/xxxx_add_is_internal_note_to_feedback.py`, `apps/api/app/db/models/assessment.py`.
       - **Dependencies:** None.
       - **Acceptance:** The migration successfully adds a `is_internal_note` boolean column (defaulting to `False`) to the `feedback_comments` table. The SQLAlchemy model is updated to reflect this change.
       - **Tech:** Alembic, SQLAlchemy.
-  - [ ] **2.2 Story: Backend API for Validation Actions**
+  - [x] **2.2 Story: Backend API for Validation Actions**
     - [x] **2.2.1 Atomic:** Create `POST /api/v1/assessment-responses/{id}/validate` endpoint.
       - **Files:** `apps/api/app/api/v1/assessor.py`, `apps/api/app/services/assessor_service.py`, `apps/api/app/schemas/assessor.py`.
       - **Dependencies:** DB Schema (2.1.1).
@@ -88,7 +88,7 @@ This matrix maps each functional requirement from the PRD to the corresponding E
       - **Dependencies:** None.
       - **Acceptance:** The endpoint returns the full details for a single assessment, including the BLGU's responses and all associated MOVs. Crucially, the response must **also include the official Technical Notes for each indicator** alongside the indicator data.
       - **Tech:** FastAPI, SQLAlchemy.
-  - [ ] **2.3 Story: Frontend Validation View & Controls**
+  - [x] **2.3 Story: Frontend Validation View & Controls**
     - [x] **2.3.1 Atomic:** Build the main validation page and its two-column layout.
       - **Files:** `apps/web/src/app/(app)/assessor/submissions/[id]/page.tsx`.
       - **Dependencies:** Backend API for fetching submission data must exist.
@@ -114,37 +114,37 @@ This matrix maps each functional requirement from the PRD to the corresponding E
       - **Dependencies:** Backend API (2.2.2), Orval client updated.
       - **Acceptance:** A `FileUploader` component is added to the validation controls for each indicator. A new `useMutation` hook in `useAssessor.ts` is created to handle the upload logic, calling the endpoint from task 2.2.2.
       - **Tech:** `FileUploader` component, TanStack Query `useMutation`.
-  - [ ] **2.4 Story: Frontend MOV Previewer Component**
+  - [x] **2.4 Story: Frontend MOV Previewer Component**
     - [x] **2.4.1 Atomic:** Create a shared `FilePreviewerModal` component.
       - **Files:** `apps/web/src/components/shared/FilePreviewerModal.tsx`.
       - **Dependencies:** None.
       - **Acceptance:** The component, using `shadcn/ui` `Dialog`, accepts a file URL. It renders PDF and image files in-app (e.g., using `react-pdf` or an `<iframe>`/`<img>` tag). For other file types, it displays a "Download File" link.
       - **Tech:** shadcn/ui `Dialog`, potentially a library like `react-pdf`.
-- [ ] **3.0 Epic: Rework & Finalization Workflow** *(FR 4.3, 4.4)*
-  - [ ] **3.1 Story: Backend API for Rework & Finalization**
-    - [ ] **3.1.1 Atomic:** Create `POST /api/v1/assessments/{id}/rework` endpoint and trigger notification.
+- [x] **3.0 Epic: Rework & Finalization Workflow** _(FR 4.3, 4.4)_
+  - [x] **3.1 Story: Backend API for Rework & Finalization**
+    - [x] **3.1.1 Atomic:** Create `POST /api/v1/assessments/{id}/rework` endpoint and trigger notification.
       - **Files:** `apps/api/app/api/v1/assessor.py`, `apps/api/app/services/assessor_service.py`, `apps/api/app/workers/notifications.py` (new file).
       - **Dependencies:** Celery worker setup (3.3.1).
       - **Acceptance:** The endpoint changes the assessment status to `Needs Rework` and triggers a Celery background task to handle sending the notification. It fails with a 403 error if the assessment's `rework_count` is not 0.
       - **Tech:** FastAPI, SQLAlchemy, Celery.
-    - [ ] **3.1.2 Atomic:** Create `POST /api/v1/assessments/{id}/finalize` endpoint.
+    - [x] **3.1.2 Atomic:** Create `POST /api/v1/assessments/{id}/finalize` endpoint.
       - **Files:** `apps/api/app/api/v1/assessor.py`, `apps/api/app/services/assessor_service.py`.
       - **Dependencies:** None.
       - **Acceptance:** The endpoint changes the assessment status to `Validated`, permanently locking the assessment from further edits by either the BLGU or the Assessor.
       - **Tech:** FastAPI, SQLAlchemy.
-  - [ ] **3.2 Story: Frontend Controls for Rework & Finalization**
-    - [ ] **3.2.1 Atomic:** Add workflow buttons and their controlling logic to the validation page.
+  - [x] **3.2 Story: Frontend Controls for Rework & Finalization**
+    - [x] **3.2.1 Atomic:** Add workflow buttons and their controlling logic to the validation page.
       - **Files:** `apps/web/src/app/(app)/assessor/submissions/[id]/page.tsx`.
       - **Dependencies:** None.
       - **Acceptance:** "Compile and Send for Rework" and "Finalize Validation" buttons are added. The rework button is disabled until every indicator has been reviewed (status set). They are clearly styled as primary actions.
       - **Tech:** React state management (`useState`).
-    - [ ] **3.2.2 Atomic:** Create mutations for rework and finalization actions.
+    - [x] **3.2.2 Atomic:** Create mutations for rework and finalization actions.
       - **Files:** `apps/web/src/hooks/useAssessor.ts`.
       - **Dependencies:** Backend API (3.1.1, 3.1.2), Orval client updated.
       - **Acceptance:** Two new `useMutation` hooks are added to `useAssessor.ts` for the `rework` and `finalize` endpoints. The buttons trigger these mutations, show loading states, and display success/error notifications using `sonner`. On success, the user is redirected to the dashboard.
       - **Tech:** TanStack Query `useMutation`, `sonner` for notifications, Next.js `useRouter`.
-  - [ ] **3.3 Story: Background Notification Worker**
-    - [ ] **3.3.1 Atomic:** Implement Celery task for sending rework notifications.
+  - [x] **3.3 Story: Background Notification Worker**
+    - [x] **3.3.1 Atomic:** Implement Celery task for sending rework notifications.
       - **Files:** `apps/api/app/workers/notifications.py` (new file).
       - **Dependencies:** Celery infrastructure must be configured.
       - **Acceptance:** A Celery task is created that takes an assessment ID, retrieves the necessary BLGU user details, and handles the logic for sending a notification (e.g., logging it for now, with email integration to come later).
