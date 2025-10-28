@@ -1,0 +1,32 @@
+import { supabase } from "./supabase";
+
+export async function uploadMovFile(
+  file: File,
+  params: { assessmentId: string; responseId: string }
+): Promise<{ storagePath: string }> {
+  const sanitizedName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  // IMPORTANT: path passed to supabase.storage.from('movs').upload must be relative to the bucket root
+  // Do not include the bucket name as part of the path
+  const storagePath = `${params.assessmentId}/${
+    params.responseId
+  }/${Date.now()}-${sanitizedName}`;
+
+  const { error } = await supabase.storage
+    .from("movs")
+    .upload(storagePath, file, { contentType: file.type, upsert: false });
+
+  if (error) {
+    throw new Error(`Supabase upload failed: ${error.message}`);
+  }
+
+  return { storagePath };
+}
+
+export async function getSignedUrl(storagePath: string, expiresIn = 60) {
+  const { data, error } = await supabase.storage
+    .from("movs")
+    .createSignedUrl(storagePath, expiresIn);
+
+  if (error) throw error;
+  return data.signedUrl;
+}

@@ -25,13 +25,46 @@ from app.schemas.assessment import (
     MOVCreate,
     ProgressSummary,
 )
-from fastapi import HTTPException, status
-from sqlalchemy import and_, func
-from sqlalchemy.orm import Session, joinedload
+from fastapi import HTTPException, status  # type: ignore[reportMissingImports]
+from sqlalchemy import and_, func  # type: ignore[reportMissingImports]
+from sqlalchemy.orm import Session, joinedload  # type: ignore[reportMissingImports]
 
 
 class AssessmentService:
     """Service class for assessment management operations."""
+
+    # ----- Serialization helpers -----
+    def _serialize_response_obj(self, response: Optional[AssessmentResponse]) -> Optional[Dict[str, Any]]:
+        if response is None:
+            return None
+        return {
+            "id": response.id,
+            "response_data": response.response_data,
+            "is_completed": response.is_completed,
+            "requires_rework": response.requires_rework,
+            "assessment_id": response.assessment_id,
+            "indicator_id": response.indicator_id,
+            "created_at": response.created_at.isoformat() if response.created_at else None,
+            "updated_at": response.updated_at.isoformat() if response.updated_at else None,
+        }
+
+    def _serialize_mov_list(self, movs: Optional[List[MOV]]) -> List[Dict[str, Any]]:
+        if not movs:
+            return []
+        return [
+            {
+                "id": mov.id,
+                "filename": mov.filename,
+                "original_filename": mov.original_filename,
+                "file_size": mov.file_size,
+                "content_type": mov.content_type,
+                "storage_path": mov.storage_path,
+                "status": mov.status.value if hasattr(mov.status, "value") else mov.status,
+                "response_id": mov.response_id,
+                "uploaded_at": mov.uploaded_at.isoformat() if mov.uploaded_at else None,
+            }
+            for mov in movs
+        ]
 
     def get_assessment_for_blgu(
         self, db: Session, blgu_user_id: int
@@ -90,12 +123,27 @@ class AssessmentService:
             Dictionary with assessment and governance areas data
         """
         try:
-            # Get or create assessment
-            assessment = self.get_assessment_for_blgu(db, blgu_user_id)
-            if not assessment:
-                assessment = self.create_assessment(
-                    db, AssessmentCreate(blgu_user_id=blgu_user_id)
+            # Get assessment
+            assessment = (
+                db.query(Assessment)
+                .filter(Assessment.blgu_user_id == blgu_user_id)
+                .first()
+            )
+
+            # Create if not exists
+            if assessment is None:
+                assessment = Assessment(
+                    blgu_user_id=blgu_user_id,
+                    status=AssessmentStatus.DRAFT,
+                    created_at=datetime.utcnow(),
+                    updated_at=datetime.utcnow(),
                 )
+                db.add(assessment)
+                db.commit()
+                db.refresh(assessment)
+
+            # Ensure governance areas exist (dev safeguard)
+            self._ensure_governance_areas_exist(db)
 
             # Get all governance areas with their indicators
             governance_areas = (
@@ -105,7 +153,7 @@ class AssessmentService:
             )
 
             # If no indicators exist, create some sample indicators for development
-            if all(len(area.indicators) == 0 for area in governance_areas):
+            if governance_areas and all(len(area.indicators) == 0 for area in governance_areas):
                 self._create_sample_indicators(db)
                 # Re-query governance areas with indicators
                 governance_areas = (
@@ -143,18 +191,38 @@ class AssessmentService:
                 "indicators": [],
             }
 
-            for indicator in area.indicators:
-                response = response_lookup.get(indicator.id)
-                indicator_data = {
-                    "id": indicator.id,
-                    "name": indicator.name,
-                    "description": indicator.description,
-                    "form_schema": indicator.form_schema,
-                    "response": response,
-                    "movs": response.movs if response else [],
-                    "feedback_comments": response.feedback_comments if response else [],
-                }
-                area_data["indicators"].append(indicator_data)
+            # Special mock expansion for Financial Administration and Sustainability (Area 1)
+            if area.id == 1 and len(area.indicators) >= 1:
+                base = area.indicators[0]
+                base_response = response_lookup.get(base.id)
+                # Build four mock sub-indicators (1.1.1, 1.1.2, 1.2.1, 1.3.1)
+                fi_subs = self._build_fi_mock_subindicators(base, base_response)
+                area_data["indicators"].extend(fi_subs)
+            else:
+                for indicator in area.indicators:
+                    response = response_lookup.get(indicator.id)
+                    indicator_data = {
+                        "id": indicator.id,
+                        "name": indicator.name,
+                        "description": indicator.description,
+                        "form_schema": indicator.form_schema,
+                        "response": self._serialize_response_obj(response),
+                        "movs": self._serialize_mov_list(response.movs) if response else [],
+                        # Keep feedback comments minimal for now
+                        "feedback_comments": [
+                            {
+                                "id": c.id,
+                                "comment": c.comment,
+                                "comment_type": c.comment_type,
+                                "is_internal_note": c.is_internal_note,
+                                "response_id": c.response_id,
+                                "assessor_id": c.assessor_id,
+                                "created_at": c.created_at.isoformat() if c.created_at else None,
+                            }
+                            for c in (response.feedback_comments if response else [])
+                        ],
+                    }
+                    area_data["indicators"].append(indicator_data)
 
             governance_areas_data.append(area_data)
 
@@ -177,6 +245,82 @@ class AssessmentService:
             "assessment": assessment_dict,
             "governance_areas": governance_areas_data,
         }
+
+    def _ensure_governance_areas_exist(self, db: Session) -> None:
+        """Ensure the 6 governance areas exist. Creates them if missing (dev use)."""
+        from app.db.models.governance_area import GovernanceArea
+        from app.db.enums import AreaType
+
+        existing = {ga.name for ga in db.query(GovernanceArea).all()}
+        required = [
+            ("Financial Administration and Sustainability", AreaType.CORE),
+            ("Disaster Preparedness", AreaType.CORE),
+            ("Safety, Peace and Order", AreaType.CORE),
+            ("Social Protection and Sensitivity", AreaType.ESSENTIAL),
+            ("Business-Friendliness and Competitiveness", AreaType.ESSENTIAL),
+            ("Environmental Management", AreaType.ESSENTIAL),
+        ]
+
+        created_any = False
+        for name, area_type in required:
+            if name not in existing:
+                db.add(GovernanceArea(name=name, area_type=area_type))
+                created_any = True
+
+        if created_any:
+            db.commit()
+
+        # Cleanup any non-required areas accidentally created in dev (e.g., Tourism)
+        allowed = {name for name, _ in required}
+        extras = (
+            db.query(GovernanceArea)
+            .filter(~GovernanceArea.name.in_(list(allowed)))
+            .all()
+        )
+        if extras:
+            for ga in extras:
+                db.delete(ga)
+            db.commit()
+
+    def _build_fi_mock_subindicators(self, base_indicator, base_response) -> List[Dict[str, Any]]:
+        """
+        Build 4 mock sub-indicators for Area 1 (for frontend testing only).
+        These reuse the REAL assessment response (if any) of the base indicator
+        so the frontend can POST MOVs using a valid response_id.
+        """
+        subs: List[Dict[str, Any]] = []
+
+        # Determine an id that the frontend can use for MOV upload. Prefer the
+        # real response id; if none exists yet, fall back to the base indicator id
+        # (upload will 404 until a real response is created by the client elsewhere).
+        safe_id = base_response.id if base_response else base_indicator.id
+        safe_movs = base_response.movs if base_response else []
+        serialized_response = self._serialize_response_obj(base_response)
+        serialized_movs = self._serialize_mov_list(safe_movs)
+
+        # 1.1.1 – Compliance (documents posted)
+        subs.append(
+            {
+                "id": safe_id,
+                "name": "1.1.1 – Compliance with the Barangay Full Disclosure Policy (BFDP) Board",
+                "description": "Posted CY 2023 financial documents in the BFDP board as per DILG MCs.",
+                "form_schema": base_indicator.form_schema.get("properties", {}).get("section_1_1", {})
+                or base_indicator.form_schema,
+                "response": serialized_response,
+                "movs": serialized_movs,
+                "feedback_comments": [],
+            }
+        )
+
+        # The additional sub-indicators (1.1.2, 1.2.1, 1.3.1) are disabled for now
+        # to focus on a single assessment indicator in the UI.
+        # Uncomment blocks below when ready to enable them again.
+        #
+        # subs.append({ ... 1.1.2 ... })
+        # subs.append({ ... 1.2.1 ... })
+        # subs.append({ ... 1.3.1 ... })
+
+        return subs
 
     def _create_sample_indicators(self, db: Session) -> None:
         """Create sample indicators for development/testing purposes."""

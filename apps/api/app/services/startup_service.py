@@ -18,7 +18,8 @@ from app.db.enums import UserRole
 from app.db.models.barangay import Barangay
 from app.db.models.user import User
 from app.services.governance_area_service import governance_area_service
-from sqlalchemy.orm import Session
+from app.services.indicator_service import indicator_service
+from sqlalchemy.orm import Session  # type: ignore[reportMissingImports]
 
 logger = logging.getLogger(__name__)
 
@@ -121,6 +122,24 @@ class StartupService:
             logger.info("  - Seeding SGLGB governance areas...")
             governance_area_service.seed_governance_areas(db)
             logger.info("  - Governance areas seeding complete.")
+
+            # Seed mock indicators
+            logger.info("  - Seeding mock indicators for testing...")
+            indicator_service.seed_mock_indicators(db)
+            logger.info("  - Mock indicators seeding complete.")
+
+            # Ensure Area 1 exists as a SINGLE indicator (sub-items live in schema only)
+            logger.info("  - Enforcing Area 1 as a single indicator (sub-indicators in schema)...")
+            indicator_service.enforce_area1_as_single_indicator(db)
+            logger.info("  - Area 1 DB indicator enforced as single.")
+
+            # Ensure official governance area names are used as indicator names
+            indicator_service.standardize_indicator_area_names(db)
+
+            # Ensure Environmental Management indicator (Area 6) exists
+            logger.info("  - Ensuring Environmental Management indicator exists...")
+            indicator_service.ensure_environmental_indicator(db)
+            logger.info("  - Environmental indicator ensured.")
 
         except Exception as e:
             logger.warning(f"⚠️  Could not seed initial data: {str(e)}")
