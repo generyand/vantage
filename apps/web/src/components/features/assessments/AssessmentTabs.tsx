@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import { IndicatorAccordion } from "./IndicatorAccordion";
+import { RecursiveIndicator } from "./IndicatorAccordion";
 
 interface AssessmentTabsProps {
   assessment: Assessment;
@@ -27,6 +27,39 @@ export function AssessmentTabs({
   const [activeTab, setActiveTab] = useState(
     assessment.governanceAreas[0]?.id || ""
   );
+
+  // Count only leaf indicators (actionable items)
+  const countAllIndicators = (indicators: any[]): number => {
+    return indicators.reduce((count, indicator) => {
+      const children = indicator.children || [];
+      if (children.length > 0) {
+        return count + countAllIndicators(children);
+      }
+      return count + 1;
+    }, 0);
+  };
+
+  // Count only completed leaf indicators
+  const countCompletedIndicators = (indicators: any[]): number => {
+    return indicators.reduce((count, indicator) => {
+      const children = indicator.children || [];
+      if (children.length > 0) {
+        return count + countCompletedIndicators(children);
+      }
+      return count + (indicator.status === "completed" ? 1 : 0);
+    }, 0);
+  };
+
+  // Count only needs_rework leaf indicators
+  const countNeedsReworkIndicators = (indicators: any[]): number => {
+    return indicators.reduce((count, indicator) => {
+      const children = indicator.children || [];
+      if (children.length > 0) {
+        return count + countNeedsReworkIndicators(children);
+      }
+      return count + (indicator.status === "needs_rework" ? 1 : 0);
+    }, 0);
+  };
 
   // Function to get the logo path based on area name
   const getAreaLogo = (areaName: string) => {
@@ -66,13 +99,9 @@ export function AssessmentTabs({
     const area = assessment.governanceAreas.find((a) => a.id === areaId);
     if (!area) return <Circle className="h-4 w-4 text-gray-400" />;
 
-    const totalIndicators = area.indicators.length;
-    const completedIndicators = area.indicators.filter(
-      (i) => i.status === "completed"
-    ).length;
-    const needsReworkIndicators = area.indicators.filter(
-      (i) => i.status === "needs_rework"
-    ).length;
+    const totalIndicators = countAllIndicators(area.indicators);
+    const completedIndicators = countCompletedIndicators(area.indicators);
+    const needsReworkIndicators = countNeedsReworkIndicators(area.indicators);
 
     if (needsReworkIndicators > 0) {
       return <AlertCircle className="h-4 w-4 text-orange-500" />;
@@ -89,10 +118,8 @@ export function AssessmentTabs({
     const area = assessment.governanceAreas.find((a) => a.id === areaId);
     if (!area) return 0;
 
-    const totalIndicators = area.indicators.length;
-    const completedIndicators = area.indicators.filter(
-      (i) => i.status === "completed"
-    ).length;
+    const totalIndicators = countAllIndicators(area.indicators);
+    const completedIndicators = countCompletedIndicators(area.indicators);
 
     return totalIndicators > 0
       ? Math.round((completedIndicators / totalIndicators) * 100)
@@ -243,12 +270,8 @@ export function AssessmentTabs({
 
                             {/* Progress Text */}
                             <div className="text-xs text-center text-[var(--text-secondary)]">
-                              {
-                                area.indicators.filter(
-                                  (i) => i.status === "completed"
-                                ).length
-                              }{" "}
-                              of {area.indicators.length} indicators
+                              {countCompletedIndicators(area.indicators)}{" "}
+                              of {countAllIndicators(area.indicators)} indicators
                             </div>
                           </div>
                         </div>
@@ -364,12 +387,8 @@ export function AssessmentTabs({
 
                             {/* Progress Text */}
                             <div className="text-xs text-center text-[var(--text-secondary)]">
-                              {
-                                area.indicators.filter(
-                                  (i) => i.status === "completed"
-                                ).length
-                              }{" "}
-                              of {area.indicators.length} indicators
+                              {countCompletedIndicators(area.indicators)}{" "}
+                              of {countAllIndicators(area.indicators)} indicators
                             </div>
                           </div>
                         </div>
@@ -392,9 +411,7 @@ export function AssessmentTabs({
         {assessment.governanceAreas.map((area) => {
           const logoPath = getAreaLogo(area.name);
           const progress = getAreaProgress(area.id);
-          const completedIndicators = area.indicators.filter(
-            (i) => i.status === "completed"
-          ).length;
+          const completedIndicators = countCompletedIndicators(area.indicators);
 
           return (
             <TabsContent key={area.id} value={area.id} className="p-0">
@@ -455,7 +472,7 @@ export function AssessmentTabs({
                         </div>
                         <div className="bg-[var(--card)]/80 backdrop-blur-sm rounded-sm p-4 text-center shadow-sm border border-[var(--border)]">
                           <div className="text-2xl font-bold text-[var(--foreground)]">
-                            {area.indicators.length - completedIndicators}
+                            {countAllIndicators(area.indicators) - completedIndicators}
                           </div>
                           <div className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wide">
                             Remaining
@@ -494,7 +511,7 @@ export function AssessmentTabs({
                       <div className="flex justify-between text-xs text-[var(--text-secondary)] mt-2">
                         <span>{completedIndicators} indicators completed</span>
                         <span>
-                          {area.indicators.length - completedIndicators}{" "}
+                          {countAllIndicators(area.indicators) - completedIndicators}{" "}
                           remaining
                         </span>
                       </div>
@@ -510,7 +527,7 @@ export function AssessmentTabs({
                       Assessment Indicators
                     </h3>
                     <span className="text-sm text-[var(--text-secondary)]">
-                      ({area.indicators.length} total)
+                      ({countAllIndicators(area.indicators)} total)
                     </span>
                   </div>
 
@@ -521,11 +538,12 @@ export function AssessmentTabs({
                         (assessment.status === "Needs Rework" &&
                           !(indicator as any).requiresRework);
                       return (
-                        <IndicatorAccordion
+                        <RecursiveIndicator
                           key={indicator.id}
                           indicator={indicator}
                           isLocked={indicatorLocked}
                           updateAssessmentData={updateAssessmentData}
+                          level={0}
                         />
                       );
                     })}

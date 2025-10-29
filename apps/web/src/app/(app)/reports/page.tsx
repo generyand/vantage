@@ -1,13 +1,17 @@
-'use client';
+"use client";
 
-import { ComplianceBadge } from '@/components/features/reports';
-import { PageHeader } from '@/components/shared';
-import { useGetAssessmentsList } from '@vantage/shared';
-import { AssessmentStatus } from '@vantage/shared/src/generated/schemas/common';
+import { ComplianceBadge } from "@/components/features/reports";
+import { PageHeader } from "@/components/shared";
+import { useGetAssessmentsList } from "@vantage/shared";
+import { AssessmentStatus } from "@vantage/shared/src/generated/schemas/assessments";
 
 export default function ReportsPage() {
   // Fetch validated assessments
-  const { data: assessments, isLoading, error } = useGetAssessmentsList({
+  const {
+    data: assessments,
+    isLoading,
+    error,
+  } = useGetAssessmentsList({
     status: AssessmentStatus.Validated,
   });
 
@@ -62,7 +66,7 @@ export default function ReportsPage() {
             </h3>
             <p className="text-3xl font-bold text-green-600">
               {assessments?.filter(
-                (a) => a.final_compliance_status === 'Passed'
+                (a) => a.final_compliance_status === "Passed"
               ).length || 0}
             </p>
           </div>
@@ -73,7 +77,7 @@ export default function ReportsPage() {
             </h3>
             <p className="text-3xl font-bold text-red-600">
               {assessments?.filter(
-                (a) => a.final_compliance_status === 'Failed'
+                (a) => a.final_compliance_status === "Failed"
               ).length || 0}
             </p>
           </div>
@@ -99,16 +103,18 @@ export default function ReportsPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <h4 className="font-semibold text-lg">
-                        {assessment.barangay_name || 'Unknown Barangay'}
+                        {assessment.barangay_name || "Unknown Barangay"}
                       </h4>
                       <p className="text-sm text-muted-foreground mt-1">
-                        {assessment.blgu_user_name || 'Unknown User'}
+                        {assessment.blgu_user_name || "Unknown User"}
                       </p>
                       <p className="text-xs text-muted-foreground mt-2">
-                        Validated:{' '}
+                        Validated:{" "}
                         {assessment.validated_at
-                          ? new Date(assessment.validated_at).toLocaleDateString()
-                          : 'N/A'}
+                          ? new Date(
+                              assessment.validated_at
+                            ).toLocaleDateString()
+                          : "N/A"}
                       </p>
                     </div>
 

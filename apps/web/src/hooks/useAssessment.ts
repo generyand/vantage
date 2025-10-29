@@ -125,16 +125,22 @@ export function useCurrentAssessment() {
   const mapIndicatorTree = (areaId: number, indicator: IndicatorNode) => {
     const mapped = {
       id: indicator.id.toString(),
+      // Preserve backend link to real DB indicator for synthetic children
+      responseIndicatorId: (indicator as any).responseIndicatorId ?? (indicator as any).response_indicator_id,
       code: (() => {
+        // Use the code from backend if it exists
+        if ((indicator as any).code) {
+          return (indicator as any).code;
+        }
+        // If the indicator name already has a code pattern, extract it
         const full = indicator.name.match(/^(\d+(?:\.\d+)+)/)?.[1];
         if (full) {
-          const parent = full.match(/^(\d+\.\d+)/)?.[1];
-          if (parent) return `${parent} - ${full}`;
           return full;
         }
-        return `${areaId}.${indicator.id}.1`;
+        // For indicators without codes, generate a simple one
+        return `${areaId}.${indicator.id}`;
       })(),
-      name: indicator.name.replace(/^(\d+(?:\.\d+)+)\s*[-–]\s*/u, ""),
+      name: indicator.name,
       description: indicator.description,
       technicalNotes: "See form schema for requirements",
       governanceAreaId: areaId.toString(),
@@ -150,9 +156,8 @@ export function useCurrentAssessment() {
       assessorComment: indicator.feedback_comments?.[0]?.comment,
       responseId: indicator.response?.id ?? null,
       requiresRework: indicator.response?.requires_rework === true,
-      // Form schema is provided by backend per-indicator (already included in API object)
-      // We keep a minimal placeholder until full schema typing is wired here
-      formSchema: {
+      // Use form schema from backend, fallback to simple compliance if not available
+      formSchema: indicator.form_schema || {
         properties: {
           compliance: {
             type: "string" as const,
