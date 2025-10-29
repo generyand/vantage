@@ -31,6 +31,87 @@ This matrix maps each functional requirement from the PRD to the corresponding E
 - `apps/web/src/components/shared/FilePreviewerModal.tsx`
 - `apps/web/src/hooks/useAssessor.ts`
 
+## Plan Update: Assessor — Replace Mocks, Add Supabase Uploads, and Analytics Endpoint
+
+This section adds a new integration-focused epic to wire existing assessor UI to real backend data, introduce Supabase-backed MOV uploads (server-side only), and provide a minimal analytics endpoint to power current widgets. These changes minimize surface-area by introducing only two new endpoints.
+
+### Additional Relevant Files (new/updated)
+
+- `apps/api/app/core/config.py` (add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`)
+- `apps/api/app/services/storage_service.py` (new)
+- `apps/api/app/schemas/assessment.py` (extend with `MOVUploadResponse` if missing)
+- `apps/api/app/api/v1/assessor.py` (add routes: uploads, analytics)
+- `apps/web/src/app/(app)/assessor/submissions/page.tsx` (wire queue)
+- `apps/web/src/app/(app)/assessor/dashboard/page.tsx` (fetch queue in client subcomponent)
+- `apps/web/src/app/(app)/assessor/analytics/page.tsx` (replace mocks with hook)
+- `apps/web/src/app/(app)/assessor/assessments/[id]/ValidationControls.tsx` (multipart upload)
+- `apps/web/src/hooks/useAssessor.ts` (new hooks for analytics and upload)
+
+### 4.0 Epic: Integration & Analytics
+
+- [ ] 4.1 Story: Backend — Supabase Integration
+
+  - [ ] 4.1.1 Atomic: Add settings and env vars
+    - Files: `apps/api/app/core/config.py`, `apps/api/.env`
+    - Acceptance: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` defined in `Settings` and loaded from `.env` (local) or environment (prod). Keys never exposed to frontend.
+  - [ ] 4.1.2 Atomic: Implement `storage_service.py`
+    - Files: `apps/api/app/services/storage_service.py` (new)
+    - Acceptance: Service initializes Supabase client with service-role key and implements `upload_mov(file, *, response_id)` that stores files under bucket `movs` with prefix `assessment-{assessment_id}/response-{response_id}/`. Returns stored path and metadata suitable for persistence.
+
+- [ ] 4.2 Story: Backend — MOV Upload Endpoint (Assessor)
+
+  - [ ] 4.2.1 Atomic: Add multipart upload route
+    - Files: `apps/api/app/api/v1/assessor.py`, `apps/api/app/schemas/assessment.py`, `apps/api/app/services/assessor_service.py`
+    - Acceptance: `POST /api/v1/assessor/assessment-responses/{response_id}/movs/upload` accepts `multipart/form-data` (`file`, optional `filename`), validates assessor permissions (existing firewall in `deps.py`), uploads via `storage_service`, creates MOV record marked as "Uploaded by Assessor", and returns `MOVUploadResponse` including stored path and MOV entity. Existing JSON-based BLGU MOV endpoints remain unchanged.
+    - Note: Do not expose Supabase credentials; only persist storage path/URL in DB. Signed URLs can be added later.
+
+- [ ] 4.3 Story: Backend — Assessor Analytics Endpoint
+
+  - [ ] 4.3.1 Atomic: Add analytics route and service method(s)
+    - Files: `apps/api/app/api/v1/assessor.py`, `apps/api/app/schemas/assessor.py`, `apps/api/app/services/assessor_service.py`
+    - Acceptance: `GET /api/v1/assessor/analytics` returns `AssessorAnalyticsResponse` covering current UI widgets:
+      - `overview`: totals and trend series
+      - `hotspots`: top underperforming indicators/areas with reasons
+      - `workflow`: counts/durations by status
+    - Start minimal using existing assessment/response data and extend as UI grows.
+
+- [ ] 4.4 Story: OpenAPI and Types
+
+  - [ ] 4.4.1 Atomic: Ensure routes are in main router and regenerate clients
+    - Files: `apps/api/app/api/v1/assessor.py`, root `orval.config.ts`
+    - Acceptance: New endpoints appear in OpenAPI; run `pnpm generate` at repo root to refresh `@vantage/shared` client types and functions.
+
+- [ ] 4.5 Story: Frontend — Wire Submissions and Dashboard
+
+  - [ ] 4.5.1 Atomic: Replace queue mocks on Submissions page
+    - Files: `apps/web/src/app/(app)/assessor/submissions/page.tsx`, `apps/web/src/hooks/useAssessor.ts`
+    - Acceptance: Use `useAssessorQueue()` (generated client + TanStack Query) instead of `generateSubmissionsData`. Preserve existing filters and map to current UI shape.
+  - [ ] 4.5.2 Atomic: Dashboard uses real queue via client subcomponent
+    - Files: `apps/web/src/app/(app)/assessor/dashboard/page.tsx`
+    - Acceptance: Fetch queue client-side and pass items to `<SubmissionsQueue />` without breaking current UI.
+
+- [ ] 4.6 Story: Frontend — Analytics
+
+  - [ ] 4.6.1 Atomic: Replace analytics mocks with hook
+    - Files: `apps/web/src/app/(app)/assessor/analytics/page.tsx`, `apps/web/src/hooks/useAssessor.ts`
+    - Acceptance: Implement `useAssessorAnalytics()` (generated from `/assessor/analytics`) and adapt widget prop mapping to the API response shape.
+
+- [ ] 4.7 Story: Frontend — MOV Upload in Validation Flow
+  - [ ] 4.7.1 Atomic: Use multipart endpoint in validation controls
+    - Files: `apps/web/src/app/(app)/assessor/assessments/[id]/ValidationControls.tsx`, `apps/web/src/hooks/useAssessor.ts`
+    - Acceptance: Remove mock storage path usage, submit file via multipart upload mutation; on success invalidate assessor detail query to reflect new MOVs.
+
+### Config & Security
+
+- Do not expose Supabase keys to the frontend. Use service-role key in backend only. Persist storage path/URL; serve signed URLs later if needed.
+
+### Testing & Ops Notes
+
+- Backend tests: add unit tests for `storage_service` and endpoint tests for upload and analytics. Use `pytest -vv --log-cli-level=DEBUG` under `apps/api/tests/`.
+- Frontend tests: component-level tests for analytics widgets mapping and upload action wiring.
+- Types regeneration: after backend routes exist, run `pnpm generate` to refresh `@vantage/shared`.
+- Migrations: none expected for this epic; if DB schema changes become necessary, follow Alembic guidelines and never modify old migrations. Always test `upgrade` and `downgrade` locally.
+
 ### Testing Notes
 
 - **Backend Testing:** Place Pytest tests in `apps/api/tests/`. Test services and API endpoints separately. Run with `pytest -vv --log-cli-level=DEBUG`.
