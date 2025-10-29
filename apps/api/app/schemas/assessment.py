@@ -24,6 +24,19 @@ class Indicator(BaseModel):
     governance_area_id: int
 
 
+class IndicatorRead(BaseModel):
+    """Recursive indicator schema including nested children."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    description: Optional[str] = None
+    form_schema: Dict[str, Any]
+    governance_area_id: int
+    children: List["IndicatorRead"] = []
+
+
 # ============================================================================
 # Assessment Schemas
 # ============================================================================
@@ -371,3 +384,4 @@ class AssessmentDashboardResponse(BaseModel):
 AssessmentWithResponses.model_rebuild()
 AssessmentResponseWithDetails.model_rebuild()
 IndicatorWithResponse.model_rebuild()
+IndicatorRead.model_rebuild()

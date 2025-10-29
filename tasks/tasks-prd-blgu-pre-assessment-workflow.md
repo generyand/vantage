@@ -176,27 +176,28 @@
 
 - [ ] **5.0 Epic: Indicator Hierarchy (Parent/Child) Support** _(FR 4.2, Technical Considerations)_
 
-  - [ ] **5.1 Story: Database & Model Support for Hierarchy**
+- [x] **5.1 Story: Database & Model Support for Hierarchy**
 
-    - [x] **5.1.1 Atomic:** Add `parent_id` to `indicators` table with FK to `indicators.id` (nullable).
-      - **Files:** `apps/api/app/db/models/governance_area.py`, `apps/api/alembic/versions/<new>.py`
-      - **Acceptance:** Column exists, FK constraint enforced, null allowed for top-level.
-    - [x] **5.1.2 Atomic:** Update `Indicator` SQLAlchemy model with `parent_id`, `parent`, and `children` relationships.
-      - **Files:** `apps/api/app/db/models/governance_area.py`
-      - **Acceptance:** Self-referencing relationships work; ORM can access `children` per indicator.
-    - [x] **5.1.3 Atomic:** Generate and apply Alembic migration for `parent_id` and FK.
-      - **Command:** `cd apps/api && alembic upgrade head`
-      - **Acceptance:** DB schema updated with column and constraint.
+  - [x] **5.1.1 Atomic:** Add `parent_id` to `indicators` table with FK to `indicators.id` (nullable).
+    - **Files:** `apps/api/app/db/models/governance_area.py`, `apps/api/alembic/versions/<new>.py`
+    - **Acceptance:** Column exists, FK constraint enforced, null allowed for top-level.
+  - [x] **5.1.2 Atomic:** Update `Indicator` SQLAlchemy model with `parent_id`, `parent`, and `children` relationships.
+    - **Files:** `apps/api/app/db/models/governance_area.py`
+    - **Acceptance:** Self-referencing relationships work; ORM can access `children` per indicator.
+  - [x] **5.1.3 Atomic:** Generate and apply Alembic migration for `parent_id` and FK.
+
+    - **Command:** `cd apps/api && alembic upgrade head`
+    - **Acceptance:** DB schema updated with column and constraint.
 
   - [ ] **5.2 Story: API Schemas and Service Logic for Nested Indicators**
 
-    - [ ] **5.2.1 Atomic:** Add recursive `IndicatorRead` Pydantic schema with `children` and update forward refs.
+    - [x] **5.2.1 Atomic:** Add recursive `IndicatorRead` Pydantic schema with `children` and update forward refs.
       - **Files:** `apps/api/app/schemas/assessment.py` (or appropriate schema module)
       - **Acceptance:** Serialized indicator includes nested `children` array; validation passes.
-    - [ ] **5.2.2 Atomic:** Load indicators recursively using `selectinload` and return only top-level indicators.
+    - [x] **5.2.2 Atomic:** Load indicators recursively using `selectinload` and return only top-level indicators.
       - **Files:** `apps/api/app/services/assessment_service.py`
       - **Acceptance:** `get_assessment_for_blgu` returns nested indicators; no N+1 queries observed in logs.
-    - [ ] **5.2.3 Atomic:** Update `GET /api/v1/assessments/my-assessment` to return nested indicators.
+    - [x] **5.2.3 Atomic:** Update `GET /api/v1/assessments/my-assessment` to return nested indicators.
       - **Files:** `apps/api/app/api/v1/assessments.py`
       - **Acceptance:** Response contains only top-level indicators, each with a fully populated `children` tree.
 

@@ -11,6 +11,7 @@ from app.db.models import (
     AssessmentResponse,
     FeedbackComment,
     GovernanceArea,
+    Indicator,
 )
 from app.schemas.assessment import (
     AssessmentCreate,
@@ -148,22 +149,15 @@ class AssessmentService:
             # Ensure governance areas exist (dev safeguard)
             self._ensure_governance_areas_exist(db)
 
-            # Get all governance areas with their indicators
-            governance_areas = (
-                db.query(GovernanceArea)
-                .options(joinedload(GovernanceArea.indicators))
-                .all()
-            )
+            # Get all governance areas
+            governance_areas = db.query(GovernanceArea).all()
 
             # If no indicators exist, create some sample indicators for development
-            if governance_areas and all(len(area.indicators) == 0 for area in governance_areas):
+            areas_with_no_indicators = (
+                db.query(GovernanceArea).outerjoin(Indicator).group_by(GovernanceArea.id).having(func.count(Indicator.id) == 0).all()
+            )
+            if areas_with_no_indicators:
                 self._create_sample_indicators(db)
-                # Re-query governance areas with indicators
-                governance_areas = (
-                    db.query(GovernanceArea)
-                    .options(joinedload(GovernanceArea.indicators))
-                    .all()
-                )
 
         except Exception as e:
             print(f"Error in get_assessment_for_blgu_with_full_data: {e}")
@@ -184,7 +178,47 @@ class AssessmentService:
         # Create response lookup
         response_lookup = {r.indicator_id: r for r in responses}
 
-        # Build governance areas with indicators and responses
+        # Fetch all indicators once to avoid N+1 and build a tree by area
+        all_indicators = db.query(Indicator).all()
+        indicators_by_area: Dict[int, list[Indicator]] = {}
+        for ind in all_indicators:
+            indicators_by_area.setdefault(ind.governance_area_id, []).append(ind)
+
+        # Pre-build adjacency lists for indicators for O(n) tree assembly
+        children_by_parent: Dict[int | None, list[Indicator]] = {}
+        for ind in all_indicators:
+            children_by_parent.setdefault(getattr(ind, "parent_id", None), []).append(ind)
+
+        def serialize_indicator_node(ind: Indicator) -> Dict[str, Any]:
+            """Serialize an indicator and attach nested children without triggering lazy loads."""
+            response = response_lookup.get(ind.id)
+            node = {
+                "id": ind.id,
+                "name": ind.name,
+                "description": ind.description,
+                "form_schema": ind.form_schema,
+                "response": self._serialize_response_obj(response),
+                "movs": self._serialize_mov_list(response.movs) if response else [],
+                "feedback_comments": [
+                    {
+                        "id": c.id,
+                        "comment": c.comment,
+                        "comment_type": c.comment_type,
+                        "is_internal_note": c.is_internal_note,
+                        "response_id": c.response_id,
+                        "assessor_id": c.assessor_id,
+                        "created_at": c.created_at.isoformat() if c.created_at else None,
+                    }
+                    for c in (response.feedback_comments if response else [])
+                ],
+                "children": [],
+            }
+            # Recurse over children using pre-built adjacency lists
+            for child in children_by_parent.get(ind.id, []):
+                node["children"].append(serialize_indicator_node(child))
+            return node
+
+        # Build governance areas with top-level indicators and nested children
         governance_areas_data = []
         for area in governance_areas:
             area_data = {
@@ -194,38 +228,10 @@ class AssessmentService:
                 "indicators": [],
             }
 
-            # Special mock expansion for Financial Administration and Sustainability (Area 1)
-            if area.id == 1 and len(area.indicators) >= 1:
-                base = area.indicators[0]
-                base_response = response_lookup.get(base.id)
-                # Build four mock sub-indicators (1.1.1, 1.1.2, 1.2.1, 1.3.1)
-                fi_subs = self._build_fi_mock_subindicators(base, base_response)
-                area_data["indicators"].extend(fi_subs)
-            else:
-                for indicator in area.indicators:
-                    response = response_lookup.get(indicator.id)
-                    indicator_data = {
-                        "id": indicator.id,
-                        "name": indicator.name,
-                        "description": indicator.description,
-                        "form_schema": indicator.form_schema,
-                        "response": self._serialize_response_obj(response),
-                        "movs": self._serialize_mov_list(response.movs) if response else [],
-                        # Keep feedback comments minimal for now
-                        "feedback_comments": [
-                            {
-                                "id": c.id,
-                                "comment": c.comment,
-                                "comment_type": c.comment_type,
-                                "is_internal_note": c.is_internal_note,
-                                "response_id": c.response_id,
-                                "assessor_id": c.assessor_id,
-                                "created_at": c.created_at.isoformat() if c.created_at else None,
-                            }
-                            for c in (response.feedback_comments if response else [])
-                        ],
-                    }
-                    area_data["indicators"].append(indicator_data)
+            # Add only top-level indicators for this area, with nested children
+            for ind in indicators_by_area.get(area.id, []):
+                if getattr(ind, "parent_id", None) is None:
+                    area_data["indicators"].append(serialize_indicator_node(ind))
 
             governance_areas_data.append(area_data)
 
