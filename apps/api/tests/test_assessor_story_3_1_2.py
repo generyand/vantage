@@ -139,7 +139,7 @@ def test_finalize_assessment_success(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user] = (
+    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
     app_instance.dependency_overrides[deps.get_db] = _override_get_db
@@ -183,7 +183,7 @@ def test_finalize_assessment_already_finalized(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user] = (
+    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
     app_instance.dependency_overrides[deps.get_db] = _override_get_db
@@ -218,7 +218,7 @@ def test_finalize_assessment_draft(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user] = (
+    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
     app_instance.dependency_overrides[deps.get_db] = _override_get_db
@@ -254,7 +254,7 @@ def test_finalize_assessment_unreviewed_responses(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user] = (
+    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
     app_instance.dependency_overrides[deps.get_db] = _override_get_db
@@ -327,7 +327,7 @@ def test_finalize_assessment_wrong_role(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user] = (
+    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
     app_instance.dependency_overrides[deps.get_db] = _override_get_db

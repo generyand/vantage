@@ -11,6 +11,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
 from app.db.base import Base, get_db
+# Ensure all ORM models are registered on Base.metadata before creating tables
+from app.db import models  # noqa: F401
 from fastapi.testclient import TestClient
 from main import app
 from sqlalchemy import create_engine
@@ -37,6 +39,18 @@ def override_get_db():
 @pytest.fixture(scope="session")
 def db_setup():
     """Create test database tables"""
+    # Start from a clean slate to avoid stale/partial schemas across runs
+    try:
+        from os import remove
+        from os.path import exists
+
+        if exists("./test.db"):
+            remove("./test.db")
+    except Exception:
+        # If deletion fails (e.g., file locked), proceed with create_all which will ensure tables exist
+        pass
+
+    # Ensure all tables are created once for the test session
     Base.metadata.create_all(bind=engine)
     yield
     Base.metadata.drop_all(bind=engine)
@@ -53,16 +67,19 @@ def client(db_setup):
 
 @pytest.fixture
 def db_session(db_setup):
-    """Database session for tests with automatic rollback for isolation"""
+    """Database session with table data cleaned per test to avoid conflicts"""
+    # Safety: make sure all tables exist before each test in case previous tests modified schema
+    Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
 
-    # Start a savepoint for test isolation
-    trans = db.begin()
+    # Clean all tables in reverse dependency order to satisfy FKs
+    for table in reversed(Base.metadata.sorted_tables):
+        db.execute(table.delete())
+    db.commit()
+
     try:
         yield db
     finally:
-        # Rollback to clean up test data
-        db.rollback()
         db.close()
 
 

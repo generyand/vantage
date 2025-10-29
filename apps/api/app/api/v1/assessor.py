@@ -136,7 +136,7 @@ async def get_assessment_details(
 async def send_assessment_for_rework(
     assessment_id: int,
     db: Session = Depends(deps.get_db),
-    current_assessor: User = Depends(deps.get_current_area_assessor_user),
+    current_assessor: User = Depends(deps.get_current_area_assessor_user_http),
 ):
     """
     Send assessment back to BLGU user for rework.
@@ -169,7 +169,7 @@ async def send_assessment_for_rework(
 async def finalize_assessment(
     assessment_id: int,
     db: Session = Depends(deps.get_db),
-    current_assessor: User = Depends(deps.get_current_area_assessor_user),
+    current_assessor: User = Depends(deps.get_current_area_assessor_user_http),
 ):
     """
     Finalize assessment validation, permanently locking it.
