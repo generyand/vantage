@@ -3,11 +3,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Assessment } from "@/types/assessment";
 import {
-    AlertCircle,
-    CheckCircle,
-    Circle,
-    FileText,
-    Target,
+  AlertCircle,
+  CheckCircle,
+  Circle,
+  FileText,
+  Target,
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -161,7 +161,7 @@ export function AssessmentTabs({
                         value={area.id}
                         className={`group relative flex flex-col items-center p-4 rounded-sm transition-all duration-300 hover:shadow-lg hover:scale-[1.02] min-h-[140px] overflow-hidden ${
                           isActive
-                            ? `bg-[var(--card)] shadow-xl scale-[1.03] border-2 border-[var(--cityscape-yellow)]`
+                            ? "bg-[var(--card)] shadow-xl scale-[1.03] border-2 border-[var(--cityscape-yellow)]"
                             : "bg-[var(--card)]/90 backdrop-blur-sm border-2 border-[var(--border)] hover:border-[var(--cityscape-yellow)]/60"
                         }`}
                       >
@@ -206,7 +206,7 @@ export function AssessmentTabs({
                           <div
                             className={`px-3 py-1 rounded-sm text-lg font-bold transition-colors duration-200 ${
                               isActive
-                                ? `text-[var(--cityscape-yellow)] bg-[var(--card)]/90 shadow-sm`
+                                ? "text-[var(--cityscape-yellow)] bg-[var(--card)]/90 shadow-sm"
                                 : "text-[var(--foreground)] bg-[var(--hover)] group-hover:bg-[var(--cityscape-yellow)]/10"
                             }`}
                           >
@@ -280,7 +280,7 @@ export function AssessmentTabs({
                         value={area.id}
                         className={`group relative flex flex-col items-center p-4 rounded-sm transition-all duration-300 hover:shadow-lg hover:scale-[1.02] min-h-[140px] overflow-hidden ${
                           isActive
-                            ? `bg-[var(--card)] shadow-xl scale-[1.03] border-2 border-[var(--cityscape-yellow)]`
+                            ? "bg-[var(--card)] shadow-xl scale-[1.03] border-2 border-[var(--cityscape-yellow)]"
                             : "bg-[var(--card)]/90 backdrop-blur-sm border-2 border-[var(--border)] hover:border-[var(--cityscape-yellow)]/60"
                         }`}
                       >
@@ -325,7 +325,7 @@ export function AssessmentTabs({
                           <div
                             className={`px-3 py-1 rounded-sm text-lg font-bold transition-colors duration-200 ${
                               isActive
-                                ? `text-[var(--cityscape-yellow)] bg-[var(--card)]/90 shadow-sm`
+                                ? "text-[var(--cityscape-yellow)] bg-[var(--card)]/90 shadow-sm"
                                 : "text-[var(--foreground)] bg-[var(--hover)] group-hover:bg-[var(--cityscape-yellow)]/10"
                             }`}
                           >
@@ -514,7 +514,6 @@ export function AssessmentTabs({
                     </span>
                   </div>
 
-                  <div className="space-y-4">
                   <div className="space-y-4">
                     {area.indicators.map((indicator) => {
                       const indicatorLocked =

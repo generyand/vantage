@@ -202,12 +202,12 @@
       - **Acceptance:** Response contains only top-level indicators, each with a fully populated `children` tree.
 
   - [ ] **5.3 Story: Frontend Recursive Rendering of Indicators**
-    - [ ] **5.3.1 Atomic:** Update `useAssessment` to handle nested `indicators` structure.
+    - [x] **5.3.1 Atomic:** Update `useAssessment` to handle nested `indicators` structure.
       - **Files:** `apps/web/src/hooks/useAssessment.ts`
       - **Acceptance:** Types and data access updated; no runtime errors when reading `children`.
-    - [ ] **5.3.2 Atomic:** Implement `RecursiveIndicator` rendering with indentation via `level` prop.
+    - [x] **5.3.2 Atomic:** Implement `RecursiveIndicator` rendering with indentation via `level` prop.
       - **Files:** `apps/web/src/components/features/assessments/IndicatorAccordion.tsx` (or new component), `apps/web/src/components/features/assessments/DynamicIndicatorForm.tsx`
       - **Acceptance:** UI displays nested indicators; expanding parents reveals nested children with proper indentation.
-    - [ ] **5.3.3 Atomic:** Ensure MOV uploader and dynamic form work at any nesting level.
+    - [x] **5.3.3 Atomic:** Ensure MOV uploader and dynamic form work at any nesting level.
       - **Files:** `apps/web/src/components/features/assessments/*`, `apps/web/src/components/shared/FileUploader.tsx`
       - **Acceptance:** Users can edit and upload MOVs for both parent and child indicators; autosave still functions.
