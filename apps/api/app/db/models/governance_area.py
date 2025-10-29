@@ -5,6 +5,7 @@ from app.db.base import Base
 from app.db.enums import AreaType
 from sqlalchemy import JSON, Column, Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import Optional
 
 
 class GovernanceArea(Base):
@@ -56,6 +57,21 @@ class Indicator(Base):
         ForeignKey("governance_areas.id"), nullable=False
     )
 
+    # Self-referencing hierarchy
+    parent_id: Mapped[int | None] = mapped_column(
+        ForeignKey("indicators.id"), nullable=True
+    )
+
     # Relationships
     governance_area = relationship("GovernanceArea", back_populates="indicators")
     responses = relationship("AssessmentResponse", back_populates="indicator")
+    parent: Mapped[Optional["Indicator"]] = relationship(
+        "Indicator",
+        remote_side="Indicator.id",
+        back_populates="children",
+    )
+    children: Mapped[list["Indicator"]] = relationship(
+        "Indicator",
+        back_populates="parent",
+        cascade="all, delete-orphan",
+    )

@@ -178,14 +178,14 @@
 
   - [ ] **5.1 Story: Database & Model Support for Hierarchy**
 
-    - [ ] **5.1.1 Atomic:** Add `parent_id` to `indicators` table with FK to `indicators.id` (nullable).
+    - [x] **5.1.1 Atomic:** Add `parent_id` to `indicators` table with FK to `indicators.id` (nullable).
       - **Files:** `apps/api/app/db/models/governance_area.py`, `apps/api/alembic/versions/<new>.py`
       - **Acceptance:** Column exists, FK constraint enforced, null allowed for top-level.
-    - [ ] **5.1.2 Atomic:** Update `Indicator` SQLAlchemy model with `parent_id`, `parent`, and `children` relationships.
+    - [x] **5.1.2 Atomic:** Update `Indicator` SQLAlchemy model with `parent_id`, `parent`, and `children` relationships.
       - **Files:** `apps/api/app/db/models/governance_area.py`
       - **Acceptance:** Self-referencing relationships work; ORM can access `children` per indicator.
-    - [ ] **5.1.3 Atomic:** Generate and apply Alembic migration for `parent_id` and FK.
-      - **Command:** `cd apps/api && alembic revision --autogenerate -m "add parent_id to indicators" && alembic upgrade head`
+    - [x] **5.1.3 Atomic:** Generate and apply Alembic migration for `parent_id` and FK.
+      - **Command:** `cd apps/api && alembic upgrade head`
       - **Acceptance:** DB schema updated with column and constraint.
 
   - [ ] **5.2 Story: API Schemas and Service Logic for Nested Indicators**
