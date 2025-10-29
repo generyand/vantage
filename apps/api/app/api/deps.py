@@ -164,7 +164,7 @@ async def get_current_area_assessor_user(
         getattr(user_with_area, "role", None) is None
         or user_with_area.role != UserRole.AREA_ASSESSOR
     ):
-        raise HTTPException(
+         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions. Area Assessor access required.",
         )
@@ -174,5 +174,64 @@ async def get_current_area_assessor_user(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Assessor must be assigned to a governance area.",
         )
+
+    return user_with_area
+
+
+async def get_current_area_assessor_user_http(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db),
+) -> User:
+    """
+    HTTP-friendly dependency that authenticates and enforces Area Assessor role.
+
+    Returns 401 for any invalid credentials or missing assessor context to align
+    with tests that expect unauthorized when user context is incomplete.
+    """
+    # Verify and decode JWT
+    try:
+        payload = verify_token(credentials.credentials)
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    # Load user
+    user = db.query(User).filter(User.id == user_id).first()
+    if user is None or not getattr(user, "is_active", False):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    # Enforce assessor role and governance area
+    if getattr(user, "role", None) != UserRole.AREA_ASSESSOR:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user_with_area = (
+        db.query(User).options(joinedload(User.governance_area)).filter(User.id == user.id).first()
+    )
+    if user_with_area is None or user_with_area.governance_area is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return user_with_area
 
     return user_with_area

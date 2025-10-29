@@ -3,11 +3,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Assessment } from "@/types/assessment";
 import {
-  AlertCircle,
-  CheckCircle,
-  Circle,
-  FileText,
-  Target,
+    AlertCircle,
+    CheckCircle,
+    Circle,
+    FileText,
+    Target,
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -515,14 +515,21 @@ export function AssessmentTabs({
                   </div>
 
                   <div className="space-y-4">
-                    {area.indicators.map((indicator) => (
-                      <IndicatorAccordion
-                        key={indicator.id}
-                        indicator={indicator}
-                        isLocked={isLocked}
-                        updateAssessmentData={updateAssessmentData}
-                      />
-                    ))}
+                  <div className="space-y-4">
+                    {area.indicators.map((indicator) => {
+                      const indicatorLocked =
+                        isLocked ||
+                        (assessment.status === "Needs Rework" &&
+                          !(indicator as any).requiresRework);
+                      return (
+                        <IndicatorAccordion
+                          key={indicator.id}
+                          indicator={indicator}
+                          isLocked={indicatorLocked}
+                          updateAssessmentData={updateAssessmentData}
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               </div>

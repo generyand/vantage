@@ -170,8 +170,10 @@ export function useCurrentAssessment() {
               : ("no" as const),
             movFiles: indicator.movs || [],
             assessorComment: indicator.feedback_comments?.[0]?.comment,
-            // Capture real response id if present so uploads can use it
+            // Capture real response id and rework flag if present
             responseId: (indicator as any).response?.id ?? null,
+            requiresRework:
+              (indicator as any).response?.requires_rework === true,
             formSchema: {
               properties: {
                 compliance: {
@@ -272,7 +274,9 @@ export function useAssessmentValidation(assessment: Assessment | null) {
 
     const isComplete =
       missingIndicators.length === 0 && missingMOVs.length === 0;
-    const canSubmit = isComplete && assessment.status === "Draft";
+    const canSubmit =
+      isComplete &&
+      (assessment.status === "Draft" || assessment.status === "Needs Rework");
 
     return {
       isComplete,

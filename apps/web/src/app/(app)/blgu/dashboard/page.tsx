@@ -154,8 +154,10 @@ export default function BLGUDashboardPage() {
               {/* Primary Status Card */}
               <StatusCard status={data.status} progress={data.progress} />
 
-              {/* Action Required: Rework Section */}
-              <FeedbackSection feedback={data.feedback} />
+              {/* Action Required: Rework Section (only when assessment needs rework) */}
+              {data.status === "Needs Rework" && data.feedback.length > 0 && (
+                <FeedbackSection feedback={data.feedback} />
+              )}
             </div>
 
             {/* Right Column - Enhanced Sidebar (1/4 width) */}
