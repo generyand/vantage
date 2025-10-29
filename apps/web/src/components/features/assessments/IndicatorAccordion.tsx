@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
+  useCurrentAssessment,
   useDeleteMOV,
   useUpdateResponse,
   useUploadMOV,
@@ -30,6 +31,7 @@ export function IndicatorAccordion({
   isLocked,
   updateAssessmentData,
 }: IndicatorAccordionProps) {
+  const { data: assessment } = useCurrentAssessment();
   const [isOpen, setIsOpen] = useState(false);
   const { updateResponse } = useUpdateResponse();
   const { mutate: uploadMOV, isPending: isUploading } = useUploadMOV();
@@ -52,19 +54,26 @@ export function IndicatorAccordion({
 
     const created = await postAssessmentsResponses({
       indicator_id: parseInt(indicator.id),
-      assessment_id: parseInt((indicator as any).governanceAreaId || "0") || 1, // fallback
+      assessment_id: assessment ? parseInt(assessment.id) : 1,
       response_data: {},
     });
 
     if (updateAssessmentData) {
       updateAssessmentData((prevData) => {
         const updated = { ...prevData };
-        const area = updated.governanceAreas.find((a) =>
-          a.indicators.some((i) => i.id === indicator.id)
-        );
-        if (area) {
-          const idx = area.indicators.findIndex((i) => i.id === indicator.id);
-          (area.indicators[idx] as any).responseId = created.id;
+        const updateInTree = (nodes: any[]): boolean => {
+          for (let i = 0; i < nodes.length; i++) {
+            if (nodes[i].id === indicator.id) {
+              (nodes[i] as any).responseId = created.id;
+              return true;
+            }
+            if (nodes[i].children && updateInTree(nodes[i].children))
+              return true;
+          }
+          return false;
+        };
+        for (const area of updated.governanceAreas) {
+          if (area.indicators && updateInTree(area.indicators as any[])) break;
         }
         return updated;
       });
@@ -151,31 +160,39 @@ export function IndicatorAccordion({
                   }
                   // Update the assessment data using the reactive state
                   updateAssessmentData((prevData) => {
-                    const updatedData = { ...prevData };
-                    const area = updatedData.governanceAreas.find((a) =>
-                      a.indicators.some((i) => i.id === indicator.id)
-                    );
-                    if (area) {
-                      const indicatorIndex = area.indicators.findIndex(
-                        (i) => i.id === indicator.id
-                      );
-                      if (indicatorIndex !== -1) {
-                        const current = area.indicators[indicatorIndex];
-                        const movCount = current.movFiles?.length || 0;
-                        const compliance = data.compliance;
-                        const newStatus =
-                          compliance === "no"
-                            ? "completed"
-                            : compliance === "yes" && movCount > 0
-                            ? "completed"
-                            : "not_started";
-                        area.indicators[indicatorIndex] = {
-                          ...current,
-                          responseData: data,
-                          complianceAnswer: compliance,
-                          status: newStatus,
-                        };
+                    const updatedData = { ...prevData } as any;
+                    const updateInTree = (nodes: any[]): boolean => {
+                      for (let i = 0; i < nodes.length; i++) {
+                        if (nodes[i].id === indicator.id) {
+                          const current = nodes[i];
+                          const movCount =
+                            (current.movFiles?.length as number) || 0;
+                          const compliance = data.compliance;
+                          const newStatus =
+                            compliance === "no"
+                              ? "completed"
+                              : compliance === "yes" && movCount > 0
+                              ? "completed"
+                              : "not_started";
+                          nodes[i] = {
+                            ...current,
+                            responseData: data,
+                            complianceAnswer: compliance,
+                            status: newStatus,
+                          };
+                          return true;
+                        }
+                        if (
+                          nodes[i].children &&
+                          updateInTree(nodes[i].children)
+                        )
+                          return true;
                       }
+                      return false;
+                    };
+                    for (const area of updatedData.governanceAreas) {
+                      if (area.indicators && updateInTree(area.indicators))
+                        break;
                     }
                     return updatedData;
                   });
@@ -236,35 +253,45 @@ export function IndicatorAccordion({
                         // Update local UI state so area progress reflects upload
                         if (updateAssessmentData) {
                           updateAssessmentData((prev) => {
-                            const updated = { ...prev };
-                            const area = updated.governanceAreas.find((a) =>
-                              a.indicators.some((i) => i.id === indicator.id)
-                            );
-                            if (area) {
-                              const idx = area.indicators.findIndex(
-                                (i) => i.id === indicator.id
-                              );
-                              if (idx !== -1) {
-                                const current = area.indicators[idx];
-                                const files = [
-                                  ...current.movFiles,
-                                  {
-                                    id: Date.now().toString(),
-                                    name: file.name,
-                                    size: file.size,
-                                    url: storagePath,
-                                  },
-                                ];
-                                area.indicators[idx] = {
-                                  ...current,
-                                  movFiles: files,
-                                  status:
-                                    (current.complianceAnswer ||
-                                      localCompliance) === "yes"
-                                      ? "completed"
-                                      : current.status,
-                                };
+                            const updated = { ...prev } as any;
+                            const updateInTree = (nodes: any[]): boolean => {
+                              for (let i = 0; i < nodes.length; i++) {
+                                if (nodes[i].id === indicator.id) {
+                                  const current = nodes[i];
+                                  const files = [
+                                    ...current.movFiles,
+                                    {
+                                      id: Date.now().toString(),
+                                      name: file.name,
+                                      size: file.size,
+                                      url: storagePath,
+                                    },
+                                  ];
+                                  nodes[i] = {
+                                    ...current,
+                                    movFiles: files,
+                                    status:
+                                      (current.complianceAnswer ||
+                                        localCompliance) === "yes"
+                                        ? "completed"
+                                        : current.status,
+                                  };
+                                  return true;
+                                }
+                                if (
+                                  nodes[i].children &&
+                                  updateInTree(nodes[i].children)
+                                )
+                                  return true;
                               }
+                              return false;
+                            };
+                            for (const area of updated.governanceAreas) {
+                              if (
+                                area.indicators &&
+                                updateInTree(area.indicators)
+                              )
+                                break;
                             }
                             return updated;
                           });
@@ -286,30 +313,40 @@ export function IndicatorAccordion({
                       // Remove from local state and update status if necessary
                       if (updateAssessmentData) {
                         updateAssessmentData((prev) => {
-                          const updated = { ...prev };
-                          const area = updated.governanceAreas.find((a) =>
-                            a.indicators.some((i) => i.id === indicator.id)
-                          );
-                          if (area) {
-                            const idx = area.indicators.findIndex(
-                              (i) => i.id === indicator.id
-                            );
-                            if (idx !== -1) {
-                              const current = area.indicators[idx];
-                              const files = current.movFiles.filter(
-                                (f) => f.id !== fileId
-                              );
-                              area.indicators[idx] = {
-                                ...current,
-                                movFiles: files,
-                                status:
-                                  (current.complianceAnswer ||
-                                    localCompliance) === "yes" &&
-                                  files.length === 0
-                                    ? "not_started"
-                                    : current.status,
-                              };
+                          const updated = { ...prev } as any;
+                          const updateInTree = (nodes: any[]): boolean => {
+                            for (let i = 0; i < nodes.length; i++) {
+                              if (nodes[i].id === indicator.id) {
+                                const current = nodes[i];
+                                const files = current.movFiles.filter(
+                                  (f: any) => f.id !== fileId
+                                );
+                                nodes[i] = {
+                                  ...current,
+                                  movFiles: files,
+                                  status:
+                                    (current.complianceAnswer ||
+                                      localCompliance) === "yes" &&
+                                    files.length === 0
+                                      ? "not_started"
+                                      : current.status,
+                                };
+                                return true;
+                              }
+                              if (
+                                nodes[i].children &&
+                                updateInTree(nodes[i].children)
+                              )
+                                return true;
                             }
+                            return false;
+                          };
+                          for (const area of updated.governanceAreas) {
+                            if (
+                              area.indicators &&
+                              updateInTree(area.indicators)
+                            )
+                              break;
                           }
                           return updated;
                         });
@@ -330,5 +367,43 @@ export function IndicatorAccordion({
         </AccordionContent>
       </AccordionItem>
     </Accordion>
+  );
+}
+
+interface RecursiveIndicatorProps extends IndicatorAccordionProps {
+  level?: number;
+}
+
+export function RecursiveIndicator({
+  indicator,
+  isLocked,
+  updateAssessmentData,
+  level = 0,
+}: RecursiveIndicatorProps) {
+  const hasChildren =
+    Array.isArray((indicator as any).children) &&
+    (indicator as any).children.length > 0;
+
+  return (
+    <div style={{ paddingLeft: level * 16 }}>
+      <IndicatorAccordion
+        indicator={indicator}
+        isLocked={isLocked}
+        updateAssessmentData={updateAssessmentData}
+      />
+      {hasChildren && (
+        <div className="mt-2 space-y-2">
+          {(indicator as any).children.map((child: Indicator) => (
+            <RecursiveIndicator
+              key={child.id}
+              indicator={child}
+              isLocked={isLocked}
+              updateAssessmentData={updateAssessmentData}
+              level={level + 1}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

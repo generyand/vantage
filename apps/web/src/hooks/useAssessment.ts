@@ -97,27 +97,79 @@ export function useCurrentAssessment() {
       id: number;
       name: string;
       area_type: string;
-      indicators: Array<{
-        id: number;
-        name: string;
-        description: string;
-        response?: {
-          response_data: {
-            has_budget_plan?: boolean;
-          };
-        };
-        movs?: Array<{
-          id: string;
-          name: string;
-          size: number;
-          url: string;
-        }>;
-        feedback_comments?: Array<{
-          comment: string;
-        }>;
-      }>;
+      indicators: Array<IndicatorNode>;
     }>;
   }
+
+  interface IndicatorNode {
+    id: number;
+    name: string;
+    description: string;
+    response?: {
+      id?: number;
+      requires_rework?: boolean;
+      response_data?: Record<string, unknown>;
+    };
+    movs?: Array<{
+      id: string;
+      name: string;
+      size: number;
+      url: string;
+    }>;
+    feedback_comments?: Array<{
+      comment: string;
+    }>;
+    children?: Array<IndicatorNode>;
+  }
+
+  const mapIndicatorTree = (areaId: number, indicator: IndicatorNode) => {
+    const mapped = {
+      id: indicator.id.toString(),
+      code: (() => {
+        const full = indicator.name.match(/^(\d+(?:\.\d+)+)/)?.[1];
+        if (full) {
+          const parent = full.match(/^(\d+\.\d+)/)?.[1];
+          if (parent) return `${parent} - ${full}`;
+          return full;
+        }
+        return `${areaId}.${indicator.id}.1`;
+      })(),
+      name: indicator.name.replace(/^(\d+(?:\.\d+)+)\s*[-–]\s*/u, ""),
+      description: indicator.description,
+      technicalNotes: "See form schema for requirements",
+      governanceAreaId: areaId.toString(),
+      status: indicator.response
+        ? ("completed" as const)
+        : ("not_started" as const),
+      complianceAnswer:
+        indicator.response?.response_data &&
+        (indicator.response.response_data as any).has_budget_plan
+          ? ("yes" as const)
+          : ("no" as const),
+      movFiles: indicator.movs || [],
+      assessorComment: indicator.feedback_comments?.[0]?.comment,
+      responseId: indicator.response?.id ?? null,
+      requiresRework: indicator.response?.requires_rework === true,
+      // Form schema is provided by backend per-indicator (already included in API object)
+      // We keep a minimal placeholder until full schema typing is wired here
+      formSchema: {
+        properties: {
+          compliance: {
+            type: "string" as const,
+            title: "Compliance",
+            description: "Is this indicator compliant?",
+            required: true,
+            enum: ["yes", "no", "na"],
+          },
+        },
+      },
+      responseData: indicator.response?.response_data || {},
+      children: (indicator.children || []).map((child) =>
+        mapIndicatorTree(areaId, child)
+      ),
+    };
+    return mapped;
+  };
 
   const transformedData = assessmentData
     ? {
@@ -143,74 +195,50 @@ export function useCurrentAssessment() {
           code: area.name.substring(0, 2).toUpperCase(),
           description: `${area.name} governance area`,
           isCore: area.area_type === "Core",
-          indicators: area.indicators.map((indicator) => ({
-            id: indicator.id.toString(),
-            // Display parent section first (e.g., 1.1 - 1.1.1)
-            // Extract parent like 1.1 from names that start with 1.1.1 / 1.2.1 / 1.3.1
-            code: (() => {
-              const full = indicator.name.match(/^(\d+(?:\.\d+)+)/)?.[1];
-              if (full) {
-                const parent = full.match(/^(\d+\.\d+)/)?.[1];
-                if (parent) return `${parent} - ${full}`;
-                return full;
-              }
-              return `${area.id}.${indicator.id}.1`;
-            })(),
-            // Strip any leading numeric code from the name since we already
-            // render `code` separately (avoids redundancy like "1.1 - 1.1.1 – 1.1.1 – ...").
-            name: indicator.name.replace(/^(\d+(?:\.\d+)+)\s*[-–]\s*/u, ""),
-            description: indicator.description,
-            technicalNotes: "See form schema for requirements",
-            governanceAreaId: area.id.toString(),
-            status: indicator.response
-              ? ("completed" as const)
-              : ("not_started" as const),
-            complianceAnswer: indicator.response?.response_data?.has_budget_plan
-              ? ("yes" as const)
-              : ("no" as const),
-            movFiles: indicator.movs || [],
-            assessorComment: indicator.feedback_comments?.[0]?.comment,
-            // Capture real response id and rework flag if present
-            responseId: (indicator as any).response?.id ?? null,
-            requiresRework:
-              (indicator as any).response?.requires_rework === true,
-            formSchema: {
-              properties: {
-                compliance: {
-                  type: "string" as const,
-                  title: "Compliance",
-                  description: "Is this indicator compliant?",
-                  required: true,
-                  enum: ["yes", "no", "na"],
-                },
-              },
-            },
-            responseData: indicator.response?.response_data || {},
-          })),
+          indicators: area.indicators
+            .filter((i) => true) // top-level already from API
+            .map((indicator) => mapIndicatorTree(area.id, indicator)),
         })),
-        totalIndicators: (
-          assessmentData as unknown as APIAssessment
-        ).governance_areas.reduce(
-          (total, area) => total + area.indicators.length,
-          0
-        ),
-        completedIndicators: (
-          assessmentData as unknown as APIAssessment
-        ).governance_areas.reduce(
-          (total, area) =>
-            total + area.indicators.filter((ind) => ind.response).length,
-          0
-        ),
+        totalIndicators: (() => {
+          const countTree = (nodes: IndicatorNode[] | undefined): number =>
+            (nodes || []).reduce(
+              (acc, n) => acc + 1 + countTree(n.children),
+              0
+            );
+          return (
+            assessmentData as unknown as APIAssessment
+          ).governance_areas.reduce(
+            (total, area) => total + countTree(area.indicators),
+            0
+          );
+        })(),
+        completedIndicators: (() => {
+          const countCompleted = (nodes: IndicatorNode[] | undefined): number =>
+            (nodes || []).reduce(
+              (acc, n) =>
+                acc + (n.response ? 1 : 0) + countCompleted(n.children),
+              0
+            );
+          return (
+            assessmentData as unknown as APIAssessment
+          ).governance_areas.reduce(
+            (total, area) => total + countCompleted(area.indicators),
+            0
+          );
+        })(),
         needsReworkIndicators: (
           assessmentData as unknown as APIAssessment
-        ).governance_areas.reduce(
-          (total, area) =>
-            total +
-            area.indicators.filter(
-              (ind) => (ind.feedback_comments || []).length > 0
-            ).length,
-          0
-        ),
+        ).governance_areas.reduce((total, area) => {
+          const countRework = (nodes: IndicatorNode[] | undefined): number =>
+            (nodes || []).reduce(
+              (acc, n) =>
+                acc +
+                ((n.feedback_comments || []).length > 0 ? 1 : 0) +
+                countRework(n.children),
+              0
+            );
+          return total + countRework(area.indicators);
+        }, 0),
       }
     : null;
 
@@ -376,13 +404,22 @@ export function useIndicator(indicatorId: string) {
   return useMemo(() => {
     if (!assessment) return null;
 
+    const findInTree = (nodes: any[]): any | null => {
+      for (const n of nodes) {
+        if (n.id === indicatorId) return n;
+        const found = n.children && findInTree(n.children);
+        if (found) return found;
+      }
+      return null;
+    };
+
     if (
       assessment.governanceAreas &&
       Array.isArray(assessment.governanceAreas)
     ) {
       for (const area of assessment.governanceAreas) {
         if (area.indicators && Array.isArray(area.indicators)) {
-          const indicator = area.indicators.find((i) => i.id === indicatorId);
+          const indicator = findInTree(area.indicators as any);
           if (indicator) return indicator;
         }
       }
