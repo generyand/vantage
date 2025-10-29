@@ -478,6 +478,73 @@ export const usePostAssessmentsSubmit = <TError = unknown,
       return useMutation(mutationOptions );
     }
     /**
+ * Submit a specific assessment for review by ID.
+
+Validates that the assessment belongs to the current BLGU user, runs the
+preliminary compliance check (no "YES" answers without MOVs), and updates
+the status to "Submitted for Review" if valid.
+ * @summary Submit Assessment By Id
+ */
+export const postAssessments$AssessmentIdSubmit = (
+    assessmentId: number,
+ options?: SecondParameter<typeof mutator>,signal?: AbortSignal
+) => {
+      
+      
+      return mutator<AssessmentSubmissionValidation>(
+      {url: `http://localhost:8000/api/v1/assessments/${assessmentId}/submit`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostAssessmentsAssessmentIdSubmitMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAssessments$AssessmentIdSubmit>>, TError,{assessmentId: number}, TContext>, request?: SecondParameter<typeof mutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof postAssessments$AssessmentIdSubmit>>, TError,{assessmentId: number}, TContext> => {
+
+const mutationKey = ['postAssessmentsAssessmentIdSubmit'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAssessments$AssessmentIdSubmit>>, {assessmentId: number}> = (props) => {
+          const {assessmentId} = props ?? {};
+
+          return  postAssessments$AssessmentIdSubmit(assessmentId,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostAssessmentsAssessmentIdSubmitMutationResult = NonNullable<Awaited<ReturnType<typeof postAssessments$AssessmentIdSubmit>>>
+    
+    export type PostAssessmentsAssessmentIdSubmitMutationError = HTTPValidationError
+
+    /**
+ * @summary Submit Assessment By Id
+ */
+export const usePostAssessmentsAssessmentIdSubmit = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAssessments$AssessmentIdSubmit>>, TError,{assessmentId: number}, TContext>, request?: SecondParameter<typeof mutator>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof postAssessments$AssessmentIdSubmit>>,
+        TError,
+        {assessmentId: number},
+        TContext
+      > => {
+
+      const mutationOptions = getPostAssessmentsAssessmentIdSubmitMutationOptions(options);
+
+      return useMutation(mutationOptions );
+    }
+    /**
  * Upload a MOV (Means of Verification) file for an assessment response.
 
 Creates a record of the uploaded file in the database. The actual file

@@ -229,9 +229,43 @@ class AssessmentService:
             }
 
             # Add only top-level indicators for this area, with nested children
-            for ind in indicators_by_area.get(area.id, []):
-                if getattr(ind, "parent_id", None) is None:
-                    area_data["indicators"].append(serialize_indicator_node(ind))
+            top_level_nodes: list[Dict[str, Any]] = []
+            top_level_inds = [
+                ind for ind in indicators_by_area.get(area.id, []) if getattr(ind, "parent_id", None) is None
+            ]
+            
+            # For area 1, only use the first indicator as the parent for synthetic children
+            if area.id == 1:
+                # Only take the first indicator for area 1 to use as parent
+                top_level_inds = top_level_inds[:1]
+            
+            for ind in top_level_inds:
+                top_level_nodes.append(serialize_indicator_node(ind))
+
+            # Option B (dev/demo): inject synthetic children for Area 1 using existing helper
+            # This enables nested rendering even without DB hierarchy
+            if area.id == 1 and len(top_level_inds) >= 1 and len(top_level_nodes) >= 1:
+                base_ind = top_level_inds[0]
+                base_resp = response_lookup.get(base_ind.id)
+                try:
+                    fi_subs = self._build_fi_mock_subindicators(base_ind, base_resp)
+                    # Override parent display title to match spec (1.1 Compliance ...)
+                    top_level_nodes[0]["name"] = (
+                        "BFDP Board Compliance"
+                    )
+                    # Provide explicit code so frontend doesn't derive from DB id (e.g., 1.119)
+                    top_level_nodes[0]["code"] = "1.1"
+                    # Override the description to match the parent role
+                    top_level_nodes[0]["description"] = (
+                        "Compliance with the Barangay Full Disclosure Policy (BFDP) Board requirements"
+                    )
+                    # Clear existing children and add synthetic ones
+                    top_level_nodes[0]["children"] = fi_subs
+                except Exception:
+                    # Fail-safe: ignore mock injection errors in prod paths
+                    pass
+
+            area_data["indicators"].extend(top_level_nodes)
 
             governance_areas_data.append(area_data)
 
@@ -307,17 +341,50 @@ class AssessmentService:
         serialized_response = self._serialize_response_obj(base_response)
         serialized_movs = self._serialize_mov_list(safe_movs)
 
-        # 1.1.1 – Compliance (documents posted)
+        # 1.1.1 – Posted documents (child indicator under 1.1 Compliance)
         subs.append(
             {
-                "id": safe_id,
-                "name": "1.1.1 – Compliance with the Barangay Full Disclosure Policy (BFDP) Board",
-                "description": "Posted CY 2023 financial documents in the BFDP board as per DILG MCs.",
-                "form_schema": base_indicator.form_schema.get("properties", {}).get("section_1_1", {})
-                or base_indicator.form_schema,
+                "id": str(safe_id + 1000),  # Use unique ID for child
+                # Backend indicator to use when creating/updating responses (existing DB row)
+                "responseIndicatorId": base_indicator.id,
+                "code": "1.1.1",
+                "name": "Posted CY 2023 financial documents in the BFDP board",
+                "description": "Posted the following CY 2023 financial documents in the BFDP board, pursuant to DILG MC No. 2014-81 and DILG MC No. 2022-027:",
+                "technicalNotes": "See form schema for requirements",
+                "governanceAreaId": "1",
+                "status": "completed" if serialized_response and serialized_response.get("is_completed") else "not_started",
+                "complianceAnswer": "yes" if serialized_response and serialized_response.get("response_data", {}).get("compliance") == "yes" else "no",
+                "movFiles": serialized_movs,
+                "assessorComment": None,
+                "responseData": serialized_response.get("response_data", {}) if serialized_response else {},
+                "requiresRework": serialized_response.get("requires_rework", False) if serialized_response else False,
+                "responseId": serialized_response.get("id") if serialized_response else None,
                 "response": serialized_response,
                 "movs": serialized_movs,
                 "feedback_comments": [],
+                "children": [],  # Add children field for consistency
+                "form_schema": {
+                    "type": "object",
+                    "title": "1.1.1 - Posted CY 2023 financial documents in the BFDP board",
+                    "description": "Requirements for posting financial documents in the BFDP board",
+                    "properties": {
+                        "bfdp_monitoring_forms_compliance": {
+                    "type": "string",
+                            "title": "Three (3) BFDP Monitoring Form A of the DILG Advisory covering the 1st to 3rd quarter monitoring data signed by the City Director/C/MLGOO, Punong Barangay and Barangay Secretary",
+                            "description": "Check this box if you have uploaded the required 3 BFDP Monitoring Forms",
+                    "mov_upload_section": "bfdp_monitoring_forms",
+                    "enum": ["yes", "no", "na"]
+                        },
+                        "photo_documentation_compliance": {
+                    "type": "string",
+                            "title": "Two (2) Photo Documentation of the BFDP board showing the name of the barangay",
+                            "description": "Check this box if you have uploaded the required 2 photos of the BFDP board",
+                    "mov_upload_section": "photo_documentation",
+                    "enum": ["yes", "no", "na"]
+                        }
+                    },
+            "required": ["bfdp_monitoring_forms_compliance", "photo_documentation_compliance"]
+                },
             }
         )
 
@@ -556,16 +623,26 @@ class AssessmentService:
         )
 
         if existing:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Response already exists for this assessment and indicator",
-            )
+            # Idempotent behavior: return the existing response instead of erroring
+            return existing
 
+        initial_data = response_create.response_data or {}
         db_response = AssessmentResponse(
-            response_data=response_create.response_data,
+            response_data=initial_data,
             assessment_id=response_create.assessment_id,
             indicator_id=response_create.indicator_id,
         )
+
+        # Initialize completion based on current schema if available
+        try:
+            if db_response.indicator and db_response.indicator.form_schema:
+                db_response.is_completed = self._check_response_completion(
+                    db_response.indicator.form_schema, initial_data, 0
+                )
+            else:
+                db_response.is_completed = bool(initial_data)
+        except Exception:
+            db_response.is_completed = False
 
         db.add(db_response)
         db.commit()
@@ -608,7 +685,10 @@ class AssessmentService:
 
         # Auto-set completion status based on response_data
         if response_update.response_data is not None:
-            db_response.is_completed = bool(response_update.response_data)
+            mov_count = len(db_response.movs or [])
+            db_response.is_completed = self._check_response_completion(
+                db_response.indicator.form_schema, response_update.response_data, mov_count
+            )
 
         db.commit()
         db.refresh(db_response)
@@ -659,6 +739,45 @@ class AssessmentService:
         return FormSchemaValidation(
             is_valid=len(errors) == 0, errors=errors, warnings=[]
         )
+
+    def _check_response_completion(
+        self, form_schema: Dict[str, Any], response_data: Dict[str, Any], mov_count: int = 0
+    ) -> bool:
+        """
+        Check if a response is completed based on form schema requirements.
+        
+        For indicators with multiple requirements (like 1.1.1), all required fields
+        must have valid compliance values (yes/no/na) for the response to be considered complete.
+        
+        Args:
+            form_schema: JSON schema defining the expected form structure
+            response_data: User's response data to check
+            
+        Returns:
+            True if response is completed, False otherwise
+        """
+        if not response_data or not isinstance(response_data, dict):
+            return False
+            
+        # Get required fields from schema
+        required_fields = form_schema.get("required", [])
+        if not required_fields:
+            return bool(response_data)
+            
+        # Check that all required fields have valid compliance values
+        valid_compliance_values = {"yes", "no", "na"}
+        
+        for field in required_fields:
+            value = response_data.get(field)
+            if not value or value not in valid_compliance_values:
+                return False
+        
+        # If any required field is answered 'yes', require at least one MOV
+        has_any_yes = any(response_data.get(field) == "yes" for field in required_fields)
+        if has_any_yes and mov_count <= 0:
+            return False
+
+        return True
 
     def _validate_field(
         self, field_name: str, value: Any, field_schema: Dict[str, Any]
@@ -1049,6 +1168,17 @@ class AssessmentService:
         # Build governance area progress
         governance_area_progress = []
         for area in governance_areas:
+            # Filter out areas that are just containers (parent areas with no direct indicators)
+            # Only include areas that have actual indicators or are leaf-level areas
+            if not area.indicators:
+                continue
+                
+            # Check if this area is just a container by looking for indicators with parent_id
+            # If all indicators have parent_id, this area is just a container
+            has_direct_indicators = any(indicator.parent_id is None for indicator in area.indicators)
+            if not has_direct_indicators:
+                continue
+                
             area_responses = [
                 response_lookup.get(indicator.id)
                 for indicator in area.indicators
@@ -1615,6 +1745,17 @@ class AssessmentService:
         # Build governance area progress
         governance_area_progress = []
         for area in governance_areas:
+            # Filter out areas that are just containers (parent areas with no direct indicators)
+            # Only include areas that have actual indicators or are leaf-level areas
+            if not area.indicators:
+                continue
+                
+            # Check if this area is just a container by looking for indicators with parent_id
+            # If all indicators have parent_id, this area is just a container
+            has_direct_indicators = any(indicator.parent_id is None for indicator in area.indicators)
+            if not has_direct_indicators:
+                continue
+                
             area_responses = [
                 response_lookup.get(indicator.id)
                 for indicator in area.indicators

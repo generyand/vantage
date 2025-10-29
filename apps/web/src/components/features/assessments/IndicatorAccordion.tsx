@@ -53,7 +53,7 @@ export function IndicatorAccordion({
     if (existing) return existing;
 
     const created = await postAssessmentsResponses({
-      indicator_id: parseInt(indicator.id),
+      indicator_id: parseInt(((indicator as any).responseIndicatorId ?? indicator.id) as string),
       assessment_id: assessment ? parseInt(assessment.id) : 1,
       response_data: {},
     });
@@ -147,110 +147,218 @@ export function IndicatorAccordion({
         </AccordionTrigger>
 
         <AccordionContent className="px-6 pb-6 pt-4">
-          <div className="space-y-8">
-            <DynamicIndicatorForm
-              formSchema={indicator.formSchema}
-              initialData={indicator.responseData}
-              isDisabled={isLocked}
-              onChange={(data: { compliance?: ComplianceAnswer }) => {
-                if (!isLocked && indicator.id && updateAssessmentData) {
-                  // Update local state for instant UI reaction
-                  if (data.compliance) {
-                    setLocalCompliance(data.compliance);
-                  }
-                  // Update the assessment data using the reactive state
-                  updateAssessmentData((prevData) => {
-                    const updatedData = { ...prevData } as any;
-                    const updateInTree = (nodes: any[]): boolean => {
-                      for (let i = 0; i < nodes.length; i++) {
-                        if (nodes[i].id === indicator.id) {
-                          const current = nodes[i];
-                          const movCount =
-                            (current.movFiles?.length as number) || 0;
-                          const compliance = data.compliance;
-                          const newStatus =
-                            compliance === "no"
-                              ? "completed"
-                              : compliance === "yes" && movCount > 0
-                              ? "completed"
-                              : "not_started";
-                          nodes[i] = {
-                            ...current,
-                            responseData: data,
-                            complianceAnswer: compliance,
-                            status: newStatus,
-                          };
-                          return true;
+          {/* Render children if they exist */}
+          {Array.isArray((indicator as any).children) &&
+            (indicator as any).children.length > 0 && (
+            <div className="space-y-4 mb-6">
+              {(indicator as any).children.map((child: Indicator) => (
+                <RecursiveIndicator
+                  key={child.id}
+                  indicator={child}
+                  isLocked={isLocked}
+                  updateAssessmentData={updateAssessmentData}
+                  level={1}
+                />
+              ))}
+            </div>
+          )}
+          
+          {/* Render form content only if no children or if this is a leaf node */}
+          {!(
+            Array.isArray((indicator as any).children) &&
+            (indicator as any).children.length > 0
+          ) && (
+            <div className="space-y-8">
+              <DynamicIndicatorForm
+                formSchema={indicator.formSchema}
+                initialData={indicator.responseData}
+                isDisabled={isLocked}
+                indicatorId={indicator.id}
+                responseId={indicator.responseId}
+                movFiles={indicator.movFiles || []}
+                updateAssessmentData={updateAssessmentData}
+                onChange={(data: Record<string, any>) => {
+                  if (!isLocked && indicator.id && updateAssessmentData) {
+                    // Determine completion locally based on required answers
+                    const required = indicator.formSchema?.required || [];
+                    const allAnswered = required.every((f: string) =>
+                      typeof data[f] === 'string' && ['yes','no','na'].includes(String(data[f]))
+                    );
+                    const hasYes = required.some((f: string) => data[f] === 'yes');
+                    const movCount = (indicator.movFiles?.length as number) || 0;
+                    const newStatus = allAnswered && (!hasYes || movCount > 0) ? 'completed' : 'not_started';
+
+                    // Optimistically update the assessment data tree
+                    updateAssessmentData((prevData) => {
+                      const updatedData = { ...prevData } as any;
+                      const recomputeContainerStatuses = (nodes: any[]): void => {
+                        for (let i = 0; i < nodes.length; i++) {
+                          const n = nodes[i];
+                          if (Array.isArray(n.children) && n.children.length > 0) {
+                            // First recompute children
+                            recomputeContainerStatuses(n.children);
+                            // Then compute this container's status based on children
+                            const allCompleted = n.children.every(
+                              (c: any) => c.status === 'completed'
+                            );
+                            n.status = allCompleted ? 'completed' : n.status;
+                          }
                         }
-                        if (
-                          nodes[i].children &&
-                          updateInTree(nodes[i].children)
-                        )
-                          return true;
+                      };
+                      const updateInTree = (nodes: any[]): boolean => {
+                        for (let i = 0; i < nodes.length; i++) {
+                          if (nodes[i].id === indicator.id) {
+                            const current = nodes[i];
+                            nodes[i] = {
+                              ...current,
+                              responseData: data,
+                              status: newStatus,
+                            };
+                            // After updating the leaf, recompute container statuses above
+                            return true;
+                          }
+                          if (
+                            nodes[i].children &&
+                            updateInTree(nodes[i].children)
+                          ) {
+                            // We updated a descendant; recompute this container
+                            const container = nodes[i];
+                            if (Array.isArray(container.children) && container.children.length > 0) {
+                              const allCompleted = container.children.every(
+                                (c: any) => c.status === 'completed'
+                              );
+                              container.status = allCompleted ? 'completed' : container.status;
+                            }
+                            return true;
+                          }
+                        }
+                        return false;
+                      };
+                      for (const area of updatedData.governanceAreas) {
+                        if (area.indicators && updateInTree(area.indicators))
+                          break;
                       }
-                      return false;
-                    };
-                    for (const area of updatedData.governanceAreas) {
-                      if (area.indicators && updateInTree(area.indicators))
-                        break;
-                    }
-                    return updatedData;
-                  });
+                      // Global pass to ensure all containers reflect latest children state
+                      for (const area of updatedData.governanceAreas) {
+                        if (area.indicators) recomputeContainerStatuses(area.indicators);
+                      }
+                      return updatedData;
+                    });
 
-                  // Ensure a real response exists, then save
-                  ensureResponseId().then((responseId) =>
-                    updateResponse(responseId, { response_data: data })
-                  );
-                }
-              }}
-            />
+                    // Ensure a real response exists, then save
+                    ensureResponseId().then((responseId) =>
+                      updateResponse(responseId, { response_data: data })
+                    );
+                  }
+                }}
+              />
 
-            {/* MOV File Uploader Section (shown only when compliant == yes) */}
-            {shouldShowMov && (
-              <div className="space-y-4 bg-[var(--card)] p-6 rounded-lg border border-[var(--border)] shadow-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-[var(--cityscape-yellow)] rounded-full"></div>
-                  <h4 className="text-sm font-semibold text-[var(--foreground)]">
-                    Means of Verification (MOV)
-                  </h4>
-                </div>
-                <FileUploader
-                  accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
-                  maxSize={10} // 10MB limit
-                  multiple={true}
-                  disabled={isLocked}
-                  isLoading={isUploading || isDeleting}
-                  uploadUrl={`/api/v1/assessments/responses/${indicator.id}/movs`}
-                  existingFiles={indicator.movFiles.map((file) => ({
-                    id: file.id,
-                    name: file.name,
-                    size: file.size,
-                    url: file.url,
-                  }))}
-                  onUploadComplete={async (files) => {
-                    for (const file of files) {
+              {/* MOV File Uploader Section (shown only when compliant == yes) */}
+              {shouldShowMov && (
+                <div className="space-y-4 bg-[var(--card)] p-6 rounded-lg border border-[var(--border)] shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-[var(--cityscape-yellow)] rounded-full"></div>
+                    <h4 className="text-sm font-semibold text-[var(--foreground)]">
+                      Means of Verification (MOV)
+                    </h4>
+                  </div>
+                  <FileUploader
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                    maxSize={10} // 10MB limit
+                    multiple={true}
+                    disabled={isLocked}
+                    isLoading={isUploading || isDeleting}
+                    uploadUrl={`/api/v1/assessments/responses/${indicator.id}/movs`}
+                    existingFiles={indicator.movFiles.map((file) => ({
+                      id: file.id,
+                      name: file.name,
+                      size: file.size,
+                      url: file.url,
+                    }))}
+                    onUploadComplete={async (files) => {
+                      for (const file of files) {
+                        try {
+                          // 1) Upload file to Supabase Storage
+                          const { storagePath } = await uploadMovFile(file, {
+                            assessmentId: "1", // TODO: replace with real assessment id from context
+                            responseId: indicator.id.toString(),
+                          });
+
+                          // 2) Create the MOV record in backend
+                          const responseId = await ensureResponseId();
+                          await uploadMOV({
+                            responseId,
+                            data: {
+                              filename: file.name,
+                              original_filename: file.name,
+                              file_size: file.size,
+                              content_type: file.type,
+                              storage_path: storagePath,
+                              response_id: responseId,
+                            },
+                          });
+
+                          // Update local UI state so area progress reflects upload
+                          if (updateAssessmentData) {
+                            updateAssessmentData((prev) => {
+                              const updated = { ...prev } as any;
+                              const updateInTree = (nodes: any[]): boolean => {
+                                for (let i = 0; i < nodes.length; i++) {
+                                  if (nodes[i].id === indicator.id) {
+                                    const current = nodes[i];
+                                    const files = [
+                                      ...current.movFiles,
+                                      {
+                                        id: Date.now().toString(),
+                                        name: file.name,
+                                        size: file.size,
+                                        url: storagePath,
+                                      },
+                                    ];
+                                    nodes[i] = {
+                                      ...current,
+                                      movFiles: files,
+                                      status:
+                                        (current.complianceAnswer ||
+                                          localCompliance) === "yes"
+                                          ? "completed"
+                                          : current.status,
+                                    };
+                                    return true;
+                                  }
+                                  if (
+                                    nodes[i].children &&
+                                    updateInTree(nodes[i].children)
+                                  )
+                                    return true;
+                                }
+                                return false;
+                              };
+                              for (const area of updated.governanceAreas) {
+                                if (
+                                  area.indicators &&
+                                  updateInTree(area.indicators)
+                                )
+                                  break;
+                              }
+                              return updated;
+                            });
+                          }
+                        } catch (error) {
+                          console.error("Failed to upload MOV:", error);
+                        }
+                      }
+                    }}
+                    onDeleteFile={async (fileId) => {
                       try {
-                        // 1) Upload file to Supabase Storage
-                        const { storagePath } = await uploadMovFile(file, {
-                          assessmentId: "1", // TODO: replace with real assessment id from context
-                          responseId: indicator.id.toString(),
+                        await deleteMOV({
+                          movId:
+                            typeof fileId === "string"
+                              ? parseInt(fileId)
+                              : fileId,
                         });
 
-                        // 2) Create the MOV record in backend
-                        const responseId = await ensureResponseId();
-                        await uploadMOV({
-                          responseId,
-                          data: {
-                            filename: file.name,
-                            original_filename: file.name,
-                            file_size: file.size,
-                            content_type: file.type,
-                            storage_path: storagePath,
-                            response_id: responseId,
-                          },
-                        });
-
-                        // Update local UI state so area progress reflects upload
+                        // Remove from local state and update status if necessary
                         if (updateAssessmentData) {
                           updateAssessmentData((prev) => {
                             const updated = { ...prev } as any;
@@ -258,22 +366,17 @@ export function IndicatorAccordion({
                               for (let i = 0; i < nodes.length; i++) {
                                 if (nodes[i].id === indicator.id) {
                                   const current = nodes[i];
-                                  const files = [
-                                    ...current.movFiles,
-                                    {
-                                      id: Date.now().toString(),
-                                      name: file.name,
-                                      size: file.size,
-                                      url: storagePath,
-                                    },
-                                  ];
+                                  const files = current.movFiles.filter(
+                                    (f: any) => f.id !== fileId
+                                  );
                                   nodes[i] = {
                                     ...current,
                                     movFiles: files,
                                     status:
                                       (current.complianceAnswer ||
-                                        localCompliance) === "yes"
-                                        ? "completed"
+                                        localCompliance) === "yes" &&
+                                      files.length === 0
+                                        ? "not_started"
                                         : current.status,
                                   };
                                   return true;
@@ -297,73 +400,19 @@ export function IndicatorAccordion({
                           });
                         }
                       } catch (error) {
-                        console.error("Failed to upload MOV:", error);
+                        console.error("Failed to delete MOV:", error);
+                        // TODO: Show error toast
                       }
-                    }
-                  }}
-                  onDeleteFile={async (fileId) => {
-                    try {
-                      await deleteMOV({
-                        movId:
-                          typeof fileId === "string"
-                            ? parseInt(fileId)
-                            : fileId,
-                      });
-
-                      // Remove from local state and update status if necessary
-                      if (updateAssessmentData) {
-                        updateAssessmentData((prev) => {
-                          const updated = { ...prev } as any;
-                          const updateInTree = (nodes: any[]): boolean => {
-                            for (let i = 0; i < nodes.length; i++) {
-                              if (nodes[i].id === indicator.id) {
-                                const current = nodes[i];
-                                const files = current.movFiles.filter(
-                                  (f: any) => f.id !== fileId
-                                );
-                                nodes[i] = {
-                                  ...current,
-                                  movFiles: files,
-                                  status:
-                                    (current.complianceAnswer ||
-                                      localCompliance) === "yes" &&
-                                    files.length === 0
-                                      ? "not_started"
-                                      : current.status,
-                                };
-                                return true;
-                              }
-                              if (
-                                nodes[i].children &&
-                                updateInTree(nodes[i].children)
-                              )
-                                return true;
-                            }
-                            return false;
-                          };
-                          for (const area of updated.governanceAreas) {
-                            if (
-                              area.indicators &&
-                              updateInTree(area.indicators)
-                            )
-                              break;
-                          }
-                          return updated;
-                        });
-                      }
-                    } catch (error) {
-                      console.error("Failed to delete MOV:", error);
+                    }}
+                    onUploadError={(error) => {
+                      console.error("MOV upload error:", error);
                       // TODO: Show error toast
-                    }
-                  }}
-                  onUploadError={(error) => {
-                    console.error("MOV upload error:", error);
-                    // TODO: Show error toast
-                  }}
-                />
-              </div>
-            )}
-          </div>
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </AccordionContent>
       </AccordionItem>
     </Accordion>
@@ -380,10 +429,6 @@ export function RecursiveIndicator({
   updateAssessmentData,
   level = 0,
 }: RecursiveIndicatorProps) {
-  const hasChildren =
-    Array.isArray((indicator as any).children) &&
-    (indicator as any).children.length > 0;
-
   return (
     <div style={{ paddingLeft: level * 16 }}>
       <IndicatorAccordion
@@ -391,19 +436,6 @@ export function RecursiveIndicator({
         isLocked={isLocked}
         updateAssessmentData={updateAssessmentData}
       />
-      {hasChildren && (
-        <div className="mt-2 space-y-2">
-          {(indicator as any).children.map((child: Indicator) => (
-            <RecursiveIndicator
-              key={child.id}
-              indicator={child}
-              isLocked={isLocked}
-              updateAssessmentData={updateAssessmentData}
-              level={level + 1}
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 }

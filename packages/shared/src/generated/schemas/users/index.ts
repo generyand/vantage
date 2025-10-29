@@ -243,6 +243,12 @@ export type UserUpdateBarangayId = number | null;
 
 
 /**
+ * UserUpdatedAt
+ */
+export type UserUpdatedAt = string | null;
+
+
+/**
  * UserUpdateEmail
  */
 export type UserUpdateEmail = string | null;
@@ -276,9 +282,3 @@ export type UserUpdatePhoneNumber = string | null;
  * UserUpdateRole
  */
 export type UserUpdateRole = UserRole | null;
-
-
-/**
- * UserUpdatedAt
- */
-export type UserUpdatedAt = string | null;

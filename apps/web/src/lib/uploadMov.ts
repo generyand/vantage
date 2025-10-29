@@ -2,14 +2,13 @@ import { supabase } from "./supabase";
 
 export async function uploadMovFile(
   file: File,
-  params: { assessmentId: string; responseId: string }
+  params: { assessmentId: string; responseId: string; section?: string }
 ): Promise<{ storagePath: string }> {
   const sanitizedName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
   // IMPORTANT: path passed to supabase.storage.from('movs').upload must be relative to the bucket root
   // Do not include the bucket name as part of the path
-  const storagePath = `${params.assessmentId}/${
-    params.responseId
-  }/${Date.now()}-${sanitizedName}`;
+  const sectionSegment = params.section ? `${params.section}/` : "";
+  const storagePath = `${params.assessmentId}/${params.responseId}/${sectionSegment}${Date.now()}-${sanitizedName}`;
 
   const { error } = await supabase.storage
     .from("movs")
