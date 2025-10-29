@@ -138,7 +138,7 @@ def test_send_assessment_for_rework_success(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user] = (
+    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
     app_instance.dependency_overrides[deps.get_db] = _override_get_db
@@ -190,7 +190,7 @@ def test_send_assessment_for_rework_already_sent(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user] = (
+    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
     app_instance.dependency_overrides[deps.get_db] = _override_get_db
@@ -223,7 +223,7 @@ def test_send_assessment_for_rework_not_found(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user] = (
+    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
     app_instance.dependency_overrides[deps.get_db] = _override_get_db
@@ -270,7 +270,7 @@ def test_send_assessment_for_rework_wrong_role(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user] = (
+    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
     app_instance.dependency_overrides[deps.get_db] = _override_get_db
