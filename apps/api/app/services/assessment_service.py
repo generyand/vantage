@@ -99,10 +99,13 @@ class AssessmentService:
         return (
             db.query(Assessment)
             .options(
-                joinedload(Assessment.responses)
-                .joinedload(AssessmentResponse.indicator)
-                .joinedload(AssessmentResponse.movs)
-                .joinedload(AssessmentResponse.feedback_comments)
+                joinedload(Assessment.responses).joinedload(
+                    AssessmentResponse.indicator
+                ),
+                joinedload(Assessment.responses).joinedload(AssessmentResponse.movs),
+                joinedload(Assessment.responses).joinedload(
+                    AssessmentResponse.feedback_comments
+                ),
             )
             .filter(Assessment.id == assessment_id)
             .first()
@@ -707,13 +710,13 @@ class AssessmentService:
                 is_valid=False, errors=[{"error": "Assessment not found"}]
             )
 
-        # Check if assessment is in correct status for submission
-        if assessment.status != AssessmentStatus.DRAFT:
+        # Check if assessment is in correct status for submission (Draft or Needs Rework)
+        if assessment.status not in (AssessmentStatus.DRAFT, AssessmentStatus.NEEDS_REWORK):
             return AssessmentSubmissionValidation(
                 is_valid=False,
                 errors=[
                     {
-                        "error": f"Assessment must be in DRAFT status to submit. Current status: {assessment.status.value}"
+                        "error": f"Assessment must be in DRAFT or NEEDS_REWORK status to submit. Current status: {assessment.status.value}"
                     }
                 ],
             )

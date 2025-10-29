@@ -36,6 +36,8 @@ export interface Indicator {
   assessorComment?: string; // Only present when status is 'needs_rework'
   formSchema: FormSchema; // Dynamic form schema for the indicator
   responseData?: Record<string, unknown>; // Form response data
+  requiresRework?: boolean; // Editable during Needs Rework when true
+  responseId?: number | null; // Backend response id for mutations
 }
 
 export interface MOVFile {

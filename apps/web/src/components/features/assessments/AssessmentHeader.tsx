@@ -214,7 +214,29 @@ export function AssessmentHeader({
                 <TooltipTrigger asChild>
                   <div>
                     <Button
-                      onClick={() => submitMutation.mutate()}
+                      onClick={() =>
+                        submitMutation.mutate(undefined, {
+                          onSuccess: (result: any) => {
+                            if (result?.is_valid) {
+                              window.alert(
+                                "Assessment submitted successfully. Redirecting to dashboard."
+                              );
+                              window.location.href = "/blgu/dashboard";
+                            } else if (Array.isArray(result?.errors)) {
+                              const details = result.errors
+                                .map((e: any) =>
+                                  [e.indicator_name, e.error]
+                                    .filter(Boolean)
+                                    .join(": ")
+                                )
+                                .join("\n");
+                              window.alert(
+                                `Submission failed due to the following issues:\n${details}`
+                              );
+                            }
+                          },
+                        })
+                      }
                       disabled={
                         !validation.canSubmit || submitMutation.isPending
                       }

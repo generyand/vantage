@@ -33,6 +33,30 @@
 - **Shared Types:**
   - `packages/shared/src/generated/schemas/assessment/index.ts` (auto-generated)
 
+## Summary of Changes for Handling Indicator Hierarchy
+
+### Backend Changes
+
+1. Modify the `indicators` table schema to add `parent_id`:
+   - Format: integer, Type: number
+   - Constraints: Foreign key referencing `indicators.id`, nullable (top-level allowed)
+2. Update SQLAlchemy `Indicator` model:
+   - Add `parent_id` column
+   - Add self-referencing relationships: `parent` and `children`
+3. Generate and apply Alembic migration for the new column and FK constraint
+
+### Backend API Schema & Logic
+
+1. Create recursive Pydantic schema `IndicatorRead` with `children: list[IndicatorRead]`
+2. Update service logic to load indicators with children using `selectinload`
+3. Return only top-level indicators (`parent_id is None`) with nested `children`
+
+### Frontend Changes
+
+1. Support recursive rendering of indicators in React:
+   - Map through top-level indicators and render a `RecursiveIndicator` per item
+   - Recursively render `children` with indentation via a `level` prop
+
 ### Testing Notes
 
 - **Backend Testing:** Place Pytest tests in `apps/api/tests/`. Test the new `assessment_service` and API endpoints in `assessments.py`. Focus on validating the dynamic `response_data` against the `form_schema`.
@@ -125,26 +149,64 @@
       - **Acceptance:** Each indicator has a fully functional file upload and management section.
 
 - [ ] **4.0 Epic: Assessment Submission & Rework Workflow** _(FR 4.4, 4.5)_
+
   - [ ] **4.1 Story: Implement Assessment Submission Workflow**
-    - [ ] **4.1.1 Atomic:** Create the `POST /assessments/{id}/submit` backend endpoint.
+    - [x] **4.1.1 Atomic:** Create the `POST /assessments/{id}/submit` backend endpoint.
       - **Files:** `apps/api/app/api/v1/assessments.py`, `apps/api/app/services/assessment_service.py`
       - **Acceptance:** Endpoint runs the "Preliminary Compliance Check" (no `YES` answers without MOVs). If valid, it updates the assessment status to `Submitted for Review`. If invalid, it returns a 400 error with details of the failed indicators.
-    - [ ] **4.1.2 Atomic:** Add a "Submit for Review" button and `useSubmitAssessment` mutation hook on the frontend.
+    - [x] **4.1.2 Atomic:** Add a "Submit for Review" button and `useSubmitAssessment` mutation hook on the frontend.
       - **Files:** `apps/web/src/app/(app)/blgu/assessments/page.tsx`, `apps/web/src/hooks/useAssessment.ts`
       - **Acceptance:** The button triggers the mutation. On success, a confirmation modal is shown and the user is redirected. On failure, the specific indicators that failed the check are highlighted in the UI.
-    - [ ] **4.1.3 Atomic:** Implement the "locked" (read-only) state for the assessment UI.
+    - [x] **4.1.3 Atomic:** Implement the "locked" (read-only) state for the assessment UI.
       - **Files:** `apps/web/src/components/features/assessments/`
       - **Acceptance:** When the assessment status is `Submitted for Review` or `Validated`, all form inputs, uploader buttons, and delete icons are disabled.
   - [ ] **4.2 Story: Implement Rework Notification and Editing**
-    - [ ] **4.2.1 Atomic:** Update backend `GET /assessments/my-assessment` endpoint to include rework data.
+    - [x] **4.2.1 Atomic:** Update backend `GET /assessments/my-assessment` endpoint to include rework data.
       - **Files:** `apps/api/app/api/v1/assessments.py`
       - **Acceptance:** The endpoint response includes assessor feedback comments and a flag on each `AssessmentResponse` indicating if it requires rework.
-    - [ ] **4.2.2 Atomic:** Display rework comments and status on the BLGU dashboard.
+    - [x] **4.2.2 Atomic:** Display rework comments and status on the BLGU dashboard.
       - **Files:** `apps/web/src/app/(app)/blgu/dashboard/page.tsx`
       - **Acceptance:** If the assessment status is `Needs Rework`, a new section appears on the dashboard summarizing assessor feedback.
-    - [ ] **4.2.3 Atomic:** Conditionally enable editing for flagged indicators.
+    - [x] **4.2.3 Atomic:** Conditionally enable editing for flagged indicators.
       - **Files:** `apps/web/src/components/features/assessments/`
       - **Acceptance:** When the assessment status is `Needs Rework`, only the specific indicators flagged for rework are editable. All others remain in a read-only state.
-    - [ ] **4.2.4 Atomic:** Allow resubmission after rework is complete.
+    - [x] **4.2.4 Atomic:** Allow resubmission after rework is complete.
       - **Files:** `apps/web/src/app/(app)/blgu/assessments/page.tsx`
       - **Acceptance:** The "Submit for Review" button becomes active again during the `Needs Rework` phase and functions as before.
+
+- [ ] **5.0 Epic: Indicator Hierarchy (Parent/Child) Support** _(FR 4.2, Technical Considerations)_
+
+  - [ ] **5.1 Story: Database & Model Support for Hierarchy**
+
+    - [ ] **5.1.1 Atomic:** Add `parent_id` to `indicators` table with FK to `indicators.id` (nullable).
+      - **Files:** `apps/api/app/db/models/governance_area.py`, `apps/api/alembic/versions/<new>.py`
+      - **Acceptance:** Column exists, FK constraint enforced, null allowed for top-level.
+    - [ ] **5.1.2 Atomic:** Update `Indicator` SQLAlchemy model with `parent_id`, `parent`, and `children` relationships.
+      - **Files:** `apps/api/app/db/models/governance_area.py`
+      - **Acceptance:** Self-referencing relationships work; ORM can access `children` per indicator.
+    - [ ] **5.1.3 Atomic:** Generate and apply Alembic migration for `parent_id` and FK.
+      - **Command:** `cd apps/api && alembic revision --autogenerate -m "add parent_id to indicators" && alembic upgrade head`
+      - **Acceptance:** DB schema updated with column and constraint.
+
+  - [ ] **5.2 Story: API Schemas and Service Logic for Nested Indicators**
+
+    - [ ] **5.2.1 Atomic:** Add recursive `IndicatorRead` Pydantic schema with `children` and update forward refs.
+      - **Files:** `apps/api/app/schemas/assessment.py` (or appropriate schema module)
+      - **Acceptance:** Serialized indicator includes nested `children` array; validation passes.
+    - [ ] **5.2.2 Atomic:** Load indicators recursively using `selectinload` and return only top-level indicators.
+      - **Files:** `apps/api/app/services/assessment_service.py`
+      - **Acceptance:** `get_assessment_for_blgu` returns nested indicators; no N+1 queries observed in logs.
+    - [ ] **5.2.3 Atomic:** Update `GET /api/v1/assessments/my-assessment` to return nested indicators.
+      - **Files:** `apps/api/app/api/v1/assessments.py`
+      - **Acceptance:** Response contains only top-level indicators, each with a fully populated `children` tree.
+
+  - [ ] **5.3 Story: Frontend Recursive Rendering of Indicators**
+    - [ ] **5.3.1 Atomic:** Update `useAssessment` to handle nested `indicators` structure.
+      - **Files:** `apps/web/src/hooks/useAssessment.ts`
+      - **Acceptance:** Types and data access updated; no runtime errors when reading `children`.
+    - [ ] **5.3.2 Atomic:** Implement `RecursiveIndicator` rendering with indentation via `level` prop.
+      - **Files:** `apps/web/src/components/features/assessments/IndicatorAccordion.tsx` (or new component), `apps/web/src/components/features/assessments/DynamicIndicatorForm.tsx`
+      - **Acceptance:** UI displays nested indicators; expanding parents reveals nested children with proper indentation.
+    - [ ] **5.3.3 Atomic:** Ensure MOV uploader and dynamic form work at any nesting level.
+      - **Files:** `apps/web/src/components/features/assessments/*`, `apps/web/src/components/shared/FileUploader.tsx`
+      - **Acceptance:** Users can edit and upload MOVs for both parent and child indicators; autosave still functions.
