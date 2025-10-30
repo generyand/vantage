@@ -259,6 +259,8 @@ class AssessmentService:
                     top_level_nodes[0]["description"] = (
                         "Compliance with the Barangay Full Disclosure Policy (BFDP) Board requirements"
                     )
+                    # Clear MOVs from parent since children will show them
+                    top_level_nodes[0]["movs"] = []
                     # Clear existing children and add synthetic ones
                     top_level_nodes[0]["children"] = fi_subs
                 except Exception:
@@ -354,7 +356,6 @@ class AssessmentService:
                 "governanceAreaId": "1",
                 "status": "completed" if serialized_response and serialized_response.get("is_completed") else "not_started",
                 "complianceAnswer": "yes" if serialized_response and serialized_response.get("response_data", {}).get("compliance") == "yes" else "no",
-                "movFiles": serialized_movs,
                 "assessorComment": None,
                 "responseData": serialized_response.get("response_data", {}) if serialized_response else {},
                 "requiresRework": serialized_response.get("requires_rework", False) if serialized_response else False,
@@ -938,6 +939,7 @@ class AssessmentService:
     def create_mov(self, db: Session, mov_create: MOVCreate) -> MOV:
         """
         Create a new MOV (Means of Verification) record.
+        Also recalculates parent AssessmentResponse's completion status.
 
         Args:
             db: Database session
@@ -946,6 +948,8 @@ class AssessmentService:
         Returns:
             Created MOV object
         """
+        from sqlalchemy.orm import joinedload
+        
         db_mov = MOV(
             filename=mov_create.filename,
             original_filename=mov_create.original_filename,
@@ -957,6 +961,23 @@ class AssessmentService:
         )
 
         db.add(db_mov)
+        db.flush()  # Flush to get the MOV ID before recalculating
+        
+        # Recalculate parent response completion status
+        if mov_create.response_id:
+            db_response = (
+                db.query(AssessmentResponse)
+                .options(
+                    joinedload(AssessmentResponse.movs),
+                    joinedload(AssessmentResponse.indicator)
+                )
+                .filter(AssessmentResponse.id == mov_create.response_id)
+                .first()
+            )
+            if db_response:
+                self.recompute_response_completion(db_response)
+                db.add(db_response)
+        
         db.commit()
         db.refresh(db_mov)
         return db_mov

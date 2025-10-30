@@ -79,7 +79,9 @@ export function DynamicIndicatorForm({
           const name = f.name || f.original_filename || f.filename;
           const size = f.size ?? f.file_size;
           let url = f.url as string | undefined;
-          const storagePath = (f.storage_path ?? (f as any).storagePath) as string | undefined;
+          const storagePath = (f.storage_path ?? (f as any).storagePath) as
+            | string
+            | undefined;
           if (!url && storagePath) {
             const cached = urlCacheRef.current.get(storagePath);
             if (cached) {
@@ -97,10 +99,27 @@ export function DynamicIndicatorForm({
                 ? "photo_documentation"
                 : undefined
               : undefined;
-          return { id: String(f.id), name, size, url: url || "", section, storagePath };
+          return {
+            id: String(f.id),
+            name,
+            size,
+            url: url || "",
+            section,
+            storagePath,
+          };
         })
       );
-      if (!cancelled) setLocalMovs(mapped);
+      if (!cancelled) {
+        // Deduplicate based on MOV ID before setting state
+        const deduped = Array.from(
+          new Map(mapped.map((f) => [f.id, f])).values()
+        );
+        // Additional deduplication by filename+size combo to catch any remaining duplicates
+        const finalDeduped = Array.from(
+          new Map(deduped.map((f) => [`${f.name}-${f.size}`, f])).values()
+        );
+        setLocalMovs(finalDeduped);
+      }
     })();
     return () => {
       cancelled = true;
@@ -322,7 +341,10 @@ export function DynamicIndicatorForm({
                             type="button"
                             disabled={isDisabled || isDeleting}
                             onClick={() => {
-                              deleteMOV({ movId: parseInt(f.id), storagePath: f.storagePath });
+                              deleteMOV({
+                                movId: parseInt(f.id),
+                                storagePath: f.storagePath,
+                              });
                               setLocalMovs((prev) =>
                                 prev.filter((x) => x.id !== f.id)
                               );
@@ -506,7 +528,10 @@ export function DynamicIndicatorForm({
                                 type="button"
                                 disabled={isDisabled || isDeleting}
                                 onClick={() => {
-                                  deleteMOV({ movId: parseInt(f.id), storagePath: f.storagePath });
+                                  deleteMOV({
+                                    movId: parseInt(f.id),
+                                    storagePath: f.storagePath,
+                                  });
                                   setLocalMovs((prev) =>
                                     prev.filter((x) => x.id !== f.id)
                                   );
@@ -566,7 +591,9 @@ export function DynamicIndicatorForm({
               </h4>
             </div>
             <div className="mt-2 space-y-1">
-              {localMovs.map((f) => (
+              {Array.from(
+                new Map(localMovs.map((f) => [f.id, f])).values()
+              ).map((f) => (
                 <div key={f.id} className="text-xs flex items-center gap-2">
                   <a
                     href={f.url}
@@ -579,14 +606,20 @@ export function DynamicIndicatorForm({
                   <span>({(f.size / 1024 / 1024).toFixed(1)} MB)</span>
                   {f.section && (
                     <span className="text-[var(--text-secondary)]">
-                      · {f.section === "bfdp_monitoring_forms" ? "BFDP Monitoring Forms" : "Photo Documentation"}
+                      ·{" "}
+                      {f.section === "bfdp_monitoring_forms"
+                        ? "BFDP Monitoring Forms"
+                        : "Photo Documentation"}
                     </span>
                   )}
                   <button
                     type="button"
                     disabled={isDisabled || isDeleting}
                     onClick={() => {
-                      deleteMOV({ movId: parseInt(f.id), storagePath: f.storagePath });
+                      deleteMOV({
+                        movId: parseInt(f.id),
+                        storagePath: f.storagePath,
+                      });
                       setLocalMovs((prev) => prev.filter((x) => x.id !== f.id));
                     }}
                     className="text-[var(--destructive)]"
