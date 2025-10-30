@@ -761,7 +761,18 @@ class AssessmentService:
             
         # Get required fields from schema
         required_fields = form_schema.get("required", [])
+        
+        # If no explicit required fields, check all fields in response_data for "yes" answers with MOVs
         if not required_fields:
+            # Check if ANY field has "yes" value (for schemas without explicit "required" array)
+            valid_compliance_values = {"yes", "no", "na"}
+            has_any_yes = any(
+                str(v).lower() == "yes" 
+                for v in response_data.values() 
+                if isinstance(v, str) and str(v).lower() in valid_compliance_values
+            )
+            if has_any_yes and mov_count <= 0:
+                return False
             return bool(response_data)
             
         # Check that all required fields have valid compliance values
@@ -778,6 +789,24 @@ class AssessmentService:
             return False
 
         return True
+
+    def recompute_response_completion(self, response: AssessmentResponse) -> bool:
+        """
+        Recomputes and sets the is_completed status of an AssessmentResponse in-place based on
+        current response_data and number of valid MOVs attached (for atomic operations).
+        Args:
+            response: AssessmentResponse ORM object (with .indicator and .movs eager-loaded)
+        Returns:
+            new completion status (bool)
+        """
+        if not response or not response.indicator:
+            response.is_completed = False
+            return False
+        form_schema = getattr(response.indicator, "form_schema", {}) or {}
+        mov_count = len(response.movs or [])
+        completion = self._check_response_completion(form_schema, response.response_data, mov_count)
+        response.is_completed = completion
+        return completion
 
     def _validate_field(
         self, field_name: str, value: Any, field_schema: Dict[str, Any]
@@ -934,21 +963,53 @@ class AssessmentService:
 
     def delete_mov(self, db: Session, mov_id: int) -> bool:
         """
-        Delete a MOV record.
-
-        Args:
-            db: Database session
-            mov_id: ID of the MOV to delete
-
-        Returns:
-            True if deleted, False if not found
+        Atomically delete a MOV record and its corresponding storage file.
+        Also recalculates parent AssessmentResponse's completion status.
         """
+        from app.db.base import supabase_admin
+
         db_mov = db.query(MOV).filter(MOV.id == mov_id).first()
         if not db_mov:
             return False
-
-        db.delete(db_mov)
-        db.commit()
+        # Always load parent response + movs eagerly.
+        db_response = (
+            db.query(AssessmentResponse)
+            .options(joinedload(AssessmentResponse.movs), joinedload(AssessmentResponse.indicator))
+            .filter(AssessmentResponse.id == db_mov.response_id)
+            .first()
+        )
+        if not db_response:
+            # Possible data corruption, but MOV is useless, so delete just the file and MOV.
+            db_response = None
+        storage_path = db_mov.storage_path
+        # Step 1: Synchronously delete storage file. Fail if deletion fails.
+        if not supabase_admin:
+            raise RuntimeError("Supabase admin client not configured")
+        try:
+            storage_res = supabase_admin.storage.from_('movs').remove([storage_path])
+            # The supabase-py client raises on HTTP/storage network error, but check for errors in resp too
+            if isinstance(storage_res, dict) and storage_res.get('error'):
+                raise Exception(f"Supabase file delete error: {storage_res['error']}")
+        except Exception as e:
+            raise HTTPException(
+                status.HTTP_500_INTERNAL_SERVER_ERROR,
+                f"Failed to delete MOV file from storage: {str(e)}",
+            )
+        # Step 2: Delete MOV and update parent completion inside transaction
+        try:
+            db.delete(db_mov)
+            if db_response is not None:
+                # Remove the NOW deleted MOV from in-memory .movs list before recompute
+                db_response.movs = [m for m in db_response.movs if m.id != db_mov.id]
+                self.recompute_response_completion(db_response)
+                db.add(db_response)
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(
+                status.HTTP_500_INTERNAL_SERVER_ERROR,
+                f"Error deleting MOV and updating completion: {str(e)}",
+            )
         return True
 
     def create_feedback_comment(

@@ -107,6 +107,7 @@ export function useCurrentAssessment() {
     description: string;
     response?: {
       id?: number;
+      is_completed?: boolean;
       requires_rework?: boolean;
       response_data?: Record<string, unknown>;
     };
@@ -127,7 +128,9 @@ export function useCurrentAssessment() {
     const mapped = {
       id: indicator.id.toString(),
       // Preserve backend link to real DB indicator for synthetic children
-      responseIndicatorId: (indicator as any).responseIndicatorId ?? (indicator as any).response_indicator_id,
+      responseIndicatorId:
+        (indicator as any).responseIndicatorId ??
+        (indicator as any).response_indicator_id,
       code: (() => {
         // Use the code from backend if it exists
         if ((indicator as any).code) {
@@ -146,7 +149,9 @@ export function useCurrentAssessment() {
       technicalNotes: "See form schema for requirements",
       governanceAreaId: areaId.toString(),
       status: indicator.response
-        ? ("completed" as const)
+        ? (indicator.response as any).is_completed === true
+          ? ("completed" as const)
+          : ("in_progress" as const)
         : ("not_started" as const),
       complianceAnswer:
         indicator.response?.response_data &&
@@ -228,7 +233,9 @@ export function useCurrentAssessment() {
           const countCompleted = (nodes: IndicatorNode[] | undefined): number =>
             (nodes || []).reduce(
               (acc, n) =>
-                acc + (n.response ? 1 : 0) + countCompleted(n.children),
+                acc +
+                ((n.response as any)?.is_completed === true ? 1 : 0) +
+                countCompleted(n.children),
               0
             );
           return (
@@ -380,7 +387,13 @@ export function useDeleteMOV() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ movId, storagePath }: { movId: number; storagePath?: string }) => {
+    mutationFn: async ({
+      movId,
+      storagePath,
+    }: {
+      movId: number;
+      storagePath?: string;
+    }) => {
       // Try deleting from Supabase first if we have a storage path
       if (storagePath) {
         try {
