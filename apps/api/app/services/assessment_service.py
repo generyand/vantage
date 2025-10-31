@@ -824,7 +824,17 @@ class AssessmentService:
             response.is_completed = False
             return False
         form_schema = getattr(response.indicator, "form_schema", {}) or {}
+        mov_count = len(getattr(response, "movs", []) or [])
         completion = self._check_response_completion(form_schema, response.response_data, response.movs)
+        # Debug: trace recompute inputs/outputs
+        try:
+            print(
+                f"[DEBUG] recompute_response_completion: response_id={getattr(response, 'id', None)}, "
+                f"indicator_id={getattr(response, 'indicator_id', None)}, mov_count={mov_count}, "
+                f"new_is_completed={completion}"
+            )
+        except Exception:
+            pass
         response.is_completed = completion
         return completion
 
@@ -1000,7 +1010,9 @@ class AssessmentService:
                 .first()
             )
             if db_response:
-                self.recompute_response_completion(db_response)
+                prev = bool(db_response.is_completed)
+                new = self.recompute_response_completion(db_response)
+                print(f"[DEBUG] After MOV create: response_id={db_response.id} prev={prev} new={new} movs={len(db_response.movs)}")
                 db.add(db_response)
                 
                 # Touch the parent assessment's updated_at to bust frontend cache
@@ -1062,7 +1074,9 @@ class AssessmentService:
             if db_response is not None:
                 # Remove the NOW deleted MOV from in-memory .movs list before recompute
                 db_response.movs = [m for m in db_response.movs if m.id != db_mov.id]
-                self.recompute_response_completion(db_response)
+                prev = bool(db_response.is_completed)
+                new = self.recompute_response_completion(db_response)
+                print(f"[DEBUG] After MOV delete: response_id={db_response.id} prev={prev} new={new} movs={len(db_response.movs)}")
                 db.add(db_response)
                 
                 # Touch the parent assessment's updated_at to bust frontend cache

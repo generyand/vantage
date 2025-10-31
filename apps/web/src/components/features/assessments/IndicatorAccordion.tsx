@@ -47,6 +47,10 @@ export function IndicatorAccordion({
       | undefined
   );
   const shouldShowMov = localCompliance === "yes";
+  const hasSectionUploads = (() => {
+    const props = (indicator as any)?.formSchema?.properties || {};
+    return Object.values(props).some((v: any) => typeof v?.mov_upload_section === 'string');
+  })();
 
   async function ensureResponseId(): Promise<number> {
     const existing = (indicator as any).responseId as number | null | undefined;
@@ -253,8 +257,8 @@ export function IndicatorAccordion({
                 }}
               />
 
-              {/* MOV File Uploader Section (shown only when compliant == yes) */}
-              {shouldShowMov && (
+              {/* MOV File Uploader Section (shown only when compliant == yes and no per-section uploads are defined) */}
+              {shouldShowMov && !hasSectionUploads && (
                 <div className="space-y-4 bg-[var(--card)] p-6 rounded-lg border border-[var(--border)] shadow-sm">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-[var(--cityscape-yellow)] rounded-full"></div>
@@ -306,23 +310,27 @@ export function IndicatorAccordion({
                                 for (let i = 0; i < nodes.length; i++) {
                                   if (nodes[i].id === indicator.id) {
                                     const current = nodes[i];
-                                    const files = [
-                                      ...current.movFiles,
-                                      {
-                                        id: Date.now().toString(),
-                                        name: file.name,
-                                        size: file.size,
-                                        url: storagePath,
-                                      },
-                                    ];
+                                    // Determine if all required sections are satisfied
+                                    const props = (current.formSchema as any)?.properties || {};
+                                    const requiredSections: string[] = Object.values(props)
+                                      .map((v: any) => v?.mov_upload_section)
+                                      .filter((s: any) => typeof s === 'string') as string[];
+                                    const present = new Set<string>();
+                                    for (const f of (current.movFiles || [])) {
+                                      const sp = f.storagePath || f.url || '';
+                                      for (const rs of requiredSections) {
+                                        if (typeof sp === 'string' && sp.includes(rs)) present.add(rs);
+                                      }
+                                    }
+                                    const allSatisfied = requiredSections.length > 0
+                                      ? requiredSections.every((s) => present.has(s))
+                                      : true; // uploading any file counts; list will refresh from server
                                     nodes[i] = {
                                       ...current,
-                                      movFiles: files,
                                       status:
-                                        (current.complianceAnswer ||
-                                          localCompliance) === "yes"
+                                        (current.complianceAnswer || localCompliance) === "yes" && allSatisfied
                                           ? "completed"
-                                          : current.status,
+                                          : "in_progress",
                                     };
                                     return true;
                                   }
@@ -367,17 +375,31 @@ export function IndicatorAccordion({
                                 if (nodes[i].id === indicator.id) {
                                   const current = nodes[i];
                                   const files = current.movFiles.filter(
-                                    (f: any) => f.id !== fileId
+                                    (f: any) => String(f.id) !== String(fileId)
                                   );
+                                  const props = (current.formSchema as any)?.properties || {};
+                                  const requiredSections: string[] = Object.values(props)
+                                    .map((v: any) => v?.mov_upload_section)
+                                    .filter((s: any) => typeof s === 'string') as string[];
+                                  const present = new Set<string>();
+                                  for (const f of files) {
+                                    const sp = f.storagePath || f.url || '';
+                                    for (const rs of requiredSections) {
+                                      if (typeof sp === 'string' && sp.includes(rs)) present.add(rs);
+                                    }
+                                  }
+                                  const allSatisfied = requiredSections.length > 0
+                                    ? requiredSections.every((s) => present.has(s))
+                                    : files.length > 0;
                                   nodes[i] = {
                                     ...current,
                                     movFiles: files,
                                     status:
-                                      (current.complianceAnswer ||
-                                        localCompliance) === "yes" &&
-                                      files.length === 0
-                                        ? "not_started"
-                                        : current.status,
+                                      (current.complianceAnswer || localCompliance) === "yes" && allSatisfied
+                                        ? "completed"
+                                        : files.length === 0
+                                          ? "not_started"
+                                          : "in_progress",
                                   };
                                   return true;
                                 }

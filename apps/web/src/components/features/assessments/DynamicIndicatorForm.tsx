@@ -394,7 +394,7 @@ export function DynamicIndicatorForm({
                           <button
                             type="button"
                             disabled={isDisabled || isDeleting}
-                            onClick={() => {
+                            onClick={async () => {
                               // Optimistically remove from UI immediately and update area progress
                               setLocalMovs((prev) => {
                                 const next = prev.filter(
@@ -403,12 +403,37 @@ export function DynamicIndicatorForm({
                                 if (updateAssessmentData && indicatorId) {
                                   updateAssessmentData((prevAssess) => {
                                     const updated = { ...(prevAssess as any) };
+                                    const recomputeContainerStatuses = (nodes: any[]) => {
+                                      for (let i = 0; i < nodes.length; i++) {
+                                        const n = nodes[i];
+                                        if (Array.isArray(n.children) && n.children.length > 0) {
+                                          recomputeContainerStatuses(n.children);
+                                          const allCompleted = n.children.every((c: any) => c.status === 'completed');
+                                          if (!allCompleted) n.status = (n.status === 'completed') ? 'in_progress' : n.status;
+                                        }
+                                      }
+                                    };
                                     const updateInTree = (nodes: any[]): boolean => {
                                       for (let i = 0; i < nodes.length; i++) {
                                         if (String(nodes[i].id) === String(indicatorId)) {
+                                          const current = nodes[i];
+                                          const props = (formSchema as any)?.properties || {};
+                                          const requiredSections: string[] = Object.values(props)
+                                            .map((v: any) => v?.mov_upload_section)
+                                            .filter((s: any) => typeof s === 'string') as string[];
+                                          const present = new Set<string>();
+                                          for (const m of next) {
+                                            const sp = m.storagePath || m.url || '';
+                                            for (const rs of requiredSections) {
+                                              if (typeof sp === 'string' && sp.includes(rs)) present.add(rs);
+                                            }
+                                          }
+                                          const allSatisfied = requiredSections.length > 0
+                                            ? requiredSections.every((s) => present.has(s))
+                                            : next.length > 0;
                                           nodes[i] = {
-                                            ...nodes[i],
-                                            status: next.length > 0 ? 'completed' : 'not_started',
+                                            ...current,
+                                            status: allSatisfied ? 'completed' : (next.length === 0 ? 'not_started' : 'in_progress'),
                                             movFiles: next,
                                           };
                                           return true;
@@ -420,13 +445,16 @@ export function DynamicIndicatorForm({
                                     for (const area of (updated.governanceAreas || [])) {
                                       if (area.indicators && updateInTree(area.indicators)) break;
                                     }
+                                    for (const area of (updated.governanceAreas || [])) {
+                                      if (area.indicators) recomputeContainerStatuses(area.indicators);
+                                    }
                                     return updated as any;
                                   });
                                 }
                                 return next;
                               });
                               // Delete from backend (which deletes storage + DB)
-                              deleteMOV({
+                              await deleteMOV({
                                 movId: parseInt(f.id),
                                 storagePath: f.storagePath,
                               });
@@ -519,41 +547,84 @@ export function DynamicIndicatorForm({
                                         storagePath,
                                         60
                                       );
-                                      setLocalMovs((prev) => {
-                                        const next = [
-                                          ...prev,
-                                          {
-                                            id: String(
-                                              created?.id ?? Date.now()
-                                            ),
-                                            name: file.name,
-                                            size: file.size,
-                                            url,
-                                            section: (field as any)
-                                              .mov_upload_section,
-                                            storagePath,
-                                          },
-                                        ];
-                                        return Array.from(
-                                          new Map(
-                                            next.map((f) => [
-                                              f.storagePath || f.id,
-                                              f,
-                                            ])
-                                          ).values()
-                                        );
-                                      });
+                                      if (created && typeof (created as any).id !== 'undefined') {
+                                        setLocalMovs((prev) => {
+                                          const next = [
+                                            ...prev,
+                                            {
+                                              id: String((created as any).id),
+                                              name: file.name,
+                                              size: file.size,
+                                              url,
+                                              section: (field as any).mov_upload_section,
+                                              storagePath,
+                                            },
+                                          ];
+                                          return Array.from(
+                                            new Map(
+                                              next.map((f) => [f.storagePath || f.id, f])
+                                            ).values()
+                                          );
+                                        });
+                                      }
                                     } catch {}
-                                    // Mark indicator as completed in local assessment state for immediate progress update
+                                    // Mark indicator status only when all required sections have at least one MOV
                                     if (updateAssessmentData && indicatorId) {
+                                      const requiredSections: string[] = (() => {
+                                        const props = (formSchema as any)?.properties || {};
+                                        return Object.values(props)
+                                          .map((v: any) => v?.mov_upload_section)
+                                          .filter((s: any) => typeof s === 'string') as string[];
+                                      })();
                                       updateAssessmentData((prev) => {
                                         const updated = { ...(prev as any) };
+                                        const recomputeContainerStatuses = (nodes: any[]) => {
+                                          for (let i = 0; i < nodes.length; i++) {
+                                            const n = nodes[i];
+                                            if (Array.isArray(n.children) && n.children.length > 0) {
+                                              recomputeContainerStatuses(n.children);
+                                              const allCompleted = n.children.every((c: any) => c.status === 'completed');
+                                              if (!allCompleted) n.status = (n.status === 'completed') ? 'in_progress' : n.status;
+                                            }
+                                          }
+                                        };
                                         const updateInTree = (nodes: any[]): boolean => {
                                           for (let i = 0; i < nodes.length; i++) {
                                             if (String(nodes[i].id) === String(indicatorId)) {
+                                              const current = nodes[i];
+                                              const existing = (current.movFiles || []) as any[];
+                                              // Append the newly uploaded file to the node's movFiles
+                                              const files = (created && (created as any).id !== undefined)
+                                                ? [
+                                                    ...existing,
+                                                    {
+                                                      id: String((created as any).id),
+                                                      name: file.name,
+                                                      size: file.size,
+                                                      url: storagePath,
+                                                      storagePath,
+                                                    },
+                                                  ]
+                                                : existing;
+                                              const present = new Set<string>();
+                                              // include new file section
+                                              const sec = (field as any).mov_upload_section as string | undefined;
+                                              if (sec) present.add(sec);
+                                              // include existing movs matched by storagePath
+                                              for (const m of files) {
+                                                const sp = m.storagePath || m.url || '';
+                                                for (const rs of requiredSections) {
+                                                  if (typeof sp === 'string' && sp.includes(rs)) present.add(rs);
+                                                }
+                                              }
+                                              // completion rule
+                                              const allSatisfied = requiredSections.length > 0
+                                                ? requiredSections.every((s) => present.has(s))
+                                                : files.length > 0;
                                               nodes[i] = {
-                                                ...nodes[i],
-                                                status: 'completed',
+                                                ...current,
+                                                movFiles: files,
+                                                status: allSatisfied ? 'completed' : 'in_progress',
                                               };
                                               return true;
                                             }
@@ -563,6 +634,9 @@ export function DynamicIndicatorForm({
                                         };
                                         for (const area of (updated.governanceAreas || [])) {
                                           if (area.indicators && updateInTree(area.indicators)) break;
+                                        }
+                                        for (const area of (updated.governanceAreas || [])) {
+                                          if (area.indicators) recomputeContainerStatuses(area.indicators);
                                         }
                                         return updated as any;
                                       });
@@ -624,7 +698,7 @@ export function DynamicIndicatorForm({
                               <button
                                 type="button"
                                 disabled={isDisabled || isDeleting}
-                                onClick={() => {
+                                onClick={async () => {
                                   // Optimistically remove from UI immediately and update area progress
                                   setLocalMovs((prev) => {
                                     const next = prev.filter(
@@ -633,12 +707,37 @@ export function DynamicIndicatorForm({
                                     if (updateAssessmentData && indicatorId) {
                                       updateAssessmentData((prevAssess) => {
                                         const updated = { ...(prevAssess as any) };
+                                        const recomputeContainerStatuses = (nodes: any[]) => {
+                                          for (let i = 0; i < nodes.length; i++) {
+                                            const n = nodes[i];
+                                            if (Array.isArray(n.children) && n.children.length > 0) {
+                                              recomputeContainerStatuses(n.children);
+                                              const allCompleted = n.children.every((c: any) => c.status === 'completed');
+                                              if (!allCompleted) n.status = (n.status === 'completed') ? 'in_progress' : n.status;
+                                            }
+                                          }
+                                        };
                                         const updateInTree = (nodes: any[]): boolean => {
                                           for (let i = 0; i < nodes.length; i++) {
                                             if (String(nodes[i].id) === String(indicatorId)) {
+                                              const current = nodes[i];
+                                              const props = (formSchema as any)?.properties || {};
+                                              const requiredSections: string[] = Object.values(props)
+                                                .map((v: any) => v?.mov_upload_section)
+                                                .filter((s: any) => typeof s === 'string') as string[];
+                                              const present = new Set<string>();
+                                              for (const m of next) {
+                                                const sp = m.storagePath || m.url || '';
+                                                for (const rs of requiredSections) {
+                                                  if (typeof sp === 'string' && sp.includes(rs)) present.add(rs);
+                                                }
+                                              }
+                                              const allSatisfied = requiredSections.length > 0
+                                                ? requiredSections.every((s) => present.has(s))
+                                                : next.length > 0;
                                               nodes[i] = {
-                                                ...nodes[i],
-                                                status: next.length > 0 ? 'completed' : 'not_started',
+                                                ...current,
+                                                status: allSatisfied ? 'completed' : (next.length === 0 ? 'not_started' : 'in_progress'),
                                                 movFiles: next,
                                               };
                                               return true;
@@ -650,13 +749,16 @@ export function DynamicIndicatorForm({
                                         for (const area of (updated.governanceAreas || [])) {
                                           if (area.indicators && updateInTree(area.indicators)) break;
                                         }
+                                        for (const area of (updated.governanceAreas || [])) {
+                                          if (area.indicators) recomputeContainerStatuses(area.indicators);
+                                        }
                                         return updated as any;
                                       });
                                     }
                                     return next;
                                   });
                                   // Delete from backend (which deletes storage + DB)
-                                  deleteMOV({
+                                  await deleteMOV({
                                     movId: parseInt(f.id),
                                     storagePath: f.storagePath,
                                   });
@@ -743,10 +845,10 @@ export function DynamicIndicatorForm({
                         : "Photo Documentation"}
                     </span>
                   )}
-                  <button
+                              <button
                     type="button"
                     disabled={isDisabled || isDeleting}
-                    onClick={() => {
+                                onClick={async () => {
                       // Optimistically remove from UI immediately and update area progress
                       setLocalMovs((prev) => {
                         const next = prev.filter(
@@ -757,12 +859,27 @@ export function DynamicIndicatorForm({
                             const updated = { ...(prevAssess as any) };
                             const updateInTree = (nodes: any[]): boolean => {
                               for (let i = 0; i < nodes.length; i++) {
-                                if (String(nodes[i].id) === String(indicatorId)) {
-                                  nodes[i] = {
-                                    ...nodes[i],
-                                    status: next.length > 0 ? 'completed' : 'not_started',
-                                    movFiles: next,
-                                  };
+                            if (String(nodes[i].id) === String(indicatorId)) {
+                              const current = nodes[i];
+                              const props = (formSchema as any)?.properties || {};
+                              const requiredSections: string[] = Object.values(props)
+                                .map((v: any) => v?.mov_upload_section)
+                                .filter((s: any) => typeof s === 'string') as string[];
+                              const present = new Set<string>();
+                              for (const m of next) {
+                                const sp = m.storagePath || m.url || '';
+                                for (const rs of requiredSections) {
+                                  if (typeof sp === 'string' && sp.includes(rs)) present.add(rs);
+                                }
+                              }
+                              const allSatisfied = requiredSections.length > 0
+                                ? requiredSections.every((s) => present.has(s))
+                                : next.length > 0;
+                              nodes[i] = {
+                                ...current,
+                                status: allSatisfied ? 'completed' : (next.length === 0 ? 'not_started' : 'in_progress'),
+                                movFiles: next,
+                              };
                                   return true;
                                 }
                                 if (nodes[i].children && updateInTree(nodes[i].children)) return true;
@@ -778,11 +895,11 @@ export function DynamicIndicatorForm({
                         return next;
                       });
                       // Delete from backend (which deletes storage + DB)
-                      deleteMOV({
+                                  await deleteMOV({
                         movId: parseInt(f.id),
                         storagePath: f.storagePath,
                       });
-                    }}
+                                }}
                     className="text-[var(--destructive)]"
                   >
                     Delete

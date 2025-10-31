@@ -102,33 +102,32 @@ export async function uploadWithProgress(
 ): Promise<{ url: string; name: string; size: number }> {
   const { onProgress, signal } = options;
 
-  // For now, simulate file upload since we don't have storage service configured
+  // Simulate upload progress but cap at 95% until completion
   return new Promise((resolve) => {
     let progress = 0;
     const interval = setInterval(() => {
-      progress += 10;
-      if (onProgress) {
-        onProgress({
-          loaded: progress,
-          total: 100,
-          percentage: progress,
-        });
-      }
-      if (progress >= 100) {
-        clearInterval(interval);
-        // Return mock file data
-        resolve({
-          url: URL.createObjectURL(file), // Create temporary URL for demo
-          name: file.name,
-          size: file.size,
-        });
-      }
+      progress = Math.min(progress + 5, 95);
+      onProgress?.({ loaded: progress, total: 100, percentage: progress });
     }, 200);
+
+    const complete = () => {
+      clearInterval(interval);
+      onProgress?.({ loaded: 100, total: 100, percentage: 100 });
+      resolve({
+        url: URL.createObjectURL(file),
+        name: file.name,
+        size: file.size,
+      });
+    };
+
+    // Simulate completion after a short delay (replace with real upload completion)
+    const doneTimer = setTimeout(complete, 2000);
 
     // Handle abort signal
     if (signal) {
       signal.addEventListener("abort", () => {
         clearInterval(interval);
+        clearTimeout(doneTimer);
       });
     }
   });

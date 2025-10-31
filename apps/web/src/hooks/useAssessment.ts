@@ -10,6 +10,7 @@ import {
   putAssessmentsResponses$ResponseId,
   useGetAssessmentsMyAssessment,
 } from "@vantage/shared";
+import { getGetAssessmentsMyAssessmentQueryKey } from "@vantage/shared/src/generated/endpoints/assessments";
 import { useEffect, useMemo, useState } from "react";
 // Custom debounce implementation
 function debounce<TArgs extends unknown[], TReturn>(
@@ -275,32 +276,13 @@ export function useCurrentAssessment() {
     transformedData as unknown as Assessment | null
   );
 
-  // Sync when server data changes - use assessment data as dependency
-  // We stringify a minimal subset to detect changes without causing infinite loops
-  const dataKey = transformedData
-    ? JSON.stringify({
-        id: transformedData.id,
-        completed: transformedData.completedIndicators,
-        updated: transformedData.updatedAt,
-        // Add a hash of MOV data to detect file changes
-        movHash: JSON.stringify(transformedData.governanceAreas.flatMap(a => 
-          a.indicators.flatMap(i => [i.movFiles?.length || 0, ...((i as any).children || []).map((c: any) => c.movFiles?.length || 0)])
-        )),
-      })
-    : null;
-  
+  // Sync local assessment whenever the server data changes
   useEffect(() => {
-    console.log('[useCurrentAssessment] dataKey changed, updating localAssessment', {
-      dataKey,
-      hasData: !!transformedData,
-      completedIndicators: transformedData?.completedIndicators,
-      updatedAt: transformedData?.updatedAt,
-    });
     if (transformedData) {
       setLocalAssessment(transformedData as unknown as Assessment);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataKey]);
+  }, [assessmentData]);
 
   return {
     data: localAssessment,
@@ -308,7 +290,32 @@ export function useCurrentAssessment() {
     error,
     refetch,
     updateAssessmentData: (updater: (data: Assessment) => Assessment) => {
-      setLocalAssessment((prev) => (prev ? updater({ ...prev }) : prev));
+      setLocalAssessment((prev) => {
+        if (!prev) return prev;
+        // Apply caller's changes
+        const next = updater({ ...prev });
+        // Recompute derived metrics so header updates immediately
+        const countAll = (nodes: any[] | undefined): number =>
+          (nodes || []).reduce((acc, n) => acc + 1 + countAll(n.children), 0);
+        const countCompleted = (nodes: any[] | undefined): number =>
+          (nodes || []).reduce(
+            (acc, n) =>
+              acc + (n.status === 'completed' ? 1 : 0) + countCompleted(n.children),
+            0
+          );
+        const total = (next.governanceAreas || []).reduce(
+          (sum, area: any) => sum + countAll(area.indicators),
+          0
+        );
+        const completed = (next.governanceAreas || []).reduce(
+          (sum, area: any) => sum + countCompleted(area.indicators),
+          0
+        );
+        (next as any).totalIndicators = total;
+        (next as any).completedIndicators = completed;
+        (next as any).updatedAt = new Date().toISOString();
+        return next;
+      });
     },
   };
 }
@@ -380,9 +387,11 @@ export function useUpdateIndicatorAnswer() {
       return putAssessmentsResponses$ResponseId(responseId, data);
     },
     onSuccess: async () => {
-      // Await refetch to ensure UI updates immediately
+      // Ensure both local keys and the generated query key are refreshed
+      queryClient.invalidateQueries({ queryKey: getGetAssessmentsMyAssessmentQueryKey() });
       await queryClient.refetchQueries({ queryKey: assessmentKeys.current() });
       await queryClient.refetchQueries({ queryKey: assessmentKeys.validation() });
+      await queryClient.refetchQueries({ queryKey: getGetAssessmentsMyAssessmentQueryKey() });
     },
   });
 }
@@ -404,9 +413,11 @@ export function useUploadMOV() {
       return postAssessmentsResponses$ResponseIdMovs(responseId, data);
     },
     onSuccess: async () => {
-      // Await refetch to ensure UI updates immediately
+      // Ensure both local keys and the generated query key are refreshed
+      queryClient.invalidateQueries({ queryKey: getGetAssessmentsMyAssessmentQueryKey() });
       await queryClient.refetchQueries({ queryKey: assessmentKeys.current() });
       await queryClient.refetchQueries({ queryKey: assessmentKeys.validation() });
+      await queryClient.refetchQueries({ queryKey: getGetAssessmentsMyAssessmentQueryKey() });
     },
   });
 }
@@ -460,6 +471,7 @@ export function useSubmitAssessment() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: assessmentKeys.current() });
       queryClient.invalidateQueries({ queryKey: assessmentKeys.validation() });
+      queryClient.invalidateQueries({ queryKey: getGetAssessmentsMyAssessmentQueryKey() });
     },
   });
 }
@@ -536,6 +548,7 @@ export function useUpdateResponse() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: assessmentKeys.current() });
       queryClient.invalidateQueries({ queryKey: assessmentKeys.validation() });
+      queryClient.invalidateQueries({ queryKey: getGetAssessmentsMyAssessmentQueryKey() });
     },
   });
 
