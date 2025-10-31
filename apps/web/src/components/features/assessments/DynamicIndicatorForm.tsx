@@ -43,6 +43,35 @@ export function DynamicIndicatorForm({
 }: DynamicIndicatorFormProps) {
   const { mutate: uploadMOV, isPending: isUploading } = useUploadMOV();
   const { mutate: deleteMOV, isPending: isDeleting } = useDeleteMOV();
+  // Per-section upload progress so only the active section shows progress
+  const [sectionUpload, setSectionUpload] = React.useState<Record<string, { progress: number; active: boolean }>>({});
+  const uploadTimersRef = React.useRef<Map<string, number>>(new Map());
+
+  const startSectionProgress = React.useCallback((sectionKey: string) => {
+    setSectionUpload((prev) => ({ ...prev, [sectionKey]: { progress: 5, active: true } }));
+    const existing = uploadTimersRef.current.get(sectionKey);
+    if (existing) window.clearInterval(existing);
+    const id = window.setInterval(() => {
+      setSectionUpload((prev) => {
+        const current = prev[sectionKey] ?? { progress: 0, active: true };
+        const next = Math.min(90, (current.progress || 0) + 2);
+        return { ...prev, [sectionKey]: { progress: next, active: true } };
+      });
+    }, 150);
+    uploadTimersRef.current.set(sectionKey, id);
+  }, []);
+
+  const finishSectionProgress = React.useCallback((sectionKey: string) => {
+    const existing = uploadTimersRef.current.get(sectionKey);
+    if (existing) {
+      window.clearInterval(existing);
+      uploadTimersRef.current.delete(sectionKey);
+    }
+    setSectionUpload((prev) => ({ ...prev, [sectionKey]: { progress: 100, active: true } }));
+    window.setTimeout(() => {
+      setSectionUpload((prev) => ({ ...prev, [sectionKey]: { progress: 0, active: false } }));
+    }, 400);
+  }, []);
   type LocalMov = {
     id: string;
     name: string;
@@ -62,15 +91,16 @@ export function DynamicIndicatorForm({
   );
 
   // Keep local list in sync when movFiles prop changes (e.g., after refresh)
-  const lastMovKeyRef = React.useRef<string>("");
   const urlCacheRef = React.useRef<Map<string, string>>(new Map());
 
   React.useEffect(() => {
-    const key = JSON.stringify(
-      (movFiles || []).map((f: any) => [f.id, f.storage_path || f.url])
-    );
-    if (key === lastMovKeyRef.current) return; // Avoid double-fetch in React StrictMode
-    lastMovKeyRef.current = key;
+    console.log("[DynamicIndicatorForm] movFiles changed:", {
+      count: movFiles?.length || 0,
+      files: movFiles?.map((f: any) => ({
+        id: f.id,
+        name: f.name || f.filename,
+      })),
+    });
 
     let cancelled = false;
     (async () => {
@@ -110,14 +140,17 @@ export function DynamicIndicatorForm({
         })
       );
       if (!cancelled) {
-        // Deduplicate based on MOV ID before setting state
-        const deduped = Array.from(
+        // Deduplicate by ID and storage_path
+        const dedupedById = Array.from(
           new Map(mapped.map((f) => [f.id, f])).values()
         );
-        // Additional deduplication by filename+size combo to catch any remaining duplicates
         const finalDeduped = Array.from(
-          new Map(deduped.map((f) => [`${f.name}-${f.size}`, f])).values()
+          new Map(dedupedById.map((f) => [f.storagePath || f.id, f])).values()
         );
+        console.log("[DynamicIndicatorForm] Setting localMovs:", {
+          count: finalDeduped.length,
+          files: finalDeduped.map((f) => ({ id: f.id, name: f.name })),
+        });
         setLocalMovs(finalDeduped);
       }
     })();
@@ -225,6 +258,8 @@ export function DynamicIndicatorForm({
                   accept="image/*,application/pdf"
                   disabled={isDisabled || isUploading}
                   onChange={async (e) => {
+                    const sectionKey = (field as any).mov_upload_section || 'unknown_section';
+                    startSectionProgress(sectionKey);
                     const files = e.currentTarget.files;
                     if (!files || !indicatorId || !responseId) return;
                     for (const file of Array.from(files)) {
@@ -234,87 +269,106 @@ export function DynamicIndicatorForm({
                           responseId: responseId.toString(),
                           section: (field as any).mov_upload_section,
                         });
-                        uploadMOV({
-                          responseId,
-                          data: {
-                            filename: file.name,
-                            original_filename: file.name,
-                            file_size: file.size,
-                            content_type: file.type,
-                            storage_path: storagePath,
-                            response_id: responseId,
-                          },
-                        });
-                        const url = await getSignedUrl(storagePath, 60);
-                        setLocalMovs((prev) => [
-                          ...prev,
-                          {
-                            id: `${Date.now()}`,
-                            name: file.name,
-                            size: file.size,
-                            url,
-                            storagePath,
-                            section: (field as any).mov_upload_section,
-                          },
-                        ]);
-                        if (updateAssessmentData) {
-                          const required = (formSchema as any).required || [];
-                          const values = form.getValues();
-                          const allAnswered = required.every(
-                            (f: string) =>
-                              typeof values[f] === "string" &&
-                              ["yes", "no", "na"].includes(String(values[f]))
-                          );
-                          const hasYes = required.some(
-                            (f: string) => values[f] === "yes"
-                          );
-                          updateAssessmentData((prev: any) => {
-                            const updated = { ...prev };
-                            const updateInTree = (nodes: any[]): boolean => {
-                              for (let i = 0; i < nodes.length; i++) {
-                                if (nodes[i].id === indicatorId) {
-                                  const newMovs = [
-                                    ...(nodes[i].movFiles || []),
-                                    {
-                                      id: `${Date.now()}`,
-                                      name: file.name,
-                                      size: file.size,
-                                      url,
-                                    },
-                                  ];
-                                  nodes[i].movFiles = newMovs;
-                                  nodes[i].status =
-                                    allAnswered &&
-                                    (!hasYes || newMovs.length > 0)
-                                      ? "completed"
-                                      : "not_started";
-                                  return true;
+                        // Upload to backend and update UI immediately
+                        await new Promise<void>((resolve, reject) => {
+                          uploadMOV(
+                            {
+                              responseId,
+                              data: {
+                                filename: file.name,
+                                original_filename: file.name,
+                                file_size: file.size,
+                                content_type: file.type,
+                                storage_path: storagePath,
+                                response_id: responseId,
+                              },
+                            },
+                            {
+                              onSuccess: async (created: any) => {
+                                // Get a signed URL for immediate preview and add to local list
+                                try {
+                                  const url = await getSignedUrl(
+                                    storagePath,
+                                    60
+                                  );
+                                  setLocalMovs((prev) => {
+                                    const next = [
+                                      ...prev,
+                                      {
+                                        id: String(created?.id ?? Date.now()),
+                                        name: file.name,
+                                        size: file.size,
+                                        url,
+                                        section: (field as any)
+                                          .mov_upload_section,
+                                        storagePath,
+                                      },
+                                    ];
+                                    // Deduplicate by storagePath or id
+                                    return Array.from(
+                                      new Map(
+                                        next.map((f) => [
+                                          f.storagePath || f.id,
+                                          f,
+                                        ])
+                                      ).values()
+                                    );
+                                  });
+                                } catch {}
+                                // Mark indicator as completed in local assessment state for immediate progress update
+                                if (updateAssessmentData && indicatorId) {
+                                  updateAssessmentData((prev) => {
+                                    const updated = { ...(prev as any) };
+                                    const updateInTree = (nodes: any[]): boolean => {
+                                      for (let i = 0; i < nodes.length; i++) {
+                                        if (String(nodes[i].id) === String(indicatorId)) {
+                                          nodes[i] = {
+                                            ...nodes[i],
+                                            status: 'completed',
+                                          };
+                                          return true;
+                                        }
+                                        if (nodes[i].children && updateInTree(nodes[i].children)) return true;
+                                      }
+                                      return false;
+                                    };
+                                    for (const area of (updated.governanceAreas || [])) {
+                                      if (area.indicators && updateInTree(area.indicators)) break;
+                                    }
+                                    return updated as any;
+                                  });
                                 }
-                                if (
-                                  nodes[i].children &&
-                                  updateInTree(nodes[i].children)
-                                )
-                                  return true;
-                              }
-                              return false;
-                            };
-                            for (const area of updated.governanceAreas) {
-                              if (
-                                area.indicators &&
-                                updateInTree(area.indicators)
-                              )
-                                break;
+                                resolve();
+                              },
+                              onError: (error) => reject(error),
                             }
-                            return updated;
-                          });
-                        }
+                          );
+                        });
                       } catch (err) {
                         console.error("Upload failed:", err);
                       }
                     }
+                    finishSectionProgress(sectionKey);
                     e.currentTarget.value = "";
                   }}
                 />
+                {(() => {
+                  const sectionKey = (field as any).mov_upload_section || 'unknown_section';
+                  const state = sectionUpload[sectionKey];
+                  return state?.active ? (
+                  <div className="mt-3">
+                    <div className="h-2 bg-[var(--border)] rounded-full overflow-hidden">
+                      <div
+                        className="h-2 bg-[var(--cityscape-yellow)] transition-all duration-150"
+                        style={{ width: `${state.progress}%` }}
+                      />
+                    </div>
+                    <div className="text-[10px] mt-1 text-[var(--text-secondary)]">
+                      Uploading... {state.progress}%
+                    </div>
+                  </div>
+                  ) : null;
+                })()}
                 {localMovs.length > 0 && (
                   <div className="mt-3 space-y-1">
                     {localMovs
@@ -341,13 +395,41 @@ export function DynamicIndicatorForm({
                             type="button"
                             disabled={isDisabled || isDeleting}
                             onClick={() => {
+                              // Optimistically remove from UI immediately and update area progress
+                              setLocalMovs((prev) => {
+                                const next = prev.filter(
+                                  (m) => m.id !== f.id && m.storagePath !== f.storagePath
+                                );
+                                if (updateAssessmentData && indicatorId) {
+                                  updateAssessmentData((prevAssess) => {
+                                    const updated = { ...(prevAssess as any) };
+                                    const updateInTree = (nodes: any[]): boolean => {
+                                      for (let i = 0; i < nodes.length; i++) {
+                                        if (String(nodes[i].id) === String(indicatorId)) {
+                                          nodes[i] = {
+                                            ...nodes[i],
+                                            status: next.length > 0 ? 'completed' : 'not_started',
+                                            movFiles: next,
+                                          };
+                                          return true;
+                                        }
+                                        if (nodes[i].children && updateInTree(nodes[i].children)) return true;
+                                      }
+                                      return false;
+                                    };
+                                    for (const area of (updated.governanceAreas || [])) {
+                                      if (area.indicators && updateInTree(area.indicators)) break;
+                                    }
+                                    return updated as any;
+                                  });
+                                }
+                                return next;
+                              });
+                              // Delete from backend (which deletes storage + DB)
                               deleteMOV({
                                 movId: parseInt(f.id),
                                 storagePath: f.storagePath,
                               });
-                              setLocalMovs((prev) =>
-                                prev.filter((x) => x.id !== f.id)
-                              );
                             }}
                             className="text-[var(--destructive)]"
                           >
@@ -405,6 +487,8 @@ export function DynamicIndicatorForm({
                       accept="image/*,application/pdf"
                       disabled={isDisabled || isUploading}
                       onChange={async (e) => {
+                        const sectionKey = (field as any).mov_upload_section || 'unknown_section';
+                        startSectionProgress(sectionKey);
                         const files = e.currentTarget.files;
                         if (!files || !indicatorId || !responseId) return;
                         for (const file of Array.from(files)) {
@@ -414,93 +498,106 @@ export function DynamicIndicatorForm({
                               responseId: responseId.toString(),
                               section: (field as any).mov_upload_section,
                             });
-                            uploadMOV({
-                              responseId,
-                              data: {
-                                filename: file.name,
-                                original_filename: file.name,
-                                file_size: file.size,
-                                content_type: file.type,
-                                storage_path: storagePath,
-                                response_id: responseId,
-                              },
-                            });
-                            const url = await getSignedUrl(storagePath, 60);
-                            setLocalMovs((prev) => [
-                              ...prev,
-                              {
-                                id: `${Date.now()}`,
-                                name: file.name,
-                                size: file.size,
-                                url,
-                                section: (field as any).mov_upload_section,
-                              },
-                            ]);
-                            if (updateAssessmentData) {
-                              const required =
-                                (formSchema as any).required || [];
-                              const values = form.getValues();
-                              const allAnswered = required.every(
-                                (f: string) =>
-                                  typeof values[f] === "string" &&
-                                  ["yes", "no", "na"].includes(
-                                    String(values[f])
-                                  )
-                              );
-                              const hasYes = required.some(
-                                (f: string) => values[f] === "yes"
-                              );
-                              updateAssessmentData((prev: any) => {
-                                const updated = { ...prev };
-                                const updateInTree = (
-                                  nodes: any[]
-                                ): boolean => {
-                                  for (let i = 0; i < nodes.length; i++) {
-                                    if (nodes[i].id === indicatorId) {
-                                      const newMovs = [
-                                        ...(nodes[i].movFiles || []),
-                                        {
-                                          id: `${Date.now()}`,
-                                          name: file.name,
-                                          size: file.size,
-                                          url,
-                                          section: (field as any)
-                                            .mov_upload_section,
-                                        },
-                                      ];
-                                      nodes[i].movFiles = newMovs;
-                                      nodes[i].status =
-                                        allAnswered &&
-                                        (!hasYes || newMovs.length > 0)
-                                          ? "completed"
-                                          : "not_started";
-                                      return true;
+                            // Upload to backend and update UI immediately
+                            await new Promise<void>((resolve, reject) => {
+                              uploadMOV(
+                                {
+                                  responseId,
+                                  data: {
+                                    filename: file.name,
+                                    original_filename: file.name,
+                                    file_size: file.size,
+                                    content_type: file.type,
+                                    storage_path: storagePath,
+                                    response_id: responseId,
+                                  },
+                                },
+                                {
+                                  onSuccess: async (created: any) => {
+                                    try {
+                                      const url = await getSignedUrl(
+                                        storagePath,
+                                        60
+                                      );
+                                      setLocalMovs((prev) => {
+                                        const next = [
+                                          ...prev,
+                                          {
+                                            id: String(
+                                              created?.id ?? Date.now()
+                                            ),
+                                            name: file.name,
+                                            size: file.size,
+                                            url,
+                                            section: (field as any)
+                                              .mov_upload_section,
+                                            storagePath,
+                                          },
+                                        ];
+                                        return Array.from(
+                                          new Map(
+                                            next.map((f) => [
+                                              f.storagePath || f.id,
+                                              f,
+                                            ])
+                                          ).values()
+                                        );
+                                      });
+                                    } catch {}
+                                    // Mark indicator as completed in local assessment state for immediate progress update
+                                    if (updateAssessmentData && indicatorId) {
+                                      updateAssessmentData((prev) => {
+                                        const updated = { ...(prev as any) };
+                                        const updateInTree = (nodes: any[]): boolean => {
+                                          for (let i = 0; i < nodes.length; i++) {
+                                            if (String(nodes[i].id) === String(indicatorId)) {
+                                              nodes[i] = {
+                                                ...nodes[i],
+                                                status: 'completed',
+                                              };
+                                              return true;
+                                            }
+                                            if (nodes[i].children && updateInTree(nodes[i].children)) return true;
+                                          }
+                                          return false;
+                                        };
+                                        for (const area of (updated.governanceAreas || [])) {
+                                          if (area.indicators && updateInTree(area.indicators)) break;
+                                        }
+                                        return updated as any;
+                                      });
                                     }
-                                    if (
-                                      nodes[i].children &&
-                                      updateInTree(nodes[i].children)
-                                    )
-                                      return true;
-                                  }
-                                  return false;
-                                };
-                                for (const area of updated.governanceAreas) {
-                                  if (
-                                    area.indicators &&
-                                    updateInTree(area.indicators)
-                                  )
-                                    break;
+                                    resolve();
+                                  },
+                                  onError: (error) => reject(error),
                                 }
-                                return updated;
-                              });
-                            }
+                              );
+                            });
                           } catch (err) {
                             console.error("Upload failed:", err);
                           }
                         }
+                        finishSectionProgress(sectionKey);
                         e.currentTarget.value = "";
                       }}
                     />
+                    {(() => {
+                      const sectionKey = (field as any).mov_upload_section || 'unknown_section';
+                      const state = sectionUpload[sectionKey];
+                      return state?.active ? (
+                      <div className="mt-3">
+                        <div className="h-2 bg-[var(--border)] rounded-full overflow-hidden">
+                          <div
+                            className="h-2 bg-[var(--cityscape-yellow)] transition-all duration-150"
+                            style={{ width: `${state.progress}%` }}
+                          />
+                        </div>
+                        <div className="text-[10px] mt-1 text-[var(--text-secondary)]">
+                          Uploading... {state.progress}%
+                        </div>
+                      </div>
+                      ) : null;
+                    })()}
                     {localMovs.length > 0 && (
                       <div className="mt-3 space-y-1">
                         {localMovs
@@ -528,13 +625,41 @@ export function DynamicIndicatorForm({
                                 type="button"
                                 disabled={isDisabled || isDeleting}
                                 onClick={() => {
+                                  // Optimistically remove from UI immediately and update area progress
+                                  setLocalMovs((prev) => {
+                                    const next = prev.filter(
+                                      (m) => m.id !== f.id && m.storagePath !== f.storagePath
+                                    );
+                                    if (updateAssessmentData && indicatorId) {
+                                      updateAssessmentData((prevAssess) => {
+                                        const updated = { ...(prevAssess as any) };
+                                        const updateInTree = (nodes: any[]): boolean => {
+                                          for (let i = 0; i < nodes.length; i++) {
+                                            if (String(nodes[i].id) === String(indicatorId)) {
+                                              nodes[i] = {
+                                                ...nodes[i],
+                                                status: next.length > 0 ? 'completed' : 'not_started',
+                                                movFiles: next,
+                                              };
+                                              return true;
+                                            }
+                                            if (nodes[i].children && updateInTree(nodes[i].children)) return true;
+                                          }
+                                          return false;
+                                        };
+                                        for (const area of (updated.governanceAreas || [])) {
+                                          if (area.indicators && updateInTree(area.indicators)) break;
+                                        }
+                                        return updated as any;
+                                      });
+                                    }
+                                    return next;
+                                  });
+                                  // Delete from backend (which deletes storage + DB)
                                   deleteMOV({
                                     movId: parseInt(f.id),
                                     storagePath: f.storagePath,
                                   });
-                                  setLocalMovs((prev) =>
-                                    prev.filter((x) => x.id !== f.id)
-                                  );
                                 }}
                                 className="text-[var(--destructive)]"
                               >
@@ -582,6 +707,12 @@ export function DynamicIndicatorForm({
           ([name, field]: [string, FormField]) => renderField(name, field)
         )}
 
+        {/* Debug: Show file count */}
+        <div className="text-xs text-gray-500 mt-2">
+          Debug: localMovs.length = {localMovs.length}, movFiles.length ={" "}
+          {movFiles?.length || 0}
+        </div>
+
         {localMovs.length > 0 && (
           <div className="pt-4 mt-2 border-t border-[var(--border)]">
             <div className="flex items-center gap-2 mb-2">
@@ -616,11 +747,41 @@ export function DynamicIndicatorForm({
                     type="button"
                     disabled={isDisabled || isDeleting}
                     onClick={() => {
+                      // Optimistically remove from UI immediately and update area progress
+                      setLocalMovs((prev) => {
+                        const next = prev.filter(
+                          (m) => m.id !== f.id && m.storagePath !== f.storagePath
+                        );
+                        if (updateAssessmentData && indicatorId) {
+                          updateAssessmentData((prevAssess) => {
+                            const updated = { ...(prevAssess as any) };
+                            const updateInTree = (nodes: any[]): boolean => {
+                              for (let i = 0; i < nodes.length; i++) {
+                                if (String(nodes[i].id) === String(indicatorId)) {
+                                  nodes[i] = {
+                                    ...nodes[i],
+                                    status: next.length > 0 ? 'completed' : 'not_started',
+                                    movFiles: next,
+                                  };
+                                  return true;
+                                }
+                                if (nodes[i].children && updateInTree(nodes[i].children)) return true;
+                              }
+                              return false;
+                            };
+                            for (const area of (updated.governanceAreas || [])) {
+                              if (area.indicators && updateInTree(area.indicators)) break;
+                            }
+                            return updated as any;
+                          });
+                        }
+                        return next;
+                      });
+                      // Delete from backend (which deletes storage + DB)
                       deleteMOV({
                         movId: parseInt(f.id),
                         storagePath: f.storagePath,
                       });
-                      setLocalMovs((prev) => prev.filter((x) => x.id !== f.id));
                     }}
                     className="text-[var(--destructive)]"
                   >

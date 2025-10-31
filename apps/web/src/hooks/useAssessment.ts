@@ -153,11 +153,20 @@ export function useCurrentAssessment() {
           ? ("completed" as const)
           : ("in_progress" as const)
         : ("not_started" as const),
-      complianceAnswer:
-        indicator.response?.response_data &&
-        (indicator.response.response_data as any).has_budget_plan
-          ? ("yes" as const)
-          : ("no" as const),
+      // Try to infer a generalized compliance answer from various backend field names
+      complianceAnswer: (() => {
+        const data = indicator.response?.response_data as any;
+        if (!data) return undefined;
+        const val =
+          data.compliance ??
+          data.is_compliant ??
+          data.answer ??
+          data.has_budget_plan ??
+          data.is_compliance;
+        if (typeof val === "string") return val as any;
+        if (typeof val === "boolean") return (val ? "yes" : "no") as any;
+        return undefined;
+      })(),
       movFiles: (indicator.movs || []).map((m: any) => ({
         id: String(m.id),
         name: m.name ?? m.original_filename ?? m.filename,
@@ -266,12 +275,32 @@ export function useCurrentAssessment() {
     transformedData as unknown as Assessment | null
   );
 
-  // Sync when server data changes
+  // Sync when server data changes - use assessment data as dependency
+  // We stringify a minimal subset to detect changes without causing infinite loops
+  const dataKey = transformedData
+    ? JSON.stringify({
+        id: transformedData.id,
+        completed: transformedData.completedIndicators,
+        updated: transformedData.updatedAt,
+        // Add a hash of MOV data to detect file changes
+        movHash: JSON.stringify(transformedData.governanceAreas.flatMap(a => 
+          a.indicators.flatMap(i => [i.movFiles?.length || 0, ...((i as any).children || []).map((c: any) => c.movFiles?.length || 0)])
+        )),
+      })
+    : null;
+  
   useEffect(() => {
+    console.log('[useCurrentAssessment] dataKey changed, updating localAssessment', {
+      dataKey,
+      hasData: !!transformedData,
+      completedIndicators: transformedData?.completedIndicators,
+      updatedAt: transformedData?.updatedAt,
+    });
     if (transformedData) {
       setLocalAssessment(transformedData as unknown as Assessment);
     }
-  }, [JSON.stringify(transformedData)]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataKey]);
 
   return {
     data: localAssessment,
@@ -350,9 +379,10 @@ export function useUpdateIndicatorAnswer() {
     }) => {
       return putAssessmentsResponses$ResponseId(responseId, data);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: assessmentKeys.current() });
-      queryClient.invalidateQueries({ queryKey: assessmentKeys.validation() });
+    onSuccess: async () => {
+      // Await refetch to ensure UI updates immediately
+      await queryClient.refetchQueries({ queryKey: assessmentKeys.current() });
+      await queryClient.refetchQueries({ queryKey: assessmentKeys.validation() });
     },
   });
 }
@@ -373,9 +403,10 @@ export function useUploadMOV() {
     }) => {
       return postAssessmentsResponses$ResponseIdMovs(responseId, data);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: assessmentKeys.current() });
-      queryClient.invalidateQueries({ queryKey: assessmentKeys.validation() });
+    onSuccess: async () => {
+      // Await refetch to ensure UI updates immediately
+      await queryClient.refetchQueries({ queryKey: assessmentKeys.current() });
+      await queryClient.refetchQueries({ queryKey: assessmentKeys.validation() });
     },
   });
 }
@@ -408,9 +439,10 @@ export function useDeleteMOV() {
       // Remove DB record
       return deleteAssessmentsMovs$MovId(movId);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: assessmentKeys.current() });
-      queryClient.invalidateQueries({ queryKey: assessmentKeys.validation() });
+    onSuccess: async () => {
+      // Await refetch to ensure UI updates immediately
+      await queryClient.refetchQueries({ queryKey: assessmentKeys.current() });
+      await queryClient.refetchQueries({ queryKey: assessmentKeys.validation() });
     },
   });
 }

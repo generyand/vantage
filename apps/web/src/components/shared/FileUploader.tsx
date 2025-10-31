@@ -15,7 +15,7 @@ interface FileUploaderProps {
   accept?: string;
   multiple?: boolean;
   maxSize?: number; // in MB
-  onUploadComplete?: (files: File[]) => void;
+  onUploadComplete?: (files: File[]) => void | Promise<void>;
   onUploadError?: (error: string) => void;
   onDeleteFile?: (fileId: string | number) => void;
   uploadUrl: string;
@@ -96,23 +96,18 @@ export default function FileUploader({
           },
         });
 
-        // Call onUploadComplete with the file info
-        onUploadComplete?.([file]);
-
-        // Add to uploaded files list
+        // Add to uploaded files list immediately so it shows up with delete button
         setUploadedFiles((prev) => [...prev, file]);
 
-        // Add to existing files list with the URL
-        if (uploadResult.url) {
-          const newFile: UploadedFile = {
-            id: Date.now(), // Temporary ID for demo
-            name: uploadResult.name,
-            size: uploadResult.size,
-            url: uploadResult.url,
-          };
-          existingFiles.push(newFile);
-        }
+        // Call onUploadComplete with the file info
+        // Parent component is responsible for updating existingFiles
+        // Wait for the parent to finish processing
+        await onUploadComplete?.([file]);
       }
+
+      // Clear uploaded files after all uploads complete and parent has processed them
+      // The files should now appear in existingFiles
+      setUploadedFiles([]);
     } catch (error) {
       onUploadError?.(error instanceof Error ? error.message : "Upload failed");
     } finally {
@@ -307,22 +302,51 @@ export default function FileUploader({
             {uploadedFiles.map((file, index) => (
               <div
                 key={index}
-                className="flex items-center text-sm text-gray-600 bg-gray-50 p-2 rounded"
+                className="flex items-center justify-between text-sm text-gray-600 bg-gray-50 p-2 rounded"
               >
-                <svg
-                  className="w-4 h-4 text-green-500 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                {file.name} ({(file.size / 1024 / 1024).toFixed(1)}MB)
+                <div className="flex items-center">
+                  <svg
+                    className="w-4 h-4 text-green-500 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  {file.name} ({(file.size / 1024 / 1024).toFixed(1)}MB)
+                </div>
+                {!disabled && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setUploadedFiles((prev) =>
+                        prev.filter((_, i) => i !== index)
+                      );
+                    }}
+                    className="text-red-500 hover:text-red-700 p-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Remove file"
+                    disabled={isLoading}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                )}
               </div>
             ))}
           </div>
