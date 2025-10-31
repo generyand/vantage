@@ -8,6 +8,7 @@ Step-by-step guides for common development tasks in the VANTAGE project.
 - [Database Migrations](./database-migrations.md) - Working with Alembic migrations
 - [Testing](./testing.md) - Testing strategy and guidelines
 - [Service Layer Pattern](./service-layer-pattern.md) - Backend architectural pattern
+- [Maintaining Changelog](./maintaining-changelog.md) - How to update CHANGELOG.md
 - [Deployment](./deployment.md) - Deployment procedures
 
 ## Quick Reference
@@ -48,3 +49,18 @@ alembic upgrade head
 ```
 
 See [Database Migrations](./database-migrations.md) for complete workflow.
+
+### Updating Changelog
+
+```bash
+# Interactive changelog update
+/changelog add
+
+# Prepare a release
+/changelog release
+
+# View unreleased changes
+/changelog show
+```
+
+See [Maintaining Changelog](./maintaining-changelog.md) for guidelines.
