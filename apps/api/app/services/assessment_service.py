@@ -638,7 +638,7 @@ class AssessmentService:
         try:
             if db_response.indicator and db_response.indicator.form_schema:
                 db_response.is_completed = self._check_response_completion(
-                    db_response.indicator.form_schema, initial_data, 0
+                    db_response.indicator.form_schema, initial_data, []
                 )
             else:
                 db_response.is_completed = bool(initial_data)
@@ -686,9 +686,8 @@ class AssessmentService:
 
         # Auto-set completion status based on response_data
         if response_update.response_data is not None:
-            mov_count = len(db_response.movs or [])
             db_response.is_completed = self._check_response_completion(
-                db_response.indicator.form_schema, response_update.response_data, mov_count
+                db_response.indicator.form_schema, response_update.response_data, db_response.movs
             )
 
         db.commit()
@@ -742,7 +741,7 @@ class AssessmentService:
         )
 
     def _check_response_completion(
-        self, form_schema: Dict[str, Any], response_data: Dict[str, Any], mov_count: int = 0
+        self, form_schema: Dict[str, Any], response_data: Dict[str, Any], movs: Optional[List[MOV]] = None
     ) -> bool:
         """
         Check if a response is completed based on form schema requirements.
@@ -772,6 +771,7 @@ class AssessmentService:
                 for v in response_data.values() 
                 if isinstance(v, str) and str(v).lower() in valid_compliance_values
             )
+            mov_count = len(movs or [])
             if has_any_yes and mov_count <= 0:
                 return False
             return bool(response_data)
@@ -786,8 +786,28 @@ class AssessmentService:
         
         # If any required field is answered 'yes', require at least one MOV
         has_any_yes = any(response_data.get(field) == "yes" for field in required_fields)
-        if has_any_yes and mov_count <= 0:
-            return False
+        if has_any_yes:
+            required_sections: List[str] = []
+            props = form_schema.get("properties", {}) or {}
+            for v in props.values():
+                section = (v or {}).get("mov_upload_section")
+                if isinstance(section, str):
+                    required_sections.append(section)
+            # If schema lists specific sections, enforce at least one MOV per section
+            if required_sections:
+                section_set = set(required_sections)
+                mov_section_hits = {s: False for s in section_set}
+                for m in (movs or []):
+                    spath = getattr(m, "storage_path", "") or ""
+                    for s in section_set:
+                        if s in spath:
+                            mov_section_hits[s] = True
+                if not all(mov_section_hits.values()):
+                    return False
+            else:
+                # Otherwise at least one MOV overall
+                if len(movs or []) <= 0:
+                    return False
 
         return True
 
@@ -804,8 +824,7 @@ class AssessmentService:
             response.is_completed = False
             return False
         form_schema = getattr(response.indicator, "form_schema", {}) or {}
-        mov_count = len(response.movs or [])
-        completion = self._check_response_completion(form_schema, response.response_data, mov_count)
+        completion = self._check_response_completion(form_schema, response.response_data, response.movs)
         response.is_completed = completion
         return completion
 
@@ -960,8 +979,14 @@ class AssessmentService:
             status=MOVStatus.UPLOADED,
         )
 
-        db.add(db_mov)
-        db.flush()  # Flush to get the MOV ID before recalculating
+        try:
+            db.add(db_mov)
+            db.flush()  # Flush to get the MOV ID before recalculating
+            print(f"[DEBUG] MOV created with ID: {db_mov.id}, filename: {db_mov.filename}")
+        except Exception as e:
+            print(f"[ERROR] Failed to add/flush MOV: {str(e)}")
+            db.rollback()
+            raise
         
         # Recalculate parent response completion status
         if mov_create.response_id:
@@ -977,8 +1002,23 @@ class AssessmentService:
             if db_response:
                 self.recompute_response_completion(db_response)
                 db.add(db_response)
+                
+                # Touch the parent assessment's updated_at to bust frontend cache
+                if db_response.assessment_id:
+                    from datetime import datetime, timezone
+                    db_assessment = db.query(Assessment).filter(Assessment.id == db_response.assessment_id).first()
+                    if db_assessment:
+                        db_assessment.updated_at = datetime.now(timezone.utc)
+                        db.add(db_assessment)
         
-        db.commit()
+        try:
+            db.commit()
+            print(f"[DEBUG] MOV commit successful. ID={db_mov.id}")
+        except Exception as e:
+            print(f"[ERROR] MOV commit failed: {str(e)}")
+            db.rollback()
+            raise
+            
         db.refresh(db_mov)
         return db_mov
 
@@ -1024,6 +1064,14 @@ class AssessmentService:
                 db_response.movs = [m for m in db_response.movs if m.id != db_mov.id]
                 self.recompute_response_completion(db_response)
                 db.add(db_response)
+                
+                # Touch the parent assessment's updated_at to bust frontend cache
+                if db_response.assessment_id:
+                    from datetime import datetime, timezone
+                    db_assessment = db.query(Assessment).filter(Assessment.id == db_response.assessment_id).first()
+                    if db_assessment:
+                        db_assessment.updated_at = datetime.now(timezone.utc)
+                        db.add(db_assessment)
             db.commit()
         except Exception as e:
             db.rollback()
