@@ -210,6 +210,67 @@ export function DynamicIndicatorForm({
     }
   }, [form, onChange]);
 
+  // --- UI/UX helpers: section counters and summaries ---
+  const requiredSections: string[] = React.useMemo(() => {
+    const props = (formSchema as any)?.properties || {};
+    return Object.values(props)
+      .map((v: any) => v?.mov_upload_section)
+      .filter((s: any) => typeof s === "string") as string[];
+  }, [formSchema]);
+
+  const allMovsForSection = React.useCallback(
+    (section: string) => {
+      const server = (movFiles || []).filter(
+        (m: any) => (m as any).section === section || (m.storagePath || (m as any).storage_path || m.url || "").includes(section)
+      );
+      const local = (localMovs || []).filter((m) => m.section === section);
+      const merged = Array.from(
+        new Map(
+          [...server, ...local].map((f: any) => [String(f.storagePath || (f as any).storage_path || f.id), f])
+        ).values()
+      );
+      return merged;
+    },
+    [movFiles, localMovs]
+  );
+
+  const totalMovCount = React.useMemo(() => {
+    if (!requiredSections.length) return (movFiles?.length || 0) + (localMovs?.length || 0);
+    return requiredSections.reduce((sum, s) => sum + allMovsForSection(s).length, 0);
+  }, [requiredSections, movFiles, localMovs, allMovsForSection]);
+
+  // Utility: derive short file-type badge from filename
+  const getFileBadge = React.useCallback((filename: string | undefined) => {
+    if (!filename) return "FILE";
+    const ext = filename.split(".").pop()?.toLowerCase();
+    switch (ext) {
+      case "pdf":
+        return "PDF";
+      case "png":
+      case "jpg":
+      case "jpeg":
+      case "gif":
+      case "webp":
+        return "IMG";
+      case "doc":
+      case "docx":
+        return "DOC";
+      case "xls":
+      case "xlsx":
+        return "XLS";
+      case "csv":
+        return "CSV";
+      case "zip":
+      case "rar":
+      case "7z":
+        return "ZIP";
+      case "txt":
+        return "TXT";
+      default:
+        return (ext || "FILE").toUpperCase().slice(0, 4);
+    }
+  }, []);
+
   // Render form fields based on schema
   const renderField = (name: string, field: FormField) => {
     switch (field.type) {
@@ -478,6 +539,21 @@ export function DynamicIndicatorForm({
               <Label className="text-sm font-semibold text-[var(--foreground)]">
                 {field.title || name}
               </Label>
+              {requiredSections.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-secondary)]">
+                  <span className="px-2 py-0.5 rounded-sm border border-[var(--border)] bg-[var(--hover)]">
+                    Total MOVs: {totalMovCount}
+                  </span>
+                  {requiredSections.map((sec) => (
+                    <span
+                      key={sec}
+                      className="px-2 py-0.5 rounded-sm border border-[var(--border)] bg-[var(--hover)]"
+                    >
+                      {sec.replace(/_/g, " ")}: {allMovsForSection(sec).length}
+                    </span>
+                  ))}
+                </div>
+              )}
               <RadioGroup
                 onValueChange={(value) => form.setValue(name, value)}
                 defaultValue={String(form.getValues(name) || "")}
@@ -673,7 +749,7 @@ export function DynamicIndicatorForm({
                       ) : null;
                     })()}
                     {localMovs.length > 0 && (
-                      <div className="mt-3 space-y-1">
+                      <div className="mt-3 space-y-2">
                         {localMovs
                           .filter(
                             (f) =>
@@ -682,23 +758,46 @@ export function DynamicIndicatorForm({
                           .map((f) => (
                             <div
                               key={f.id}
-                              className="text-xs flex items-center gap-2"
+                              className="text-xs flex items-center justify-between gap-2 rounded-md border border-[var(--border)] px-3 py-2 bg-[var(--card)]"
                             >
-                              <a
-                                href={f.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="underline"
-                              >
-                                {f.name}
-                              </a>
-                              <span>
-                                ({(f.size / 1024 / 1024).toFixed(1)} MB)
-                              </span>
-                              <button
-                                type="button"
-                                disabled={isDisabled || isDeleting}
-                                onClick={async () => {
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span className="inline-block w-6 h-6 rounded-sm bg-[var(--hover)] flex items-center justify-center text-[10px]" aria-label={getFileBadge(f.name)}>
+                                  {getFileBadge(f.name)}
+                                </span>
+                                <a
+                                  href={f.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="underline truncate max-w-[220px]"
+                                  title={f.name}
+                                >
+                                  {f.name}
+                                </a>
+                                <span className="text-[var(--text-secondary)]">
+                                  {(f.size / 1024 / 1024).toFixed(1)} MB
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <a
+                                  href={f.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="text-[var(--foreground)] underline"
+                                >
+                                  Preview
+                                </a>
+                                <a
+                                  href={f.url}
+                                  download
+                                  className="text-[var(--foreground)] underline"
+                                >
+                                  Download
+                                </a>
+                                <button
+                                  type="button"
+                                  disabled={isDisabled || isDeleting}
+                                  onClick={async () => {
+                                    if (!window.confirm(`Delete ${f.name}?`)) return;
                                   // Optimistically remove from UI immediately and update area progress
                                   setLocalMovs((prev) => {
                                     const next = prev.filter(
@@ -763,10 +862,11 @@ export function DynamicIndicatorForm({
                                     storagePath: f.storagePath,
                                   });
                                 }}
-                                className="text-[var(--destructive)]"
+                                className="text-[var(--destructive)] underline"
                               >
                                 Delete
                               </button>
+                              </div>
                             </div>
                           ))}
                       </div>
@@ -809,11 +909,7 @@ export function DynamicIndicatorForm({
           ([name, field]: [string, FormField]) => renderField(name, field)
         )}
 
-        {/* Debug: Show file count */}
-        <div className="text-xs text-gray-500 mt-2">
-          Debug: localMovs.length = {localMovs.length}, movFiles.length ={" "}
-          {movFiles?.length || 0}
-        </div>
+        {/* Debug removed */}
 
         {localMovs.length > 0 && (
           <div className="pt-4 mt-2 border-t border-[var(--border)]">
