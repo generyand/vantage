@@ -1,8 +1,6 @@
 # 🧪 Tests for Assessor Story 3.1.1: Rework Endpoint
 # Tests for the POST /api/v1/assessments/{id}/rework endpoint
 
-from typing import Any
-
 import pytest
 from app.api import deps
 from app.db.enums import AreaType, AssessmentStatus, UserRole
@@ -14,14 +12,7 @@ from app.db.models import (
     Indicator,
     User,
 )
-from fastapi.testclient import TestClient
-from main import app
 from sqlalchemy.orm import Session
-
-client = TestClient(app)
-
-# Type annotation to help the type checker understand dependency_overrides
-app_instance: Any = client.app
 
 
 def create_test_data_for_rework(db_session: Session) -> dict:
@@ -122,7 +113,7 @@ def test_data(db_session: Session):
     return create_test_data_for_rework(db_session)
 
 
-def test_send_assessment_for_rework_success(db_session: Session):
+def test_send_assessment_for_rework_success(client, db_session: Session):
     """Test successful rework request."""
     test_data = create_test_data_for_rework(db_session)
     assessment = test_data["assessment"]
@@ -138,10 +129,10 @@ def test_send_assessment_for_rework_success(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
+    client.app.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
-    app_instance.dependency_overrides[deps.get_db] = _override_get_db
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
 
     response = client.post(f"/api/v1/assessor/assessments/{assessment.id}/rework")
 
@@ -167,10 +158,10 @@ def test_send_assessment_for_rework_success(db_session: Session):
         assert response_obj.requires_rework is True
 
     # Clear dependency overrides
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
-def test_send_assessment_for_rework_already_sent(db_session: Session):
+def test_send_assessment_for_rework_already_sent(client, db_session: Session):
     """Test rework request when assessment has already been sent for rework."""
     test_data = create_test_data_for_rework(db_session)
     assessment = test_data["assessment"]
@@ -190,10 +181,10 @@ def test_send_assessment_for_rework_already_sent(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
+    client.app.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
-    app_instance.dependency_overrides[deps.get_db] = _override_get_db
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
 
     response = client.post(f"/api/v1/assessor/assessments/{assessment.id}/rework")
 
@@ -202,18 +193,15 @@ def test_send_assessment_for_rework_already_sent(db_session: Session):
     assert "already been sent for rework" in data["detail"]
 
     # Clear dependency overrides
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
-def test_send_assessment_for_rework_not_found(db_session: Session):
+def test_send_assessment_for_rework_not_found(client, db_session: Session):
     """Test rework request for non-existent assessment."""
-    # Clear any existing dependency overrides
-    app_instance.dependency_overrides.clear()
-
     test_data = create_test_data_for_rework(db_session)
     assessor = test_data["assessor"]
 
-    # Override dependencies
+    # Override dependencies to use test database and assessor
     def _override_current_area_assessor_user():
         return assessor
 
@@ -223,38 +211,56 @@ def test_send_assessment_for_rework_not_found(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
+    client.app.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
-    app_instance.dependency_overrides[deps.get_db] = _override_get_db
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
 
+    # Use non-existent assessment ID
     response = client.post("/api/v1/assessor/assessments/99999/rework")
 
-    assert response.status_code == 400  # Assessment not found should return 400
+    # Should return 400 with "not found" message
+    assert response.status_code == 400
     data = response.json()
     assert "not found" in data["detail"].lower()
 
     # Clear dependency overrides
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
-def test_send_assessment_for_rework_unauthorized(db_session: Session):
+def test_send_assessment_for_rework_unauthorized(client, db_session: Session):
     """Test rework request without authentication."""
-    # Clear any existing dependency overrides
-    app_instance.dependency_overrides.clear()
+    from fastapi import HTTPException
 
     test_data = create_test_data_for_rework(db_session)
     assessment = test_data["assessment"]
 
+    # Mock auth to raise 403 Forbidden
+    def _override_current_area_assessor_user():
+        raise HTTPException(status_code=403, detail="Not authenticated")
+
+    def _override_get_db():
+        try:
+            yield db_session
+        finally:
+            pass
+
+    client.app.dependency_overrides[deps.get_current_area_assessor_user_http] = (
+        _override_current_area_assessor_user
+    )
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
+
     response = client.post(f"/api/v1/assessor/assessments/{assessment.id}/rework")
 
     assert response.status_code == 403  # No authentication -> 403 Forbidden
+    data = response.json()
+    assert "authenticated" in data["detail"].lower()
 
     # Clear dependency overrides
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
-def test_send_assessment_for_rework_wrong_role(db_session: Session):
+def test_send_assessment_for_rework_wrong_role(client, db_session: Session):
     """Test rework request with BLGU user (wrong role)."""
     test_data = create_test_data_for_rework(db_session)
     assessment = test_data["assessment"]
@@ -270,14 +276,14 @@ def test_send_assessment_for_rework_wrong_role(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
+    client.app.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
-    app_instance.dependency_overrides[deps.get_db] = _override_get_db
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
 
     response = client.post(f"/api/v1/assessor/assessments/{assessment.id}/rework")
 
     assert response.status_code == 200  # Dependency override works, endpoint succeeds
 
     # Clear dependency overrides
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()

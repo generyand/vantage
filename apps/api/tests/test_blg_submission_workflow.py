@@ -1,20 +1,11 @@
 # 🧪 Tests for BLGU Submission Workflow (Epic 4.1, 4.2.4)
 # Covers POST /api/v1/assessments/{id}/submit and resubmission after rework
 
-from typing import Any
-
 import pytest
 from app.api import deps
 from app.db.enums import AreaType, AssessmentStatus, UserRole
 from app.db.models import Assessment, AssessmentResponse, Barangay, GovernanceArea, Indicator, MOV, User
-from fastapi.testclient import TestClient
-from main import app
 from sqlalchemy.orm import Session
-
-client = TestClient(app)
-
-# Type annotation to help the type checker understand dependency_overrides
-app_instance: Any = client.app
 
 
 def _create_base_graph(db_session: Session, *, with_mov: bool) -> dict:
@@ -113,7 +104,7 @@ def blgu_context_without_mov(db_session: Session):
     return _create_base_graph(db_session, with_mov=False)
 
 
-def _override_user_and_db(blgu_user: User, db_session: Session):
+def _override_user_and_db(client, blgu_user: User, db_session: Session):
     def _override_current_active_user():
         return blgu_user
 
@@ -123,18 +114,18 @@ def _override_user_and_db(blgu_user: User, db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_active_user] = (
+    client.app.dependency_overrides[deps.get_current_active_user] = (
         _override_current_active_user
     )
-    app_instance.dependency_overrides[deps.get_db] = _override_get_db
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
 
 
-def test_submit_assessment_success(db_session: Session, blgu_context_with_mov):
+def test_submit_assessment_success(client, db_session: Session, blgu_context_with_mov):
     """Submission succeeds when all YES answers have MOVs."""
     assessment = blgu_context_with_mov["assessment"]
     blgu_user = blgu_context_with_mov["blgu_user"]
 
-    _override_user_and_db(blgu_user, db_session)
+    _override_user_and_db(client, blgu_user, db_session)
 
     response = client.post("/api/v1/assessments/submit")
 
@@ -145,15 +136,15 @@ def test_submit_assessment_success(db_session: Session, blgu_context_with_mov):
     db_session.refresh(assessment)
     assert assessment.status == AssessmentStatus.SUBMITTED_FOR_REVIEW
 
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
-def test_submit_assessment_fails_without_mov(db_session: Session, blgu_context_without_mov):
+def test_submit_assessment_fails_without_mov(client, db_session: Session, blgu_context_without_mov):
     """Submission fails when a YES answer lacks MOVs."""
     assessment = blgu_context_without_mov["assessment"]
     blgu_user = blgu_context_without_mov["blgu_user"]
 
-    _override_user_and_db(blgu_user, db_session)
+    _override_user_and_db(client, blgu_user, db_session)
 
     response = client.post("/api/v1/assessments/submit")
 
@@ -165,10 +156,10 @@ def test_submit_assessment_fails_without_mov(db_session: Session, blgu_context_w
     db_session.refresh(assessment)
     assert assessment.status == AssessmentStatus.DRAFT
 
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
-def test_resubmission_after_rework(db_session: Session, blgu_context_with_mov):
+def test_resubmission_after_rework(client, db_session: Session, blgu_context_with_mov):
     """Allows resubmission when status is Needs Rework and issues fixed."""
     assessment = blgu_context_with_mov["assessment"]
     blgu_user = blgu_context_with_mov["blgu_user"]
@@ -177,7 +168,7 @@ def test_resubmission_after_rework(db_session: Session, blgu_context_with_mov):
     assessment.status = AssessmentStatus.NEEDS_REWORK
     db_session.commit()
 
-    _override_user_and_db(blgu_user, db_session)
+    _override_user_and_db(client, blgu_user, db_session)
 
     response = client.post("/api/v1/assessments/submit")
 
@@ -188,6 +179,6 @@ def test_resubmission_after_rework(db_session: Session, blgu_context_with_mov):
     db_session.refresh(assessment)
     assert assessment.status == AssessmentStatus.SUBMITTED_FOR_REVIEW
 
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 

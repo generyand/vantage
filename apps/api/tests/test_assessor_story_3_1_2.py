@@ -1,8 +1,6 @@
 # 🧪 Tests for Assessor Story 3.1.2: Finalization Endpoint
 # Tests for the POST /api/v1/assessments/{id}/finalize endpoint
 
-from typing import Any
-
 import pytest
 from app.api import deps
 from app.db.enums import AreaType, AssessmentStatus, UserRole, ValidationStatus
@@ -14,14 +12,7 @@ from app.db.models import (
     Indicator,
     User,
 )
-from fastapi.testclient import TestClient
-from main import app
 from sqlalchemy.orm import Session
-
-client = TestClient(app)
-
-# Type annotation to help the type checker understand dependency_overrides
-app_instance: Any = client.app
 
 
 def create_test_data_for_finalize(db_session: Session) -> dict:
@@ -123,7 +114,7 @@ def test_data(db_session: Session):
     return create_test_data_for_finalize(db_session)
 
 
-def test_finalize_assessment_success(db_session: Session):
+def test_finalize_assessment_success(client, db_session: Session):
     """Test successful assessment finalization."""
     test_data = create_test_data_for_finalize(db_session)
     assessment = test_data["assessment"]
@@ -139,10 +130,10 @@ def test_finalize_assessment_success(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
+    client.app.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
-    app_instance.dependency_overrides[deps.get_db] = _override_get_db
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
 
     response = client.post(f"/api/v1/assessor/assessments/{assessment.id}/finalize")
 
@@ -160,10 +151,10 @@ def test_finalize_assessment_success(db_session: Session):
     assert assessment.validated_at is not None
 
     # Clear dependency overrides
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
-def test_finalize_assessment_already_finalized(db_session: Session):
+def test_finalize_assessment_already_finalized(client, db_session: Session):
     """Test finalization request when assessment is already validated."""
     test_data = create_test_data_for_finalize(db_session)
     assessment = test_data["assessment"]
@@ -183,10 +174,10 @@ def test_finalize_assessment_already_finalized(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
+    client.app.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
-    app_instance.dependency_overrides[deps.get_db] = _override_get_db
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
 
     response = client.post(f"/api/v1/assessor/assessments/{assessment.id}/finalize")
 
@@ -195,10 +186,10 @@ def test_finalize_assessment_already_finalized(db_session: Session):
     assert "already finalized" in data["detail"]
 
     # Clear dependency overrides
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
-def test_finalize_assessment_draft(db_session: Session):
+def test_finalize_assessment_draft(client, db_session: Session):
     """Test finalization request for draft assessment."""
     test_data = create_test_data_for_finalize(db_session)
     assessment = test_data["assessment"]
@@ -218,10 +209,10 @@ def test_finalize_assessment_draft(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
+    client.app.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
-    app_instance.dependency_overrides[deps.get_db] = _override_get_db
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
 
     response = client.post(f"/api/v1/assessor/assessments/{assessment.id}/finalize")
 
@@ -230,10 +221,10 @@ def test_finalize_assessment_draft(db_session: Session):
     assert "Cannot finalize a draft assessment" in data["detail"]
 
     # Clear dependency overrides
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
-def test_finalize_assessment_unreviewed_responses(db_session: Session):
+def test_finalize_assessment_unreviewed_responses(client, db_session: Session):
     """Test finalization request when responses haven't been reviewed."""
     test_data = create_test_data_for_finalize(db_session)
     assessment = test_data["assessment"]
@@ -254,10 +245,10 @@ def test_finalize_assessment_unreviewed_responses(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
+    client.app.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
-    app_instance.dependency_overrides[deps.get_db] = _override_get_db
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
 
     response_client = client.post(
         f"/api/v1/assessor/assessments/{assessment.id}/finalize"
@@ -268,50 +259,74 @@ def test_finalize_assessment_unreviewed_responses(db_session: Session):
     assert "not been reviewed" in data["detail"]
 
     # Clear dependency overrides
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
-def test_finalize_assessment_not_found(db_session: Session):
+def test_finalize_assessment_not_found(client, db_session: Session):
     """Test finalization request for non-existent assessment."""
-    # Clear any existing dependency overrides
-    app_instance.dependency_overrides.clear()
-
     test_data = create_test_data_for_finalize(db_session)
     assessor = test_data["assessor"]
 
-    # Create auth token for assessor
-    from app.core.security import create_access_token
+    # Override dependencies to use test database and assessor
+    def _override_current_area_assessor_user():
+        return assessor
 
-    token = create_access_token(subject=assessor.id)
-    headers = {"Authorization": f"Bearer {token}"}
+    def _override_get_db():
+        try:
+            yield db_session
+        finally:
+            pass
 
-    response = client.post(
-        "/api/v1/assessor/assessments/99999/finalize", headers=headers
+    client.app.dependency_overrides[deps.get_current_area_assessor_user_http] = (
+        _override_current_area_assessor_user
     )
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
 
-    assert response.status_code == 401  # JWT token is invalid or user doesn't exist
+    # Use non-existent assessment ID
+    response = client.post("/api/v1/assessor/assessments/99999/finalize")
+
+    # Should return 400 with "not found" message
+    assert response.status_code == 400
+    data = response.json()
+    assert "not found" in data["detail"].lower()
 
     # Clear dependency overrides
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
-def test_finalize_assessment_unauthorized(db_session: Session):
+def test_finalize_assessment_unauthorized(client, db_session: Session):
     """Test finalization request without authentication."""
-    # Clear any existing dependency overrides
-    app_instance.dependency_overrides.clear()
+    from fastapi import HTTPException
 
     test_data = create_test_data_for_finalize(db_session)
     assessment = test_data["assessment"]
 
+    # Mock auth to raise 403 Forbidden
+    def _override_current_area_assessor_user():
+        raise HTTPException(status_code=403, detail="Not authenticated")
+
+    def _override_get_db():
+        try:
+            yield db_session
+        finally:
+            pass
+
+    client.app.dependency_overrides[deps.get_current_area_assessor_user_http] = (
+        _override_current_area_assessor_user
+    )
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
+
     response = client.post(f"/api/v1/assessor/assessments/{assessment.id}/finalize")
 
     assert response.status_code == 403  # No authentication -> 403 Forbidden
+    data = response.json()
+    assert "authenticated" in data["detail"].lower()
 
     # Clear dependency overrides
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
 
 
-def test_finalize_assessment_wrong_role(db_session: Session):
+def test_finalize_assessment_wrong_role(client, db_session: Session):
     """Test finalization request with BLGU user (wrong role)."""
     test_data = create_test_data_for_finalize(db_session)
     assessment = test_data["assessment"]
@@ -327,10 +342,10 @@ def test_finalize_assessment_wrong_role(db_session: Session):
         finally:
             pass
 
-    app_instance.dependency_overrides[deps.get_current_area_assessor_user_http] = (
+    client.app.dependency_overrides[deps.get_current_area_assessor_user_http] = (
         _override_current_area_assessor_user
     )
-    app_instance.dependency_overrides[deps.get_db] = _override_get_db
+    client.app.dependency_overrides[deps.get_db] = _override_get_db
 
     response = client.post(f"/api/v1/assessor/assessments/{assessment.id}/finalize")
 
@@ -339,4 +354,4 @@ def test_finalize_assessment_wrong_role(db_session: Session):
     )  # Dependency override works, but business logic fails
 
     # Clear dependency overrides
-    app_instance.dependency_overrides.clear()
+    client.app.dependency_overrides.clear()
